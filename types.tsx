@@ -34,4 +34,7 @@ export type AuthStackParamList = {
   Welcome: undefined;
   Register: undefined;
   Login: undefined;
+  Verify: undefined
 };
+export type AuthStackScreenProps<Screen extends keyof AuthStackParamList> = NativeStackScreenProps<AuthStackParamList,
+  Screen>;

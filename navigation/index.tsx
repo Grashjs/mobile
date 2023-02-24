@@ -19,6 +19,7 @@ import WelcomeScreen from '../screens/WelcomeScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import LoginScreen from '../screens/LoginScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
+import VerifyScreen from '../screens/VerifyScreen';
 import { AuthStackParamList, RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import useAuth from '../hooks/useAuth';
@@ -62,6 +63,7 @@ function AuthNavigator() {
       <AuthStack.Screen name='Welcome' component={WelcomeScreen} options={{ headerShown: false }} />
       <AuthStack.Screen name='Register' component={RegisterScreen} options={{ title: t('register') }} />
       <AuthStack.Screen name='Login' component={LoginScreen} options={{ title: t('login') }} />
+      <AuthStack.Screen name='Verify' component={VerifyScreen} options={{ title: t('login') }} />
     </AuthStack.Navigator>
   );
 }

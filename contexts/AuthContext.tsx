@@ -40,14 +40,7 @@ interface AuthContextValue extends AuthState {
   method: 'JWT';
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  register: (
-    email: string,
-    firstName: string,
-    lastName: string,
-    phone: string,
-    password: string,
-    role: number | undefined,
-  ) => Promise<void>;
+  register: (values: any) => Promise<void>;
   getInfos: () => void;
   patchUserSettings: (values: Partial<UserSettings>) => Promise<void>;
   patchUser: (values: Partial<OwnUser>) => Promise<void>;
