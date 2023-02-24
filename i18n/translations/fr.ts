@@ -1460,6 +1460,7 @@ const frJSON = {
   no_import_access:
     'Mettez à jour votre plan pour importer depuis des fichiers CSV ou Excel',
   register_here: 'Inscrivez-vous ici',
+  home: 'Accueil',
 };
 
 export default frJSON;

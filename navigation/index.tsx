@@ -8,13 +8,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import { ColorSchemeName, Pressable, TouchableOpacity, View } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import TabOneScreen from '../screens/TabOneScreen';
+import HomeScreen from '../screens/HomeScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -25,6 +25,11 @@ import { AuthStackParamList, RootStackParamList, RootTabParamList, RootTabScreen
 import LinkingConfiguration from './LinkingConfiguration';
 import useAuth from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
+import { IconButton, useTheme } from 'react-native-paper';
+import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
+import MoreEntitiesScreen from '../screens/MoreEntitiesScreen';
+import RequestsScreen from '../screens/RequestsScreen';
+import WorkOrdersScreen from '../screens/WorkOrdersScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -75,20 +80,20 @@ function AuthNavigator() {
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
-
+  const theme = useTheme();
+  const { t } = useTranslation();
   return (
     <BottomTab.Navigator
-      initialRouteName='TabOne'
+      initialRouteName='Home'
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
+        tabBarActiveTintColor: theme.colors.primary,
       }}>
       <BottomTab.Screen
-        name='TabOne'
-        component={TabOneScreen}
-        options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name='code' color={color} />,
+        name='Home'
+        component={HomeScreen}
+        options={({ navigation }: RootTabScreenProps<'Home'>) => ({
+          title: t('home'),
+          tabBarIcon: ({ color }) => <TabBarIcon name='home-outline' color={color} />,
           headerRight: () => (
             <Pressable
               onPress={() => navigation.navigate('Modal')}
@@ -98,7 +103,7 @@ function BottomTabNavigator() {
               <FontAwesome
                 name='info-circle'
                 size={25}
-                color={Colors[colorScheme].text}
+                color={theme.colors.secondary}
                 style={{ marginRight: 15 }}
               />
             </Pressable>
@@ -106,11 +111,41 @@ function BottomTabNavigator() {
         })}
       />
       <BottomTab.Screen
-        name='TabTwo'
-        component={TabTwoScreen}
+        name='WorkOrders'
+        component={WorkOrdersScreen}
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name='code' color={color} />,
+          title: t('work_orders'),
+          tabBarIcon: ({ color }) => <TabBarIcon name='clipboard-text' color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name='AddEntities'
+        component={View}
+        listeners={{
+          tabPress: e => {
+            // Prevent default action
+            e.preventDefault();
+          },
+        }}
+        options={{
+          title: t('add'),
+          tabBarIcon: ({ color }) => <TabBarIcon name='plus-circle' color={theme.colors.primary} />,
+        }}
+      />
+      <BottomTab.Screen
+        name='Requests'
+        component={RequestsScreen}
+        options={{
+          title: t('requests'),
+          tabBarIcon: ({ color }) => <TabBarIcon name='inbox-arrow-down-outline' color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name='MoreEntities'
+        component={MoreEntitiesScreen}
+        options={{
+          title: t('more'),
+          tabBarIcon: ({ color }) => <TabBarIcon name='menu' color={color} />,
         }}
       />
     </BottomTab.Navigator>
@@ -121,8 +156,8 @@ function BottomTabNavigator() {
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
 function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
+  name: IconSource;
   color: string;
 }) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
+  return <IconButton icon={props.name} iconColor={props.color} size={30} style={{ marginBottom: -3 }} {...props} />;
 }
