@@ -1,15 +1,14 @@
 import { ScrollView, StyleSheet } from 'react-native';
 import * as Yup from 'yup';
-import { useThemeColor, View } from '../components/Themed';
+import { View } from '../components/Themed';
 import { AuthStackScreenProps } from '../types';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { phoneRegExp } from '../utils/validators';
 import useAuth from '../hooks/useAuth';
 import { IS_LOCALHOST } from '../config';
-import { useContext, useState } from 'react';
-import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
-import { Button, Checkbox, HelperText, Snackbar, TextInput, useTheme, Text } from 'react-native-paper';
+import { useState } from 'react';
+import { Button, Checkbox, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
 
 export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Register'>) {
   const { t } = useTranslation();
@@ -195,7 +194,7 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
                 {t('create_your_account')}
               </Button>
               <Text>{t('account_already')}</Text>
-              <Text onPress={() => navigation.navigate('Verify')}
+              <Text onPress={() => navigation.navigate('Login')}
                     style={{ color: theme.colors.primary }}>{t('signin_here')}</Text>
             </View>
           )}

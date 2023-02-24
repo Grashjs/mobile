@@ -108,7 +108,7 @@ export const addFiles =
   (files: any[], fileType: FileType = 'OTHER', taskId?: number): AppThunk =>
     async (dispatch) => {
       let formData = new FormData();
-      const companyId = AsyncStorage.getItem('companyId');
+      const companyId = await AsyncStorage.getItem('companyId');
       const headers = authHeader(false);
       delete headers['Content-Type'];
       files.forEach((file) => formData.append('files', file));

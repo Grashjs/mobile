@@ -1,18 +1,15 @@
 import { StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
+import { ActivityIndicator, Button } from 'react-native-paper';
 
 import { View } from '../components/Themed';
 import { AuthStackScreenProps, RootTabScreenProps } from '../types';
 import { useTranslation } from 'react-i18next';
 import { Text } from 'react-native-paper';
 
-export default function VerifyScreen({ navigation }: AuthStackScreenProps<'Welcome'>) {
-  const { t } = useTranslation();
+export default function LoadingScreen() {
   return (
     <View style={styles.container}>
-      <Text variant='labelLarge'>{t('verify_email_description')}</Text>
-      <Button style={{ marginTop: 20 }} mode='contained' onPress={() => navigation.navigate('Login')}
-      >{t('login')}</Button>
+      <ActivityIndicator size='large' />
     </View>
   );
 }

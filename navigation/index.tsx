@@ -20,18 +20,19 @@ import RegisterScreen from '../screens/RegisterScreen';
 import LoginScreen from '../screens/LoginScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
 import VerifyScreen from '../screens/VerifyScreen';
+import LoadingScreen from '../screens/LoadingScreen';
 import { AuthStackParamList, RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import useAuth from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isInitialized } = useAuth();
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      {isAuthenticated ? <RootNavigator /> : <AuthNavigator />}
+      {isInitialized ? (isAuthenticated ? <RootNavigator /> : <AuthNavigator />) : <LoadingScreen />}
     </NavigationContainer>
   );
 }

@@ -1,8 +1,8 @@
 import { apiUrl } from '../config';
 import { AsyncStorage } from 'react-native';
 
-function api<T>(url: string, options): Promise<T> {
-  return fetch(url, { headers: authHeader(false), ...options }).then(
+async function api<T>(url: string, options): Promise<T> {
+  return fetch(url, { headers: await authHeader(false), ...options }).then(
     (response) => {
       if (!response.ok) {
         throw new Error(response.statusText);
@@ -16,14 +16,14 @@ function get<T>(url, options?) {
   return api<T>(apiUrl + url, options);
 }
 
-function post<T>(
+async function post<T>(
   url,
   data,
   options?,
   withoutCompany?: boolean,
   isNotJson?: boolean,
 ) {
-  const companyId = AsyncStorage.getItem('companyId');
+  const companyId = await AsyncStorage.getItem('companyId');
   return api<T>(apiUrl + url, {
     ...options,
     method: 'POST',
@@ -35,8 +35,8 @@ function post<T>(
   });
 }
 
-function patch<T>(url, data, options?, withoutCompany?: boolean) {
-  const companyId = AsyncStorage.getItem('companyId');
+async function patch<T>(url, data, options?, withoutCompany?: boolean) {
+  const companyId = await AsyncStorage.getItem('companyId');
   return api<T>(apiUrl + url, {
     ...options,
     method: 'PATCH',
@@ -50,10 +50,9 @@ function deletes<T>(url, options?) {
   return api<T>(apiUrl + url, { ...options, method: 'DELETE' });
 }
 
-export function authHeader(publicRoute) {
+export async function authHeader(publicRoute) {
   // return authorization header with jwt token
-  let accessToken = AsyncStorage.getItem('accessToken');
-
+  let accessToken = await AsyncStorage.getItem('accessToken');
   if (!publicRoute && accessToken) {
     return {
       Authorization: 'Bearer ' + accessToken,
