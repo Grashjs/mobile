@@ -193,9 +193,6 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
               >
                 {t('create_your_account')}
               </Button>
-              <Text>{t('account_already')}</Text>
-              <Text onPress={() => navigation.navigate('Login')}
-                    style={{ color: theme.colors.primary }}>{t('signin_here')}</Text>
             </View>
           )}
         </Formik>

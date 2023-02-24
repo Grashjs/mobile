@@ -99,6 +99,9 @@ export default function LoginScreen({ navigation }: AuthStackScreenProps<'Login'
               >
                 {t('login')}
               </Button>
+              <Text>{t('no_account_yet')}</Text>
+              <Text onPress={() => navigation.navigate('Register')}
+                    style={{ color: theme.colors.primary }}>{t('register_here')}</Text>
             </View>
           )}
         </Formik>
