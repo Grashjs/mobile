@@ -15,23 +15,24 @@ const resources = {
   es: { translation: esJSON },
   fr: { translation: frJSON },
   ae: { translation: aeJSON },
-  cn: { translation: zhJSON }
+  cn: { translation: zhJSON },
 };
 
 i18n
   // .use(LanguageDetector)
   .use(initReactI18next)
   .init({
+    compatibilityJSON: 'v3',
     resources,
     keySeparator: false,
     lng: 'en',
     fallbackLng: 'en',
     react: {
-      useSuspense: true
+      useSuspense: true,
     },
     interpolation: {
-      escapeValue: false
-    }
+      escapeValue: false,
+    },
   });
 
 export default i18n;
