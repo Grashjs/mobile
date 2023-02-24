@@ -1,18 +1,18 @@
 import { StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 
-import { Text, View } from '../components/Themed';
+import { View } from '../components/Themed';
 import { AuthStackScreenProps, RootTabScreenProps } from '../types';
 import { useTranslation } from 'react-i18next';
+import { Text } from 'react-native-paper';
 
 export default function WelcomeScreen({ navigation }: AuthStackScreenProps<'Welcome'>) {
   const { t } = useTranslation();
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Grash</Text>
-      <View style={styles.separator} lightColor='#eee' darkColor='rgba(255,255,255,0.1)' />
-      <Button mode='contained' onPress={() => navigation.navigate('Register')}
-      >{t('register')}</Button>
+      <Text variant='labelLarge'>{t('verify_email_description')}</Text>
+      <Button style={{ marginTop: 20 }} mode='contained' onPress={() => navigation.navigate('Login')}
+      >{t('login')}</Button>
     </View>
   );
 }
@@ -22,14 +22,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+    paddingHorizontal: 30,
   },
 });

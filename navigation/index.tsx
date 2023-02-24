@@ -63,7 +63,7 @@ function AuthNavigator() {
       <AuthStack.Screen name='Welcome' component={WelcomeScreen} options={{ headerShown: false }} />
       <AuthStack.Screen name='Register' component={RegisterScreen} options={{ title: t('register') }} />
       <AuthStack.Screen name='Login' component={LoginScreen} options={{ title: t('login') }} />
-      <AuthStack.Screen name='Verify' component={VerifyScreen} options={{ title: t('login') }} />
+      <AuthStack.Screen name='Verify' component={VerifyScreen} options={{ title: t('verify_email_title') }} />
     </AuthStack.Navigator>
   );
 }

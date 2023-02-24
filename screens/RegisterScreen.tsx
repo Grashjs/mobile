@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet } from 'react-native';
 import * as Yup from 'yup';
-import { Text, View } from '../components/Themed';
+import { useThemeColor, View } from '../components/Themed';
 import { AuthStackScreenProps } from '../types';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +9,7 @@ import useAuth from '../hooks/useAuth';
 import { IS_LOCALHOST } from '../config';
 import { useContext, useState } from 'react';
 import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
-import { Button, Checkbox, Snackbar, TextInput, useTheme } from 'react-native-paper';
+import { Button, Checkbox, HelperText, Snackbar, TextInput, useTheme, Text } from 'react-native-paper';
 
 export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Register'>) {
   const { t } = useTranslation();
@@ -70,7 +70,7 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
       >
         {snackBarMessage}
       </Snackbar>
-      <ScrollView>
+      <ScrollView style={styles.scrollView}>
         <Formik
           initialValues={getFieldsAndShapes()[0]}
           validationSchema={Yup.object().shape(getFieldsAndShapes()[1])}
@@ -111,7 +111,8 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
                 value={values.firstName}
                 mode='outlined'
               />
-              <Text>{errors.firstName?.toString()}</Text>
+              <HelperText type='error'
+                          visible={Boolean(touched.firstName && errors.firstName)}>{errors.firstName?.toString()}</HelperText>
               <TextInput
                 error={Boolean(touched.lastName && errors.lastName)}
                 label={t('last_name')}
@@ -120,7 +121,8 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
                 value={values.lastName}
                 mode='outlined'
               />
-              <Text>{errors.lastName?.toString()}</Text>
+              <HelperText type='error'
+                          visible={Boolean(touched.lastName && errors.lastName)}>{errors.lastName?.toString()}</HelperText>
               <TextInput
                 error={Boolean(touched.email && errors.email)}
                 label={t('email')}
@@ -129,7 +131,8 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
                 value={values.email}
                 mode='outlined'
               />
-              <Text>{errors.email?.toString()}</Text>
+              <HelperText type='error'
+                          visible={Boolean(touched.email && errors.email)}>{errors.email?.toString()}</HelperText>
               <TextInput
                 error={Boolean(touched.phone && errors.phone)}
                 label={t('phone')}
@@ -138,7 +141,8 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
                 value={values.phone}
                 mode='outlined'
               />
-              <Text>{errors.phone?.toString()}</Text>
+              <HelperText type='error'
+                          visible={Boolean(touched.phone && errors.phone)}>{errors.phone?.toString()}</HelperText>
               <TextInput
                 error={Boolean(touched.password && errors.password)}
                 label={t('password')}
@@ -147,7 +151,8 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
                 value={values.password}
                 mode='outlined'
               />
-              <Text>{errors.password?.toString()}</Text>
+              <HelperText type='error'
+                          visible={Boolean(touched.password && errors.password)}>{errors.password?.toString()}</HelperText>
               <TextInput
                 error={Boolean(touched.companyName && errors.companyName)}
                 label={t('companyName')}
@@ -156,7 +161,8 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
                 value={values.companyName}
                 mode='outlined'
               />
-              <Text>{errors.companyName?.toString()}</Text>
+              <HelperText type='error'
+                          visible={Boolean(touched.companyName && errors.companyName)}>{errors.companyName?.toString()}</HelperText>
               <TextInput
                 error={Boolean(
                   touched.employeesCount && errors.employeesCount,
@@ -167,13 +173,18 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
                 value={values.employeesCount}
                 mode='outlined'
               />
-              <Text>{errors.employeesCount?.toString()}</Text>
-              <Checkbox
-                status={values.terms ? 'checked' : 'unchecked'}
-                color={theme.colors.primary}
-                onPress={(event) => setFieldValue('terms', !values.terms)}
-              />
-              <Text>{errors.terms?.toString()}</Text>
+              <HelperText type='error'
+                          visible={Boolean(touched.employeesCount && errors.employeesCount)}>{errors.employeesCount?.toString()}</HelperText>
+              <View style={styles.checkboxContainer}>
+                <Checkbox
+                  status={values.terms ? 'checked' : 'unchecked'}
+                  color={theme.colors.primary}
+                  onPress={(event) => setFieldValue('terms', !values.terms)}
+                />
+                <View style={styles.row}><Text>{t('i_accept')}</Text>
+                  <Text style={{ color: theme.colors.primary }}>{` ${t('terms_conditions')}`}</Text></View>
+              </View>
+              <HelperText type='error' visible={!!errors.terms}>{errors.terms?.toString()}</HelperText>
               <Button
                 color={theme.colors.primary}
                 onPress={() => handleSubmit()}
@@ -183,6 +194,9 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
               >
                 {t('create_your_account')}
               </Button>
+              <Text>{t('account_already')}</Text>
+              <Text onPress={() => navigation.navigate('Verify')}
+                    style={{ color: theme.colors.primary }}>{t('signin_here')}</Text>
             </View>
           )}
         </Formik>
@@ -206,5 +220,20 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
+  },
+  scrollView: {
+    marginVertical: 20,
+    paddingHorizontal: 10,
+    width: '90%',
+  },
+  checkboxContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  }, row: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
