@@ -6,9 +6,9 @@ import { useContext, useEffect, useState } from 'react';
 import { CompanySettingsContext } from '../contexts/CompanySettingsContext';
 import useAuth from '../hooks/useAuth';
 import { PermissionEntity } from '../models/role';
-import { getWorkOrders } from '../slices/workOrder';
+import { getMoreWorkOrders, getWorkOrders } from '../slices/workOrder';
 import { SearchCriteria } from '../models/page';
-import { Button, Card, Chip, IconButton, Text, useTheme } from 'react-native-paper';
+import { ActivityIndicator, Button, Card, Chip, IconButton, Text, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { Priority } from '../models/workOrder';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
@@ -30,7 +30,7 @@ function IconWithLabel({ icon, label }: { icon: IconSource, label: string }) {
 
 export default function WorkOrdersScreen() {
   const { t } = useTranslation();
-  const { workOrders, loadingGet, singleWorkOrder } = useSelector(
+  const { workOrders, loadingGet, currentPageNum, lastPage } = useSelector(
     (state) => state.workOrders
   );
   const theme = useTheme();
@@ -104,11 +104,25 @@ export default function WorkOrdersScreen() {
         return theme.colors.error;
     }
   };
+  const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+    const paddingToBottom = 20;
+    return layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom;
+  };
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
+      {loadingGet &&
+      <ActivityIndicator style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 10 }} size='large' />}
+      <ScrollView style={styles.scrollView}
+                  onScroll={({ nativeEvent }) => {
+                    if (isCloseToBottom(nativeEvent)) {
+                      if (!loadingGet && !lastPage)
+                        dispatch(getMoreWorkOrders(criteria, currentPageNum + 1));
+                    }
+                  }}
+                  scrollEventThrottle={400}>
         {workOrders.content.map(workOrder => (
-          <Card style={{ padding: 5, marginVertical: 5 }}>
+          <Card style={{ padding: 5, marginVertical: 5 }} key={workOrder.id}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <Tag text={t(workOrder.status)} color='white' backgroundColor={getStatusColor(workOrder.status)} />
@@ -143,7 +157,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold'
   },
-  scrollView: { width: '100%', padding: 5 },
+  scrollView: {
+    width: '100%',
+    height: '100%',
+    padding: 5
+  },
   row: {
     display: 'flex',
     flexDirection: 'row',
