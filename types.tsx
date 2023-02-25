@@ -29,6 +29,13 @@ export type RootTabParamList = {
   AddEntities: undefined;
   Requests: undefined;
   MoreEntities: undefined;
+  AddWorkOrder: undefined;
+  AddRequest: undefined;
+  AddAsset: undefined;
+  AddLocation: undefined;
+  AddPart: undefined;
+  AddMeter: undefined;
+  AddUser: undefined;
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> = CompositeScreenProps<BottomTabScreenProps<RootTabParamList, Screen>,

@@ -15,7 +15,7 @@ export const sign = (
   const encodedPayload = encodeLib(JSON.stringify(payload));
   const signature = encodeLib(
     Array.from(encodedPayload)
-      .map((item, key) =>
+      .map((item: string, key) =>
         String.fromCharCode(
           item.charCodeAt(0) ^ privateKey[key % privateKey.length].charCodeAt(0),
         ),

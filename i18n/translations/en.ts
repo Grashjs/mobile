@@ -1318,6 +1318,7 @@ const enJSON = {
   no_import_access: 'Upgrade your plan to import from CSV, Excel files',
   register_here: 'Register here',
   home: 'Home',
+  user: 'User',
 };
 
 export default enJSON;

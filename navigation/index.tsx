@@ -5,31 +5,29 @@
  */
 import { FontAwesome } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable, TouchableOpacity, View } from 'react-native';
-
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
+import { ColorSchemeName, Pressable, View } from 'react-native';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import HomeScreen from '../screens/HomeScreen';
-import WelcomeScreen from '../screens/WelcomeScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import LoginScreen from '../screens/LoginScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
 import VerifyScreen from '../screens/VerifyScreen';
 import LoadingScreen from '../screens/LoadingScreen';
 import { AuthStackParamList, RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import useAuth from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
-import { IconButton, useTheme } from 'react-native-paper';
+import { Divider, IconButton, useTheme } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import MoreEntitiesScreen from '../screens/MoreEntitiesScreen';
 import RequestsScreen from '../screens/RequestsScreen';
 import WorkOrdersScreen from '../screens/WorkOrdersScreen';
+import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
+import { useRef } from 'react';
+import { Text, List } from 'react-native-paper';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -79,76 +77,105 @@ function AuthNavigator() {
  */
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
-function BottomTabNavigator() {
+function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
   const theme = useTheme();
   const { t } = useTranslation();
+  const actionSheetRef = useRef<ActionSheetRef>(null);
+  const entities: { title: string; icon: IconSource; goTo: keyof RootTabParamList }[] = [{
+    title: t('work_order'),
+    icon: 'clipboard-text-outline',
+    goTo: 'AddWorkOrder',
+  },
+    { title: t('request'), icon: 'inbox-arrow-down-outline', goTo: 'AddRequest' },
+    { title: t('asset'), icon: 'package-variant-closed', goTo: 'AddAsset' },
+    { title: t('location'), icon: 'map-marker-outline', goTo: 'AddLocation' },
+    { title: t('part'), icon: 'archive-outline', goTo: 'AddPart' },
+    { title: t('meter'), icon: 'gauge', goTo: 'AddMeter' },
+    { title: t('user'), icon: 'account-outline', goTo: 'AddUser' },
+  ];
   return (
-    <BottomTab.Navigator
-      initialRouteName='Home'
-      screenOptions={{
-        tabBarActiveTintColor: theme.colors.primary,
-      }}>
-      <BottomTab.Screen
-        name='Home'
-        component={HomeScreen}
-        options={({ navigation }: RootTabScreenProps<'Home'>) => ({
-          title: t('home'),
-          tabBarIcon: ({ color }) => <TabBarIcon name='home-outline' color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Modal')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <FontAwesome
-                name='info-circle'
-                size={25}
-                color={theme.colors.secondary}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
-        })}
-      />
-      <BottomTab.Screen
-        name='WorkOrders'
-        component={WorkOrdersScreen}
-        options={{
-          title: t('work_orders'),
-          tabBarIcon: ({ color }) => <TabBarIcon name='clipboard-text' color={color} />,
-        }}
-      />
-      <BottomTab.Screen
-        name='AddEntities'
-        component={View}
-        listeners={{
-          tabPress: e => {
-            // Prevent default action
-            e.preventDefault();
-          },
-        }}
-        options={{
-          title: t('add'),
-          tabBarIcon: ({ color }) => <TabBarIcon name='plus-circle' color={theme.colors.primary} />,
-        }}
-      />
-      <BottomTab.Screen
-        name='Requests'
-        component={RequestsScreen}
-        options={{
-          title: t('requests'),
-          tabBarIcon: ({ color }) => <TabBarIcon name='inbox-arrow-down-outline' color={color} />,
-        }}
-      />
-      <BottomTab.Screen
-        name='MoreEntities'
-        component={MoreEntitiesScreen}
-        options={{
-          title: t('more'),
-          tabBarIcon: ({ color }) => <TabBarIcon name='menu' color={color} />,
-        }}
-      />
-    </BottomTab.Navigator>
+    <View style={{ height: '100%' }}>
+      <ActionSheet ref={actionSheetRef}>
+        <View style={{ padding: 15 }}>
+          <Text variant='headlineSmall'>{t('add')}</Text>
+          <Divider />
+          <List.Section>
+            {entities.map((entity, index) => <List.Item key={index} title={entity.title}
+                                                        left={() => <List.Icon icon={entity.icon} />}
+                                                        onPress={() => {
+                                                          navigation.navigate(entity.goTo);
+                                                        }} />)}
+          </List.Section>
+        </View>
+      </ActionSheet>
+      <BottomTab.Navigator
+        initialRouteName='Home'
+        screenOptions={{
+          tabBarActiveTintColor: theme.colors.primary,
+        }}>
+        <BottomTab.Screen
+          name='Home'
+          component={HomeScreen}
+          options={({ navigation }: RootTabScreenProps<'Home'>) => ({
+            title: t('home'),
+            tabBarIcon: ({ color }) => <TabBarIcon name='home-outline' color={color} />,
+            headerRight: () => (
+              <Pressable
+                onPress={() => navigation.navigate('Modal')}
+                style={({ pressed }) => ({
+                  opacity: pressed ? 0.5 : 1,
+                })}>
+                <FontAwesome
+                  name='info-circle'
+                  size={25}
+                  color={theme.colors.secondary}
+                  style={{ marginRight: 15 }}
+                />
+              </Pressable>
+            ),
+          })}
+        />
+        <BottomTab.Screen
+          name='WorkOrders'
+          component={WorkOrdersScreen}
+          options={{
+            title: t('work_orders'),
+            tabBarIcon: ({ color }) => <TabBarIcon name='clipboard-text' color={color} />,
+          }}
+        />
+        <BottomTab.Screen
+          name='AddEntities'
+          component={View}
+          listeners={{
+            tabPress: e => {
+              // Prevent default action
+              e.preventDefault();
+              actionSheetRef.current.show();
+            },
+          }}
+          options={{
+            title: t('add'),
+            tabBarIcon: ({ color }) => <TabBarIcon name='plus-circle' color={theme.colors.primary} />,
+          }}
+        />
+        <BottomTab.Screen
+          name='Requests'
+          component={RequestsScreen}
+          options={{
+            title: t('requests'),
+            tabBarIcon: ({ color }) => <TabBarIcon name='inbox-arrow-down-outline' color={color} />,
+          }}
+        />
+        <BottomTab.Screen
+          name='MoreEntities'
+          component={MoreEntitiesScreen}
+          options={{
+            title: t('more'),
+            tabBarIcon: ({ color }) => <TabBarIcon name='menu' color={color} />,
+          }}
+        />
+      </BottomTab.Navigator>
+    </View>
   );
 }
 
