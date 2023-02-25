@@ -16,15 +16,15 @@ const theme = {
   colors: {
     ...DefaultTheme.colors,
     primary: '#5569ff',
-    secondary: '#6E759F',
+    secondaryContainer: '#7b7d93',
     success: '#57CA22',
     warning: '#FFA319',
     error: '#FF1943',
     info: '#33C2FF',
     black: '#223354',
     white: '#ffffff',
-    primaryAlt: '#000C57',
-  },
+    primaryAlt: '#000C57'
+  }
 };
 
 export default function App() {

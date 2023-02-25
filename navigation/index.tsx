@@ -8,6 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
+import { useRef } from 'react';
 import { ColorSchemeName, Pressable, View } from 'react-native';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
@@ -20,14 +21,12 @@ import { AuthStackParamList, RootStackParamList, RootTabParamList, RootTabScreen
 import LinkingConfiguration from './LinkingConfiguration';
 import useAuth from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
-import { Divider, IconButton, useTheme } from 'react-native-paper';
+import { Divider, IconButton, List, Text, useTheme } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import MoreEntitiesScreen from '../screens/MoreEntitiesScreen';
 import RequestsScreen from '../screens/RequestsScreen';
 import WorkOrdersScreen from '../screens/WorkOrdersScreen';
 import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
-import { useRef } from 'react';
-import { Text, List } from 'react-native-paper';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -84,14 +83,14 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
   const entities: { title: string; icon: IconSource; goTo: keyof RootTabParamList }[] = [{
     title: t('work_order'),
     icon: 'clipboard-text-outline',
-    goTo: 'AddWorkOrder',
+    goTo: 'AddWorkOrder'
   },
     { title: t('request'), icon: 'inbox-arrow-down-outline', goTo: 'AddRequest' },
     { title: t('asset'), icon: 'package-variant-closed', goTo: 'AddAsset' },
     { title: t('location'), icon: 'map-marker-outline', goTo: 'AddLocation' },
     { title: t('part'), icon: 'archive-outline', goTo: 'AddPart' },
     { title: t('meter'), icon: 'gauge', goTo: 'AddMeter' },
-    { title: t('user'), icon: 'account-outline', goTo: 'AddUser' },
+    { title: t('user'), icon: 'account-outline', goTo: 'AddUser' }
   ];
   return (
     <View style={{ height: '100%' }}>
@@ -111,7 +110,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
       <BottomTab.Navigator
         initialRouteName='Home'
         screenOptions={{
-          tabBarActiveTintColor: theme.colors.primary,
+          tabBarActiveTintColor: theme.colors.primary
         }}>
         <BottomTab.Screen
           name='Home'
@@ -123,7 +122,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
               <Pressable
                 onPress={() => navigation.navigate('Modal')}
                 style={({ pressed }) => ({
-                  opacity: pressed ? 0.5 : 1,
+                  opacity: pressed ? 0.5 : 1
                 })}>
                 <FontAwesome
                   name='info-circle'
@@ -132,7 +131,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
                   style={{ marginRight: 15 }}
                 />
               </Pressable>
-            ),
+            )
           })}
         />
         <BottomTab.Screen
@@ -140,7 +139,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
           component={WorkOrdersScreen}
           options={{
             title: t('work_orders'),
-            tabBarIcon: ({ color }) => <TabBarIcon name='clipboard-text' color={color} />,
+            tabBarIcon: ({ color }) => <TabBarIcon name='clipboard-text' color={color} />
           }}
         />
         <BottomTab.Screen
@@ -151,11 +150,11 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
               // Prevent default action
               e.preventDefault();
               actionSheetRef.current.show();
-            },
+            }
           }}
           options={{
             title: t('add'),
-            tabBarIcon: ({ color }) => <TabBarIcon name='plus-circle' color={theme.colors.primary} />,
+            tabBarIcon: ({ color }) => <TabBarIcon name='plus-circle' color={theme.colors.primary} />
           }}
         />
         <BottomTab.Screen
@@ -163,7 +162,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
           component={RequestsScreen}
           options={{
             title: t('requests'),
-            tabBarIcon: ({ color }) => <TabBarIcon name='inbox-arrow-down-outline' color={color} />,
+            tabBarIcon: ({ color }) => <TabBarIcon name='inbox-arrow-down-outline' color={color} />
           }}
         />
         <BottomTab.Screen
@@ -171,7 +170,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
           component={MoreEntitiesScreen}
           options={{
             title: t('more'),
-            tabBarIcon: ({ color }) => <TabBarIcon name='menu' color={color} />,
+            tabBarIcon: ({ color }) => <TabBarIcon name='menu' color={color} />
           }}
         />
       </BottomTab.Navigator>
