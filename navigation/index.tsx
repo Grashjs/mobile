@@ -17,6 +17,7 @@ import RegisterScreen from '../screens/RegisterScreen';
 import LoginScreen from '../screens/LoginScreen';
 import VerifyScreen from '../screens/VerifyScreen';
 import LoadingScreen from '../screens/LoadingScreen';
+import WODetailsScreen from '../screens/WODetailsScreen';
 import { AuthStackParamList, RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import useAuth from '../hooks/useAuth';
@@ -46,9 +47,11 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
+  const { t } = useTranslation();
   return (
     <Stack.Navigator>
       <Stack.Screen name='Root' component={BottomTabNavigator} options={{ headerShown: false }} />
+      <Stack.Screen name='WODetails' component={WODetailsScreen} options={{ title: t('wo_details') }} />
       <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name='Modal' component={ModalScreen} />
@@ -80,7 +83,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
   const theme = useTheme();
   const { t } = useTranslation();
   const actionSheetRef = useRef<ActionSheetRef>(null);
-  const entities: { title: string; icon: IconSource; goTo: keyof RootTabParamList }[] = [{
+  const entities: { title: string; icon: IconSource; goTo: keyof RootStackParamList }[] = [{
     title: t('work_order'),
     icon: 'clipboard-text-outline',
     goTo: 'AddWorkOrder'

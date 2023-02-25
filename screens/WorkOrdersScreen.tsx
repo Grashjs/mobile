@@ -1,8 +1,8 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import EditScreenInfo from '../components/EditScreenInfo';
+import debounce from 'lodash.debounce';
 import { useDispatch, useSelector } from '../store';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { CompanySettingsContext } from '../contexts/CompanySettingsContext';
 import useAuth from '../hooks/useAuth';
 import { PermissionEntity } from '../models/role';
@@ -10,9 +10,12 @@ import { getMoreWorkOrders, getWorkOrders } from '../slices/workOrder';
 import { SearchCriteria } from '../models/page';
 import { ActivityIndicator, Button, Card, Chip, IconButton, Text, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
-import { Priority } from '../models/workOrder';
+import WorkOrder, { Priority } from '../models/workOrder';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import * as React from 'react';
+import { Searchbar } from 'react-native-paper';
+import { onSearchQueryChange } from '../utils/overall';
+import { AuthStackScreenProps, RootStackScreenProps, RootTabScreenProps } from '../types';
 
 function Tag({ text, backgroundColor, color }: { text: string, color: string; backgroundColor: string }) {
   return (<View style={{ backgroundColor, paddingHorizontal: 8, paddingVertical: 5, borderRadius: 5 }}><Text
@@ -28,25 +31,19 @@ function IconWithLabel({ icon, label }: { icon: IconSource, label: string }) {
   );
 }
 
-export default function WorkOrdersScreen() {
+export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'WorkOrders'>) {
   const { t } = useTranslation();
   const { workOrders, loadingGet, currentPageNum, lastPage } = useSelector(
     (state) => state.workOrders
   );
   const theme = useTheme();
-  const { loadingExport } = useSelector((state) => state.exports);
   const dispatch = useDispatch();
-  const { uploadFiles, getWOFieldsAndShapes } = useContext(
-    CompanySettingsContext
-  );
+  const [searchQuery, setSearchQuery] = useState('');
   const { getFormattedDate, getUserNameById } = useContext(
     CompanySettingsContext
   );
   const {
-    hasViewPermission,
-    hasViewOtherPermission,
-    hasCreatePermission,
-    hasFeature
+    hasViewPermission
   } = useAuth();
   const initialCriteria: SearchCriteria = {
     filterFields: [
@@ -85,8 +82,10 @@ export default function WorkOrdersScreen() {
       case 'OPEN':
         return '#9DA1A1';
       case 'IN_PROGRESS':
+        // @ts-ignore
         return theme.colors.success;
       case 'ON_HOLD':
+        // @ts-ignore
         return theme.colors.warning;
       case 'COMPLETE':
         return 'black';
@@ -97,8 +96,10 @@ export default function WorkOrdersScreen() {
       case 'NONE':
         return '#9DA1A1';
       case 'LOW':
+        // @ts-ignore
         return theme.colors.info;
       case 'MEDIUM':
+        // @ts-ignore
         return theme.colors.warning;
       case 'HIGH':
         return theme.colors.error;
@@ -109,10 +110,23 @@ export default function WorkOrdersScreen() {
     return layoutMeasurement.height + contentOffset.y >=
       contentSize.height - paddingToBottom;
   };
+  const onQueryChange = (query) => {
+    onSearchQueryChange<WorkOrder>(query, criteria, setCriteria, setSearchQuery, [
+      'title',
+      'description',
+      'feedback'
+    ]);
+  };
+
   return (
     <View style={styles.container}>
       {loadingGet &&
       <ActivityIndicator style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 10 }} size='large' />}
+      <Searchbar
+        placeholder={t('search')}
+        onChangeText={onQueryChange}
+        value={searchQuery}
+      />
       <ScrollView style={styles.scrollView}
                   onScroll={({ nativeEvent }) => {
                     if (isCloseToBottom(nativeEvent)) {
@@ -122,7 +136,8 @@ export default function WorkOrdersScreen() {
                   }}
                   scrollEventThrottle={400}>
         {workOrders.content.map(workOrder => (
-          <Card style={{ padding: 5, marginVertical: 5 }} key={workOrder.id}>
+          <Card style={{ padding: 5, marginVertical: 5 }} key={workOrder.id}
+                onPress={() => navigation.navigate('WODetails', { workOrder })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <Tag text={t(workOrder.status)} color='white' backgroundColor={getStatusColor(workOrder.status)} />

@@ -70,20 +70,21 @@ export const pushOrRemove = (array: string[], push: boolean, value: string) => {
 };
 
 export const onSearchQueryChange = <T>(
-  event,
+  query,
   criteria: SearchCriteria,
   setCriteria: React.Dispatch<React.SetStateAction<SearchCriteria>>,
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>,
   fieldsToSearch: Extract<keyof T, string>[]
 ) => {
-  const query = event.target.value;
   let newFilterFields: FilterField[] = [...criteria.filterFields];
 
-  const firstField = fieldsToSearch.shift();
   newFilterFields = newFilterFields.filter(
     // @ts-ignore
     (filterField) => !fieldsToSearch.includes(filterField.field)
   );
-  if (query)
+  const firstField = fieldsToSearch.shift();
+  setSearchQuery(query);
+  if (query) {
     newFilterFields = [
       ...newFilterFields,
       {
@@ -97,5 +98,6 @@ export const onSearchQueryChange = <T>(
         }))
       }
     ];
+  }
   setCriteria({ ...criteria, filterFields: newFilterFields });
 };

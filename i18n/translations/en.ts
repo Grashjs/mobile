@@ -1319,6 +1319,7 @@ const enJSON = {
   register_here: 'Register here',
   home: 'Home',
   user: 'User',
+  start_work_order: 'Start Work Order'
 };
 
 export default enJSON;
