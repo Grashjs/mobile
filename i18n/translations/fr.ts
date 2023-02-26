@@ -1462,7 +1462,9 @@ const frJSON = {
   register_here: 'Inscrivez-vous ici',
   home: 'Accueil',
   user: 'Utilisateur',
-  start_work_order: 'Démarrer le travail'
+  start_work_order: 'Démarrer le travail',
+  priority_label: '{{priority}} priorité',
+  stop_work_order: 'Arrêter le travail'
 };
 
 export default frJSON;

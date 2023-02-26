@@ -7,6 +7,8 @@ import {
 } from '../models/page';
 import React from 'react';
 import { sameDay } from './dates';
+import { Priority } from '../models/workOrder';
+import { MD3Theme } from 'react-native-paper';
 
 export const canAddReading = (meter: Meter): boolean => {
   if (!meter) {
@@ -100,4 +102,19 @@ export const onSearchQueryChange = <T>(
     ];
   }
   setCriteria({ ...criteria, filterFields: newFilterFields });
+};
+
+export const getPriorityColor = (priority: Priority, theme: MD3Theme): string => {
+  switch (priority) {
+    case 'NONE':
+      return '#9DA1A1';
+    case 'LOW':
+      // @ts-ignore
+      return theme.colors.info;
+    case 'MEDIUM':
+      // @ts-ignore
+      return theme.colors.warning;
+    case 'HIGH':
+      return theme.colors.error;
+  }
 };

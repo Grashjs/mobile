@@ -1319,7 +1319,9 @@ const enJSON = {
   register_here: 'Register here',
   home: 'Home',
   user: 'User',
-  start_work_order: 'Start Work Order'
+  start_work_order: 'Start Work Order',
+  priority_label: '{{priority}} priority',
+  stop_work_order: 'Stop timer'
 };
 
 export default enJSON;

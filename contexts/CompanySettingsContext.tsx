@@ -14,19 +14,19 @@ type CompanySettingsContext = {
   getFormattedDate: (dateString: string, hideTime?: boolean) => string;
   uploadFiles: (
     files: any[],
-    images: any[],
+    images: any[]
   ) => Promise<{ id: number; type: FileType }[]>;
   getUserNameById: (id: number) => string | null;
   getWOFieldsAndShapes: (
     defaultFields: Array<IField>,
-    defaultShape: { [key: string]: any },
+    defaultShape: { [key: string]: any }
   ) => [Array<IField>, { [key: string]: any }];
   getFormattedCurrency: (amount: number | string) => string;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CompanySettingsContext = createContext<CompanySettingsContext>(
-  {} as CompanySettingsContext,
+  {} as CompanySettingsContext
 );
 
 export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
@@ -34,11 +34,11 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
   const dispatch = useDispatch();
   const { generalPreferences } = companySettings ?? {
     dateFormat: 'DDMMYY',
-    currency: { code: '$' },
+    currency: { code: '$' }
   };
   const { usersMini } = useSelector((state) => state.users);
   const { workOrderConfiguration } = companySettings ?? {
-    workOrderFieldConfigurations: [],
+    workOrderFieldConfigurations: []
   };
   const { children } = props;
   const { t }: { t: any } = useTranslation();
@@ -67,7 +67,7 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
   };
   const uploadFiles = async (
     files: [],
-    images: [],
+    images: []
   ): Promise<{ id: number; type: FileType }[]> => {
     let result: { id: number; type: FileType }[] = [];
     if (files?.length) {
@@ -76,7 +76,7 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
           result = [
             ...fileIds.map((id) => {
               return { id, type: 'OTHER' as const };
-            }),
+            })
           ];
       });
     }
@@ -87,7 +87,7 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
             ...result,
             ...images.map((imageId) => {
               return { id: imageId, type: 'IMAGE' as const };
-            }),
+            })
           ];
       });
     }
@@ -100,7 +100,7 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
   };
   const getWOFieldsAndShapes = (
     defaultFields: Array<IField>,
-    defaultShape,
+    defaultShape
   ): [Array<IField>, { [key: string]: any }] => {
     let fields = [...getFilteredFields(defaultFields)];
     let shape = { ...defaultShape };
@@ -117,21 +117,21 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
       'category',
       'purchaseOrder',
       'files',
-      'signature',
+      'signature'
     ];
     fieldsToConfigure.forEach((name) => {
       const fieldConfig =
         workOrderConfiguration.workOrderFieldConfigurations.find(
-          (woFC) => woFC.fieldName === name,
+          (woFC) => woFC.fieldName === name
         );
       const fieldIndexInFields = fields.findIndex(
-        (field) => field.name === name,
+        (field) => field.name === name
       );
       if (fieldIndexInFields !== -1) {
         if (fieldConfig.fieldType === 'REQUIRED') {
           fields[fieldIndexInFields] = {
             ...fields[fieldIndexInFields],
-            required: true,
+            required: true
           };
           const requiredMessage = t('This field is required');
           let yupSchema;
@@ -178,7 +178,7 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
         uploadFiles,
         getUserNameById,
         getWOFieldsAndShapes,
-        getFormattedCurrency,
+        getFormattedCurrency
       }}
     >
       {children}
@@ -186,5 +186,5 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
   );
 };
 CompanySettingsProvider.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired
 };

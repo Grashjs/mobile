@@ -8,19 +8,15 @@ import useAuth from '../hooks/useAuth';
 import { PermissionEntity } from '../models/role';
 import { getMoreWorkOrders, getWorkOrders } from '../slices/workOrder';
 import { SearchCriteria } from '../models/page';
-import { ActivityIndicator, Button, Card, Chip, IconButton, Text, useTheme } from 'react-native-paper';
+import { ActivityIndicator, Button, Card, Chip, IconButton, MD3Theme, Text, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import WorkOrder, { Priority } from '../models/workOrder';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import * as React from 'react';
 import { Searchbar } from 'react-native-paper';
-import { onSearchQueryChange } from '../utils/overall';
+import { getPriorityColor, onSearchQueryChange } from '../utils/overall';
 import { AuthStackScreenProps, RootStackScreenProps, RootTabScreenProps } from '../types';
-
-function Tag({ text, backgroundColor, color }: { text: string, color: string; backgroundColor: string }) {
-  return (<View style={{ backgroundColor, paddingHorizontal: 8, paddingVertical: 5, borderRadius: 5 }}><Text
-    style={{ color }}>{text}</Text></View>);
-}
+import Tag from '../components/Tag';
 
 function IconWithLabel({ icon, label }: { icon: IconSource, label: string }) {
   return (
@@ -91,20 +87,7 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
         return 'black';
     }
   };
-  const getPriorityColor = (priority: Priority): string => {
-    switch (priority) {
-      case 'NONE':
-        return '#9DA1A1';
-      case 'LOW':
-        // @ts-ignore
-        return theme.colors.info;
-      case 'MEDIUM':
-        // @ts-ignore
-        return theme.colors.warning;
-      case 'HIGH':
-        return theme.colors.error;
-    }
-  };
+
   const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
     const paddingToBottom = 20;
     return layoutMeasurement.height + contentOffset.y >=
@@ -146,7 +129,7 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
                     <Tag text={`#${workOrder.id}`} color='white' backgroundColor='#545454' />
                   </View>
                   <Tag text={t(workOrder.priority)} color='white'
-                       backgroundColor={getPriorityColor(workOrder.priority)} />
+                       backgroundColor={getPriorityColor(workOrder.priority, theme)} />
                 </View>
               </View>
               <Text variant='titleMedium'>{workOrder.title}</Text>

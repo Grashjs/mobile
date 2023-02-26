@@ -99,7 +99,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
     <View style={{ height: '100%' }}>
       <ActionSheet ref={actionSheetRef}>
         <View style={{ padding: 15 }}>
-          <Text variant='headlineSmall'>{t('add')}</Text>
+          <Text variant='headlineSmall'>{t('create')}</Text>
           <Divider />
           <List.Section>
             {entities.map((entity, index) => <List.Item key={index} title={entity.title}
