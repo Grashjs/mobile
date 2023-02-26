@@ -56,7 +56,8 @@ function RootNavigator() {
       <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name='Modal' component={ModalScreen} />
-        <Stack.Screen name='CompleteWorkOrder' component={CompleteWorkOrderModal} />
+        <Stack.Screen name='CompleteWorkOrder' component={CompleteWorkOrderModal}
+                      options={{ title: t('complete_work_order') }} />
       </Stack.Group>
     </Stack.Navigator>
   );

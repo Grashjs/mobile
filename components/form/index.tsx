@@ -63,7 +63,7 @@ export default function Form(props: OwnProps) {
             {props.fields.map((field, index) =>
               <View key={index} style={{ marginTop: 10, width: '100%' }}>
                 {field.type === 'text' &&
-                <View style={{ width: '100%' }}>
+                <View style={{ width: '100%', alignItems: 'stretch' }}>
                   <TextInput style={{ width: '100%' }} mode='outlined'
                              error={!!formik.errors[field.name] || field.error}
                              label={field.label}
@@ -98,6 +98,7 @@ export default function Form(props: OwnProps) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    padding: 20
   }
 });

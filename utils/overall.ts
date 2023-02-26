@@ -107,7 +107,7 @@ export const onSearchQueryChange = <T>(
 export const getPriorityColor = (priority: Priority, theme: MD3Theme): string => {
   switch (priority) {
     case 'NONE':
-      return '#9DA1A1';
+      return theme.colors.tertiary;
     case 'LOW':
       // @ts-ignore
       return theme.colors.info;

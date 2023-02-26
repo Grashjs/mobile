@@ -8,7 +8,7 @@ async function api<T>(url: string, options): Promise<T> {
         throw new Error(response.statusText);
       }
       return response.json() as Promise<T>;
-    },
+    }
   );
 }
 
@@ -21,7 +21,7 @@ async function post<T>(
   data,
   options?,
   withoutCompany?: boolean,
-  isNotJson?: boolean,
+  isNotJson?: boolean
 ) {
   const companyId = await AsyncStorage.getItem('companyId');
   return api<T>(apiUrl + url, {
@@ -30,8 +30,8 @@ async function post<T>(
     body: isNotJson
       ? data
       : JSON.stringify(
-        withoutCompany ? data : { ...data, company: { id: companyId } },
-      ),
+        withoutCompany ? data : { ...data, company: { id: companyId } }
+      )
   });
 }
 
@@ -41,8 +41,8 @@ async function patch<T>(url, data, options?, withoutCompany?: boolean) {
     ...options,
     method: 'PATCH',
     body: JSON.stringify(
-      withoutCompany ? data : { ...data, company: { id: companyId } },
-    ),
+      withoutCompany ? data : { ...data, company: { id: companyId } }
+    )
   });
 }
 
@@ -57,12 +57,12 @@ export async function authHeader(publicRoute) {
     return {
       Authorization: 'Bearer ' + accessToken,
       Accept: 'application/json',
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     };
   } else {
     return {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     };
   }
 }

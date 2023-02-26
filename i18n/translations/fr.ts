@@ -1469,7 +1469,10 @@ const frJSON = {
   required_tasks_on_completion: 'Les tâches doivent être terminées',
   required_labor_on_completion: 'Vous devez enregistrer du temps pour clôturer ce bon de travail',
   required_part_on_completion: 'Aucune pièce n\'a été utilisée dans ce bon de travail',
-  required_cost_on_completion: 'Aucune information de coût fournie dans ce bon de travail'
+  required_cost_on_completion: 'Aucune information de coût fournie dans ce bon de travail',
+  complete_work_order: 'Clôturer l\'ordre de travail',
+  no_parts: 'Aucune pièce'
+
 };
 
 export default frJSON;

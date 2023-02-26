@@ -59,7 +59,7 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
   const additionalCosts = costsByWorkOrder[workOrder.id] ?? [];
   const runningTimer = primaryTime?.status === 'RUNNING';
   const [controllingTime, setControllingTime] = useState<boolean>(false);
-  const { getFormattedDate, getUserNameById } = useContext(CompanySettingsContext);
+  const { getFormattedDate, getUserNameById, getFormattedCurrency } = useContext(CompanySettingsContext);
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const [completeModal, setOpenCompleteModal] = useState<boolean>(false);
   const statuses = ['OPEN', 'ON_HOLD', 'IN_PROGRESS', 'COMPLETE'].map(status => ({ key: status, value: t(status) }));
@@ -315,13 +315,36 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
           {!!workOrder.assignedTo.length && <View style={{ marginTop: 20 }}>
             < Text variant='titleMedium'
                    style={{ fontWeight: 'bold' }}>{t('assigned_to')}</Text>
-            {workOrder.assignedTo.map(user => (<TouchableOpacity style={{ marginTop: 5 }}>
+            {workOrder.assignedTo.map(user => (<TouchableOpacity key={user.id} style={{ marginTop: 5 }}>
               <Text variant='bodyLarge' style={{ marginTop: 15 }}>{`${user.firstName} ${user.lastName}`}</Text>
             </TouchableOpacity>))}
-            {workOrder.customers.map(customer => (<TouchableOpacity style={{ marginTop: 5 }}>
+            {workOrder.customers.map(customer => (<TouchableOpacity key={customer.id} style={{ marginTop: 5 }}>
               <Text variant='bodyLarge' style={{ marginTop: 15 }}>{customer.name}</Text>
             </TouchableOpacity>))}
           </View>}
+          <View style={styles.shadowed}>
+            <Text>{t('parts')}</Text>
+            {partQuantities.length === 0 ? (<Text variant={'titleMedium'}>{t('no_parts')}</Text>) :
+              partQuantities.map(partQuantity => (
+                <View key={partQuantity.id} style={{ ...styles.row, marginVertical: 10 }}>
+                  <Text
+                    style={{
+                      backgroundColor: theme.colors.secondary,
+                      padding: 7,
+                      borderRadius: 5,
+                      fontWeight: 'bold',
+                      color: 'white'
+                    }}>{`${partQuantity.quantity}x`}</Text>
+                  <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 5 }}><Text
+                    style={{ fontWeight: 'bold' }}
+                    variant='bodyLarge'>{partQuantity.part.name}</Text>
+                    <Text>{getFormattedCurrency(partQuantity.part.cost)}</Text>
+                  </View>
+                </View>
+              ))}
+            <Divider style={{ marginTop: 5 }} />
+            <Button>{t('add_parts')}</Button>
+          </View>
         </View>
       </ScrollView>
       <Button disabled={
@@ -357,5 +380,15 @@ const styles = StyleSheet.create({
     width: '80%'
   },
   startButton: { position: 'absolute', bottom: 20, right: '10%' },
-  row: { display: 'flex', flexDirection: 'row', alignItems: 'center' }
+  row: { display: 'flex', flexDirection: 'row', alignItems: 'center' },
+  shadowed: {
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    marginBottom: 10,
+    elevation: 5
+  }
 });

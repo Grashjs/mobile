@@ -76,7 +76,7 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
   const getStatusColor = (status): string => {
     switch (status) {
       case 'OPEN':
-        return '#9DA1A1';
+        return theme.colors.tertiary;
       case 'IN_PROGRESS':
         // @ts-ignore
         return theme.colors.success;

@@ -46,7 +46,7 @@ export default function CompleteWorkOrderModal({ navigation, route }: RootStackS
       <Form
         fields={getFieldsAndShape()[0]}
         validation={Yup.object().shape(getFieldsAndShape()[1])}
-        submitText={t('close')}
+        submitText={t('complete_work_order')}
         values={{}}
         onChange={({ field, e }) => {
         }}
@@ -69,7 +69,6 @@ export default function CompleteWorkOrderModal({ navigation, route }: RootStackS
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center'
+    flex: 1
   }
 });

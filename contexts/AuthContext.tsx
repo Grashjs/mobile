@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import {
   getCompanySettings,
   getUserInfos,
-  getUserSettings,
+  getUserSettings
 } from '../utils/userApi';
 import UserSettings from '../models/userSettings';
 import CompanySettings from '../models/companySettings';
@@ -15,7 +15,7 @@ import { GeneralPreferences } from '../models/generalPreferences';
 import internationalization from '../i18n/i18n';
 import {
   FieldConfiguration,
-  FieldType,
+  FieldType
 } from '../models/fieldConfiguration';
 import { Company } from '../models/company';
 import { PermissionEntity } from '../models/role';
@@ -59,12 +59,12 @@ interface AuthContextValue extends AuthState {
   fetchCompanySettings: () => Promise<void>;
   fetchCompany: () => Promise<void>;
   patchGeneralPreferences: (
-    values: Partial<GeneralPreferences>,
+    values: Partial<GeneralPreferences>
   ) => Promise<void>;
   patchFieldConfiguration: (
     fieldName: string,
     fieldType: FieldType,
-    fieldConfigurationsType: FieldConfigurationsType,
+    fieldConfigurationsType: FieldConfigurationsType
   ) => Promise<void>;
   hasViewPermission: (permission: PermissionEntity) => boolean;
   hasViewOtherPermission: (permission: PermissionEntity) => boolean;
@@ -72,11 +72,11 @@ interface AuthContextValue extends AuthState {
   hasCreatePermission: (permission: PermissionEntity) => boolean;
   hasEditPermission: <Entity extends Audit>(
     permission: PermissionEntity,
-    entity: Entity,
+    entity: Entity
   ) => boolean;
   hasDeletePermission: <Entity extends Audit>(
     permission: PermissionEntity,
-    entity: Entity,
+    entity: Entity
   ) => boolean;
   getFilteredFields: (fields: Array<IField>) => Array<IField>;
 }
@@ -212,7 +212,7 @@ const initialAuthState: AuthState = {
   user: null,
   company: null,
   userSettings: null,
-  companySettings: null,
+  companySettings: null
 };
 
 const setSession = (accessToken: string | null): void => {
@@ -239,7 +239,7 @@ const handlers: Record<string,
       isInitialized: true,
       user,
       companySettings,
-      company,
+      company
     };
   },
   LOGIN: (state: AuthState, action: LoginAction): AuthState => {
@@ -250,13 +250,13 @@ const handlers: Record<string,
       isAuthenticated: true,
       user,
       companySettings,
-      company,
+      company
     };
   },
   LOGOUT: (state: AuthState): AuthState => ({
     ...state,
     isAuthenticated: false,
-    user: null,
+    user: null
   }),
   REGISTER: (state: AuthState, action: RegisterAction): AuthState => {
     const { user, companySettings, company } = action.payload;
@@ -266,105 +266,105 @@ const handlers: Record<string,
       isAuthenticated: true,
       user,
       companySettings,
-      company,
+      company
     };
   },
   PATCH_USER_SETTINGS: (
     state: AuthState,
-    action: PatchUserSettingsAction,
+    action: PatchUserSettingsAction
   ): AuthState => {
     const { userSettings } = action.payload;
     return {
       ...state,
-      userSettings,
+      userSettings
     };
   },
   PATCH_USER: (state: AuthState, action: PatchUserAction): AuthState => {
     const { user } = action.payload;
     return {
       ...state,
-      user,
+      user
     };
   },
   PATCH_SUBSCRIPTION: (
     state: AuthState,
-    action: PatchSubscriptionAction,
+    action: PatchSubscriptionAction
   ): AuthState => {
     const { subscription } = action.payload;
     return {
       ...state,
-      company: { ...state.company, subscription },
+      company: { ...state.company, subscription }
     };
   },
   CANCEL_SUBSCRIPTION: (
     state: AuthState,
-    action: CancelSubscriptionAction,
+    action: CancelSubscriptionAction
   ): AuthState => {
     return {
       ...state,
       company: {
         ...state.company,
-        subscription: { ...state.company.subscription, cancelled: true },
-      },
+        subscription: { ...state.company.subscription, cancelled: true }
+      }
     };
   },
   RESUME_SUBSCRIPTION: (
     state: AuthState,
-    action: CancelSubscriptionAction,
+    action: CancelSubscriptionAction
   ): AuthState => {
     return {
       ...state,
       company: {
         ...state.company,
-        subscription: { ...state.company.subscription, cancelled: false },
-      },
+        subscription: { ...state.company.subscription, cancelled: false }
+      }
     };
   },
   PATCH_COMPANY: (state: AuthState, action: PatchCompanyAction): AuthState => {
     const { company } = action.payload;
     return {
       ...state,
-      company,
+      company
     };
   },
   GET_USER_SETTINGS: (
     state: AuthState,
-    action: FetchUserSettingsAction,
+    action: FetchUserSettingsAction
   ): AuthState => {
     const { userSettings } = action.payload;
     return {
       ...state,
-      userSettings,
+      userSettings
     };
   },
   GET_COMPANY_SETTINGS: (
     state: AuthState,
-    action: FetchCompanySettingsAction,
+    action: FetchCompanySettingsAction
   ): AuthState => {
     const { companySettings } = action.payload;
     return {
       ...state,
-      companySettings,
+      companySettings
     };
   },
   GET_COMPANY: (state: AuthState, action: FetchCompanyAction): AuthState => {
     const { company } = action.payload;
     return {
       ...state,
-      company,
+      company
     };
   },
   PATCH_GENERAL_PREFERENCES: (
     state: AuthState,
-    action: PatchGeneralPreferencesAction,
+    action: PatchGeneralPreferencesAction
   ): AuthState => {
     const { generalPreferences } = action.payload;
     return {
       ...state,
       companySettings: {
         ...state.companySettings,
-        generalPreferences,
-      },
+        generalPreferences
+      }
     };
   },
   UPGRADE: (state: AuthState, action: FetchCompanyAction): AuthState => {
@@ -372,8 +372,8 @@ const handlers: Record<string,
       ...state,
       company: {
         ...state.company,
-        subscription: { ...state.company.subscription, upgradeNeeded: false },
-      },
+        subscription: { ...state.company.subscription, upgradeNeeded: false }
+      }
     };
   },
   DOWNGRADE: (state: AuthState, action: FetchCompanyAction): AuthState => {
@@ -381,13 +381,13 @@ const handlers: Record<string,
       ...state,
       company: {
         ...state.company,
-        subscription: { ...state.company.subscription, downgradeNeeded: false },
-      },
+        subscription: { ...state.company.subscription, downgradeNeeded: false }
+      }
     };
   },
   PATCH_FIELD_CONFIGURATION: (
     state: AuthState,
-    action: PatchFieldConfigurationAction,
+    action: PatchFieldConfigurationAction
   ): AuthState => {
     const { type, fieldConfiguration } = action.payload;
     const stateClone = { ...state };
@@ -399,7 +399,7 @@ const handlers: Record<string,
               return fieldConfiguration;
             }
             return fC;
-          },
+          }
         );
     } else {
       stateClone.companySettings.workOrderRequestConfiguration.fieldConfigurations =
@@ -409,11 +409,11 @@ const handlers: Record<string,
               return fieldConfiguration;
             }
             return fC;
-          },
+          }
         );
     }
     return stateClone;
-  },
+  }
 };
 
 const reducer = (state: AuthState, action: Action): AuthState =>
@@ -447,7 +447,7 @@ const AuthContext = createContext<AuthContextValue>({
   hasEditPermission: () => false,
   hasDeletePermission: () => false,
   downgrade: () => Promise.resolve(false),
-  upgrade: () => Promise.resolve(false),
+  upgrade: () => Promise.resolve(false)
 });
 
 export const AuthProvider: FC<AuthProviderProps> = (props) => {
@@ -463,7 +463,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   };
   const setupUser = async (companySettings: CompanySettings) => {
     switchLanguage({
-      lng: companySettings.generalPreferences.language.toLowerCase(),
+      lng: companySettings.generalPreferences.language.toLowerCase()
     });
   };
   const getInfos = async (): Promise<void> => {
@@ -481,8 +481,8 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
             isAuthenticated: true,
             user,
             companySettings: company.companySettings,
-            company,
-          },
+            company
+          }
         });
       } else {
         dispatch({
@@ -491,8 +491,8 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
             isAuthenticated: false,
             user: null,
             companySettings: null,
-            company: null,
-          },
+            company: null
+          }
         });
       }
     } catch (err) {
@@ -503,8 +503,8 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
           isAuthenticated: false,
           user: null,
           companySettings: null,
-          company: null,
-        },
+          company: null
+        }
       });
     }
   };
@@ -514,9 +514,9 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
       {
         email,
         type: 'client',
-        password,
+        password
       },
-      { headers: authHeader(true) },
+      { headers: await authHeader(true) }
     );
     const { accessToken } = response;
     setSession(accessToken);
@@ -528,8 +528,8 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
       payload: {
         user,
         companySettings: company.companySettings,
-        company,
-      },
+        company
+      }
     });
   };
 
@@ -542,7 +542,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     const response = await api.post<{ message: string; success: boolean }>(
       'auth/signup',
       values,
-      { headers: authHeader(true) },
+      { headers: await authHeader(true) }
     );
     const { message, success } = response;
     if (message.startsWith('Successful')) {
@@ -557,56 +557,56 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         payload: {
           user,
           companySettings: company.companySettings,
-          company,
-        },
+          company
+        }
       });
     }
   };
 
   const patchUserSettings = async (
-    values: Partial<UserSettings>,
+    values: Partial<UserSettings>
   ): Promise<void> => {
     const userSettings = await api.patch<UserSettings>(
       `user-settings/${state.userSettings.id}`,
-      values,
+      values
     );
     dispatch({
       type: 'PATCH_USER_SETTINGS',
       payload: {
-        userSettings,
-      },
+        userSettings
+      }
     });
   };
   const patchCompany = async (values: Partial<Company>): Promise<void> => {
     const company = await api.patch<Company>(`companies/${state.company.id}`, {
       ...state.company,
-      ...values,
+      ...values
     });
     dispatch({
       type: 'PATCH_COMPANY',
       payload: {
-        company,
-      },
+        company
+      }
     });
   };
   const patchUser = async (values: Partial<OwnUser>): Promise<void> => {
     const user = await api.patch<UserResponseDTO>(`users/${state.user.id}`, {
       ...state.user,
-      ...values,
+      ...values
     });
     dispatch({
       type: 'PATCH_USER',
       payload: {
-        user,
-      },
+        user
+      }
     });
   };
   const patchSubscription = async (values: OwnSubscription): Promise<void> => {
     dispatch({
       type: 'PATCH_SUBSCRIPTION',
       payload: {
-        subscription: values,
-      },
+        subscription: values
+      }
     });
   };
   const cancelSubscription = async (): Promise<void> => {
@@ -615,7 +615,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     if (success) {
       dispatch({
         type: 'CANCEL_SUBSCRIPTION',
-        payload: {},
+        payload: {}
       });
     }
   };
@@ -625,7 +625,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     if (success) {
       dispatch({
         type: 'RESUME_SUBSCRIPTION',
-        payload: {},
+        payload: {}
       });
     }
   };
@@ -635,7 +635,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   }): Promise<boolean> => {
     const response = await api.post<{ success: boolean }>(
       `auth/updatepwd`,
-      values,
+      values
     );
     const { success } = response;
     return success;
@@ -643,7 +643,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   const resetPassword = async (email: string): Promise<boolean> => {
     const response = await api.get<{ success: boolean }>(
       `auth/resetpwd?email=${email}`,
-      { headers: authHeader(true) },
+      { headers: await authHeader(true) }
     );
     const { success } = response;
     return success;
@@ -653,20 +653,20 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     dispatch({
       type: 'GET_USER_SETTINGS',
       payload: {
-        userSettings,
-      },
+        userSettings
+      }
     });
   };
 
   const fetchCompanySettings = async (): Promise<void> => {
     const companySettings = await getCompanySettings(
-      state.user.companySettingsId,
+      state.user.companySettingsId
     );
     dispatch({
       type: 'GET_COMPANY_SETTINGS',
       payload: {
-        companySettings,
-      },
+        companySettings
+      }
     });
   };
   const fetchCompany = async (): Promise<void> => {
@@ -674,53 +674,53 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     dispatch({
       type: 'GET_COMPANY',
       payload: {
-        company,
-      },
+        company
+      }
     });
   };
   const patchGeneralPreferences = async (
-    values: Partial<GeneralPreferences>,
+    values: Partial<GeneralPreferences>
   ): Promise<void> => {
     const generalPreferences = await api.patch<GeneralPreferences>(
       `general-preferences/${state.companySettings.generalPreferences.id}`,
-      { ...state.companySettings.generalPreferences, ...values },
+      { ...state.companySettings.generalPreferences, ...values }
     );
     dispatch({
       type: 'PATCH_GENERAL_PREFERENCES',
       payload: {
-        generalPreferences,
-      },
+        generalPreferences
+      }
     });
   };
 
   const patchFieldConfiguration = async (
     fieldName: string,
     fieldType: FieldType,
-    fieldConfigurationsType: FieldConfigurationsType,
+    fieldConfigurationsType: FieldConfigurationsType
   ): Promise<void> => {
     let id;
     if (fieldConfigurationsType === 'workOrder') {
       id =
         state.companySettings.workOrderConfiguration.workOrderFieldConfigurations.find(
           (workOrderFieldConfiguration) =>
-            workOrderFieldConfiguration.fieldName === fieldName,
+            workOrderFieldConfiguration.fieldName === fieldName
         ).id;
     } else {
       id =
         state.companySettings.workOrderRequestConfiguration.fieldConfigurations.find(
-          (fieldConfiguration) => fieldConfiguration.fieldName === fieldName,
+          (fieldConfiguration) => fieldConfiguration.fieldName === fieldName
         ).id;
     }
     const fieldConfiguration = await api.patch<FieldConfiguration>(
       `field-configurations/${id}`,
-      { fieldType },
+      { fieldType }
     );
     dispatch({
       type: 'PATCH_FIELD_CONFIGURATION',
       payload: {
         type: fieldConfigurationsType,
-        fieldConfiguration,
-      },
+        fieldConfiguration
+      }
     });
   };
   const hasViewPermission = (permissionEntity: PermissionEntity) => {
@@ -734,7 +734,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   };
   const hasEditPermission = <Entity extends Audit>(
     permissionEntity: PermissionEntity,
-    entity: Entity,
+    entity: Entity
   ) => {
     if (!entity) return false;
     if (permissionEntity === PermissionEntity.PEOPLE_AND_TEAMS) {
@@ -770,7 +770,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   };
   const hasDeletePermission = <Entity extends Audit>(
     permissionEntity: PermissionEntity,
-    entity: Entity,
+    entity: Entity
   ) => {
     if (!entity) return false;
     return (
@@ -780,7 +780,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   };
   const hasFeature = (feature: PlanFeature) => {
     return state.company.subscription.subscriptionPlan.features.includes(
-      feature,
+      feature
     );
   };
   const getFilteredFields = (defaultFields: Array<IField>): IField[] => {
@@ -796,12 +796,12 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         'subscriptions/upgrade',
         users,
         {},
-        true,
+        true
       );
       if (success)
         dispatch({
           type: 'UPGRADE',
-          payload: {},
+          payload: {}
         });
       return success;
     } catch (err) {
@@ -814,12 +814,12 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         'subscriptions/downgrade',
         users,
         {},
-        true,
+        true
       );
       if (success)
         dispatch({
           type: 'DOWNGRADE',
-          payload: {},
+          payload: {}
         });
       return success;
     } catch (err) {
@@ -860,7 +860,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         hasDeletePermission,
         hasCreatePermission,
         upgrade,
-        downgrade,
+        downgrade
       }}
     >
       {children}
@@ -869,7 +869,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
 };
 
 AuthProvider.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired
 };
 
 export default AuthContext;
