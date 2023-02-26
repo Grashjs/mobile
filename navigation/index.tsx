@@ -13,11 +13,11 @@ import { ColorSchemeName, Pressable, View } from 'react-native';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import HomeScreen from '../screens/HomeScreen';
-import RegisterScreen from '../screens/RegisterScreen';
-import LoginScreen from '../screens/LoginScreen';
-import VerifyScreen from '../screens/VerifyScreen';
-import LoadingScreen from '../screens/LoadingScreen';
-import WODetailsScreen from '../screens/WODetailsScreen';
+import RegisterScreen from '../screens/auth/RegisterScreen';
+import LoginScreen from '../screens/auth/LoginScreen';
+import VerifyScreen from '../screens/auth/VerifyScreen';
+import LoadingScreen from '../screens/auth/LoadingScreen';
+import WODetailsScreen from '../screens/workOrders/WODetailsScreen';
 import { AuthStackParamList, RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import useAuth from '../hooks/useAuth';
@@ -26,8 +26,9 @@ import { Divider, IconButton, List, Text, useTheme } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import MoreEntitiesScreen from '../screens/MoreEntitiesScreen';
 import RequestsScreen from '../screens/RequestsScreen';
-import WorkOrdersScreen from '../screens/WorkOrdersScreen';
+import WorkOrdersScreen from '../screens/workOrders/WorkOrdersScreen';
 import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
+import CompleteWorkOrderModal from '../screens/workOrders/CompleteWorkOrderModal';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -55,6 +56,7 @@ function RootNavigator() {
       <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name='Modal' component={ModalScreen} />
+        <Stack.Screen name='CompleteWorkOrder' component={CompleteWorkOrderModal} />
       </Stack.Group>
     </Stack.Navigator>
   );

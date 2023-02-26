@@ -1,15 +1,15 @@
 import { ScrollView, StyleSheet } from 'react-native';
 import * as Yup from 'yup';
-import { View } from '../components/Themed';
-import { AuthStackScreenProps } from '../types';
+import { View } from '../../components/Themed';
+import { AuthStackScreenProps } from '../../types';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
-import { phoneRegExp } from '../utils/validators';
-import useAuth from '../hooks/useAuth';
-import { IS_LOCALHOST } from '../config';
+import { phoneRegExp } from '../../utils/validators';
+import useAuth from '../../hooks/useAuth';
+import { IS_LOCALHOST } from '../../config';
 import { useContext, useState } from 'react';
 import { Button, Checkbox, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
-import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
+import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 
 export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Register'>) {
   const { t } = useTranslation();
@@ -136,6 +136,7 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
                 onBlur={handleBlur('password')}
                 onChangeText={handleChange('password')}
                 value={values.password}
+                secureTextEntry={true}
                 mode='outlined'
               />
               <HelperText type='error'

@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 
-import { View } from '../components/Themed';
-import { AuthStackScreenProps, RootTabScreenProps } from '../types';
+import { View } from '../../components/Themed';
+import { AuthStackScreenProps, RootTabScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
 import { Text } from 'react-native-paper';
 
@@ -22,6 +22,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 30,
-  },
+    paddingHorizontal: 30
+  }
 });

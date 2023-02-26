@@ -26,6 +26,10 @@ export type RootStackParamList = {
   AddUser: undefined;
   WODetails: { id: number };
   Modal: undefined;
+  CompleteWorkOrder: {
+    onComplete: (signatureId: number | undefined,
+                 feedback: string | undefined) => Promise<any>; fieldsConfig: { feedback: boolean; signature: boolean };
+  }
   NotFound: undefined;
 };
 

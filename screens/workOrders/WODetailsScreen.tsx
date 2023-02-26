@@ -1,30 +1,30 @@
 import { Image, LogBox, Pressable, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { View } from '../components/Themed';
-import EditScreenInfo from '../components/EditScreenInfo';
-import { RootStackParamList, RootStackScreenProps, RootTabScreenProps } from '../types';
+import { View } from '../../components/Themed';
+import EditScreenInfo from '../../components/EditScreenInfo';
+import { RootStackParamList, RootStackScreenProps, RootTabScreenProps } from '../../types';
 import { ActivityIndicator, Button, Card, Divider, IconButton, List, Text, useTheme } from 'react-native-paper';
 import MultiSelect from 'react-native-multiple-select';
 import { useTranslation } from 'react-i18next';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { CompanySettingsContext } from '../contexts/CompanySettingsContext';
+import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
 import * as React from 'react';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
-import Tag from '../components/Tag';
-import { getPriorityColor } from '../utils/overall';
-import { PermissionEntity } from '../models/role';
-import useAuth from '../hooks/useAuth';
-import { controlTimer, getLabors } from '../slices/labor';
-import { useDispatch, useSelector } from '../store';
-import { durationToHours } from '../utils/formatters';
-import { getPartQuantitiesByWorkOrder } from '../slices/partQuantity';
-import { getAdditionalCosts } from '../slices/additionalCost';
-import { getRelations } from '../slices/relation';
-import { getTasks } from '../slices/task';
-import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
+import Tag from '../../components/Tag';
+import { getPriorityColor } from '../../utils/overall';
+import { PermissionEntity } from '../../models/role';
+import useAuth from '../../hooks/useAuth';
+import { controlTimer, getLabors } from '../../slices/labor';
+import { useDispatch, useSelector } from '../../store';
+import { durationToHours } from '../../utils/formatters';
+import { getPartQuantitiesByWorkOrder } from '../../slices/partQuantity';
+import { getAdditionalCosts } from '../../slices/additionalCost';
+import { getRelations } from '../../slices/relation';
+import { getTasks } from '../../slices/task';
+import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { date } from 'yup';
-import { editWorkOrder } from '../slices/workOrder';
-import { PlanFeature } from '../models/subscriptionPlan';
+import { editWorkOrder } from '../../slices/workOrder';
+import { PlanFeature } from '../../models/subscriptionPlan';
 
 
 export default function WODetailsScreen({ navigation, route }: RootStackScreenProps<'WODetails'>) {
@@ -51,7 +51,6 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
   const currentWorkOrderHistories = workOrderHistories[workOrder.id] ?? [];
   const currentWorkOrderRelations = relationsByWorkOrder[workOrder.id] ?? [];
   const { costsByWorkOrder } = useSelector((state) => state.additionalCosts);
-
   const { timesByWorkOrder } = useSelector((state) => state.labors);
   const labors = timesByWorkOrder[workOrder.id] ?? [];
   const primaryTime = labors.find(
@@ -62,6 +61,7 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
   const [controllingTime, setControllingTime] = useState<boolean>(false);
   const { getFormattedDate, getUserNameById } = useContext(CompanySettingsContext);
   const actionSheetRef = useRef<ActionSheetRef>(null);
+  const [completeModal, setOpenCompleteModal] = useState<boolean>(false);
   const statuses = ['OPEN', 'ON_HOLD', 'IN_PROGRESS', 'COMPLETE'].map(status => ({ key: status, value: t(status) }));
   const fieldsToRender:
     {
@@ -162,6 +162,19 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
 
     return !error;
   };
+  const onCompleteWO = (
+    signatureId: number | undefined,
+    feedback: string | undefined
+  ): Promise<any> => {
+    return dispatch(
+      editWorkOrder(workOrder?.id, {
+        ...workOrder,
+        status: 'COMPLETE',
+        feedback: feedback ?? null,
+        signature: signatureId ? { id: signatureId } : null
+      })
+    ).then(() => navigation.navigate('Root'));
+  };
   const onStatusChange = (status: string) => {
 
     if (status === 'COMPLETE') {
@@ -180,8 +193,12 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
           if (error) {
             showSnackBar(t(error), 'error');
           } else {
-            //TODO
-            //setOpenCompleteModal(true);
+            navigation.navigate('CompleteWorkOrder', {
+              onComplete: onCompleteWO, fieldsConfig: {
+                feedback: generalPreferences.askFeedBackOnWOClosed,
+                signature: workOrder.requiredSignature
+              }
+            });
             return;
           }
         }
@@ -241,7 +258,7 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
       <ActivityIndicator style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 10 }} size='large' />}
       {renderActionSheet()}
       <ScrollView style={{
-        padding: 20
+        paddingHorizontal: 20
       }}>
         <Text variant='displaySmall'>{workOrder.title}</Text>
         <View style={styles.row}>
