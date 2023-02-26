@@ -1464,7 +1464,12 @@ const frJSON = {
   user: 'Utilisateur',
   start_work_order: 'Démarrer le travail',
   priority_label: '{{priority}} priorité',
-  stop_work_order: 'Arrêter le travail'
+  stop_work_order: 'Arrêter le travail',
+  required_files_on_completion: 'Les fichiers sont requis à la clôture du bon de travail',
+  required_tasks_on_completion: 'Les tâches doivent être terminées',
+  required_labor_on_completion: 'Vous devez enregistrer du temps pour clôturer ce bon de travail',
+  required_part_on_completion: 'Aucune pièce n\'a été utilisée dans ce bon de travail',
+  required_cost_on_completion: 'Aucune information de coût fournie dans ce bon de travail'
 };
 
 export default frJSON;

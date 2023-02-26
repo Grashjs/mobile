@@ -40,8 +40,10 @@ export default function App() {
           <AuthProvider>
             <CompanySettingsProvider>
               <PaperProvider theme={theme}>
-                <Navigation colorScheme={colorScheme} />
-                <StatusBar />
+                <CustomSnackbarProvider>
+                  <Navigation colorScheme={colorScheme} />
+                  <StatusBar />
+                </CustomSnackbarProvider>
               </PaperProvider>
             </CompanySettingsProvider>
           </AuthProvider>

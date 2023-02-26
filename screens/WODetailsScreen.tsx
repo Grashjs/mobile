@@ -1,9 +1,9 @@
-import { Image, Pressable, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, LogBox, Pressable, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { View } from '../components/Themed';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { RootStackParamList, RootStackScreenProps, RootTabScreenProps } from '../types';
-import { Button, Card, Divider, IconButton, List, Text, useTheme } from 'react-native-paper';
-import { SelectList } from 'react-native-dropdown-select-list';
+import { ActivityIndicator, Button, Card, Divider, IconButton, List, Text, useTheme } from 'react-native-paper';
+import MultiSelect from 'react-native-multiple-select';
 import { useTranslation } from 'react-i18next';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { CompanySettingsContext } from '../contexts/CompanySettingsContext';
@@ -17,19 +17,47 @@ import useAuth from '../hooks/useAuth';
 import { controlTimer, getLabors } from '../slices/labor';
 import { useDispatch, useSelector } from '../store';
 import { durationToHours } from '../utils/formatters';
+import { getPartQuantitiesByWorkOrder } from '../slices/partQuantity';
+import { getAdditionalCosts } from '../slices/additionalCost';
+import { getRelations } from '../slices/relation';
+import { getTasks } from '../slices/task';
+import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
+import { date } from 'yup';
+import { editWorkOrder } from '../slices/workOrder';
+import { PlanFeature } from '../models/subscriptionPlan';
 
 
 export default function WODetailsScreen({ navigation, route }: RootStackScreenProps<'WODetails'>) {
-  const { workOrder } = route.params;
+  const { id } = route.params;
+  const { workOrders } = useSelector((state) => state.workOrders);
+  const workOrder = workOrders.content.find(workOrder => workOrder.id === id);
   const { t } = useTranslation();
-  const { hasEditPermission, user } = useAuth();
+  const { hasEditPermission, user, companySettings, hasFeature } = useAuth();
+  const { showSnackBar } = useContext(CustomSnackBarContext);
+  const { workOrderConfiguration, generalPreferences } = companySettings;
+  const [loading, setLoading] = useState<boolean>(false);
   const theme = useTheme();
   const dispatch = useDispatch();
+  const { partQuantitiesByWorkOrder } = useSelector(
+    (state) => state.partQuantities
+  );
+  const partQuantities = partQuantitiesByWorkOrder[workOrder.id] ?? [];
+  const { workOrderHistories } = useSelector(
+    (state) => state.workOrderHistories
+  );
+  const { relationsByWorkOrder } = useSelector((state) => state.relations);
+  const { tasksByWorkOrder } = useSelector((state) => state.tasks);
+  const tasks = tasksByWorkOrder[workOrder.id] ?? [];
+  const currentWorkOrderHistories = workOrderHistories[workOrder.id] ?? [];
+  const currentWorkOrderRelations = relationsByWorkOrder[workOrder.id] ?? [];
+  const { costsByWorkOrder } = useSelector((state) => state.additionalCosts);
+
   const { timesByWorkOrder } = useSelector((state) => state.labors);
   const labors = timesByWorkOrder[workOrder.id] ?? [];
   const primaryTime = labors.find(
     (labor) => labor.logged && labor.assignedTo.id === user.id
   );
+  const additionalCosts = costsByWorkOrder[workOrder.id] ?? [];
   const runningTimer = primaryTime?.status === 'RUNNING';
   const [controllingTime, setControllingTime] = useState<boolean>(false);
   const { getFormattedDate, getUserNameById } = useContext(CompanySettingsContext);
@@ -80,8 +108,93 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
       headerRight: () => <Pressable onPress={() => actionSheetRef.current.show()}><IconButton
         icon='dots-vertical' /></Pressable>
     });
+    dispatch(getPartQuantitiesByWorkOrder(workOrder.id));
     dispatch(getLabors(workOrder.id));
+    dispatch(getAdditionalCosts(workOrder.id));
+    dispatch(getTasks(workOrder.id));
+    dispatch(getRelations(workOrder.id));
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   }, []);
+
+  const canComplete = (): boolean => {
+    let error;
+    const fieldsToTest = [
+      {
+        name: 'completeFiles',
+        condition: !workOrder.files.length,
+        message: 'required_files_on_completion'
+      },
+      {
+        name: 'completeTasks',
+        condition: tasks.some((task) => !task.value),
+        message: 'required_tasks_on_completion'
+      },
+      {
+        name: 'completeTime',
+        condition: labors
+          .filter((labor) => labor.logged)
+          .some((labor) => !labor.duration),
+        message: 'required_labor_on_completion'
+      },
+      {
+        name: 'completeParts',
+        condition: !partQuantities.length,
+        message: 'required_part_on_completion'
+      },
+      {
+        name: 'completeCost',
+        condition: !additionalCosts.length,
+        message: 'required_cost_on_completion'
+      }
+    ];
+    fieldsToTest.every((field) => {
+      const fieldConfig =
+        workOrderConfiguration.workOrderFieldConfigurations.find(
+          (woFC) => woFC.fieldName === field.name
+        );
+      if (fieldConfig.fieldType === 'REQUIRED' && field.condition) {
+        showSnackBar(t(field.message), 'error');
+        error = true;
+        return false;
+      }
+      return true;
+    });
+
+    return !error;
+  };
+  const onStatusChange = (status: string) => {
+
+    if (status === 'COMPLETE') {
+      if (canComplete()) {
+        if (
+          generalPreferences.askFeedBackOnWOClosed ||
+          workOrder.requiredSignature
+        ) {
+          let error;
+          if (workOrder.requiredSignature) {
+            if (!hasFeature(PlanFeature.SIGNATURE)) {
+              error =
+                'Signature on Work Order completion is not available in your current subscription plan.';
+            }
+          }
+          if (error) {
+            showSnackBar(t(error), 'error');
+          } else {
+            //TODO
+            //setOpenCompleteModal(true);
+            return;
+          }
+        }
+      } else return;
+    }
+    setLoading(true);
+    dispatch(
+      editWorkOrder(workOrder?.id, {
+        ...workOrder,
+        status
+      })
+    ).finally(() => setLoading(false));
+  };
   const renderActionSheet = () => {
     const options: { title: string; icon: IconSource; onPress: () => void; color?: string }[] = [{
       title: t('edit'),
@@ -124,6 +237,8 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
 
   return (
     <View style={styles.container}>
+      {loading &&
+      <ActivityIndicator style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 10 }} size='large' />}
       {renderActionSheet()}
       <ScrollView style={{
         padding: 20
@@ -139,11 +254,22 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
                  source={{ uri: workOrder.image.url }} />
         </View>}
         <View style={{ marginTop: 20 }}>
-          <SelectList
-            searchPlaceholder={t('search')}
-            setSelected={(status) => workOrder.status}
-            defaultOption={{ key: workOrder.status, value: t(workOrder.status) }}
-            data={statuses} />
+          <MultiSelect
+            hideTags
+            items={statuses}
+            uniqueKey='key'
+            onSelectedItemsChange={(items) => {
+              onStatusChange(items[0]);
+            }}
+            selectedItems={[workOrder.status]}
+            selectText={t('select_status')}
+            searchInputPlaceholderText={t('search')}
+            displayKey='value'
+            searchInputStyle={{ color: '#CCC' }}
+            submitButtonColor={theme.colors.primary}
+            single
+            submitButtonText={t('submit')}
+          />
           {fieldsToRender.map(({ label, value }, index) => (
             value && <BasicField key={label} label={label} value={value} />
           ))

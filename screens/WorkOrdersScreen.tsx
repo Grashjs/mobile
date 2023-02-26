@@ -120,7 +120,7 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
                   scrollEventThrottle={400}>
         {workOrders.content.map(workOrder => (
           <Card style={{ padding: 5, marginVertical: 5 }} key={workOrder.id}
-                onPress={() => navigation.navigate('WODetails', { workOrder })}>
+                onPress={() => navigation.navigate('WODetails', { id: workOrder.id })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <Tag text={t(workOrder.status)} color='white' backgroundColor={getStatusColor(workOrder.status)} />

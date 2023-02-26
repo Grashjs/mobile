@@ -24,7 +24,7 @@ export type RootStackParamList = {
   AddPart: undefined;
   AddMeter: undefined;
   AddUser: undefined;
-  WODetails: { workOrder: WorkOrder };
+  WODetails: { id: number };
   Modal: undefined;
   NotFound: undefined;
 };

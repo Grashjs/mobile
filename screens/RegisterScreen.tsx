@@ -7,20 +7,14 @@ import { useTranslation } from 'react-i18next';
 import { phoneRegExp } from '../utils/validators';
 import useAuth from '../hooks/useAuth';
 import { IS_LOCALHOST } from '../config';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Button, Checkbox, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
+import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
 
 export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Register'>) {
   const { t } = useTranslation();
   const { register } = useAuth();
-  const [snackBarMessage, setSnackBarMessage] = useState<string>('');
-  const [visibleSnackBar, setVisibleSnackBar] = useState(false);
-  const showSnackBar = (text: string, type: 'error' | 'success') => {
-    setSnackBarMessage(text);
-    setVisibleSnackBar(true);
-  };
-
-  const onDismissSnackBar = () => setVisibleSnackBar(false);
+  const { showSnackBar } = useContext(CustomSnackBarContext);
   const theme = useTheme();
   const getFieldsAndShapes = (): [
     { [key: string]: any },
@@ -35,7 +29,7 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
       companyName: '',
       employeesCount: 5,
       terms: false,
-      submit: null,
+      submit: null
     };
     let shape = {
       email: Yup.string()
@@ -50,7 +44,7 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
         .required(t('required_employeesCount')),
       phone: Yup.string().matches(phoneRegExp, t('invalid_phone')),
       password: Yup.string().min(8).max(255).required(t('required_password')),
-      terms: Yup.boolean().oneOf([true], t('required_terms')),
+      terms: Yup.boolean().oneOf([true], t('required_terms'))
     };
     // if (role) {
     //   const keysToDelete = ['companyName', 'employeesCount'];
@@ -63,12 +57,6 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
   };
   return (
     <View style={styles.container}>
-      <Snackbar
-        visible={visibleSnackBar}
-        onDismiss={onDismissSnackBar}
-      >
-        {snackBarMessage}
-      </Snackbar>
       <ScrollView style={styles.scrollView}>
         <Formik
           initialValues={getFieldsAndShapes()[0]}
@@ -99,7 +87,7 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
               isSubmitting,
               touched,
               values,
-              setFieldValue,
+              setFieldValue
             }) => (
             <View>
               <TextInput
@@ -164,7 +152,7 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
                           visible={Boolean(touched.companyName && errors.companyName)}>{errors.companyName?.toString()}</HelperText>
               <TextInput
                 error={Boolean(
-                  touched.employeesCount && errors.employeesCount,
+                  touched.employeesCount && errors.employeesCount
                 )}
                 label={t('employeesCount')}
                 onBlur={handleBlur('employeesCount')}
@@ -206,30 +194,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   separator: {
     marginVertical: 30,
     height: 1,
-    width: '80%',
+    width: '80%'
   },
   scrollView: {
     marginVertical: 20,
     paddingHorizontal: 10,
-    width: '90%',
+    width: '90%'
   },
   checkboxContainer: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'center',
+    alignItems: 'center'
   }, row: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center',
-  },
+    alignItems: 'center'
+  }
 });
