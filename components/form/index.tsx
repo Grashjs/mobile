@@ -8,6 +8,7 @@ import { Formik, FormikProps } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types';
 import { PartMiniDTO } from '../../models/part';
+import { CustomerMiniDTO } from '../../models/customer';
 
 interface OwnProps {
   fields: Array<IField>;
@@ -42,11 +43,12 @@ export default function Form(props: OwnProps) {
     return formik.handleChange(field);
   };
   const validationSchema = Yup.object().shape(shape);
+
   const renderSelect = (formik, field: IField) => {
     let values: { label: string; value: number }[] = formik.values[field.name];
     const excluded = field.excluded;
     let screenPath: keyof RootStackParamList;
-    let onChange: (values: PartMiniDTO[]) => void;
+    let onChange: (values: (PartMiniDTO | CustomerMiniDTO)[]) => void;
     switch (field.type2) {
       case 'part':
         screenPath = 'SelectParts';
@@ -54,38 +56,52 @@ export default function Form(props: OwnProps) {
           handleChange(formik, field.name, values.map(part => ({ label: part.name, value: part.id })));
         };
         break;
+      case 'customer':
+        screenPath = 'SelectCustomers';
+        onChange = (values: CustomerMiniDTO[]) => {
+          handleChange(formik, field.name, values.map(part => ({ label: part.name, value: part.id })));
+        };
+        break;
       default:
         return;
     }
 
-    const navigationOptions: { selected: number[], onChange: (value: PartMiniDTO[]) => void } = {
+    const navigationOptions: { selected: number[], onChange: (value: PartMiniDTO[]) => void; multiple: boolean } = {
       onChange,
-      selected: Array.isArray(values) ? values.map(value => value.value) : []
+      selected: Array.isArray(values) ? values.map(value => value.value) : [],
+      multiple: field.multiple
     };
-    // @ts-ignore
-    return (<TouchableOpacity onPress={() => props.navigation.navigate(screenPath, navigationOptions)}
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'column'
-                              }}>
-      <View style={{
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        <Text>{field.label}</Text>
-        {!values && <IconButton icon={'plus-circle'} />}
-      </View>
-      {!!values?.length && values.map(value => (
-        <View
-          style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}><Text
-          style={{ color: theme.colors.primary }}>{value.label}</Text>
-          <IconButton onPress={() => {
-            handleChange(formik, field.name, values.filter(item => value.value !== item.value));
-          }} icon={'close-circle'} iconColor={theme.colors.error} />
-        </View>))}
-    </TouchableOpacity>);
+    if (screenPath) {
+      // @ts-ignore
+      return (<TouchableOpacity onPress={() => props.navigation.navigate(screenPath, navigationOptions)}
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'column'
+                                }}>
+        <View style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <Text>{field.label}</Text>
+          {!values && <IconButton icon={'plus-circle'} />}
+        </View>
+        {!!values?.length && values.map(value => (
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}><Text
+            style={{ color: theme.colors.primary }}>{value.label}</Text>
+            <IconButton onPress={() => {
+              handleChange(formik, field.name, values.filter(item => value.value !== item.value));
+            }} icon={'close-circle'} iconColor={theme.colors.error} />
+          </View>))}
+      </TouchableOpacity>);
+    }
   };
   return (
     <ScrollView style={styles.container}>
@@ -109,7 +125,7 @@ export default function Form(props: OwnProps) {
         {(formik) => (
           <View>
             {props.fields.map((field, index) =>
-              <View key={index} style={{ marginTop: 10, width: '100%' }}>
+              <View key={index} style={{ marginTop: 5, width: '100%' }}>
                 {field.type === 'text' ?
                   <View style={{ width: '100%', alignItems: 'stretch' }}>
                     <TextInput style={{ width: '100%' }} mode='outlined'

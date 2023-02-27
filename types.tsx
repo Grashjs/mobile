@@ -9,6 +9,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import WorkOrder from './models/workOrder';
 import { PartMiniDTO } from './models/part';
 import { Task } from './models/tasks';
+import { Customer, CustomerMiniDTO } from './models/customer';
 
 declare global {
   namespace ReactNavigation {
@@ -33,6 +34,7 @@ export type RootStackParamList = {
     workOrderId: number;
   };
   SelectParts: { onChange: (parts: PartMiniDTO[]) => void; selected: number[] },
+  SelectCustomers: { onChange: (customers: CustomerMiniDTO[]) => void; selected: number[]; multiple: boolean },
   CompleteWorkOrder: {
     onComplete: (signatureId: number | undefined,
                  feedback: string | undefined) => Promise<any>; fieldsConfig: { feedback: boolean; signature: boolean };
