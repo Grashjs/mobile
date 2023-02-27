@@ -39,7 +39,6 @@
     "react-native": "0.70.5",
     "react-native-actions-sheet": "^0.8.21",
     "react-native-dropdown-select-list": "^2.0.4",
-    "react-native-modal": "^13.0.1",
     "react-native-multiple-select": "^0.5.12",
     "react-native-pager-view": "6.0.1",
     "react-native-paper": "^5.2.0",

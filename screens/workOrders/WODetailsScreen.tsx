@@ -2,7 +2,17 @@ import { Image, LogBox, Pressable, ScrollView, StyleSheet, TouchableOpacity } fr
 import { View } from '../../components/Themed';
 import EditScreenInfo from '../../components/EditScreenInfo';
 import { RootStackParamList, RootStackScreenProps, RootTabScreenProps } from '../../types';
-import { ActivityIndicator, Button, Card, Divider, IconButton, List, Text, useTheme } from 'react-native-paper';
+import {
+  ActivityIndicator, AnimatedFAB,
+  Button,
+  Card,
+  Divider,
+  IconButton,
+  List,
+  Provider,
+  Text,
+  useTheme
+} from 'react-native-paper';
 import MultiSelect from 'react-native-multiple-select';
 import { useTranslation } from 'react-i18next';
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -63,6 +73,8 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
   const { getFormattedDate, getUserNameById, getFormattedCurrency } = useContext(CompanySettingsContext);
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const [completeModal, setOpenCompleteModal] = useState<boolean>(false);
+  const [isExtended, setIsExtended] = React.useState(true);
+  const fabStyle = { right: 16 };
   const statuses = ['OPEN', 'ON_HOLD', 'IN_PROGRESS', 'COMPLETE'].map(status => ({ key: status, value: t(status) }));
   const fieldsToRender:
     {
@@ -163,6 +175,12 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
 
     return !error;
   };
+  const onScroll = ({ nativeEvent }) => {
+    const currentScrollPosition =
+      Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+
+    setIsExtended(currentScrollPosition <= 0);
+  };
   const onCompleteWO = (
     signatureId: number | undefined,
     feedback: string | undefined
@@ -255,113 +273,155 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
 
   return (
     <View style={styles.container}>
-      {loading &&
-      <ActivityIndicator style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 10 }} size='large' />}
-      {renderActionSheet()}
-      <ScrollView style={{
-        paddingHorizontal: 20
-      }}>
-        <Text variant='displaySmall'>{workOrder.title}</Text>
-        <View style={styles.row}>
-          <Text variant='titleMedium' style={{ marginRight: 10 }}>{`#${workOrder.id}`}</Text>
-          <Tag text={t('priority_label', { priority: t(workOrder.priority) })} color='white'
-               backgroundColor={getPriorityColor(workOrder.priority, theme)} />
-        </View>
-        {workOrder.image && <View style={{ marginTop: 20 }}>
-          <Image style={{ height: 200 }}
-                 source={{ uri: workOrder.image.url }} />
-        </View>}
-        <View style={{ marginTop: 20 }}>
-          <MultiSelect
-            hideTags
-            items={statuses}
-            uniqueKey='key'
-            onSelectedItemsChange={(items) => {
-              onStatusChange(items[0]);
-            }}
-            selectedItems={[workOrder.status]}
-            selectText={t('select_status')}
-            searchInputPlaceholderText={t('search')}
-            displayKey='value'
-            searchInputStyle={{ color: '#CCC' }}
-            submitButtonColor={theme.colors.primary}
-            single
-            submitButtonText={t('submit')}
-          />
-          {fieldsToRender.map(({ label, value }, index) => (
-            value && <BasicField key={label} label={label} value={value} />
-          ))
-          }
-          {touchableFields.map(({ label, value }) => value && <ObjectField key={label} label={label} value={value} />)}
-          {workOrder.primaryUser &&
-          <ObjectField label={t('primary_worker')} value={getUserNameById(workOrder.primaryUser.id)} />}
-          {(workOrder.parentRequest || workOrder.createdBy) && <ObjectField label={workOrder.parentRequest
-            ? t('approved_by')
-            : t('created_by')} value={getUserNameById(workOrder.createdBy)} />}
-          {workOrder.parentPreventiveMaintenance &&
-          <ObjectField label={t('preventive_maintenance')} value={workOrder.parentPreventiveMaintenance.name} />}
-          {workOrder.status === 'COMPLETE' && <View>
-            {workOrder.completedBy && <ObjectField label={t('completed_by')}
-                                                   value={`${workOrder.completedBy.firstName} ${workOrder.completedBy.lastName}`} />}
-            <BasicField label={t('completed_on')} value={getFormattedDate(workOrder.completedOn)} />
-            {workOrder.feedback && <BasicField label={t('feedback')} value={workOrder.feedback} />}
-            {workOrder.signature && <View style={{ marginTop: 20 }}><Divider style={{ marginBottom: 20 }} />
-              <Text variant='titleMedium'
-                    style={{ fontWeight: 'bold' }}>{t('signature')}</Text>
-              <Image source={{ uri: workOrder.signature.url }} style={{ height: 200 }} />
-            </View>}
-          </View>}
-          {workOrder.parentRequest &&
-          <ObjectField label={t('requested_by')} value={getUserNameById(workOrder.parentRequest.createdBy)} />}
-          {!!workOrder.assignedTo.length && <View style={{ marginTop: 20 }}>
-            < Text variant='titleMedium'
-                   style={{ fontWeight: 'bold' }}>{t('assigned_to')}</Text>
-            {workOrder.assignedTo.map(user => (<TouchableOpacity key={user.id} style={{ marginTop: 5 }}>
-              <Text variant='bodyLarge' style={{ marginTop: 15 }}>{`${user.firstName} ${user.lastName}`}</Text>
-            </TouchableOpacity>))}
-            {workOrder.customers.map(customer => (<TouchableOpacity key={customer.id} style={{ marginTop: 5 }}>
-              <Text variant='bodyLarge' style={{ marginTop: 15 }}>{customer.name}</Text>
-            </TouchableOpacity>))}
-          </View>}
-          <View style={styles.shadowed}>
-            <Text>{t('parts')}</Text>
-            <PartQuantities partQuantities={partQuantities} isPO={false} rootId={workOrder.id} />
-            <Divider style={{ marginTop: 5 }} />
-            <Button onPress={() => navigation.navigate('SelectParts', {
-              onChange: (selectedParts) => {
-                dispatch(
-                  editWOPartQuantities(
-                    workOrder.id,
-                    selectedParts.map((part) => part.id)
-                  )
-                );
-              },
-              selected: partQuantities.map(
-                (partQuantity) => partQuantity.part.id
-              )
-            })}>{t('add_parts')}</Button>
+      <Provider theme={theme}>
+        {loading &&
+        <ActivityIndicator style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 10 }} size='large' />}
+        {renderActionSheet()}
+        <ScrollView onScroll={onScroll} style={{
+          paddingHorizontal: 20
+        }}>
+          <Text variant='displaySmall'>{workOrder.title}</Text>
+          <View style={styles.row}>
+            <Text variant='titleMedium' style={{ marginRight: 10 }}>{`#${workOrder.id}`}</Text>
+            <Tag text={t('priority_label', { priority: t(workOrder.priority) })} color='white'
+                 backgroundColor={getPriorityColor(workOrder.priority, theme)} />
           </View>
-        </View>
-      </ScrollView>
-      <Button disabled={
-        controllingTime ||
-        !hasEditPermission(
-          PermissionEntity.WORK_ORDERS,
-          workOrder
-        )
-      }
-              loading={controllingTime}
-              onPress={() => {
-                setControllingTime(true);
-                dispatch(
-                  controlTimer(!runningTimer, workOrder.id)
-                ).finally(() => setControllingTime(false));
-              }} style={styles.startButton}
-              mode={'contained'} buttonColor={runningTimer ? theme.colors.error : theme.colors.primary}>{runningTimer
-        ? t('stop_work_order')
-        : t('start_work_order') +
-        ' - ' +
-        durationToHours(primaryTime?.duration)}</Button>
+          {workOrder.image && <View style={{ marginTop: 20 }}>
+            <Image style={{ height: 200 }}
+                   source={{ uri: workOrder.image.url }} />
+          </View>}
+          <View style={{ marginTop: 20 }}>
+            <MultiSelect
+              hideTags
+              items={statuses}
+              uniqueKey='key'
+              onSelectedItemsChange={(items) => {
+                onStatusChange(items[0]);
+              }}
+              selectedItems={[workOrder.status]}
+              selectText={t('select_status')}
+              searchInputPlaceholderText={t('search')}
+              displayKey='value'
+              searchInputStyle={{ color: '#CCC' }}
+              submitButtonColor={theme.colors.primary}
+              single
+              submitButtonText={t('submit')}
+            />
+            {fieldsToRender.map(({ label, value }, index) => (
+              value && <BasicField key={label} label={label} value={value} />
+            ))
+            }
+            {touchableFields.map(({ label, value }) => value &&
+              <ObjectField key={label} label={label} value={value} />)}
+            {workOrder.primaryUser &&
+            <ObjectField label={t('primary_worker')} value={getUserNameById(workOrder.primaryUser.id)} />}
+            {(workOrder.parentRequest || workOrder.createdBy) && <ObjectField label={workOrder.parentRequest
+              ? t('approved_by')
+              : t('created_by')} value={getUserNameById(workOrder.createdBy)} />}
+            {workOrder.parentPreventiveMaintenance &&
+            <ObjectField label={t('preventive_maintenance')} value={workOrder.parentPreventiveMaintenance.name} />}
+            {workOrder.status === 'COMPLETE' && <View>
+              {workOrder.completedBy && <ObjectField label={t('completed_by')}
+                                                     value={`${workOrder.completedBy.firstName} ${workOrder.completedBy.lastName}`} />}
+              <BasicField label={t('completed_on')} value={getFormattedDate(workOrder.completedOn)} />
+              {workOrder.feedback && <BasicField label={t('feedback')} value={workOrder.feedback} />}
+              {workOrder.signature && <View style={{ marginTop: 20 }}><Divider style={{ marginBottom: 20 }} />
+                <Text variant='titleMedium'
+                      style={{ fontWeight: 'bold' }}>{t('signature')}</Text>
+                <Image source={{ uri: workOrder.signature.url }} style={{ height: 200 }} />
+              </View>}
+            </View>}
+            {workOrder.parentRequest &&
+            <ObjectField label={t('requested_by')} value={getUserNameById(workOrder.parentRequest.createdBy)} />}
+            {!!workOrder.assignedTo.length && <View style={{ marginTop: 20 }}>
+              < Text variant='titleMedium'
+                     style={{ fontWeight: 'bold' }}>{t('assigned_to')}</Text>
+              {workOrder.assignedTo.map(user => (<TouchableOpacity key={user.id} style={{ marginTop: 5 }}>
+                <Text variant='bodyLarge' style={{ marginTop: 15 }}>{`${user.firstName} ${user.lastName}`}</Text>
+              </TouchableOpacity>))}
+              {workOrder.customers.map(customer => (<TouchableOpacity key={customer.id} style={{ marginTop: 5 }}>
+                <Text variant='bodyLarge' style={{ marginTop: 15 }}>{customer.name}</Text>
+              </TouchableOpacity>))}
+            </View>}
+            <View style={styles.shadowedCard}>
+              <Text style={{ marginBottom: 10 }}>{t('parts')}</Text>
+              <PartQuantities partQuantities={partQuantities} isPO={false} rootId={workOrder.id} />
+              <Divider style={{ marginTop: 5 }} />
+              <Button onPress={() => navigation.navigate('SelectParts', {
+                onChange: (selectedParts) => {
+                  dispatch(
+                    editWOPartQuantities(
+                      workOrder.id,
+                      selectedParts.map((part) => part.id)
+                    )
+                  );
+                },
+                selected: partQuantities.map(
+                  (partQuantity) => partQuantity.part.id
+                )
+              })}>{t('add_parts')}</Button>
+            </View>
+            <View style={styles.shadowedCard}>
+              <Text style={{ marginBottom: 10 }}>{t('additional_costs')}</Text>
+              {!additionalCosts.length ? <Text style={{ fontWeight: 'bold' }}> {
+                t(
+                  'no_additional_cost')}</Text> : <View> {additionalCosts.map(cost => (
+                <View key={cost.id} style={{ display: 'flex', flexDirection: 'column' }}><Text>{cost.description}</Text>
+                  <Text>{getFormattedCurrency(cost.cost)}</Text></View>))}
+                <Text>{t('total')}</Text>
+                <Text>{getFormattedCurrency(
+                  additionalCosts.reduce(
+                    (acc, additionalCost) =>
+                      additionalCost.includeToTotalCost
+                        ? acc + additionalCost.cost
+                        : acc,
+                    0
+                  )
+                )}</Text></View>}
+              <Divider style={{ marginTop: 5 }} />
+              <Button onPress={() => navigation.navigate('SelectParts', {
+                onChange: (selectedParts) => {
+                  dispatch(
+                    editWOPartQuantities(
+                      workOrder.id,
+                      selectedParts.map((part) => part.id)
+                    )
+                  );
+                },
+                selected: partQuantities.map(
+                  (partQuantity) => partQuantity.part.id
+                )
+              })}>{t('add_additional_cost')}</Button>
+            </View>
+          </View>
+        </ScrollView>
+        <AnimatedFAB
+          icon={runningTimer ? 'pause' : 'play'}
+          label={runningTimer
+            ? t('stop_work_order')
+            : t('start_work_order') +
+            ' - ' +
+            durationToHours(primaryTime?.duration)}
+          disabled={controllingTime ||
+          !hasEditPermission(
+            PermissionEntity.WORK_ORDERS,
+            workOrder
+          )}
+          theme={theme}
+          variant={runningTimer ? 'primary' : 'secondary'}
+          color={runningTimer ? 'black' : 'white'}
+          extended={isExtended}
+          onPress={() => {
+            setControllingTime(true);
+            dispatch(
+              controlTimer(!runningTimer, workOrder.id)
+            ).finally(() => setControllingTime(false));
+          }}
+          visible={true}
+          animateFrom={'right'}
+          style={[styles.fabStyle]}
+        />
+      </Provider>
     </View>
   );
 }
@@ -377,7 +437,7 @@ const styles = StyleSheet.create({
   },
   startButton: { position: 'absolute', bottom: 20, right: '10%' },
   row: { display: 'flex', flexDirection: 'row', alignItems: 'center' },
-  shadowed: {
+  shadowedCard: {
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingTop: 10,
@@ -386,5 +446,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     marginBottom: 10,
     elevation: 5
+  },
+  fabStyle: {
+    bottom: 16,
+    right: 16,
+    position: 'absolute'
   }
 });

@@ -1,5 +1,16 @@
 import { View } from './Themed';
-import { Button, Divider, IconButton, List, Text, TextInput, useTheme } from 'react-native-paper';
+import {
+  Button,
+  Divider,
+  IconButton,
+  List,
+  Portal,
+  Provider,
+  Text,
+  TextInput,
+  useTheme,
+  Modal
+} from 'react-native-paper';
 import * as React from 'react';
 import PartQuantity from '../models/partQuantity';
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -11,7 +22,6 @@ import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import partQuantity, { editPartQuantity } from '../slices/partQuantity';
 import { useDispatch } from '../store';
 import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
-import Modal from 'react-native-modal';
 
 export default function PartQuantities({
                                          partQuantities,
@@ -76,16 +86,19 @@ export default function PartQuantities({
     </ActionSheet>);
   };
   const renderModal = () => {
-    return (<Modal isVisible={openModal} onBackdropPress={hideModal} onBackButtonPress={hideModal} style={styles.modal}>
-      <Text variant='titleLarge' style={{ fontWeight: 'bold' }}>{t('quantity')}</Text>
-      <TextInput style={{ width: '100%', marginTop: 15 }} mode='outlined' label={t('quantity')}
-                 onChangeText={(newQuantity) => setQuantity(Number(newQuantity.replace(/[^0-9]/g, '')))}
-                 value={quantity.toString()} />
-      <Button disabled={loading} loading={loading}
-              style={{ marginTop: 15 }}
-              mode={'contained'}
-              onPress={() => onPartQuantityChange(quantity, currentPartQuantity)}>{t('save')}</Button>
-    </Modal>);
+    return (
+      <Portal theme={theme}><Modal visible={openModal} onDismiss={hideModal}
+                                   style={styles.modal}>
+        <Text variant='titleLarge' style={{ fontWeight: 'bold' }}>{t('quantity')}</Text>
+        <TextInput style={{ width: '100%', marginTop: 15 }} mode='outlined' label={t('quantity')}
+                   onChangeText={(newQuantity) => setQuantity(Number(newQuantity.replace(/[^0-9]/g, '')))}
+                   value={quantity.toString()} />
+        <Button disabled={loading} loading={loading}
+                style={{ marginTop: 15 }}
+                mode={'contained'}
+                buttonColor={theme.colors.primary}
+                onPress={() => onPartQuantityChange(quantity, currentPartQuantity)}>{t('save')}</Button>
+      </Modal></Portal>);
   };
   return (<View>
     {renderActionSheet()}
@@ -121,7 +134,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   row: { display: 'flex', flexDirection: 'row', alignItems: 'center' },
-  shadowed: {
+  shadowedCard: {
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingTop: 10,
@@ -132,15 +145,15 @@ const styles = StyleSheet.create({
     elevation: 5
   },
   modal: {
-    marginVertical: '40%',
+    marginHorizontal: 20,
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 20,
-    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2
     },
+    height: '45%',
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 2
