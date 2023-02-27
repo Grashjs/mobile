@@ -7,8 +7,11 @@ import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import { useDispatch, useSelector } from '../../store';
 import { PartMiniDTO } from '../../models/part';
 import { getPartsMini } from '../../slices/part';
-import { Button, Checkbox, Text, useTheme } from 'react-native-paper';
+import { ActivityIndicator, Button, Checkbox, Text, useTheme } from 'react-native-paper';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
+import * as React from 'react';
+import { getMultiParts } from '../../slices/multipart';
+import SetType from '../../models/setType';
 
 const PartsRoute = ({
                       toggle,
@@ -45,16 +48,47 @@ const PartsRoute = ({
   );
 };
 
-const SetsRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#673ab7' }} />
-);
+const SetsRoute = ({
+                     toggle,
+                     multiParts,
+                     selectedIds
+                   }: { toggle: (multiPart: SetType, checked: boolean) => void; multiParts: SetType[]; selectedIds: number[] }) => {
+  const { getFormattedCurrency } = useContext(CompanySettingsContext);
+  const { t } = useTranslation();
+  const selectedMultiParts = multiParts.filter(multiPart => multiPart.parts.every(part => selectedIds.includes(part.id))).map(multiPart => multiPart.id);
+  return (
+
+    <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>{
+      multiParts.map(multiPart => (
+        <View style={{
+          marginTop: 5,
+          padding: 10,
+          display: 'flex',
+          flexDirection: 'row',
+          elevation: 2,
+          justifyContent: 'space-between'
+        }}>
+          <Checkbox
+            status={selectedMultiParts.includes(multiPart.id) ? 'checked' : 'unchecked'}
+            onPress={() => {
+              toggle(multiPart, selectedMultiParts.includes(multiPart.id));
+            }}
+          />
+          <View style={{ display: 'flex', flexDirection: 'column', width: '50%' }}>
+            <Text variant={'labelMedium'}>{multiPart.name}</Text>
+          </View>
+          <Button style={{ width: '40%' }} mode='outlined' buttonColor={'white'}>{t('details')}</Button>
+        </View>))
+    }</ScrollView>
+  );
+};
 export default function SelectParts({ navigation, route }: RootStackScreenProps<'SelectParts'>) {
   const { onChange, selected } = route.params;
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
   const dispatch = useDispatch();
-  const { partsMini } = useSelector((state) => state.parts);
-  const { multiParts } = useSelector((state) => state.multiParts);
+  const { partsMini, loadingGet } = useSelector((state) => state.parts);
+  const { multiParts, loadingMultiparts } = useSelector((state) => state.multiParts);
   const [tabIndex, setTabIndex] = useState(0);
   const [selectedParts, setSelectedParts] = useState<PartMiniDTO[]>([]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -92,6 +126,7 @@ export default function SelectParts({ navigation, route }: RootStackScreenProps<
 
   useEffect(() => {
     dispatch(getPartsMini());
+    dispatch(getMultiParts());
   }, []);
 
   const onSelect = (ids: number[]) => {
@@ -108,12 +143,17 @@ export default function SelectParts({ navigation, route }: RootStackScreenProps<
       onSelect([id]);
     }
   };
+  const toggleMultipart = (multiPart: SetType, checked: boolean) => {
+    if (checked) {
+      onSelect(multiPart.parts.map(part => part.id));
+    } else onUnSelect(multiPart.parts.map(part => part.id));
+  };
   const renderScene = ({ route, jumpTo }) => {
     switch (route.key) {
       case 'parts':
         return <PartsRoute toggle={toggle} partsMini={partsMini} selectedIds={selectedIds} />;
       case 'sets':
-        return <SetsRoute />;
+        return <SetsRoute toggle={toggleMultipart} multiParts={multiParts} selectedIds={selectedIds} />;
     }
   };
   const renderTabBar = props => (
@@ -125,6 +165,8 @@ export default function SelectParts({ navigation, route }: RootStackScreenProps<
   );
   return (
     <View style={styles.container}>
+      {((loadingGet && tabIndex === 0) || (loadingMultiparts && tabIndex === 1)) &&
+      <ActivityIndicator style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 10 }} size='large' />}
       <TabView
         renderTabBar={renderTabBar}
         navigationState={{ index: tabIndex, routes: tabs }}

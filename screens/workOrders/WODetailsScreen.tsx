@@ -292,7 +292,7 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
             value && <BasicField key={label} label={label} value={value} />
           ))
           }
-          {touchableFields.map(({ label, value }) => value && <ObjectField label={label} value={value} />)}
+          {touchableFields.map(({ label, value }) => value && <ObjectField key={label} label={label} value={value} />)}
           {workOrder.primaryUser &&
           <ObjectField label={t('primary_worker')} value={getUserNameById(workOrder.primaryUser.id)} />}
           {(workOrder.parentRequest || workOrder.createdBy) && <ObjectField label={workOrder.parentRequest
