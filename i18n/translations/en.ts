@@ -1330,7 +1330,8 @@ const enJSON = {
   complete_work_order: 'Complete Work Order',
   no_parts: 'No parts',
   edit_quantity: 'Edit quantity',
-  remaining_tasks: '{{count}} remaining tasks'
+  remaining_tasks: '{{count}} remaining tasks',
+  complete_tasks_percent: '{{percent}}% completed'
 };
 
 export default enJSON;

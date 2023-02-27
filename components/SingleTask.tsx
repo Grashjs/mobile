@@ -1,11 +1,14 @@
 import { Task, TaskOption, TaskType } from '../models/tasks';
 import { View } from './Themed';
-import { useTheme, Text, TextInput } from 'react-native-paper';
+import { useTheme, Text, TextInput, IconButton, Divider, Button } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 import useAuth from '../hooks/useAuth';
 import debounce from 'lodash.debounce';
 import MultiSelect from 'react-native-multiple-select';
+import { PermissionEntity } from '../models/role';
+import { PlanFeature } from '../models/subscriptionPlan';
+import { TouchableOpacity } from 'react-native';
 
 interface SingleTaskProps {
   task: Task;
@@ -80,9 +83,21 @@ export default function SingleTask({
   };
   return (
     <View style={{ marginBottom: 10 }}>
-      <Text variant='titleMedium'>
-        {task.taskBase.label || `<${t('enter_task_name')}>`}
-      </Text>
+      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Text variant='titleMedium'>
+          {task.taskBase.label || `<${t('enter_task_name')}>`}
+        </Text>
+        <View style={{ display: 'flex', flexDirection: 'row' }}>
+          <IconButton iconColor={theme.colors.primary} icon={'image'} onPress={() => handleSelectImages(task.id)}
+                      disabled={
+                        preview ||
+                        !(hasCreatePermission(PermissionEntity.FILES) &&
+                          hasFeature(PlanFeature.FILE))} />
+          <IconButton iconColor={theme.colors.primary} icon={'note-outline'}
+                      onPress={() => !preview && toggleNotes(task.id)} />
+        </View>
+      </View>
+      <Divider />
       {['SUBTASK', 'INSPECTION', 'MULTIPLE'].includes(
         task.taskBase.taskType
       ) ? (
@@ -121,6 +136,52 @@ export default function SingleTask({
           task.taskBase.user && task.taskBase.user.id !== user.id
         }
       />}
+      {task.taskBase.asset && (
+        <View style={{ marginVertical: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
+        >
+          <Text style={{ fontWeight: 'bold' }}>
+            {t('concerned_asset')}
+          </Text>
+          <TouchableOpacity>
+            <Text style={{ color: theme.colors.primary }}>{task.taskBase.asset.name}</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {task.taskBase.user && (
+        <View style={{ marginVertical: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
+        >
+          <Text style={{ fontWeight: 'bold' }}>
+            {t('assigned_to')}
+          </Text>
+          <TouchableOpacity>
+            <Text
+              style={{ color: theme.colors.primary }}>{`${task.taskBase.user.firstName} ${task.taskBase.user.lastName}`}</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {notes.get(task.id) && (
+        <View>
+          <TextInput mode={'outlined'} multiline value={task.notes} label={t('notes')}
+                     onChangeText={(value) =>
+                       !preview && handleNoteChange(value, task.id)
+                     }
+          />
+          <Button
+            style={{ marginTop: 10 }}
+            mode='contained'
+            loading={savingNotes}
+            disabled={savingNotes}
+            onPress={() => {
+              setSavingNotes(true);
+              handleSaveNotes(task.notes, task.id).finally(() =>
+                setSavingNotes(false)
+              );
+            }}
+          >
+            {t('save')}
+          </Button>
+        </View>
+      )}
     </View>
   );
 }

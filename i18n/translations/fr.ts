@@ -1473,7 +1473,8 @@ const frJSON = {
   complete_work_order: 'Clôturer l\'ordre de travail',
   no_parts: 'Aucune pièce',
   edit_quantity: 'Modifier la quantité',
-  remaining_tasks: '{{count}} tâches restantes'
+  remaining_tasks: '{{count}} tâches restantes',
+  complete_tasks_percent: '{{percent}}% terminées'
 };
 
 export default frJSON;

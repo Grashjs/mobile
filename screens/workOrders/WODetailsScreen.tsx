@@ -23,7 +23,8 @@ import {
   List,
   Provider,
   Text,
-  useTheme
+  useTheme,
+  ProgressBar
 } from 'react-native-paper';
 import MultiSelect from 'react-native-multiple-select';
 import { useTranslation } from 'react-i18next';
@@ -566,8 +567,12 @@ export default function WODetailsScreen({
               <TouchableOpacity
                 onPress={() => navigation.navigate('Tasks', { workOrderId: workOrder.id, tasksProps: tasks })}
               ><Text variant='titleLarge' style={{ fontWeight: 'bold' }}> {
-                t('remaining_tasks', { count: tasks.length })}</Text></TouchableOpacity>
-              <Divider style={{ marginTop: 5 }} />
+                t('remaining_tasks', { count: tasks.filter(task => !task.value).length })}</Text>
+                <Text
+                  variant='bodyMedium'>{t('complete_tasks_percent', { percent: (tasks.filter(task => task.value).length * 100 / tasks.length).toFixed(0) })}</Text>
+                <Divider style={{ marginTop: 5 }} />
+                <ProgressBar progress={tasks.filter(task => task.value).length / tasks.length} />
+              </TouchableOpacity>
             </View>}
           </View>
         </ScrollView>
@@ -586,7 +591,7 @@ export default function WODetailsScreen({
           }
           theme={theme}
           variant={runningTimer ? 'primary' : 'secondary'}
-          color={runningTimer ? 'black' : 'white'}
+          color='white'
           extended={isExtended}
           onPress={() => {
             setControllingTime(true);
@@ -617,7 +622,7 @@ const styles = StyleSheet.create({
   shadowedCard: {
     borderRadius: 10,
     paddingHorizontal: 10,
-    paddingTop: 10,
+    paddingVertical: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,

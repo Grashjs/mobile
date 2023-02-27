@@ -18,7 +18,9 @@ const theme = {
   colors: {
     ...DefaultTheme.colors,
     primary: '#5569ff',
+    secondary: '#959be0',
     tertiary: '#9DA1A1',
+    background: '#ebecf6',
     secondaryContainer: '#7b7d93',
     success: '#57CA22',
     warning: '#FFA319',
@@ -26,7 +28,9 @@ const theme = {
     info: '#33C2FF',
     black: '#223354',
     white: '#ffffff',
-    primaryAlt: '#000C57'
+    primaryAlt: '#000C57',
+    primaryContainer: '#333586',
+    tertiaryContainer: 'black'
   }
 };
 
