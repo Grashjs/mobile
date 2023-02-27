@@ -8,7 +8,7 @@ import debounce from 'lodash.debounce';
 import MultiSelect from 'react-native-multiple-select';
 import { PermissionEntity } from '../models/role';
 import { PlanFeature } from '../models/subscriptionPlan';
-import { TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 interface SingleTaskProps {
   task: Task;
@@ -97,27 +97,28 @@ export default function SingleTask({
                       onPress={() => !preview && toggleNotes(task.id)} />
         </View>
       </View>
-      <Divider />
       {['SUBTASK', 'INSPECTION', 'MULTIPLE'].includes(
         task.taskBase.taskType
       ) ? (
-        <MultiSelect
-          selectedItems={[
-            preview
-              ? getOptions(task.taskBase.taskType, task.taskBase.options)[0]
-                .value
-              : task.value]
-          }
-          selectText={t('select')}
-          searchInputPlaceholderText={t('search')}
-          uniqueKey='value'
-          displayKey='label'
-          searchInputStyle={{ color: '#CCC' }}
-          submitButtonColor={theme.colors.primary}
-          items={getOptions(task.taskBase.taskType, task.taskBase.options)}
-          single
-          onSelectedItemsChange={(items) => !preview && !(task.taskBase.user && task.taskBase.user.id !== user.id) && handleChange(items[0], task.id)
-          } />
+        <View style={styles.shadowedSelect}>
+          <MultiSelect
+            selectedItems={[
+              preview
+                ? getOptions(task.taskBase.taskType, task.taskBase.options)[0]
+                  .value
+                : task.value]
+            }
+            selectText={t('select')}
+            searchInputPlaceholderText={t('search')}
+            uniqueKey='value'
+            displayKey='label'
+            searchInputStyle={{ color: '#CCC' }}
+            submitButtonColor={theme.colors.primary}
+            items={getOptions(task.taskBase.taskType, task.taskBase.options)}
+            single
+            onSelectedItemsChange={(items) => !preview && !(task.taskBase.user && task.taskBase.user.id !== user.id) && handleChange(items[0], task.id)
+            } />
+        </View>
       ) : (task.taskBase.taskType === 'METER' || task.taskBase.taskType === 'NUMBER') ? <TextInput
         defaultValue={task.value.toString()}
         onChangeText={changeHandler}
@@ -185,3 +186,15 @@ export default function SingleTask({
     </View>
   );
 }
+const styles = StyleSheet.create({
+  shadowedSelect: {
+    borderRadius: 7,
+    padding: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    marginHorizontal: 5,
+    marginVertical: 5,
+    elevation: 5
+  }
+});

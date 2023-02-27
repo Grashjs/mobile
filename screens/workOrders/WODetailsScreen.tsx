@@ -376,22 +376,24 @@ export default function WODetailsScreen({
             </View>
           )}
           <View style={{ marginTop: 20 }}>
-            <MultiSelect
-              hideTags
-              items={statuses}
-              uniqueKey='key'
-              onSelectedItemsChange={(items) => {
-                onStatusChange(items[0]);
-              }}
-              selectedItems={[workOrder.status]}
-              selectText={t('select_status')}
-              searchInputPlaceholderText={t('search')}
-              displayKey='value'
-              searchInputStyle={{ color: '#CCC' }}
-              submitButtonColor={theme.colors.primary}
-              single
-              submitButtonText={t('submit')}
-            />
+            <View style={styles.shadowedSelect}>
+              <MultiSelect
+                hideTags
+                items={statuses}
+                uniqueKey='key'
+                onSelectedItemsChange={(items) => {
+                  onStatusChange(items[0]);
+                }}
+                selectedItems={[workOrder.status]}
+                selectText={t('select_status')}
+                searchInputPlaceholderText={t('search')}
+                displayKey='value'
+                searchInputStyle={{ color: '#CCC' }}
+                submitButtonColor={theme.colors.primary}
+                single
+                submitButtonText={t('submit')}
+              />
+            </View>
             {fieldsToRender.map(
               ({ label, value }, index) =>
                 value && <BasicField key={label} label={label} value={value} />
@@ -619,6 +621,15 @@ const styles = StyleSheet.create({
   },
   startButton: { position: 'absolute', bottom: 20, right: '10%' },
   row: { display: 'flex', flexDirection: 'row', alignItems: 'center' },
+  shadowedSelect: {
+    borderRadius: 7,
+    padding: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    marginHorizontal: 5,
+    elevation: 5
+  },
   shadowedCard: {
     borderRadius: 10,
     paddingHorizontal: 10,
@@ -626,7 +637,8 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    marginBottom: 10,
+    marginVertical: 10,
+    marginHorizontal: 5,
     elevation: 5
   },
   fabStyle: {

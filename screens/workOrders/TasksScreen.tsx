@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useDispatch } from '../../store';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { View } from '../../components/Themed';
-import { StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import SingleTask from '../../components/SingleTask';
 import { RootStackScreenProps } from '../../types';
 
@@ -85,7 +85,7 @@ export default function TasksScreen({
   const handleZoomImage = () => {
   };
 
-  return (<View style={styles.container}>
+  return (<ScrollView style={styles.container}>
     {tasks.map((task) => (
       <SingleTask
         key={task.id}
@@ -99,11 +99,12 @@ export default function TasksScreen({
         notes={notes}
       />
     ))}
-  </View>);
+  </ScrollView>);
 
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 1, paddingHorizontal: 20
+    flex: 1, paddingHorizontal: 20,
+    backgroundColor: 'white'
   }
 });
