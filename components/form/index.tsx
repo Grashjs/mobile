@@ -1,12 +1,13 @@
 import { Text } from '../Themed';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { IField, IHash } from '../../models/form';
-import { ObjectSchema } from 'yup';
-import { Button, HelperText, TextInput } from 'react-native-paper';
-import { Formik, FormikProps } from 'formik';
 import * as Yup from 'yup';
+import { ObjectSchema } from 'yup';
+import { Button, HelperText, IconButton, TextInput, useTheme } from 'react-native-paper';
+import { Formik, FormikProps } from 'formik';
 import { useTranslation } from 'react-i18next';
-import { Fragment } from 'react';
+import { RootStackParamList } from '../../types';
+import { PartMiniDTO } from '../../models/part';
 
 interface OwnProps {
   fields: Array<IField>;
@@ -18,18 +19,20 @@ interface OwnProps {
   validation?: ObjectSchema<any>;
   isLoading?: boolean;
   isButtonEnabled?: (values: IHash<any>, ...props: any[]) => boolean;
+  navigation: any;
 }
 
 export default function Form(props: OwnProps) {
   const { t } = useTranslation();
   const shape: IHash<any> = {};
+  const theme = useTheme();
   props.fields.forEach((f) => {
     shape[f.name] = Yup.string();
     if (f.required) {
       shape[f.name] = shape[f.name].required();
     }
   });
-  const handleChange = (formik: FormikProps<IHash<any>>, field, e) => {
+  const handleChange = (formik: FormikProps<IHash<any>>, field, e: { label: string, value: any }[] | string | number) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     props.onChange && props.onChange({ field, e });
     if (props.fields.length == 1) {
@@ -39,8 +42,53 @@ export default function Form(props: OwnProps) {
     return formik.handleChange(field);
   };
   const validationSchema = Yup.object().shape(shape);
+  const renderSelect = (formik, field: IField) => {
+    let values: { label: string; value: number }[] = formik.values[field.name];
+    const excluded = field.excluded;
+    let screenPath: keyof RootStackParamList;
+    let onChange: (values: PartMiniDTO[]) => void;
+    switch (field.type2) {
+      case 'part':
+        screenPath = 'SelectParts';
+        onChange = (values: PartMiniDTO[]) => {
+          handleChange(formik, field.name, values.map(part => ({ label: part.name, value: part.id })));
+        };
+        break;
+      default:
+        return;
+    }
+
+    const navigationOptions: { selected: number[], onChange: (value: PartMiniDTO[]) => void } = {
+      onChange,
+      selected: Array.isArray(values) ? values.map(value => value.value) : []
+    };
+    // @ts-ignore
+    return (<TouchableOpacity onPress={() => props.navigation.navigate(screenPath, navigationOptions)}
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'column'
+                              }}>
+      <View style={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
+        <Text>{field.label}</Text>
+        {!values && <IconButton icon={'plus-circle'} />}
+      </View>
+      {!!values?.length && values.map(value => (
+        <View
+          style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}><Text
+          style={{ color: theme.colors.primary }}>{value.label}</Text>
+          <IconButton onPress={() => {
+            handleChange(formik, field.name, values.filter(item => value.value !== item.value));
+          }} icon={'close-circle'} iconColor={theme.colors.error} />
+        </View>))}
+    </TouchableOpacity>);
+  };
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Formik<IHash<any>>
         validationSchema={props.validation || validationSchema}
         validateOnChange={false}
@@ -62,21 +110,21 @@ export default function Form(props: OwnProps) {
           <View>
             {props.fields.map((field, index) =>
               <View key={index} style={{ marginTop: 10, width: '100%' }}>
-                {field.type === 'text' &&
-                <View style={{ width: '100%', alignItems: 'stretch' }}>
-                  <TextInput style={{ width: '100%' }} mode='outlined'
-                             error={!!formik.errors[field.name] || field.error}
-                             label={field.label}
-                             placeholder={field.placeholder ?? field.label}
-                             onBlur={formik.handleBlur(field.name)}
-                             onChangeText={(text) => handleChange(formik, field.name, text)}
-                             value={formik.values[field.name]}
-                             disabled={formik.isSubmitting}
-                             multiline={field.multiple}
-                  />
-                  <HelperText type='error'
-                              visible={Boolean(formik.errors[field.name])}>{t(formik.errors[field.name]?.toString())}</HelperText>
-                </View>}
+                {field.type === 'text' ?
+                  <View style={{ width: '100%', alignItems: 'stretch' }}>
+                    <TextInput style={{ width: '100%' }} mode='outlined'
+                               error={!!formik.errors[field.name] || field.error}
+                               label={field.label}
+                               placeholder={field.placeholder ?? field.label}
+                               onBlur={formik.handleBlur(field.name)}
+                               onChangeText={(text) => handleChange(formik, field.name, text)}
+                               value={formik.values[field.name]}
+                               disabled={formik.isSubmitting}
+                               multiline={field.multiple}
+                    />
+                    <HelperText type='error'
+                                visible={Boolean(formik.errors[field.name])}>{t(formik.errors[field.name]?.toString())}</HelperText>
+                  </View> : renderSelect(formik, field)}
               </View>
             )}
             < Button
@@ -92,13 +140,13 @@ export default function Form(props: OwnProps) {
             </Button>
           </View>
         )}</Formik>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20
+    paddingHorizontal: 20
   }
 });

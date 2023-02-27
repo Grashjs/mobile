@@ -1474,7 +1474,8 @@ const frJSON = {
   no_parts: 'Aucune pièce',
   edit_quantity: 'Modifier la quantité',
   remaining_tasks: '{{count}} tâches restantes',
-  complete_tasks_percent: '{{percent}}% terminées'
+  complete_tasks_percent: '{{percent}}% terminées',
+  create_work_order: 'Créer un bon de travail'
 };
 
 export default frJSON;

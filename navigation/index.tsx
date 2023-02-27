@@ -18,6 +18,7 @@ import LoginScreen from '../screens/auth/LoginScreen';
 import VerifyScreen from '../screens/auth/VerifyScreen';
 import LoadingScreen from '../screens/auth/LoadingScreen';
 import WODetailsScreen from '../screens/workOrders/WODetailsScreen';
+import CreateWorkOrder from '../screens/workOrders/CreateWorkOrderScreen';
 import { AuthStackParamList, RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import useAuth from '../hooks/useAuth';
@@ -58,6 +59,7 @@ function RootNavigator() {
       <Stack.Screen name='Tasks' component={TasksScreen}
                     options={{ title: t('tasks') }} />
       <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />
+      <Stack.Screen name='AddWorkOrder' component={CreateWorkOrder} options={{ title: t('create_work_order') }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name='Modal' component={ModalScreen} />
         <Stack.Screen name='CompleteWorkOrder' component={CompleteWorkOrderModal}
@@ -165,7 +167,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
             }
           }}
           options={{
-            title: t('add'),
+            title: t('create'),
             tabBarIcon: ({ color }) => <TabBarIcon name='plus-circle' color={theme.colors.primary} />
           }}
         />
