@@ -1,9 +1,21 @@
-import { Image, LogBox, Pressable, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Image,
+  LogBox,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 import { View } from '../../components/Themed';
 import EditScreenInfo from '../../components/EditScreenInfo';
-import { RootStackParamList, RootStackScreenProps, RootTabScreenProps } from '../../types';
 import {
-  ActivityIndicator, AnimatedFAB,
+  RootStackParamList,
+  RootStackScreenProps,
+  RootTabScreenProps
+} from '../../types';
+import {
+  ActivityIndicator,
+  AnimatedFAB,
   Button,
   Card,
   Divider,
@@ -27,7 +39,10 @@ import useAuth from '../../hooks/useAuth';
 import { controlTimer, getLabors } from '../../slices/labor';
 import { useDispatch, useSelector } from '../../store';
 import { durationToHours } from '../../utils/formatters';
-import { editWOPartQuantities, getPartQuantitiesByWorkOrder } from '../../slices/partQuantity';
+import {
+  editWOPartQuantities,
+  getPartQuantitiesByWorkOrder
+} from '../../slices/partQuantity';
 import { getAdditionalCosts } from '../../slices/additionalCost';
 import { getRelations } from '../../slices/relation';
 import { getTasks } from '../../slices/task';
@@ -37,11 +52,13 @@ import { editWorkOrder } from '../../slices/workOrder';
 import { PlanFeature } from '../../models/subscriptionPlan';
 import PartQuantities from '../../components/PartQuantities';
 
-
-export default function WODetailsScreen({ navigation, route }: RootStackScreenProps<'WODetails'>) {
+export default function WODetailsScreen({
+                                          navigation,
+                                          route
+                                        }: RootStackScreenProps<'WODetails'>) {
   const { id } = route.params;
   const { workOrders } = useSelector((state) => state.workOrders);
-  const workOrder = workOrders.content.find(workOrder => workOrder.id === id);
+  const workOrder = workOrders.content.find((workOrder) => workOrder.id === id);
   const { t } = useTranslation();
   const { hasEditPermission, user, companySettings, hasFeature } = useAuth();
   const { showSnackBar } = useContext(CustomSnackBarContext);
@@ -70,17 +87,17 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
   const additionalCosts = costsByWorkOrder[workOrder.id] ?? [];
   const runningTimer = primaryTime?.status === 'RUNNING';
   const [controllingTime, setControllingTime] = useState<boolean>(false);
-  const { getFormattedDate, getUserNameById, getFormattedCurrency } = useContext(CompanySettingsContext);
+  const { getFormattedDate, getUserNameById, getFormattedCurrency } =
+    useContext(CompanySettingsContext);
   const actionSheetRef = useRef<ActionSheetRef>(null);
-  const [completeModal, setOpenCompleteModal] = useState<boolean>(false);
   const [isExtended, setIsExtended] = React.useState(true);
-  const fabStyle = { right: 16 };
-  const statuses = ['OPEN', 'ON_HOLD', 'IN_PROGRESS', 'COMPLETE'].map(status => ({ key: status, value: t(status) }));
-  const fieldsToRender:
-    {
-      label: string;
-      value: string | number;
-    }[] = [
+  const statuses = ['OPEN', 'ON_HOLD', 'IN_PROGRESS', 'COMPLETE'].map(
+    (status) => ({ key: status, value: t(status) })
+  );
+  const fieldsToRender: {
+    label: string;
+    value: string | number;
+  }[] = [
     {
       label: t('description'),
       value: workOrder.description
@@ -98,11 +115,10 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
       value: getFormattedDate(workOrder.createdAt)
     }
   ];
-  const touchableFields:
-    {
-      label: string;
-      value: string | number;
-    }[] = [
+  const touchableFields: {
+    label: string;
+    value: string | number;
+  }[] = [
     {
       label: t('asset'),
       value: workOrder.asset?.name
@@ -118,8 +134,11 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
   ];
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => <Pressable onPress={() => actionSheetRef.current.show()}><IconButton
-        icon='dots-vertical' /></Pressable>
+      headerRight: () => (
+        <Pressable onPress={() => actionSheetRef.current.show()}>
+          <IconButton icon='dots-vertical' />
+        </Pressable>
+      )
     });
     dispatch(getPartQuantitiesByWorkOrder(workOrder.id));
     dispatch(getLabors(workOrder.id));
@@ -195,7 +214,6 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
     ).then(() => navigation.navigate('Root'));
   };
   const onStatusChange = (status: string) => {
-
     if (status === 'COMPLETE') {
       if (canComplete()) {
         if (
@@ -213,7 +231,8 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
             showSnackBar(t(error), 'error');
           } else {
             navigation.navigate('CompleteWorkOrder', {
-              onComplete: onCompleteWO, fieldsConfig: {
+              onComplete: onCompleteWO,
+              fieldsConfig: {
                 feedback: generalPreferences.askFeedBackOnWOClosed,
                 signature: workOrder.requiredSignature
               }
@@ -232,64 +251,129 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
     ).finally(() => setLoading(false));
   };
   const renderActionSheet = () => {
-    const options: { title: string; icon: IconSource; onPress: () => void; color?: string }[] = [{
-      title: t('edit'),
-      icon: 'pencil',
-      onPress: () => null
-    },
+    const options: {
+      title: string;
+      icon: IconSource;
+      onPress: () => void;
+      color?: string;
+    }[] = [
+      {
+        title: t('edit'),
+        icon: 'pencil',
+        onPress: () => null
+      },
       { title: t('to_export'), icon: 'download-outline', onPress: () => null },
       { title: t('archive'), icon: 'archive-outline', onPress: () => null },
-      { title: t('to_delete'), icon: 'delete-outline', onPress: () => null, color: theme.colors.error }
+      {
+        title: t('to_delete'),
+        icon: 'delete-outline',
+        onPress: () => null,
+        color: theme.colors.error
+      }
     ];
 
-    return (<ActionSheet ref={actionSheetRef}>
-      <View style={{ padding: 15 }}>
-        <Divider />
-        <List.Section>
-          {options.map((entity, index) => <List.Item key={index} titleStyle={{ color: entity.color }}
-                                                     title={entity.title}
-                                                     left={() => <List.Icon icon={entity.icon} color={entity.color} />}
-                                                     onPress={entity.onPress} />)}
-        </List.Section>
-      </View>
-    </ActionSheet>);
+    return (
+      <ActionSheet ref={actionSheetRef}>
+        <View style={{ padding: 15 }}>
+          <Divider />
+          <List.Section>
+            {options.map((entity, index) => (
+              <List.Item
+                key={index}
+                titleStyle={{ color: entity.color }}
+                title={entity.title}
+                left={() => (
+                  <List.Icon icon={entity.icon} color={entity.color} />
+                )}
+                onPress={entity.onPress}
+              />
+            ))}
+          </List.Section>
+        </View>
+      </ActionSheet>
+    );
   };
 
-  function ObjectField({ label, value }: { label: string; value: string | number }) {
-    return (<TouchableOpacity style={{ marginTop: 20 }}>
-      < Text variant='titleMedium'
-             style={{ fontWeight: 'bold' }}>{label}</Text>
-      <Text variant='bodyLarge'>{value}</Text>
-    </TouchableOpacity>);
+  function ObjectField({
+                         label,
+                         value
+                       }: {
+    label: string;
+    value: string | number;
+  }) {
+    if (value)
+      return (
+        <TouchableOpacity style={{ marginTop: 20 }}>
+          <Text variant='titleMedium' style={{ fontWeight: 'bold' }}>
+            {label}
+          </Text>
+          <Text variant='bodyLarge'>{value}</Text>
+        </TouchableOpacity>
+      );
+    else return null;
   }
 
-  function BasicField({ label, value }: { label: string; value: string | number }) {
-    return (<View key={label} style={{ marginTop: 20 }}><Divider style={{ marginBottom: 20 }} />
-      <Text variant='titleMedium'
-            style={{ fontWeight: 'bold' }}>{label}</Text>
-      <Text variant='bodyLarge'>{value}</Text>
-    </View>);
+  function BasicField({
+                        label,
+                        value
+                      }: {
+    label: string;
+    value: string | number;
+  }) {
+    if (value)
+      return (
+        <View key={label} style={{ marginTop: 20 }}>
+          <Divider style={{ marginBottom: 20 }} />
+          <Text variant='titleMedium' style={{ fontWeight: 'bold' }}>
+            {label}
+          </Text>
+          <Text variant='bodyLarge'>{value}</Text>
+        </View>
+      );
+    else return null;
   }
 
   return (
     <View style={styles.container}>
       <Provider theme={theme}>
-        {loading &&
-        <ActivityIndicator style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 10 }} size='large' />}
+        {loading && (
+          <ActivityIndicator
+            style={{
+              position: 'absolute',
+              top: '45%',
+              left: '45%',
+              zIndex: 10
+            }}
+            size='large'
+          />
+        )}
         {renderActionSheet()}
-        <ScrollView onScroll={onScroll} style={{
-          paddingHorizontal: 20
-        }}>
+        <ScrollView
+          onScroll={onScroll}
+          style={{
+            paddingHorizontal: 20
+          }}
+        >
           <Text variant='displaySmall'>{workOrder.title}</Text>
           <View style={styles.row}>
-            <Text variant='titleMedium' style={{ marginRight: 10 }}>{`#${workOrder.id}`}</Text>
-            <Tag text={t('priority_label', { priority: t(workOrder.priority) })} color='white'
-                 backgroundColor={getPriorityColor(workOrder.priority, theme)} />
+            <Text
+              variant='titleMedium'
+              style={{ marginRight: 10 }}
+            >{`#${workOrder.id}`}</Text>
+            <Tag
+              text={t('priority_label', { priority: t(workOrder.priority) })}
+              color='white'
+              backgroundColor={getPriorityColor(workOrder.priority, theme)}
+            />
           </View>
-          {workOrder.image && <View style={{ marginTop: 20 }}>
-            <Image style={{ height: 200 }}
-                   source={{ uri: workOrder.image.url }} />
-          </View>}
+          {workOrder.image && (
+            <View style={{ marginTop: 20 }}>
+              <Image
+                style={{ height: 200 }}
+                source={{ uri: workOrder.image.url }}
+              />
+            </View>
+          )}
           <View style={{ marginTop: 20 }}>
             <MultiSelect
               hideTags
@@ -307,115 +391,200 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
               single
               submitButtonText={t('submit')}
             />
-            {fieldsToRender.map(({ label, value }, index) => (
-              value && <BasicField key={label} label={label} value={value} />
-            ))
-            }
-            {touchableFields.map(({ label, value }) => value &&
-              <ObjectField key={label} label={label} value={value} />)}
-            {workOrder.primaryUser &&
-            <ObjectField label={t('primary_worker')} value={getUserNameById(workOrder.primaryUser.id)} />}
-            {(workOrder.parentRequest || workOrder.createdBy) && <ObjectField label={workOrder.parentRequest
-              ? t('approved_by')
-              : t('created_by')} value={getUserNameById(workOrder.createdBy)} />}
-            {workOrder.parentPreventiveMaintenance &&
-            <ObjectField label={t('preventive_maintenance')} value={workOrder.parentPreventiveMaintenance.name} />}
-            {workOrder.status === 'COMPLETE' && <View>
-              {workOrder.completedBy && <ObjectField label={t('completed_by')}
-                                                     value={`${workOrder.completedBy.firstName} ${workOrder.completedBy.lastName}`} />}
-              <BasicField label={t('completed_on')} value={getFormattedDate(workOrder.completedOn)} />
-              {workOrder.feedback && <BasicField label={t('feedback')} value={workOrder.feedback} />}
-              {workOrder.signature && <View style={{ marginTop: 20 }}><Divider style={{ marginBottom: 20 }} />
-                <Text variant='titleMedium'
-                      style={{ fontWeight: 'bold' }}>{t('signature')}</Text>
-                <Image source={{ uri: workOrder.signature.url }} style={{ height: 200 }} />
-              </View>}
-            </View>}
-            {workOrder.parentRequest &&
-            <ObjectField label={t('requested_by')} value={getUserNameById(workOrder.parentRequest.createdBy)} />}
-            {!!workOrder.assignedTo.length && <View style={{ marginTop: 20 }}>
-              < Text variant='titleMedium'
-                     style={{ fontWeight: 'bold' }}>{t('assigned_to')}</Text>
-              {workOrder.assignedTo.map(user => (<TouchableOpacity key={user.id} style={{ marginTop: 5 }}>
-                <Text variant='bodyLarge' style={{ marginTop: 15 }}>{`${user.firstName} ${user.lastName}`}</Text>
-              </TouchableOpacity>))}
-              {workOrder.customers.map(customer => (<TouchableOpacity key={customer.id} style={{ marginTop: 5 }}>
-                <Text variant='bodyLarge' style={{ marginTop: 15 }}>{customer.name}</Text>
-              </TouchableOpacity>))}
-            </View>}
+            {fieldsToRender.map(
+              ({ label, value }, index) =>
+                value && <BasicField key={label} label={label} value={value} />
+            )}
+            {touchableFields.map(
+              ({ label, value }) =>
+                value && <ObjectField key={label} label={label} value={value} />
+            )}
+            {workOrder.primaryUser && (
+              <ObjectField
+                label={t('primary_worker')}
+                value={getUserNameById(workOrder.primaryUser.id)}
+              />
+            )}
+            {(workOrder.parentRequest || workOrder.createdBy) && (
+              <ObjectField
+                label={
+                  workOrder.parentRequest ? t('approved_by') : t('created_by')
+                }
+                value={getUserNameById(workOrder.createdBy)}
+              />
+            )}
+            {workOrder.parentPreventiveMaintenance && (
+              <ObjectField
+                label={t('preventive_maintenance')}
+                value={workOrder.parentPreventiveMaintenance.name}
+              />
+            )}
+            {workOrder.status === 'COMPLETE' && (
+              <View>
+                {workOrder.completedBy && (
+                  <ObjectField
+                    label={t('completed_by')}
+                    value={`${workOrder.completedBy.firstName} ${workOrder.completedBy.lastName}`}
+                  />
+                )}
+                <BasicField
+                  label={t('completed_on')}
+                  value={getFormattedDate(workOrder.completedOn)}
+                />
+                {workOrder.feedback && (
+                  <BasicField
+                    label={t('feedback')}
+                    value={workOrder.feedback}
+                  />
+                )}
+                {workOrder.signature && (
+                  <View style={{ marginTop: 20 }}>
+                    <Divider style={{ marginBottom: 20 }} />
+                    <Text variant='titleMedium' style={{ fontWeight: 'bold' }}>
+                      {t('signature')}
+                    </Text>
+                    <Image
+                      source={{ uri: workOrder.signature.url }}
+                      style={{ height: 200 }}
+                    />
+                  </View>
+                )}
+              </View>
+            )}
+            {workOrder.parentRequest && (
+              <ObjectField
+                label={t('requested_by')}
+                value={getUserNameById(workOrder.parentRequest.createdBy)}
+              />
+            )}
+            {!!workOrder.assignedTo.length && (
+              <View style={{ marginTop: 20 }}>
+                <Text variant='titleMedium' style={{ fontWeight: 'bold' }}>
+                  {t('assigned_to')}
+                </Text>
+                {workOrder.assignedTo.map((user) => (
+                  <TouchableOpacity key={user.id} style={{ marginTop: 5 }}>
+                    <Text
+                      variant='bodyLarge'
+                      style={{ marginTop: 15 }}
+                    >{`${user.firstName} ${user.lastName}`}</Text>
+                  </TouchableOpacity>
+                ))}
+                {workOrder.customers.map((customer) => (
+                  <TouchableOpacity key={customer.id} style={{ marginTop: 5 }}>
+                    <Text variant='bodyLarge' style={{ marginTop: 15 }}>
+                      {customer.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
             <View style={styles.shadowedCard}>
               <Text style={{ marginBottom: 10 }}>{t('parts')}</Text>
-              <PartQuantities partQuantities={partQuantities} isPO={false} rootId={workOrder.id} />
+              <PartQuantities
+                partQuantities={partQuantities}
+                isPO={false}
+                rootId={workOrder.id}
+              />
               <Divider style={{ marginTop: 5 }} />
-              <Button onPress={() => navigation.navigate('SelectParts', {
-                onChange: (selectedParts) => {
-                  dispatch(
-                    editWOPartQuantities(
-                      workOrder.id,
-                      selectedParts.map((part) => part.id)
+              <Button
+                onPress={() =>
+                  navigation.navigate('SelectParts', {
+                    onChange: (selectedParts) => {
+                      dispatch(
+                        editWOPartQuantities(
+                          workOrder.id,
+                          selectedParts.map((part) => part.id)
+                        )
+                      );
+                    },
+                    selected: partQuantities.map(
+                      (partQuantity) => partQuantity.part.id
                     )
-                  );
-                },
-                selected: partQuantities.map(
-                  (partQuantity) => partQuantity.part.id
-                )
-              })}>{t('add_parts')}</Button>
+                  })
+                }
+              >
+                {t('add_parts')}
+              </Button>
             </View>
             <View style={styles.shadowedCard}>
               <Text style={{ marginBottom: 10 }}>{t('additional_costs')}</Text>
-              {!additionalCosts.length ? <Text style={{ fontWeight: 'bold' }}> {
-                t(
-                  'no_additional_cost')}</Text> : <View> {additionalCosts.map(cost => (
-                <View key={cost.id} style={{ display: 'flex', flexDirection: 'column' }}><Text>{cost.description}</Text>
-                  <Text>{getFormattedCurrency(cost.cost)}</Text></View>))}
-                <Text>{t('total')}</Text>
-                <Text>{getFormattedCurrency(
-                  additionalCosts.reduce(
-                    (acc, additionalCost) =>
-                      additionalCost.includeToTotalCost
-                        ? acc + additionalCost.cost
-                        : acc,
-                    0
-                  )
-                )}</Text></View>}
+              {!additionalCosts.length ? (
+                <Text style={{ fontWeight: 'bold' }}>
+                  {t('no_additional_cost')}
+                </Text>
+              ) : (
+                <View>
+                  {additionalCosts.map((cost) => (
+                    <View
+                      key={cost.id}
+                      style={{ display: 'flex', flexDirection: 'column' }}
+                    >
+                      <Text style={{ fontWeight: 'bold' }}
+                            variant='bodyLarge'>{cost.description}</Text>
+                      <Text>{getFormattedCurrency(cost.cost)}</Text>
+                    </View>
+                  ))}
+                  <Text style={{ fontWeight: 'bold' }}
+                        variant='bodyLarge'>{t('total')}</Text>
+                  <Text>
+                    {getFormattedCurrency(
+                      additionalCosts.reduce(
+                        (acc, additionalCost) =>
+                          additionalCost.includeToTotalCost
+                            ? acc + additionalCost.cost
+                            : acc,
+                        0
+                      )
+                    )}
+                  </Text>
+                </View>
+              )}
               <Divider style={{ marginTop: 5 }} />
-              <Button onPress={() => navigation.navigate('SelectParts', {
-                onChange: (selectedParts) => {
-                  dispatch(
-                    editWOPartQuantities(
-                      workOrder.id,
-                      selectedParts.map((part) => part.id)
+              <Button
+                onPress={() =>
+                  navigation.navigate('SelectParts', {
+                    onChange: (selectedParts) => {
+                      dispatch(
+                        editWOPartQuantities(
+                          workOrder.id,
+                          selectedParts.map((part) => part.id)
+                        )
+                      );
+                    },
+                    selected: partQuantities.map(
+                      (partQuantity) => partQuantity.part.id
                     )
-                  );
-                },
-                selected: partQuantities.map(
-                  (partQuantity) => partQuantity.part.id
-                )
-              })}>{t('add_additional_cost')}</Button>
+                  })
+                }
+              >
+                {t('add_additional_cost')}
+              </Button>
             </View>
           </View>
         </ScrollView>
         <AnimatedFAB
-          icon={runningTimer ? 'pause' : 'play'}
-          label={runningTimer
-            ? t('stop_work_order')
-            : t('start_work_order') +
-            ' - ' +
-            durationToHours(primaryTime?.duration)}
-          disabled={controllingTime ||
-          !hasEditPermission(
-            PermissionEntity.WORK_ORDERS,
-            workOrder
-          )}
+          icon={runningTimer ? 'stop' : 'play'}
+          label={
+            runningTimer
+              ? t('stop_work_order')
+              : t('start_work_order') +
+              ' - ' +
+              durationToHours(primaryTime?.duration)
+          }
+          disabled={
+            controllingTime ||
+            !hasEditPermission(PermissionEntity.WORK_ORDERS, workOrder)
+          }
           theme={theme}
           variant={runningTimer ? 'primary' : 'secondary'}
           color={runningTimer ? 'black' : 'white'}
           extended={isExtended}
           onPress={() => {
             setControllingTime(true);
-            dispatch(
-              controlTimer(!runningTimer, workOrder.id)
-            ).finally(() => setControllingTime(false));
+            dispatch(controlTimer(!runningTimer, workOrder.id)).finally(() =>
+              setControllingTime(false)
+            );
           }}
           visible={true}
           animateFrom={'right'}

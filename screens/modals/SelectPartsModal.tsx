@@ -24,7 +24,7 @@ const PartsRoute = ({
 
     <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>{
       partsMini.map(part => (
-        <View style={{
+        <View key={part.id} style={{
           marginTop: 5,
           padding: 10,
           display: 'flex',
@@ -60,7 +60,7 @@ const SetsRoute = ({
 
     <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>{
       multiParts.map(multiPart => (
-        <View style={{
+        <View key={multiPart.id} style={{
           marginTop: 5,
           padding: 10,
           display: 'flex',
