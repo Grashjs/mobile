@@ -30,6 +30,7 @@ import WorkOrdersScreen from '../screens/workOrders/WorkOrdersScreen';
 import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
 import CompleteWorkOrderModal from '../screens/workOrders/CompleteWorkOrderModal';
 import SelectPartsModal from '../screens/modals/SelectPartsModal';
+import TasksScreen from '../screens/workOrders/TasksScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -54,6 +55,8 @@ function RootNavigator() {
     <Stack.Navigator>
       <Stack.Screen name='Root' component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name='WODetails' component={WODetailsScreen} options={{ title: t('wo_details') }} />
+      <Stack.Screen name='Tasks' component={TasksScreen}
+                    options={{ title: t('tasks') }} />
       <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name='Modal' component={ModalScreen} />

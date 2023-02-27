@@ -1472,7 +1472,8 @@ const frJSON = {
   required_cost_on_completion: 'Aucune information de coût fournie dans ce bon de travail',
   complete_work_order: 'Clôturer l\'ordre de travail',
   no_parts: 'Aucune pièce',
-  edit_quantity: 'Modifier la quantité'
+  edit_quantity: 'Modifier la quantité',
+  remaining_tasks: '{{count}} tâches restantes'
 };
 
 export default frJSON;

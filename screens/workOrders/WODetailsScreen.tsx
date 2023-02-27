@@ -561,6 +561,14 @@ export default function WODetailsScreen({
                 {t('add_additional_cost')}
               </Button>
             </View>
+            {!!tasks.length && <View style={styles.shadowedCard}>
+              <Text style={{ marginBottom: 10 }}>{t('tasks')}</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Tasks', { workOrderId: workOrder.id, tasksProps: tasks })}
+              ><Text variant='titleLarge' style={{ fontWeight: 'bold' }}> {
+                t('remaining_tasks', { count: tasks.length })}</Text></TouchableOpacity>
+              <Divider style={{ marginTop: 5 }} />
+            </View>}
           </View>
         </ScrollView>
         <AnimatedFAB
