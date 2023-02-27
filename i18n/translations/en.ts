@@ -1328,7 +1328,8 @@ const enJSON = {
   required_part_on_completion: 'No Part has been used in this Work Order',
   required_cost_on_completion: 'No Cost information provided in this Work Order',
   complete_work_order: 'Complete Work Order',
-  no_parts: 'No parts'
+  no_parts: 'No parts',
+  edit_quantity: 'Edit quantity'
 
 };
 

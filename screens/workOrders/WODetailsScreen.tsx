@@ -17,7 +17,7 @@ import useAuth from '../../hooks/useAuth';
 import { controlTimer, getLabors } from '../../slices/labor';
 import { useDispatch, useSelector } from '../../store';
 import { durationToHours } from '../../utils/formatters';
-import { getPartQuantitiesByWorkOrder } from '../../slices/partQuantity';
+import { editWOPartQuantities, getPartQuantitiesByWorkOrder } from '../../slices/partQuantity';
 import { getAdditionalCosts } from '../../slices/additionalCost';
 import { getRelations } from '../../slices/relation';
 import { getTasks } from '../../slices/task';
@@ -25,6 +25,7 @@ import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { date } from 'yup';
 import { editWorkOrder } from '../../slices/workOrder';
 import { PlanFeature } from '../../models/subscriptionPlan';
+import PartQuantities from '../../components/PartQuantities';
 
 
 export default function WODetailsScreen({ navigation, route }: RootStackScreenProps<'WODetails'>) {
@@ -324,28 +325,20 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
           </View>}
           <View style={styles.shadowed}>
             <Text>{t('parts')}</Text>
-            {partQuantities.length === 0 ? (<Text variant={'titleMedium'}>{t('no_parts')}</Text>) :
-              partQuantities.map(partQuantity => (
-                <View key={partQuantity.id} style={{ ...styles.row, marginVertical: 10 }}>
-                  <Text
-                    style={{
-                      backgroundColor: theme.colors.secondary,
-                      padding: 7,
-                      borderRadius: 5,
-                      fontWeight: 'bold',
-                      color: 'white'
-                    }}>{`${partQuantity.quantity}x`}</Text>
-                  <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 5 }}><Text
-                    style={{ fontWeight: 'bold' }}
-                    variant='bodyLarge'>{partQuantity.part.name}</Text>
-                    <Text>{getFormattedCurrency(partQuantity.part.cost)}</Text>
-                  </View>
-                </View>
-              ))}
+            <PartQuantities partQuantities={partQuantities} isPO={false} rootId={workOrder.id} />
             <Divider style={{ marginTop: 5 }} />
             <Button onPress={() => navigation.navigate('SelectParts', {
-              onChange: (parts) => null,
-              selected: []
+              onChange: (selectedParts) => {
+                dispatch(
+                  editWOPartQuantities(
+                    workOrder.id,
+                    selectedParts.map((part) => part.id)
+                  )
+                );
+              },
+              selected: partQuantities.map(
+                (partQuantity) => partQuantity.part.id
+              )
             })}>{t('add_parts')}</Button>
           </View>
         </View>
@@ -364,7 +357,7 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
                   controlTimer(!runningTimer, workOrder.id)
                 ).finally(() => setControllingTime(false));
               }} style={styles.startButton}
-              mode={runningTimer ? 'contained' : 'outlined'}>{runningTimer
+              mode={'contained'} buttonColor={runningTimer ? theme.colors.error : theme.colors.primary}>{runningTimer
         ? t('stop_work_order')
         : t('start_work_order') +
         ' - ' +

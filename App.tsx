@@ -10,6 +10,8 @@ import { CompanySettingsProvider } from './contexts/CompanySettingsContext';
 import { CustomSnackbarProvider } from './contexts/CustomSnackBarContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { MD3LightTheme as DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+import { useEffect } from 'react';
+import { LogBox } from 'react-native';
 
 const theme = {
   ...DefaultTheme,
@@ -31,6 +33,10 @@ const theme = {
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
+
+  useEffect(() => {
+    LogBox.ignoreLogs(['Warning: Async Storage has been extracted from react-native core']);
+  }, []);
 
   if (!isLoadingComplete) {
     return null;

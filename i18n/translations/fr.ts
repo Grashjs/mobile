@@ -1471,8 +1471,8 @@ const frJSON = {
   required_part_on_completion: 'Aucune pièce n\'a été utilisée dans ce bon de travail',
   required_cost_on_completion: 'Aucune information de coût fournie dans ce bon de travail',
   complete_work_order: 'Clôturer l\'ordre de travail',
-  no_parts: 'Aucune pièce'
-
+  no_parts: 'Aucune pièce',
+  edit_quantity: 'Modifier la quantité'
 };
 
 export default frJSON;

@@ -7,7 +7,7 @@ import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import { useDispatch, useSelector } from '../../store';
 import { PartMiniDTO } from '../../models/part';
 import { getPartsMini } from '../../slices/part';
-import { Checkbox, Text, useTheme } from 'react-native-paper';
+import { Button, Checkbox, Text, useTheme } from 'react-native-paper';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 
 const PartsRoute = ({
@@ -16,21 +16,30 @@ const PartsRoute = ({
                       selectedIds
                     }: { toggle: (id: number) => void; partsMini: PartMiniDTO[]; selectedIds: number[] }) => {
   const { getFormattedCurrency } = useContext(CompanySettingsContext);
+  const { t } = useTranslation();
   return (
 
-    <ScrollView style={{ flex: 1, padding: 20 }}>{
+    <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>{
       partsMini.map(part => (
-        <View style={{ marginTop: 5, padding: 10, display: 'flex', flexDirection: 'row', elevation: 2 }}>
+        <View style={{
+          marginTop: 5,
+          padding: 10,
+          display: 'flex',
+          flexDirection: 'row',
+          elevation: 2,
+          justifyContent: 'space-between'
+        }}>
           <Checkbox
             status={selectedIds.includes(part.id) ? 'checked' : 'unchecked'}
             onPress={() => {
               toggle(part.id);
             }}
           />
-          <View style={{ display: 'flex', flexDirection: 'column' }}>
+          <View style={{ display: 'flex', flexDirection: 'column', width: '50%' }}>
             <Text variant={'labelMedium'}>{part.name}</Text>
             <Text variant={'bodyMedium'}>{getFormattedCurrency(part.cost)}</Text>
           </View>
+          <Button style={{ width: '40%' }} mode='outlined' buttonColor={'white'}>{t('details')}</Button>
         </View>))
     }</ScrollView>
   );
