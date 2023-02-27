@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
 import debounce from 'lodash.debounce';
 import { useDispatch, useSelector } from '../../store';
@@ -32,6 +32,7 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
   const { workOrders, loadingGet, currentPageNum, lastPage } = useSelector(
     (state) => state.workOrders
   );
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const theme = useTheme();
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
@@ -73,6 +74,9 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
       dispatch(getWorkOrders(criteria));
   }, [criteria]);
 
+  const onRefresh = () => {
+    setCriteria(initialCriteria);
+  };
   const getStatusColor = (status): string => {
     switch (status) {
       case 'OPEN':
@@ -103,8 +107,6 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
 
   return (
     <View style={styles.container}>
-      {loadingGet &&
-      <ActivityIndicator style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 10 }} size='large' />}
       <Searchbar
         placeholder={t('search')}
         onChangeText={onQueryChange}
@@ -117,6 +119,8 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
                         dispatch(getMoreWorkOrders(criteria, currentPageNum + 1));
                     }
                   }}
+                  refreshControl={
+                    <RefreshControl refreshing={loadingGet} onRefresh={onRefresh} />}
                   scrollEventThrottle={400}>
         {workOrders.content.map(workOrder => (
           <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={workOrder.id}

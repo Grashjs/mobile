@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { View } from '../../components/Themed';
 import { RootStackScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
@@ -71,7 +71,10 @@ export default function SelectCustomersModal({ navigation, route }: RootStackScr
     <View style={styles.container}>
       {loadingGet &&
       <ActivityIndicator style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 10 }} size='large' />}
-      <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>{
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={loadingGet} onRefresh={() => dispatch(getCustomersMini())} />}
+        style={{ flex: 1, paddingHorizontal: 20 }}>{
         customersMini.map(customer => (
           <View key={customer.id} style={{
             marginTop: 5,
