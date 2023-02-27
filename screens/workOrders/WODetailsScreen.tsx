@@ -343,7 +343,10 @@ export default function WODetailsScreen({ navigation, route }: RootStackScreenPr
                 </View>
               ))}
             <Divider style={{ marginTop: 5 }} />
-            <Button>{t('add_parts')}</Button>
+            <Button onPress={() => navigation.navigate('SelectParts', {
+              onChange: (parts) => null,
+              selected: []
+            })}>{t('add_parts')}</Button>
           </View>
         </View>
       </ScrollView>

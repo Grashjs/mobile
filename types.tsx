@@ -7,6 +7,7 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import WorkOrder from './models/workOrder';
+import { PartMiniDTO } from './models/part';
 
 declare global {
   namespace ReactNavigation {
@@ -26,6 +27,7 @@ export type RootStackParamList = {
   AddUser: undefined;
   WODetails: { id: number };
   Modal: undefined;
+  SelectParts: { onChange: (parts: PartMiniDTO[]) => void; selected: number[] },
   CompleteWorkOrder: {
     onComplete: (signatureId: number | undefined,
                  feedback: string | undefined) => Promise<any>; fieldsConfig: { feedback: boolean; signature: boolean };
