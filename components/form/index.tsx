@@ -15,6 +15,7 @@ import { TeamMiniDTO } from '../../models/team';
 import { AssetMiniDTO } from '../../models/asset';
 import Category from '../../models/category';
 import { LocationMiniDTO } from '../../models/location';
+import FileUpload from '../FileUpload';
 
 interface OwnProps {
   fields: Array<IField>;
@@ -239,7 +240,15 @@ export default function Form(props: OwnProps) {
                     />
                     {Boolean(formik.errors[field.name]) && <HelperText type='error'
                     >{t(formik.errors[field.name]?.toString())}</HelperText>}
-                  </View> : renderSelect(formik, field)}
+                  </View> : field.type === 'file' ? <FileUpload
+                    multiple={field.multiple}
+                    title={field.label}
+                    type={field.fileType || 'file'}
+                    description={t('upload')}
+                    onChange={(files) => {
+                      formik.setFieldValue(field.name, files);
+                    }}
+                  /> : renderSelect(formik, field)}
               </View>
             )}
             < Button

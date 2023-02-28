@@ -5,6 +5,7 @@ import File, { FileType } from '../models/file';
 import api, { authHeader } from '../utils/api';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
 import { AsyncStorage } from 'react-native';
+import { readFileAsync } from '../utils/overall';
 
 const basePath = 'files';
 
@@ -17,7 +18,7 @@ interface FileState {
 const initialState: FileState = {
   files: getInitialPage<File>(),
   singleFile: null,
-  loadingGet: false,
+  loadingGet: false
 };
 
 const slice = createSlice({
@@ -35,7 +36,7 @@ const slice = createSlice({
     editFile(state: FileState, action: PayloadAction<{ file: File }>) {
       const { file } = action.payload;
       const inContent = state.files.content.some(
-        (file1) => file1.id === file.id,
+        (file1) => file1.id === file.id
       );
       if (inContent) {
         state.files.content = state.files.content.map((file1) => {
@@ -63,15 +64,15 @@ const slice = createSlice({
     },
     setLoadingGet(
       state: FileState,
-      action: PayloadAction<{ loading: boolean }>,
+      action: PayloadAction<{ loading: boolean }>
     ) {
       const { loading } = action.payload;
       state.loadingGet = loading;
     },
     clearSingleFile(state: FileState, action: PayloadAction<{}>) {
       state.singleFile = null;
-    },
-  },
+    }
+  }
 });
 
 export const reducer = slice.reducer;
@@ -111,18 +112,22 @@ export const addFiles =
       const companyId = await AsyncStorage.getItem('companyId');
       const headers = await authHeader(false);
       delete headers['Content-Type'];
-      files.forEach((file) => formData.append('files', file));
+      files.forEach((file: Blob) => {
+        console.log('bhhuy', file);
+        formData.append('files', file);
+      });
       formData.append('folder', `company ${companyId}`);
       formData.append('type', fileType);
+      console.log('formData', formData);
       const baseRoute = `${basePath}/upload`;
       const filesResponse = await api.post<File[]>(
         taskId ? `${baseRoute}?taskId=${taskId}` : baseRoute,
         formData,
         {
-          headers,
+          headers
         },
         true,
-        true,
+        true
       );
       dispatch(slice.actions.addFiles({ files: filesResponse }));
       return filesResponse.map((file) => file.id);
@@ -131,7 +136,7 @@ export const deleteFile =
   (id: number): AppThunk =>
     async (dispatch) => {
       const fileResponse = await api.deletes<{ success: boolean }>(
-        `${basePath}/${id}`,
+        `${basePath}/${id}`
       );
       const { success } = fileResponse;
       if (success) {

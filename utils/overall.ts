@@ -1,10 +1,6 @@
 import { FileType } from '../models/file';
 import Meter from '../models/meter';
-import {
-  FilterField,
-  SearchCriteria,
-  SearchOperator
-} from '../models/page';
+import { FilterField, SearchCriteria, SearchOperator } from '../models/page';
 import React from 'react';
 import { sameDay } from './dates';
 import { Priority } from '../models/workOrder';
@@ -118,3 +114,18 @@ export const getPriorityColor = (priority: Priority, theme: MD3Theme): string =>
       return theme.colors.error;
   }
 };
+
+export function readFileAsync(file: Blob) {
+  return new Promise((resolve, reject) => {
+    let reader = new FileReader();
+
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+
+    reader.onerror = reject;
+
+    reader.readAsArrayBuffer(file);
+  });
+}
+

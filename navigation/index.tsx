@@ -115,74 +115,72 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
   const theme = useTheme();
   const { t } = useTranslation();
   return (
-    <View style={{ height: '100%' }}>
-      <BottomTab.Navigator
-        initialRouteName='Home'
-        screenOptions={{
-          tabBarActiveTintColor: theme.colors.primary
-        }}>
-        <BottomTab.Screen
-          name='Home'
-          component={HomeScreen}
-          options={({ navigation }: RootTabScreenProps<'Home'>) => ({
-            title: t('home'),
-            tabBarIcon: ({ color }) => <TabBarIcon name='home-outline' color={color} />,
-            headerRight: () => (
-              <Pressable
-                onPress={() => navigation.navigate('Modal')}
-                style={({ pressed }) => ({
-                  opacity: pressed ? 0.5 : 1
-                })}>
-                <FontAwesome
-                  name='info-circle'
-                  size={25}
-                  color={theme.colors.secondary}
-                  style={{ marginRight: 15 }}
-                />
-              </Pressable>
-            )
-          })}
-        />
-        <BottomTab.Screen
-          name='WorkOrders'
-          component={WorkOrdersScreen}
-          options={{
-            title: t('work_orders'),
-            tabBarIcon: ({ color }) => <TabBarIcon name='clipboard-text' color={color} />
-          }}
-        />
-        <BottomTab.Screen
-          name='AddEntities'
-          component={View}
-          listeners={{
-            tabPress: e => {
-              e.preventDefault();
-              SheetManager.show('create-entities-sheet', { payload: { navigation } });
-            }
-          }}
-          options={{
-            title: t('create'),
-            tabBarIcon: ({ color }) => <TabBarIcon name='plus-circle' color={theme.colors.primary} />
-          }}
-        />
-        <BottomTab.Screen
-          name='Requests'
-          component={RequestsScreen}
-          options={{
-            title: t('requests'),
-            tabBarIcon: ({ color }) => <TabBarIcon name='inbox-arrow-down-outline' color={color} />
-          }}
-        />
-        <BottomTab.Screen
-          name='MoreEntities'
-          component={MoreEntitiesScreen}
-          options={{
-            title: t('more'),
-            tabBarIcon: ({ color }) => <TabBarIcon name='menu' color={color} />
-          }}
-        />
-      </BottomTab.Navigator>
-    </View>
+    <BottomTab.Navigator
+      initialRouteName='Home'
+      screenOptions={{
+        tabBarActiveTintColor: theme.colors.primary
+      }}>
+      <BottomTab.Screen
+        name='Home'
+        component={HomeScreen}
+        options={({ navigation }: RootTabScreenProps<'Home'>) => ({
+          title: t('home'),
+          tabBarIcon: ({ color }) => <TabBarIcon name='home-outline' color={color} />,
+          headerRight: () => (
+            <Pressable
+              onPress={() => navigation.navigate('Modal')}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.5 : 1
+              })}>
+              <FontAwesome
+                name='info-circle'
+                size={25}
+                color={theme.colors.secondary}
+                style={{ marginRight: 15 }}
+              />
+            </Pressable>
+          )
+        })}
+      />
+      <BottomTab.Screen
+        name='WorkOrders'
+        component={WorkOrdersScreen}
+        options={{
+          title: t('work_orders'),
+          tabBarIcon: ({ color }) => <TabBarIcon name='clipboard-text' color={color} />
+        }}
+      />
+      <BottomTab.Screen
+        name='AddEntities'
+        component={View}
+        listeners={{
+          tabPress: e => {
+            e.preventDefault();
+            SheetManager.show('create-entities-sheet', { payload: { navigation } });
+          }
+        }}
+        options={{
+          title: t('create'),
+          tabBarIcon: ({ color }) => <TabBarIcon name='plus-circle' color={theme.colors.primary} />
+        }}
+      />
+      <BottomTab.Screen
+        name='Requests'
+        component={RequestsScreen}
+        options={{
+          title: t('requests'),
+          tabBarIcon: ({ color }) => <TabBarIcon name='inbox-arrow-down-outline' color={color} />
+        }}
+      />
+      <BottomTab.Screen
+        name='MoreEntities'
+        component={MoreEntitiesScreen}
+        options={{
+          title: t('more'),
+          tabBarIcon: ({ color }) => <TabBarIcon name='menu' color={color} />
+        }}
+      />
+    </BottomTab.Navigator>
   );
 }
 
