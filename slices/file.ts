@@ -113,12 +113,10 @@ export const addFiles =
       const headers = await authHeader(false);
       delete headers['Content-Type'];
       files.forEach((file: Blob) => {
-        console.log('bhhuy', file);
         formData.append('files', file);
       });
       formData.append('folder', `company ${companyId}`);
       formData.append('type', fileType);
-      console.log('formData', formData);
       const baseRoute = `${basePath}/upload`;
       const filesResponse = await api.post<File[]>(
         taskId ? `${baseRoute}?taskId=${taskId}` : baseRoute,

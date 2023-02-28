@@ -16,6 +16,8 @@ import { AssetMiniDTO } from '../../models/asset';
 import Category from '../../models/category';
 import { LocationMiniDTO } from '../../models/location';
 import FileUpload from '../FileUpload';
+import { useState } from 'react';
+import CustomDateTimePicker from '../CustomDateTimePicker';
 
 interface OwnProps {
   fields: Array<IField>;
@@ -40,7 +42,7 @@ export default function Form(props: OwnProps) {
       shape[f.name] = shape[f.name].required();
     }
   });
-  const handleChange = (formik: FormikProps<IHash<any>>, field, e: { label: string, value: any }[] | string | number | { label: string, value: any }) => {
+  const handleChange = (formik: FormikProps<IHash<any>>, field, e: { label: string, value: any }[] | string | number | Date | { label: string, value: any }) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     props.onChange && props.onChange({ field, e });
     if (props.fields.length == 1) {
@@ -248,7 +250,10 @@ export default function Form(props: OwnProps) {
                     onChange={(files) => {
                       formik.setFieldValue(field.name, files);
                     }}
-                  /> : renderSelect(formik, field)}
+                  /> : field.type === 'date' ?
+                    <CustomDateTimePicker label={field.label} onChange={date => handleChange(formik, field.name, date)}
+                                          value={formik.values[field.name]} />
+                    : renderSelect(formik, field)}
               </View>
             )}
             < Button

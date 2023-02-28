@@ -1,7 +1,9 @@
 import { View } from './Themed';
 import * as ImagePicker from 'expo-image-picker';
+import * as DocumentPicker from 'expo-document-picker';
 import { useState } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { DocumentResult } from 'expo-document-picker';
 
 interface OwnProps {
   title: string;
@@ -13,6 +15,7 @@ interface OwnProps {
 
 export default function FileUpload({ title, type, multiple, onChange }: OwnProps) {
   const [images, setImages] = useState([]);
+  const [file, setFile] = useState<DocumentResult>();
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -33,13 +36,28 @@ export default function FileUpload({ title, type, multiple, onChange }: OwnProps
       onChange(newImages);
     }
   };
+  const pickFile = async () => {
+    let result = await DocumentPicker.getDocumentAsync({});
+    if (result.type !== 'cancel') {
+      setFile(result);
+      const response = await fetch(result.uri);
+      onChange([await response.blob()]);
+    }
+    ;
+  };
+  const onPress = () => {
+    if (type === 'image') pickImage();
+    else pickFile();
+  };
   return (
     <View style={{ display: 'flex', flexDirection: 'column' }}>
-      <TouchableOpacity onPress={pickImage}>
+      <TouchableOpacity onPress={onPress}>
         <Text>{title}</Text>
       </TouchableOpacity>
       <ScrollView>
-        {!!images.length && images.map(image => <Image source={{ uri: image }} style={{ height: 200 }} />)}
+        {type === 'image' && !!images.length && images.map(image => <Image source={{ uri: image }}
+                                                                           style={{ height: 200 }} />)}
+        {type === 'file' && file && file?.type !== 'cancel' && <Text>{file.name}</Text>}
       </ScrollView></View>
   );
 }
