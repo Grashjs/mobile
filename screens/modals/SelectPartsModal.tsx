@@ -28,6 +28,7 @@ const PartsRoute = ({
           marginTop: 5,
           padding: 10,
           display: 'flex',
+          borderRadius: 5,
           flexDirection: 'row',
           elevation: 2,
           justifyContent: 'space-between'
@@ -164,7 +165,7 @@ export default function SelectParts({ navigation, route }: RootStackScreenProps<
     />
   );
   return (
-    <View style={styles.container}>
+    <View style={{ ...styles.container, backgroundColor: theme.colors.background }}>
       {((loadingGet && tabIndex === 0) || (loadingMultiparts && tabIndex === 1)) &&
       <ActivityIndicator style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 10 }} size='large' />}
       <TabView

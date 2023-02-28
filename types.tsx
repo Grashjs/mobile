@@ -10,6 +10,7 @@ import WorkOrder from './models/workOrder';
 import { PartMiniDTO } from './models/part';
 import { Task } from './models/tasks';
 import { Customer, CustomerMiniDTO } from './models/customer';
+import { VendorMiniDTO } from './models/vendor';
 
 declare global {
   namespace ReactNavigation {
@@ -35,6 +36,7 @@ export type RootStackParamList = {
   };
   SelectParts: { onChange: (parts: PartMiniDTO[]) => void; selected: number[] },
   SelectCustomers: { onChange: (customers: CustomerMiniDTO[]) => void; selected: number[]; multiple: boolean },
+  SelectVendors: { onChange: (customers: VendorMiniDTO[]) => void; selected: number[]; multiple: boolean },
   CompleteWorkOrder: {
     onComplete: (signatureId: number | undefined,
                  feedback: string | undefined) => Promise<any>; fieldsConfig: { feedback: boolean; signature: boolean };

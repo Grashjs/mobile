@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types';
 import { PartMiniDTO } from '../../models/part';
 import { CustomerMiniDTO } from '../../models/customer';
+import { VendorMiniDTO } from '../../models/vendor';
 
 interface OwnProps {
   fields: Array<IField>;
@@ -48,7 +49,7 @@ export default function Form(props: OwnProps) {
     let values: { label: string; value: number }[] = formik.values[field.name];
     const excluded = field.excluded;
     let screenPath: keyof RootStackParamList;
-    let onChange: (values: (PartMiniDTO | CustomerMiniDTO)[]) => void;
+    let onChange: (values: (PartMiniDTO | CustomerMiniDTO | VendorMiniDTO)[]) => void;
     switch (field.type2) {
       case 'part':
         screenPath = 'SelectParts';
@@ -59,7 +60,13 @@ export default function Form(props: OwnProps) {
       case 'customer':
         screenPath = 'SelectCustomers';
         onChange = (values: CustomerMiniDTO[]) => {
-          handleChange(formik, field.name, values.map(part => ({ label: part.name, value: part.id })));
+          handleChange(formik, field.name, values.map(customer => ({ label: customer.name, value: customer.id })));
+        };
+        break;
+      case 'vendor':
+        screenPath = 'SelectVendors';
+        onChange = (values: VendorMiniDTO[]) => {
+          handleChange(formik, field.name, values.map(vendor => ({ label: vendor.companyName, value: vendor.id })));
         };
         break;
       default:

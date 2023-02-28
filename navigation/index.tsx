@@ -33,6 +33,7 @@ import CompleteWorkOrderModal from '../screens/workOrders/CompleteWorkOrderModal
 import SelectPartsModal from '../screens/modals/SelectPartsModal';
 import TasksScreen from '../screens/workOrders/TasksScreen';
 import SelectCustomersModal from '../screens/modals/SelectCustomersModal';
+import SelectVendorsModal from '../screens/modals/SelectCustomersModal';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -69,6 +70,8 @@ function RootNavigator() {
                       options={{ title: t('select_parts') }} />
         <Stack.Screen name='SelectCustomers' component={SelectCustomersModal}
                       options={{ title: t('select_customers') }} />
+        <Stack.Screen name='SelectVendors' component={SelectVendorsModal}
+                      options={{ title: t('select_vendors') }} />
       </Stack.Group>
     </Stack.Navigator>
   );

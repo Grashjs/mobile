@@ -106,7 +106,7 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
   };
 
   return (
-    <View style={styles.container}>
+    <View style={{ ...styles.container, backgroundColor: theme.colors.background }}>
       <Searchbar
         placeholder={t('search')}
         onChangeText={onQueryChange}

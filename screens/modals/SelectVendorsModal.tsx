@@ -5,29 +5,29 @@ import { useTranslation } from 'react-i18next';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from '../../store';
-import { CustomerMiniDTO } from '../../models/customer';
-import { getCustomersMini } from '../../slices/customer';
+import { VendorMiniDTO } from '../../models/vendor';
+import { getVendorsMini } from '../../slices/vendor';
 import { Checkbox, Divider, Text, useTheme } from 'react-native-paper';
 
-export default function SelectCustomersModal({ navigation, route }: RootStackScreenProps<'SelectCustomers'>) {
+export default function SelectVendorsModal({ navigation, route }: RootStackScreenProps<'SelectVendors'>) {
   const { onChange, selected, multiple } = route.params;
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
   const dispatch = useDispatch();
-  const { customersMini, loadingGet } = useSelector((state) => state.customers);
-  const [selectedCustomers, setSelectedCustomers] = useState<CustomerMiniDTO[]>([]);
+  const { vendorsMini, loadingGet } = useSelector((state) => state.vendors);
+  const [selectedVendors, setSelectedVendors] = useState<VendorMiniDTO[]>([]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   useEffect(() => {
-    if (customersMini.length) {
-      const newSelectedCustomers = selectedIds
+    if (vendorsMini.length) {
+      const newSelectedVendors = selectedIds
         .map((id) => {
-          return customersMini.find((customer) => customer.id == id);
+          return vendorsMini.find((vendor) => vendor.id == id);
         })
-        .filter((customer) => !!customer);
-      setSelectedCustomers(newSelectedCustomers);
+        .filter((vendor) => !!vendor);
+      setSelectedVendors(newSelectedVendors);
     }
-  }, [selectedIds, customersMini]);
+  }, [selectedIds, vendorsMini]);
 
   useEffect(() => {
     if (!selectedIds.length) setSelectedIds(selected);
@@ -35,23 +35,23 @@ export default function SelectCustomersModal({ navigation, route }: RootStackScr
 
   useEffect(() => {
     if (multiple) navigation.setOptions({
-      headerRight: () => <Pressable disabled={!selectedCustomers.length} onPress={() => {
-        onChange(selectedCustomers);
+      headerRight: () => <Pressable disabled={!selectedVendors.length} onPress={() => {
+        onChange(selectedVendors);
         navigation.goBack();
       }}><Text
         variant='titleMedium'>{t('add')}
       </Text></Pressable>
     });
-  }, [selectedCustomers]);
+  }, [selectedVendors]);
 
   useEffect(() => {
-    dispatch(getCustomersMini());
+    dispatch(getVendorsMini());
   }, []);
 
   const onSelect = (ids: number[]) => {
     setSelectedIds(Array.from(new Set([...selectedIds, ...ids])));
     if (!multiple) {
-      onChange([customersMini.find(customer => customer.id === ids[0])]);
+      onChange([vendorsMini.find(vendor => vendor.id === ids[0])]);
       navigation.goBack();
     }
   };
@@ -71,12 +71,12 @@ export default function SelectCustomersModal({ navigation, route }: RootStackScr
     <View style={styles.container}>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={loadingGet} onRefresh={() => dispatch(getCustomersMini())} />}
+          <RefreshControl refreshing={loadingGet} onRefresh={() => dispatch(getVendorsMini())} />}
         style={{ flex: 1, paddingHorizontal: 20, backgroundColor: theme.colors.background }}>{
-        customersMini.map(customer => (
+        vendorsMini.map(vendor => (
           <TouchableOpacity onPress={() => {
-            toggle(customer.id);
-          }} key={customer.id} style={{
+            toggle(vendor.id);
+          }} key={vendor.id} style={{
             marginTop: 5,
             borderRadius: 5,
             padding: 10,
@@ -87,13 +87,13 @@ export default function SelectCustomersModal({ navigation, route }: RootStackScr
             alignItems: 'center'
           }}>
             {multiple && <Checkbox
-              status={selectedIds.includes(customer.id) ? 'checked' : 'unchecked'}
+              status={selectedIds.includes(vendor.id) ? 'checked' : 'unchecked'}
               onPress={() => {
-                toggle(customer.id);
+                toggle(vendor.id);
               }}
             />}
             <View style={{ display: 'flex', flexDirection: 'column' }}>
-              <Text variant={'titleMedium'}>{customer.name}</Text>
+              <Text variant={'titleMedium'}>{vendor.companyName}</Text>
             </View>
             <Divider />
           </TouchableOpacity>))
