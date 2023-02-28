@@ -1,5 +1,11 @@
 import { ReactNode } from 'react';
 
+export type CategoryType = | 'purchase-order-categories'
+  | 'cost-categories'
+  | 'time-categories'
+  | 'work-order-categories'
+  | 'asset-categories'
+
 export interface IField {
   label: string;
   type:
@@ -31,11 +37,7 @@ export interface IField {
     | 'role'
     | 'currency';
   category?:
-    | 'purchase-order-categories'
-    | 'cost-categories'
-    | 'time-categories'
-    | 'work-order-categories'
-    | 'asset-categories';
+    CategoryType;
   name?: string;
   placeholder?: string;
   fileType?: 'file' | 'image';

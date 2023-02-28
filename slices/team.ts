@@ -6,6 +6,7 @@ import api from '../utils/api';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
 
 const basePath = 'teams';
+
 interface TeamState {
   teams: Page<Team>;
   singleTeam: Team;
@@ -81,51 +82,53 @@ export const reducer = slice.reducer;
 
 export const getTeams =
   (criteria: SearchCriteria): AppThunk =>
-  async (dispatch) => {
-    try {
-      dispatch(slice.actions.setLoadingGet({ loading: true }));
-      const teams = await api.post<Page<Team>>(`${basePath}/search`, criteria);
-      dispatch(slice.actions.getTeams({ teams }));
-    } finally {
-      dispatch(slice.actions.setLoadingGet({ loading: false }));
-    }
-  };
+    async (dispatch) => {
+      try {
+        dispatch(slice.actions.setLoadingGet({ loading: true }));
+        const teams = await api.post<Page<Team>>(`${basePath}/search`, criteria);
+        dispatch(slice.actions.getTeams({ teams }));
+      } finally {
+        dispatch(slice.actions.setLoadingGet({ loading: false }));
+      }
+    };
 
 export const getSingleTeam =
   (id: number): AppThunk =>
-  async (dispatch) => {
-    dispatch(slice.actions.setLoadingGet({ loading: true }));
-    const team = await api.get<Team>(`${basePath}/${id}`);
-    dispatch(slice.actions.getSingleTeam({ team }));
-    dispatch(slice.actions.setLoadingGet({ loading: false }));
-  };
+    async (dispatch) => {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
+      const team = await api.get<Team>(`${basePath}/${id}`);
+      dispatch(slice.actions.getSingleTeam({ team }));
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    };
 
 export const editTeam =
   (id: number, team): AppThunk =>
-  async (dispatch) => {
-    const teamResponse = await api.patch<Team>(`${basePath}/${id}`, team);
-    dispatch(slice.actions.editTeam({ team: teamResponse }));
-  };
+    async (dispatch) => {
+      const teamResponse = await api.patch<Team>(`${basePath}/${id}`, team);
+      dispatch(slice.actions.editTeam({ team: teamResponse }));
+    };
 
 export const getTeamsMini = (): AppThunk => async (dispatch) => {
+  dispatch(slice.actions.setLoadingGet({ loading: true }));
   const teams = await api.get<TeamMiniDTO[]>('teams/mini');
   dispatch(slice.actions.getTeamsMini({ teams }));
+  dispatch(slice.actions.setLoadingGet({ loading: false }));
 };
 export const addTeam =
   (team): AppThunk =>
-  async (dispatch) => {
-    const teamResponse = await api.post<Team>('teams', team);
-    dispatch(slice.actions.addTeam({ team: teamResponse }));
-  };
+    async (dispatch) => {
+      const teamResponse = await api.post<Team>('teams', team);
+      dispatch(slice.actions.addTeam({ team: teamResponse }));
+    };
 export const deleteTeam =
   (id: number): AppThunk =>
-  async (dispatch) => {
-    const teamResponse = await api.deletes<{ success: boolean }>(`teams/${id}`);
-    const { success } = teamResponse;
-    if (success) {
-      dispatch(slice.actions.deleteTeam({ id }));
-    }
-  };
+    async (dispatch) => {
+      const teamResponse = await api.deletes<{ success: boolean }>(`teams/${id}`);
+      const { success } = teamResponse;
+      if (success) {
+        dispatch(slice.actions.deleteTeam({ id }));
+      }
+    };
 export const clearSingleTeam = (): AppThunk => async (dispatch) => {
   dispatch(slice.actions.clearSingleTeam({}));
 };

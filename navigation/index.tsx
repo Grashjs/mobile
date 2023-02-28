@@ -34,6 +34,11 @@ import SelectPartsModal from '../screens/modals/SelectPartsModal';
 import TasksScreen from '../screens/workOrders/TasksScreen';
 import SelectCustomersModal from '../screens/modals/SelectCustomersModal';
 import SelectVendorsModal from '../screens/modals/SelectCustomersModal';
+import SelectUsersModal from '../screens/modals/SelectUsersModal';
+import SelectTeamsModal from '../screens/modals/SelectTeamsModal';
+import SelectLocationsModal from '../screens/modals/SelectLocationsModal';
+import SelectAssetsModal from '../screens/modals/SelectAssetsModal';
+import SelectCategoriesModal from '../screens/modals/SelectCategoryModal';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -72,6 +77,16 @@ function RootNavigator() {
                       options={{ title: t('select_customers') }} />
         <Stack.Screen name='SelectVendors' component={SelectVendorsModal}
                       options={{ title: t('select_vendors') }} />
+        <Stack.Screen name='SelectUsers' component={SelectUsersModal}
+                      options={{ title: t('select_users') }} />
+        <Stack.Screen name='SelectTeams' component={SelectTeamsModal}
+                      options={{ title: t('select_teams') }} />
+        <Stack.Screen name='SelectLocations' component={SelectLocationsModal}
+                      options={{ title: t('select_locations') }} />
+        <Stack.Screen name='SelectAssets' component={SelectAssetsModal}
+                      options={{ title: t('select_assets') }} />
+        <Stack.Screen name='SelectCategories' component={SelectCategoriesModal}
+                      options={{ title: t('select_categories') }} />
       </Stack.Group>
     </Stack.Navigator>
   );

@@ -11,6 +11,11 @@ import { PartMiniDTO } from './models/part';
 import { Task } from './models/tasks';
 import { Customer, CustomerMiniDTO } from './models/customer';
 import { VendorMiniDTO } from './models/vendor';
+import { UserMiniDTO } from './models/user';
+import { TeamMiniDTO } from './models/team';
+import { LocationMiniDTO } from './models/location';
+import { AssetMiniDTO } from './models/asset';
+import Category from './models/category';
 
 declare global {
   namespace ReactNavigation {
@@ -36,7 +41,13 @@ export type RootStackParamList = {
   };
   SelectParts: { onChange: (parts: PartMiniDTO[]) => void; selected: number[] },
   SelectCustomers: { onChange: (customers: CustomerMiniDTO[]) => void; selected: number[]; multiple: boolean },
-  SelectVendors: { onChange: (customers: VendorMiniDTO[]) => void; selected: number[]; multiple: boolean },
+  SelectVendors: { onChange: (vendors: VendorMiniDTO[]) => void; selected: number[]; multiple: boolean },
+  SelectUsers: { onChange: (users: UserMiniDTO[]) => void; selected: number[]; multiple: boolean },
+  SelectTeams: { onChange: (teams: TeamMiniDTO[]) => void; selected: number[]; multiple: boolean },
+  SelectLocations: { onChange: (locations: LocationMiniDTO[]) => void; selected: number[]; multiple: boolean },
+  SelectAssets: { onChange: (assets: AssetMiniDTO[]) => void; selected: number[]; multiple: boolean },
+  SelectTasks: { onChange: (tasks: Task[]) => void; selected: number[]; multiple: boolean },
+  SelectCategories: { onChange: (categories: Category[]) => void; selected: number[]; multiple: boolean; type: string },
   CompleteWorkOrder: {
     onComplete: (signatureId: number | undefined,
                  feedback: string | undefined) => Promise<any>; fieldsConfig: { feedback: boolean; signature: boolean };

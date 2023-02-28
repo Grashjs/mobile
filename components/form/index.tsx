@@ -10,6 +10,11 @@ import { RootStackParamList } from '../../types';
 import { PartMiniDTO } from '../../models/part';
 import { CustomerMiniDTO } from '../../models/customer';
 import { VendorMiniDTO } from '../../models/vendor';
+import { UserMiniDTO } from '../../models/user';
+import { TeamMiniDTO } from '../../models/team';
+import { AssetMiniDTO } from '../../models/asset';
+import Category from '../../models/category';
+import { LocationMiniDTO } from '../../models/location';
 
 interface OwnProps {
   fields: Array<IField>;
@@ -34,7 +39,7 @@ export default function Form(props: OwnProps) {
       shape[f.name] = shape[f.name].required();
     }
   });
-  const handleChange = (formik: FormikProps<IHash<any>>, field, e: { label: string, value: any }[] | string | number) => {
+  const handleChange = (formik: FormikProps<IHash<any>>, field, e: { label: string, value: any }[] | string | number | { label: string, value: any }) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     props.onChange && props.onChange({ field, e });
     if (props.fields.length == 1) {
@@ -46,37 +51,126 @@ export default function Form(props: OwnProps) {
   const validationSchema = Yup.object().shape(shape);
 
   const renderSelect = (formik, field: IField) => {
-    let values: { label: string; value: number }[] = formik.values[field.name];
+    let values: { label: string; value: number }[] | { label: string; value: number } = formik.values[field.name];
     const excluded = field.excluded;
     let screenPath: keyof RootStackParamList;
-    let onChange: (values: (PartMiniDTO | CustomerMiniDTO | VendorMiniDTO)[]) => void;
+    let onChange: (values: (PartMiniDTO | CustomerMiniDTO | VendorMiniDTO | UserMiniDTO | TeamMiniDTO | AssetMiniDTO | Category)[]) => void;
+    let additionalNavigationOptions = {};
     switch (field.type2) {
       case 'part':
         screenPath = 'SelectParts';
         onChange = (values: PartMiniDTO[]) => {
-          handleChange(formik, field.name, values.map(part => ({ label: part.name, value: part.id })));
+          const value = values.map(part => ({
+            label: part.name,
+            value: part.id
+          }));
+          handleChange(formik, field.name, field.multiple ? value : value[0]);
         };
         break;
       case 'customer':
         screenPath = 'SelectCustomers';
         onChange = (values: CustomerMiniDTO[]) => {
-          handleChange(formik, field.name, values.map(customer => ({ label: customer.name, value: customer.id })));
+          const value = values.map(customer => ({
+            label: customer.name,
+            value: customer.id
+          }));
+          handleChange(formik, field.name, field.multiple ? value : value[0]);
         };
         break;
       case 'vendor':
         screenPath = 'SelectVendors';
         onChange = (values: VendorMiniDTO[]) => {
-          handleChange(formik, field.name, values.map(vendor => ({ label: vendor.companyName, value: vendor.id })));
+          const value = values.map(vendor => ({
+            label: vendor.companyName,
+            value: vendor.id
+          }));
+          handleChange(formik, field.name, field.multiple ? value : value[0]);
         };
+        break;
+      case 'user':
+        screenPath = 'SelectUsers';
+        onChange = (values: UserMiniDTO[]) => {
+          const value = values.map(user => ({
+            label: `${user.firstName} ${user.lastName}`,
+            value: user.id
+          }));
+          handleChange(formik, field.name, field.multiple ? value : value[0]);
+        };
+        break;
+      case 'team':
+        screenPath = 'SelectTeams';
+        onChange = (values: TeamMiniDTO[]) => {
+          const value = values.map(team => ({
+            label: team.name,
+            value: team.id
+          }));
+          handleChange(formik, field.name, field.multiple ? value : value[0]);
+        };
+        break;
+      case 'location':
+        screenPath = 'SelectLocations';
+        onChange = (values: LocationMiniDTO[]) => {
+          const value = values.map(location => ({
+            label: location.name,
+            value: location.id
+          }));
+          handleChange(formik, field.name, field.multiple ? value : value[0]);
+        };
+        break;
+      case 'parentLocation':
+        screenPath = 'SelectLocations';
+        onChange = (values: LocationMiniDTO[]) => {
+          const value = values.map(location => ({
+            label: location.name,
+            value: location.id
+          }));
+          handleChange(formik, field.name, field.multiple ? value : value[0]);
+        };
+        break;
+      case 'asset':
+        screenPath = 'SelectAssets';
+        onChange = (values: AssetMiniDTO[]) => {
+          const value = values.map(asset => ({
+            label: asset.name,
+            value: asset.id
+          }));
+          handleChange(formik, field.name, field.multiple ? value : value[0]);
+        };
+        break;
+      case 'category':
+        screenPath = 'SelectCategories';
+        onChange = (values: Category[]) => {
+          const value = values.map(category => ({
+            label: category.name,
+            value: category.id
+          }));
+          handleChange(formik, field.name, field.multiple ? value : value[0]);
+        };
+        additionalNavigationOptions = { type: field.category };
         break;
       default:
         return;
     }
 
-    const navigationOptions: { selected: number[], onChange: (value: PartMiniDTO[]) => void; multiple: boolean } = {
+    const navigationOptions: { selected: number[], onChange: (value: PartMiniDTO[]) => void; multiple: boolean; } = {
       onChange,
       selected: Array.isArray(values) ? values.map(value => value.value) : [],
-      multiple: field.multiple
+      multiple: field.multiple,
+      ...additionalNavigationOptions
+    };
+    const renderValue = (value: { value: number; label: string }) => {
+      return (<View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}><Text
+        style={{ color: formik.errors[field.name] ? theme.colors.error : theme.colors.primary }}>{value.label}</Text>
+        <IconButton onPress={() => {
+          handleChange(formik, field.name, Array.isArray(values) ? values.filter(item => value.value !== item.value) : undefined);
+        }} icon={'close-circle'} iconColor={theme.colors.error} />
+      </View>);
     };
     if (screenPath) {
       // @ts-ignore
@@ -94,19 +188,9 @@ export default function Form(props: OwnProps) {
           <Text>{field.label}</Text>
           {!values && <IconButton icon={'plus-circle'} />}
         </View>
-        {!!values?.length && values.map(value => (
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}><Text
-            style={{ color: theme.colors.primary }}>{value.label}</Text>
-            <IconButton onPress={() => {
-              handleChange(formik, field.name, values.filter(item => value.value !== item.value));
-            }} icon={'close-circle'} iconColor={theme.colors.error} />
-          </View>))}
+        {field.multiple ? (Array.isArray(values) && !!values?.length && values.map(value =>
+          renderValue(value))) : values && renderValue(values as { label: string; value: number })}
+        {!!formik.errors[field.name] && (<HelperText type={'error'}>{formik.errors[field.name]}</HelperText>)}
       </TouchableOpacity>);
     }
   };
@@ -114,8 +198,8 @@ export default function Form(props: OwnProps) {
     <ScrollView style={styles.container}>
       <Formik<IHash<any>>
         validationSchema={props.validation || validationSchema}
-        validateOnChange={false}
-        validateOnBlur={false}
+        validateOnChange={true}
+        validateOnBlur={true}
         initialValues={props.values || {}}
         onSubmit={(
           values,

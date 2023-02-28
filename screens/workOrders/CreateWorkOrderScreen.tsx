@@ -149,6 +149,7 @@ export default function CreateWorkOrderScreen({
   };
   const onCreationSuccess = () => {
     showSnackBar(t('wo_create_success'), 'success');
+    navigation.goBack();
   };
   const onCreationFailure = (err) =>
     showSnackBar(t('wo_create_failure'), 'error');

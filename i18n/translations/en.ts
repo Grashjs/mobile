@@ -1333,7 +1333,13 @@ const enJSON = {
   remaining_tasks: '{{count}} remaining tasks',
   complete_tasks_percent: '{{percent}}% completed',
   create_work_order: 'Create Work Order',
-  select_customers: 'Select Customers'
+  select_customers: 'Select Customers',
+  select_vendors: 'Select Vendors',
+  select_users: 'Select Users',
+  select_teams: 'Select Teams',
+  select_locations: 'Select Locations',
+  select_assets: 'Select Assets',
+  select_categories: 'Select Categories'
 };
 
 export default enJSON;

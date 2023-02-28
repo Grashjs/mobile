@@ -110,55 +110,57 @@ export const getLocations = (): AppThunk => async (dispatch) => {
   dispatch(slice.actions.getLocations({ locations }));
 };
 export const getLocationsMini = (): AppThunk => async (dispatch) => {
+  dispatch(slice.actions.setLoadingGet({ loading: true }));
   const locations = await api.get<LocationMiniDTO[]>('locations/mini');
   dispatch(slice.actions.getLocationsMini({ locations }));
+  dispatch(slice.actions.setLoadingGet({ loading: false }));
 };
 export const addLocation =
   (location): AppThunk =>
-  async (dispatch) => {
-    const locationResponse = await api.post<Location>('locations', location);
-    dispatch(slice.actions.addLocation({ location: locationResponse }));
-  };
+    async (dispatch) => {
+      const locationResponse = await api.post<Location>('locations', location);
+      dispatch(slice.actions.addLocation({ location: locationResponse }));
+    };
 export const editLocation =
   (id: number, location): AppThunk =>
-  async (dispatch) => {
-    const locationResponse = await api.patch<Location>(
-      `locations/${id}`,
-      location
-    );
-    dispatch(slice.actions.editLocation({ location: locationResponse }));
-  };
+    async (dispatch) => {
+      const locationResponse = await api.patch<Location>(
+        `locations/${id}`,
+        location
+      );
+      dispatch(slice.actions.editLocation({ location: locationResponse }));
+    };
 export const getSingleLocation =
   (id: number): AppThunk =>
-  async (dispatch) => {
-    const locationResponse = await api.get<Location>(`locations/${id}`);
-    dispatch(slice.actions.editLocation({ location: locationResponse }));
-  };
+    async (dispatch) => {
+      const locationResponse = await api.get<Location>(`locations/${id}`);
+      dispatch(slice.actions.editLocation({ location: locationResponse }));
+    };
 export const deleteLocation =
   (id: number): AppThunk =>
-  async (dispatch) => {
-    const locationResponse = await api.deletes<{ success: boolean }>(
-      `locations/${id}`
-    );
-    const { success } = locationResponse;
-    if (success) {
-      dispatch(slice.actions.deleteLocation({ id }));
-    }
-  };
+    async (dispatch) => {
+      const locationResponse = await api.deletes<{ success: boolean }>(
+        `locations/${id}`
+      );
+      const { success } = locationResponse;
+      if (success) {
+        dispatch(slice.actions.deleteLocation({ id }));
+      }
+    };
 
 export const getLocationChildren =
   (id: number, parents: number[]): AppThunk =>
-  async (dispatch) => {
-    dispatch(slice.actions.setLoadingGet({ loading: true }));
-    const locations = await api.get<Location[]>(`locations/children/${id}`);
-    dispatch(
-      slice.actions.getLocationChildren({
-        id,
-        locations: locations.map((location) => {
-          return { ...location, hierarchy: [...parents, location.id] };
+    async (dispatch) => {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
+      const locations = await api.get<Location[]>(`locations/children/${id}`);
+      dispatch(
+        slice.actions.getLocationChildren({
+          id,
+          locations: locations.map((location) => {
+            return { ...location, hierarchy: [...parents, location.id] };
+          })
         })
-      })
-    );
-    dispatch(slice.actions.setLoadingGet({ loading: false }));
-  };
+      );
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    };
 export default slice;

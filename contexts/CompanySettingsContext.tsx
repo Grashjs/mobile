@@ -133,7 +133,7 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
             ...fields[fieldIndexInFields],
             required: true
           };
-          const requiredMessage = t('This field is required');
+          const requiredMessage = t('required_field');
           let yupSchema;
           switch (fields[fieldIndexInFields].type) {
             case 'text':

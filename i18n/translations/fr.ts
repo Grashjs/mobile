@@ -1476,7 +1476,13 @@ const frJSON = {
   remaining_tasks: '{{count}} tâches restantes',
   complete_tasks_percent: '{{percent}}% terminées',
   create_work_order: 'Créer un bon de travail',
-  select_customers: 'Sélectionner des prestataires'
+  select_customers: 'Sélectionner des prestataires',
+  select_vendors: 'Sélectionner des fournisseurs',
+  select_users: 'Sélectionner des utilisateurs',
+  select_teams: 'Sélectionner des équipes',
+  select_locations: 'Sélectionner des emplacements',
+  select_assets: 'Sélectionner des équipements',
+  select_categories: 'Sélectionner des catégories'
 };
 
 export default frJSON;
