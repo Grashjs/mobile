@@ -12,6 +12,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import { MD3LightTheme as DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { useEffect } from 'react';
 import { LogBox } from 'react-native';
+import { SheetProvider } from 'react-native-actions-sheet';
+import './components/actionSheets/sheets';
 
 const theme = {
   ...DefaultTheme,
@@ -52,8 +54,10 @@ export default function App() {
             <CompanySettingsProvider>
               <PaperProvider theme={theme}>
                 <CustomSnackbarProvider>
-                  <Navigation colorScheme={colorScheme} />
-                  <StatusBar />
+                  <SheetProvider>
+                    <Navigation colorScheme={colorScheme} />
+                    <StatusBar />
+                  </SheetProvider>
                 </CustomSnackbarProvider>
               </PaperProvider>
             </CompanySettingsProvider>

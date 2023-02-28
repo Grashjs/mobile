@@ -28,7 +28,7 @@ import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import MoreEntitiesScreen from '../screens/MoreEntitiesScreen';
 import RequestsScreen from '../screens/RequestsScreen';
 import WorkOrdersScreen from '../screens/workOrders/WorkOrdersScreen';
-import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
+import ActionSheet, { ActionSheetRef, SheetManager } from 'react-native-actions-sheet';
 import CompleteWorkOrderModal from '../screens/workOrders/CompleteWorkOrderModal';
 import SelectPartsModal from '../screens/modals/SelectPartsModal';
 import TasksScreen from '../screens/workOrders/TasksScreen';
@@ -114,34 +114,8 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
   const theme = useTheme();
   const { t } = useTranslation();
-  const actionSheetRef = useRef<ActionSheetRef>(null);
-  const entities: { title: string; icon: IconSource; goTo: keyof RootStackParamList }[] = [{
-    title: t('work_order'),
-    icon: 'clipboard-text-outline',
-    goTo: 'AddWorkOrder'
-  },
-    { title: t('request'), icon: 'inbox-arrow-down-outline', goTo: 'AddRequest' },
-    { title: t('asset'), icon: 'package-variant-closed', goTo: 'AddAsset' },
-    { title: t('location'), icon: 'map-marker-outline', goTo: 'AddLocation' },
-    { title: t('part'), icon: 'archive-outline', goTo: 'AddPart' },
-    { title: t('meter'), icon: 'gauge', goTo: 'AddMeter' },
-    { title: t('user'), icon: 'account-outline', goTo: 'AddUser' }
-  ];
   return (
     <View style={{ height: '100%' }}>
-      <ActionSheet ref={actionSheetRef}>
-        <View style={{ padding: 15 }}>
-          <Text variant='headlineSmall'>{t('create')}</Text>
-          <Divider />
-          <List.Section>
-            {entities.map((entity, index) => <List.Item key={index} title={entity.title}
-                                                        left={() => <List.Icon icon={entity.icon} />}
-                                                        onPress={() => {
-                                                          navigation.navigate(entity.goTo);
-                                                        }} />)}
-          </List.Section>
-        </View>
-      </ActionSheet>
       <BottomTab.Navigator
         initialRouteName='Home'
         screenOptions={{
@@ -182,9 +156,8 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
           component={View}
           listeners={{
             tabPress: e => {
-              // Prevent default action
               e.preventDefault();
-              actionSheetRef.current.show();
+              SheetManager.show('create-entities-sheet', { payload: { navigation } });
             }
           }}
           options={{

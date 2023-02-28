@@ -195,7 +195,7 @@ export default function Form(props: OwnProps) {
     }
   };
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background }}>
       <Formik<IHash<any>>
         validationSchema={props.validation || validationSchema}
         validateOnChange={true}
@@ -216,7 +216,15 @@ export default function Form(props: OwnProps) {
         {(formik) => (
           <View>
             {props.fields.map((field, index) =>
-              <View key={index} style={{ marginTop: 5, width: '100%' }}>
+              <View key={index}
+                    style={{
+                      marginTop: 5,
+                      width: '100%',
+                      backgroundColor: 'white',
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                      borderRadius: 5
+                    }}>
                 {field.type === 'text' ?
                   <View style={{ width: '100%', alignItems: 'stretch' }}>
                     <TextInput style={{ width: '100%' }} mode='outlined'
@@ -229,13 +237,13 @@ export default function Form(props: OwnProps) {
                                disabled={formik.isSubmitting}
                                multiline={field.multiple}
                     />
-                    <HelperText type='error'
-                                visible={Boolean(formik.errors[field.name])}>{t(formik.errors[field.name]?.toString())}</HelperText>
+                    {Boolean(formik.errors[field.name]) && <HelperText type='error'
+                    >{t(formik.errors[field.name]?.toString())}</HelperText>}
                   </View> : renderSelect(formik, field)}
               </View>
             )}
             < Button
-              style={{ marginTop: 20, zIndex: 10 }}
+              style={{ marginVertical: 20, zIndex: 10 }}
               onPress={() => formik.handleSubmit()}
               mode='contained'
               loading={
@@ -254,6 +262,6 @@ export default function Form(props: OwnProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20
+    paddingHorizontal: 10
   }
 });
