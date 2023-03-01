@@ -36,9 +36,6 @@ export default function CreateWorkOrderScreen({
     values.assignedTo = formatSelectMultiple(values.assignedTo);
     values.customers = formatSelectMultiple(values.customers);
     values.priority = values.priority ? values.priority.value : 'NONE';
-    values.requiredSignature = Array.isArray(values.requiredSignature)
-      ? values?.requiredSignature.includes('on')
-      : values.requiredSignature;
     values.category = formatSelect(values.category);
     return values;
   };

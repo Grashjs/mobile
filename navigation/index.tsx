@@ -19,6 +19,7 @@ import VerifyScreen from '../screens/auth/VerifyScreen';
 import LoadingScreen from '../screens/auth/LoadingScreen';
 import WODetailsScreen from '../screens/workOrders/WODetailsScreen';
 import CreateWorkOrder from '../screens/workOrders/CreateWorkOrderScreen';
+import CreateRequest from '../screens/workOrders/CreateRequestScreen';
 import { AuthStackParamList, RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import useAuth from '../hooks/useAuth';
@@ -67,6 +68,12 @@ function RootNavigator() {
                     options={{ title: t('tasks') }} />
       <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Screen name='AddWorkOrder' component={CreateWorkOrder} options={{ title: t('create_work_order') }} />
+      <Stack.Screen name='AddRequest' component={CreateRequest} options={{ title: t('create_request') }} />
+      <Stack.Screen name='AddAsset' component={CreateWorkOrder} options={{ title: t('create_asset') }} />
+      <Stack.Screen name='AddLocation' component={CreateWorkOrder} options={{ title: t('create_location') }} />
+      <Stack.Screen name='AddPart' component={CreateWorkOrder} options={{ title: t('create_part') }} />
+      <Stack.Screen name='AddMeter' component={CreateWorkOrder} options={{ title: t('create_meter') }} />
+      <Stack.Screen name='AddUser' component={CreateWorkOrder} options={{ title: t('invite_users') }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name='Modal' component={ModalScreen} />
         <Stack.Screen name='CompleteWorkOrder' component={CompleteWorkOrderModal}

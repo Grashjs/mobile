@@ -1483,7 +1483,12 @@ const frJSON = {
   select_locations: 'Sélectionner des emplacements',
   select_assets: 'Sélectionner des équipements',
   select_categories: 'Sélectionner des catégories',
-  estimated_hours_in_text: '{{hours}} heures estimées'
+  estimated_hours_in_text: '{{hours}} heures estimées',
+  create_meter: 'Créer un compteur',
+  create_part: 'Créer une pièce ',
+  create_location: 'Créer un emplacement',
+  create_asset: 'Créer un équipement',
+  create_request: 'Créer une demande'
 };
 
 export default frJSON;

@@ -1340,7 +1340,12 @@ const enJSON = {
   select_locations: 'Select Locations',
   select_assets: 'Select Assets',
   select_categories: 'Select Categories',
-  estimated_hours_in_text: '{{hours}} estimated hours'
+  estimated_hours_in_text: '{{hours}} estimated hours',
+  create_meter: 'Create Meter',
+  create_part: 'Create Part',
+  create_location: 'Create Location',
+  create_asset: 'Create Asset',
+  create_request: 'Create Request'
 };
 
 export default enJSON;

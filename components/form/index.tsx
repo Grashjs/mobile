@@ -18,6 +18,7 @@ import { LocationMiniDTO } from '../../models/location';
 import FileUpload from '../FileUpload';
 import { useState } from 'react';
 import CustomDateTimePicker from '../CustomDateTimePicker';
+import { Switch } from 'react-native-paper';
 
 interface OwnProps {
   fields: Array<IField>;
@@ -43,7 +44,7 @@ export default function Form(props: OwnProps) {
       shape[f.name] = shape[f.name].required();
     }
   });
-  const handleChange = (formik: FormikProps<IHash<any>>, field, e: { label: string, value: any }[] | string | number | Date | { label: string, value: any }) => {
+  const handleChange = (formik: FormikProps<IHash<any>>, field, e: { label: string, value: any }[] | string | number | Date | boolean | { label: string, value: any }) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     props.onChange && props.onChange({ field, e });
     if (props.fields.length == 1) {
@@ -274,7 +275,19 @@ export default function Form(props: OwnProps) {
                       <CustomDateTimePicker label={field.label}
                                             onChange={date => handleChange(formik, field.name, date)}
                                             value={formik.values[field.name]} />
-                      : renderSelect(formik, field)}
+                      : field.type === 'switch' ?
+                        <View style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center'
+                        }}>
+                          <Text>{field.label}</Text>
+                          <Switch value={formik.values[field.name]}
+                                  onValueChange={(value) => {
+                                    handleChange(formik, field.name, value);
+                                  }} />
+                        </View> : renderSelect(formik, field)}
               </View>
             )}
             < Button
