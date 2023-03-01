@@ -19,6 +19,7 @@ import FileUpload from '../FileUpload';
 import { useState } from 'react';
 import CustomDateTimePicker from '../CustomDateTimePicker';
 import { Switch } from 'react-native-paper';
+import PriorityPicker from './PriorityPicker';
 
 interface OwnProps {
   fields: Array<IField>;
@@ -62,6 +63,11 @@ export default function Form(props: OwnProps) {
     let onChange: (values: (PartMiniDTO | CustomerMiniDTO | VendorMiniDTO | UserMiniDTO | TeamMiniDTO | AssetMiniDTO | Category)[]) => void;
     let additionalNavigationOptions = {};
     switch (field.type2) {
+      case 'priority':
+        return <View>
+          <Text>{field.label}</Text>
+          <PriorityPicker value={formik.values[field.name]}
+                          onChange={(value) => handleChange(formik, field.name, value)} /></View>;
       case 'part':
         screenPath = 'SelectParts';
         onChange = (values: PartMiniDTO[]) => {
