@@ -1,7 +1,7 @@
 import {
   Image,
   LogBox,
-  Pressable,
+  Pressable, RefreshControl,
   ScrollView,
   StyleSheet,
   TouchableOpacity
@@ -26,7 +26,7 @@ import {
   useTheme,
   ProgressBar
 } from 'react-native-paper';
-import MultiSelect from 'react-native-multiple-select';
+import Dropdown from 'react-native-dropdown-picker';
 import { useTranslation } from 'react-i18next';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
@@ -52,6 +52,7 @@ import { date } from 'yup';
 import { editWorkOrder } from '../../slices/workOrder';
 import { PlanFeature } from '../../models/subscriptionPlan';
 import PartQuantities from '../../components/PartQuantities';
+import { getTeamsMini } from '../../slices/team';
 
 export default function WODetailsScreen({
                                           navigation,
@@ -61,6 +62,8 @@ export default function WODetailsScreen({
   const { workOrders } = useSelector((state) => state.workOrders);
   const workOrder = workOrders.content.find((workOrder) => workOrder.id === id);
   const { t } = useTranslation();
+  const [openDropDown, setOpenDropDown] = useState<boolean>(false);
+  const [dropDownValue, setDropdownValue] = useState<string>(workOrder.status);
   const { hasEditPermission, user, companySettings, hasFeature } = useAuth();
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const { workOrderConfiguration, generalPreferences } = companySettings;
@@ -93,7 +96,7 @@ export default function WODetailsScreen({
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const [isExtended, setIsExtended] = React.useState(true);
   const statuses = ['OPEN', 'ON_HOLD', 'IN_PROGRESS', 'COMPLETE'].map(
-    (status) => ({ key: status, value: t(status) })
+    (status) => ({ value: status, label: t(status) })
   );
   const fieldsToRender: {
     label: string;
@@ -106,6 +109,10 @@ export default function WODetailsScreen({
     {
       label: t('due_date'),
       value: getFormattedDate(workOrder.dueDate)
+    },
+    {
+      label: t('estimated_duration'),
+      value: !!workOrder.estimatedDuration ? t('estimated_hours_in_text', { hours: workOrder.estimatedDuration }) : null
     },
     {
       label: t('category'),
@@ -133,6 +140,13 @@ export default function WODetailsScreen({
       value: workOrder.team?.name
     }
   ];
+  const getInfos = () => {
+    dispatch(getPartQuantitiesByWorkOrder(workOrder.id));
+    dispatch(getLabors(workOrder.id));
+    dispatch(getAdditionalCosts(workOrder.id));
+    dispatch(getTasks(workOrder.id));
+    dispatch(getRelations(workOrder.id));
+  };
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -141,11 +155,7 @@ export default function WODetailsScreen({
         </Pressable>
       )
     });
-    dispatch(getPartQuantitiesByWorkOrder(workOrder.id));
-    dispatch(getLabors(workOrder.id));
-    dispatch(getAdditionalCosts(workOrder.id));
-    dispatch(getTasks(workOrder.id));
-    dispatch(getRelations(workOrder.id));
+    getInfos();
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   }, []);
 
@@ -251,6 +261,11 @@ export default function WODetailsScreen({
       })
     ).finally(() => setLoading(false));
   };
+  useEffect(() => {
+    if (dropDownValue !== workOrder.status)
+      onStatusChange(dropDownValue);
+  }, [dropDownValue]);
+
   const renderActionSheet = () => {
     const options: {
       title: string;
@@ -337,23 +352,14 @@ export default function WODetailsScreen({
   return (
     <View style={styles.container}>
       <Provider theme={theme}>
-        {loading && (
-          <ActivityIndicator
-            style={{
-              position: 'absolute',
-              top: '45%',
-              left: '45%',
-              zIndex: 10
-            }}
-            size='large'
-          />
-        )}
         {renderActionSheet()}
         <ScrollView
           onScroll={onScroll}
           style={{
             paddingHorizontal: 20
           }}
+          refreshControl={
+            <RefreshControl refreshing={loading} onRefresh={getInfos} />}
         >
           <Text variant='displaySmall'>{workOrder.title}</Text>
           <View style={styles.row}>
@@ -376,23 +382,11 @@ export default function WODetailsScreen({
             </View>
           )}
           <View style={{ marginTop: 20 }}>
-            <View style={styles.shadowedSelect}>
-              <MultiSelect
-                hideTags
+            <View style={styles.dropdown}>
+              <Dropdown
+                value={workOrder.status}
                 items={statuses}
-                uniqueKey='key'
-                onSelectedItemsChange={(items) => {
-                  onStatusChange(items[0]);
-                }}
-                selectedItems={[workOrder.status]}
-                selectText={t('select_status')}
-                searchInputPlaceholderText={t('search')}
-                displayKey='value'
-                searchInputStyle={{ color: '#CCC' }}
-                submitButtonColor={theme.colors.primary}
-                single
-                submitButtonText={t('submit')}
-              />
+                open={openDropDown} setOpen={setOpenDropDown} setValue={setDropdownValue} />
             </View>
             {fieldsToRender.map(
               ({ label, value }, index) =>
@@ -621,15 +615,6 @@ const styles = StyleSheet.create({
   },
   startButton: { position: 'absolute', bottom: 20, right: '10%' },
   row: { display: 'flex', flexDirection: 'row', alignItems: 'center' },
-  shadowedSelect: {
-    borderRadius: 7,
-    padding: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    marginHorizontal: 5,
-    elevation: 5
-  },
   shadowedCard: {
     borderRadius: 10,
     paddingHorizontal: 10,
@@ -645,5 +630,6 @@ const styles = StyleSheet.create({
     bottom: 16,
     right: 16,
     position: 'absolute'
-  }
+  },
+  dropdown: { zIndex: 10 }
 });

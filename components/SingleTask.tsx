@@ -2,10 +2,10 @@ import { Task, TaskOption, TaskType } from '../models/tasks';
 import { View } from './Themed';
 import { useTheme, Text, TextInput, IconButton, Divider, Button } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useAuth from '../hooks/useAuth';
 import debounce from 'lodash.debounce';
-import MultiSelect from 'react-native-multiple-select';
+import Dropdown from 'react-native-dropdown-picker';
 import { PermissionEntity } from '../models/role';
 import { PlanFeature } from '../models/subscriptionPlan';
 import { StyleSheet, TouchableOpacity } from 'react-native';
@@ -35,6 +35,8 @@ export default function SingleTask({
                                    }: SingleTaskProps) {
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
+  const [openDropDown, setOpenDropDown] = useState<boolean>(false);
+  const [dropDownValue, setDropdownValue] = useState<string>();
   const [savingNotes, setSavingNotes] = useState<boolean>(false);
   const { user, hasCreatePermission, hasFeature } = useAuth();
   const [inputValue, setInputValue] = useState<string>('');
@@ -53,6 +55,17 @@ export default function SingleTask({
     () => debounce(changeHandler, 1500),
     []
   );
+  const onDropdownValueChange = (value) => {
+    !preview && !(task.taskBase.user && task.taskBase.user.id !== user.id) && handleChange(value, task.id);
+  };
+  useEffect(() => {
+    const oldValue = preview
+      ? getOptions(task.taskBase.taskType, task.taskBase.options)[0]
+        .value
+      : task.value;
+    if (dropDownValue && dropDownValue !== oldValue)
+      onDropdownValueChange(dropDownValue);
+  }, [dropDownValue]);
 
   const subtaskOptions = ['OPEN', 'IN_PROGRESS', 'ON_HOLD', 'COMPLETE'];
   const inspectionOptions = ['PASS', 'FLAG', 'FAIL'
@@ -100,27 +113,23 @@ export default function SingleTask({
       {['SUBTASK', 'INSPECTION', 'MULTIPLE'].includes(
         task.taskBase.taskType
       ) ? (
-        <View style={styles.shadowedSelect}>
-          <MultiSelect
-            selectedItems={[
+        <View style={openDropDown ? { zIndex: 10, height: '100%' } : undefined}>
+          <Dropdown
+            value={
               preview
                 ? getOptions(task.taskBase.taskType, task.taskBase.options)[0]
                   .value
-                : task.value]
+                : task.value
             }
-            selectText={t('select')}
-            searchInputPlaceholderText={t('search')}
-            uniqueKey='value'
-            displayKey='label'
-            searchInputStyle={{ color: '#CCC' }}
-            submitButtonColor={theme.colors.primary}
+            zIndex={3000}
+            zIndexInverse={1000}
             items={getOptions(task.taskBase.taskType, task.taskBase.options)}
-            single
-            onSelectedItemsChange={(items) => !preview && !(task.taskBase.user && task.taskBase.user.id !== user.id) && handleChange(items[0], task.id)
-            } />
+            setValue={setDropdownValue}
+            open={openDropDown}
+            setOpen={setOpenDropDown} />
         </View>
       ) : (task.taskBase.taskType === 'METER' || task.taskBase.taskType === 'NUMBER') ? <TextInput
-        defaultValue={task.value.toString()}
+        defaultValue={task.value?.toString()}
         onChangeText={changeHandler}
         label={t('value')}
         value={inputValue}
@@ -129,7 +138,7 @@ export default function SingleTask({
           task.taskBase.user && task.taskBase.user.id !== user.id
         }
       /> : <TextInput
-        defaultValue={task.value.toString()}
+        defaultValue={task.value?.toString()}
         onChangeText={debouncedChangeHandler}
         label={t('value')}
         mode={'outlined'}
@@ -186,15 +195,4 @@ export default function SingleTask({
     </View>
   );
 }
-const styles = StyleSheet.create({
-  shadowedSelect: {
-    borderRadius: 7,
-    padding: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    marginHorizontal: 5,
-    marginVertical: 5,
-    elevation: 5
-  }
-});
+const styles = StyleSheet.create({});

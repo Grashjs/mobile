@@ -1339,7 +1339,8 @@ const enJSON = {
   select_teams: 'Select Teams',
   select_locations: 'Select Locations',
   select_assets: 'Select Assets',
-  select_categories: 'Select Categories'
+  select_categories: 'Select Categories',
+  estimated_hours_in_text: '{{hours}} estimated hours'
 };
 
 export default enJSON;

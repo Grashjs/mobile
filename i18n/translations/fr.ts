@@ -1482,7 +1482,8 @@ const frJSON = {
   select_teams: 'Sélectionner des équipes',
   select_locations: 'Sélectionner des emplacements',
   select_assets: 'Sélectionner des équipements',
-  select_categories: 'Sélectionner des catégories'
+  select_categories: 'Sélectionner des catégories',
+  estimated_hours_in_text: '{{hours}} heures estimées'
 };
 
 export default frJSON;

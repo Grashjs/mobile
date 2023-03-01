@@ -24,7 +24,7 @@ export default function CreateEntitiesSheet(props: SheetProps<{ navigation: any 
   ];
   return (<ActionSheet ref={actionSheetRef}>
     <View style={{ paddingHorizontal: 5, paddingVertical: 15 }}>
-      <Text variant='headlineSmall'>{t('create')}</Text>
+      <Text style={{ paddingHorizontal: 15 }} variant='headlineSmall'>{t('create')}</Text>
       <Divider />
       <List.Section>
         {entities.map((entity, index) => <List.Item key={index}

@@ -36,6 +36,7 @@ export default function Form(props: OwnProps) {
   const { t } = useTranslation();
   const shape: IHash<any> = {};
   const theme = useTheme();
+  const [numberInputValue, setNumberInputValue] = useState<number>(0);
   props.fields.forEach((f) => {
     shape[f.name] = Yup.string();
     if (f.required) {
@@ -242,18 +243,38 @@ export default function Form(props: OwnProps) {
                     />
                     {Boolean(formik.errors[field.name]) && <HelperText type='error'
                     >{t(formik.errors[field.name]?.toString())}</HelperText>}
-                  </View> : field.type === 'file' ? <FileUpload
-                    multiple={field.multiple}
-                    title={field.label}
-                    type={field.fileType || 'file'}
-                    description={t('upload')}
-                    onChange={(files) => {
-                      formik.setFieldValue(field.name, files);
-                    }}
-                  /> : field.type === 'date' ?
-                    <CustomDateTimePicker label={field.label} onChange={date => handleChange(formik, field.name, date)}
-                                          value={formik.values[field.name]} />
-                    : renderSelect(formik, field)}
+                  </View> : field.type === 'number' ?
+                    <View style={{ width: '100%', alignItems: 'stretch' }}>
+                      <TextInput style={{ width: '100%' }} mode='outlined'
+                                 error={!!formik.errors[field.name] || field.error}
+                                 label={field.label}
+                                 defaultValue={formik.values[field.name]}
+                                 placeholder={field.placeholder ?? field.label}
+                                 onBlur={formik.handleBlur(field.name)}
+                                 onChangeText={(newValue) => {
+                                   const formattedValue = Number(newValue.replace(/[^0-9]/g, ''));
+                                   setNumberInputValue(formattedValue);
+                                   handleChange(formik, field.name, formattedValue);
+                                 }}
+                                 value={numberInputValue.toString()}
+                                 disabled={formik.isSubmitting}
+                                 multiline={field.multiple}
+                      />
+                      {Boolean(formik.errors[field.name]) && <HelperText type='error'
+                      >{t(formik.errors[field.name]?.toString())}</HelperText>}
+                    </View> : field.type === 'file' ? <FileUpload
+                      multiple={field.multiple}
+                      title={field.label}
+                      type={field.fileType || 'file'}
+                      description={t('upload')}
+                      onChange={(files) => {
+                        formik.setFieldValue(field.name, files);
+                      }}
+                    /> : field.type === 'date' ?
+                      <CustomDateTimePicker label={field.label}
+                                            onChange={date => handleChange(formik, field.name, date)}
+                                            value={formik.values[field.name]} />
+                      : renderSelect(formik, field)}
               </View>
             )}
             < Button
