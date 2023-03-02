@@ -1,5 +1,5 @@
 import {
-  Image,
+  Image, Linking,
   LogBox,
   Pressable, RefreshControl,
   ScrollView,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { View } from '../../components/Themed';
-import EditScreenInfo from '../../components/EditScreenInfo';
+import * as FileSystem from 'expo-file-system';
 import {
   RootStackParamList,
   RootStackScreenProps,
@@ -49,7 +49,7 @@ import { getRelations } from '../../slices/relation';
 import { getTasks } from '../../slices/task';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { date } from 'yup';
-import { deleteWorkOrder, editWorkOrder } from '../../slices/workOrder';
+import { deleteWorkOrder, editWorkOrder, getPDFReport } from '../../slices/workOrder';
 import { PlanFeature } from '../../models/subscriptionPlan';
 import PartQuantities from '../../components/PartQuantities';
 import { getTeamsMini } from '../../slices/team';
@@ -99,6 +99,7 @@ export default function WODetailsScreen({
     (status) => ({ value: status, label: t(status) })
   );
   const [openDelete, setOpenDelete] = React.useState(false);
+  const [openArchive, setOpenArchive] = React.useState(false);
   const fieldsToRender: {
     label: string;
     value: string | number;
@@ -164,12 +165,38 @@ export default function WODetailsScreen({
     showSnackBar(t('wo_delete_success'), 'success');
     navigation.goBack();
   };
+  const onArchiveSuccess = () => {
+    showSnackBar(t('wo_archive_success'), 'success');
+    navigation.goBack();
+  };
+  const onArchiveFailure = (err) =>
+    showSnackBar(t('wo_archive_failure'), 'error');
   const onDeleteFailure = (err) =>
     showSnackBar(t('wo_delete_failure'), 'error');
 
   const handleDelete = () => {
     dispatch(deleteWorkOrder(workOrder?.id)).then(onDeleteSuccess).catch(onDeleteFailure);
     setOpenDelete(false);
+  };
+  const onArchive = () => {
+    dispatch(editWorkOrder(workOrder?.id, { ...workOrder, archived: true }))
+      .then(onArchiveSuccess)
+      .catch(onArchiveFailure);
+  };
+  const onGenerateReport = () => {
+    setLoading(true);
+    actionSheetRef.current.hide();
+    dispatch(getPDFReport(workOrder.id))
+      .then(async (url: string) => {
+        try {
+          const { uri } = await FileSystem.downloadAsync(url, FileSystem.documentDirectory + `Work Order #${workOrder.id} report`);
+          await Linking.openURL(uri);
+        } catch (err) {
+          console.error(err);
+        }
+      })
+      .catch((err: Error) => console.error(err.message))
+      .finally(() => setLoading(false));
   };
   const canComplete = (): boolean => {
     let error;
@@ -290,8 +317,13 @@ export default function WODetailsScreen({
         icon: 'pencil',
         onPress: () => navigation.navigate('EditWorkOrder', { workOrder, tasks })
       },
-      { title: t('to_export'), icon: 'download-outline', onPress: () => null },
-      { title: t('archive'), icon: 'archive-outline', onPress: () => null },
+      { title: t('to_export'), icon: 'download-outline', onPress: onGenerateReport },
+      {
+        title: t('archive'), icon: 'archive-outline', onPress: () => {
+          setOpenArchive(true);
+          actionSheetRef.current.hide();
+        }
+      },
       {
         title: t('to_delete'),
         icon: 'delete-outline',
@@ -364,6 +396,20 @@ export default function WODetailsScreen({
     else return null;
   }
 
+  const renderConfirmArchive = () => {
+    return <Portal>
+      <Dialog visible={openArchive} onDismiss={() => setOpenArchive(false)}>
+        <Dialog.Title>{t('confirmation')}</Dialog.Title>
+        <Dialog.Content>
+          <Text variant='bodyMedium'>{t('wo_archive_confirm') + workOrder.title + ' ?'}</Text>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={() => setOpenArchive(false)}>{t('cancel')}</Button>
+          <Button onPress={onArchive}>{t('archive')}</Button>
+        </Dialog.Actions>
+      </Dialog>
+    </Portal>;
+  };
   const renderConfirmDelete = () => {
     return <Portal>
       <Dialog visible={openDelete} onDismiss={() => setOpenDelete(false)}>
@@ -383,6 +429,7 @@ export default function WODetailsScreen({
       <Provider theme={theme}>
         {renderActionSheet()}
         {renderConfirmDelete()}
+        {renderConfirmArchive()}
         <ScrollView
           onScroll={onScroll}
           style={{
@@ -391,30 +438,30 @@ export default function WODetailsScreen({
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={getInfos} />}
         >
-          <Text variant='displaySmall'>{workOrder?.title}</Text>
+          <Text variant='displaySmall'>{workOrder.title}</Text>
           <View style={styles.row}>
             <Text
               variant='titleMedium'
               style={{ marginRight: 10 }}
-            >{`#${workOrder?.id}`}</Text>
+            >{`#${workOrder.id}`}</Text>
             <Tag
-              text={t('priority_label', { priority: t(workOrder?.priority) })}
+              text={t('priority_label', { priority: t(workOrder.priority) })}
               color='white'
-              backgroundColor={getPriorityColor(workOrder?.priority, theme)}
+              backgroundColor={getPriorityColor(workOrder.priority, theme)}
             />
           </View>
-          {workOrder?.image && (
+          {workOrder.image && (
             <View style={{ marginTop: 20 }}>
               <Image
                 style={{ height: 200 }}
-                source={{ uri: workOrder?.image.url }}
+                source={{ uri: workOrder.image.url }}
               />
             </View>
           )}
           <View style={{ marginTop: 20 }}>
             <View style={styles.dropdown}>
               <Dropdown
-                value={workOrder?.status}
+                value={workOrder.status}
                 items={statuses}
                 open={openDropDown} setOpen={setOpenDropDown} setValue={setDropdownValue} />
             </View>
@@ -426,70 +473,70 @@ export default function WODetailsScreen({
               ({ label, value }) =>
                 value && <ObjectField key={label} label={label} value={value} />
             )}
-            {workOrder?.primaryUser && (
+            {workOrder.primaryUser && (
               <ObjectField
                 label={t('primary_worker')}
-                value={getUserNameById(workOrder?.primaryUser.id)}
+                value={getUserNameById(workOrder.primaryUser.id)}
               />
             )}
-            {(workOrder?.parentRequest || workOrder?.createdBy) && (
+            {(workOrder.parentRequest || workOrder.createdBy) && (
               <ObjectField
                 label={
-                  workOrder?.parentRequest ? t('approved_by') : t('created_by')
+                  workOrder.parentRequest ? t('approved_by') : t('created_by')
                 }
-                value={getUserNameById(workOrder?.createdBy)}
+                value={getUserNameById(workOrder.createdBy)}
               />
             )}
-            {workOrder?.parentPreventiveMaintenance && (
+            {workOrder.parentPreventiveMaintenance && (
               <ObjectField
                 label={t('preventive_maintenance')}
-                value={workOrder?.parentPreventiveMaintenance.name}
+                value={workOrder.parentPreventiveMaintenance.name}
               />
             )}
-            {workOrder?.status === 'COMPLETE' && (
+            {workOrder.status === 'COMPLETE' && (
               <View>
-                {workOrder?.completedBy && (
+                {workOrder.completedBy && (
                   <ObjectField
                     label={t('completed_by')}
-                    value={`${workOrder?.completedBy.firstName} ${workOrder?.completedBy.lastName}`}
+                    value={`${workOrder.completedBy.firstName} ${workOrder.completedBy.lastName}`}
                   />
                 )}
                 <BasicField
                   label={t('completed_on')}
-                  value={getFormattedDate(workOrder?.completedOn)}
+                  value={getFormattedDate(workOrder.completedOn)}
                 />
-                {workOrder?.feedback && (
+                {workOrder.feedback && (
                   <BasicField
                     label={t('feedback')}
-                    value={workOrder?.feedback}
+                    value={workOrder.feedback}
                   />
                 )}
-                {workOrder?.signature && (
+                {workOrder.signature && (
                   <View style={{ marginTop: 20 }}>
                     <Divider style={{ marginBottom: 20 }} />
                     <Text variant='titleMedium' style={{ fontWeight: 'bold' }}>
                       {t('signature')}
                     </Text>
                     <Image
-                      source={{ uri: workOrder?.signature.url }}
+                      source={{ uri: workOrder.signature.url }}
                       style={{ height: 200 }}
                     />
                   </View>
                 )}
               </View>
             )}
-            {workOrder?.parentRequest && (
+            {workOrder.parentRequest && (
               <ObjectField
                 label={t('requested_by')}
-                value={getUserNameById(workOrder?.parentRequest.createdBy)}
+                value={getUserNameById(workOrder.parentRequest.createdBy)}
               />
             )}
-            {!!workOrder?.assignedTo.length && (
+            {!!workOrder.assignedTo.length && (
               <View style={{ marginTop: 20 }}>
                 <Text variant='titleMedium' style={{ fontWeight: 'bold' }}>
                   {t('assigned_to')}
                 </Text>
-                {workOrder?.assignedTo.map((user) => (
+                {workOrder.assignedTo.map((user) => (
                   <TouchableOpacity key={user.id} style={{ marginTop: 5 }}>
                     <Text
                       variant='bodyLarge'
@@ -497,7 +544,7 @@ export default function WODetailsScreen({
                     >{`${user.firstName} ${user.lastName}`}</Text>
                   </TouchableOpacity>
                 ))}
-                {workOrder?.customers.map((customer) => (
+                {workOrder.customers.map((customer) => (
                   <TouchableOpacity key={customer.id} style={{ marginTop: 5 }}>
                     <Text variant='bodyLarge' style={{ marginTop: 15 }}>
                       {customer.name}
@@ -511,7 +558,7 @@ export default function WODetailsScreen({
               <PartQuantities
                 partQuantities={partQuantities}
                 isPO={false}
-                rootId={workOrder?.id}
+                rootId={workOrder.id}
               />
               <Divider style={{ marginTop: 5 }} />
               <Button
@@ -520,7 +567,7 @@ export default function WODetailsScreen({
                     onChange: (selectedParts) => {
                       dispatch(
                         editWOPartQuantities(
-                          workOrder?.id,
+                          workOrder.id,
                           selectedParts.map((part) => part.id)
                         )
                       );
@@ -574,7 +621,7 @@ export default function WODetailsScreen({
                     onChange: (selectedParts) => {
                       dispatch(
                         editWOPartQuantities(
-                          workOrder?.id,
+                          workOrder.id,
                           selectedParts.map((part) => part.id)
                         )
                       );
@@ -591,7 +638,7 @@ export default function WODetailsScreen({
             {!!tasks.length && <View style={styles.shadowedCard}>
               <Text style={{ marginBottom: 10 }}>{t('tasks')}</Text>
               <TouchableOpacity
-                onPress={() => navigation.navigate('Tasks', { workOrderId: workOrder?.id, tasksProps: tasks })}
+                onPress={() => navigation.navigate('Tasks', { workOrderId: workOrder.id, tasksProps: tasks })}
               ><Text variant='titleLarge' style={{ fontWeight: 'bold' }}> {
                 t('remaining_tasks', { count: tasks.filter(task => !task.value).length })}</Text>
                 <Text
@@ -621,7 +668,7 @@ export default function WODetailsScreen({
           extended={isExtended}
           onPress={() => {
             setControllingTime(true);
-            dispatch(controlTimer(!runningTimer, workOrder?.id)).finally(() =>
+            dispatch(controlTimer(!runningTimer, workOrder.id)).finally(() =>
               setControllingTime(false)
             );
           }}
