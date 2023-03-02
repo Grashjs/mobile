@@ -1,4 +1,6 @@
 import { IField } from '../models/form';
+import { formatSelect, formatSelectMultiple } from './formatters';
+import { isTask } from '../models/tasks';
 
 export const getWorkOrderFields = (t): IField[] => {
   return [
@@ -107,4 +109,25 @@ export const getWorkOrderFields = (t): IField[] => {
       label: t('requires_signature')
     }
   ];
+};
+export const formatWorkOrderValues = (values) => {
+  const newValues = { ...values };
+  newValues.primaryUser = formatSelect(newValues.primaryUser);
+  newValues.location = formatSelect(newValues.location);
+  newValues.team = formatSelect(newValues.team);
+  newValues.asset = formatSelect(newValues.asset);
+  newValues.assignedTo = formatSelectMultiple(newValues.assignedTo);
+  newValues.customers = formatSelectMultiple(newValues.customers);
+  newValues.priority = newValues.priority ? newValues.priority.value
+    :
+    'NONE';
+  newValues.category = formatSelect(newValues.category);
+  newValues.tasks = newValues.tasks.map(object => {
+    if (isTask(object)) {
+      return object;
+    } else {
+      return object.value;
+    }
+  }) ?? [];
+  return newValues;
 };

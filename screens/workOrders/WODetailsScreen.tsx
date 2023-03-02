@@ -276,7 +276,7 @@ export default function WODetailsScreen({
       {
         title: t('edit'),
         icon: 'pencil',
-        onPress: () => null
+        onPress: () => navigation.navigate('EditWorkOrder', { workOrder, tasks })
       },
       { title: t('to_export'), icon: 'download-outline', onPress: () => null },
       { title: t('archive'), icon: 'archive-outline', onPress: () => null },

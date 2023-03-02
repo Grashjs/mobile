@@ -14,6 +14,7 @@ export interface TaskOption {
   id: number;
   label: string;
 }
+
 export interface TaskBase {
   id: number;
   label: string;
@@ -23,6 +24,7 @@ export interface TaskBase {
   asset?: AssetMiniDTO;
   meter?: number;
 }
+
 export interface Task {
   id: number;
   value?: string | number;
@@ -30,6 +32,10 @@ export interface Task {
   taskBase: TaskBase;
   images: File[];
 }
+
+export const isTask = (object): object is Task => {
+  return !!object.taskBase;
+};
 export const tasks: Task[] = [
   {
     id: 74,

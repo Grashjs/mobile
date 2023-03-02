@@ -20,7 +20,7 @@ import { useState } from 'react';
 import CustomDateTimePicker from '../CustomDateTimePicker';
 import { Switch } from 'react-native-paper';
 import PriorityPicker from './PriorityPicker';
-import { Task } from '../../models/tasks';
+import { isTask, Task } from '../../models/tasks';
 import { getTaskTypes } from '../../utils/displayers';
 
 interface OwnProps {
@@ -165,7 +165,7 @@ export default function Form(props: OwnProps) {
         screenPath = 'SelectTasks';
         onChange = (values: Task[]) => {
           const value = values.map(task => ({
-            label: task.taskBase.label,
+            label: isTask(task) ? task.taskBase.label : task.label,
             value: task
           }));
           handleChange(formik, field.name, value);
@@ -175,9 +175,15 @@ export default function Form(props: OwnProps) {
         return;
     }
 
-    const navigationOptions: { selected: number[], onChange: (value: PartMiniDTO[]) => void; multiple: boolean; } = {
+    const navigationOptions: { selected: (number | Task)[], onChange: (value: PartMiniDTO[]) => void; multiple: boolean; } = {
       onChange,
-      selected: Array.isArray(values) ? values.map(value => value.value) : [],
+      selected: Array.isArray(values) ? values.map(value => {
+        if (isTask(value)) {
+          return value;
+        } else {
+          return value.value;
+        }
+      }) : [],
       multiple: field.multiple,
       ...additionalNavigationOptions
     };
@@ -217,6 +223,7 @@ export default function Form(props: OwnProps) {
       </TouchableOpacity>);
     } else if (field.type2 === 'task') {
       // @ts-ignore
+      // @ts-ignore
       return (<TouchableOpacity onPress={() => props.navigation.navigate(screenPath, navigationOptions)}
                                 style={{
                                   display: 'flex',
@@ -231,16 +238,33 @@ export default function Form(props: OwnProps) {
           <Text>{field.label}</Text>
           {!values && <IconButton icon={'plus-circle'} />}
         </View>
-        {values && Array.isArray(values) && values.map(({ label, value }) => (
+        {/*@ts-ignore*/}
+        {values && Array.isArray(values) && values.map((object: { label: string; value: Task } | Task) => (
           <View
             style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             {/*@ts-ignore*/}
             <View><Text
-              style={{ color: theme.colors.secondary }}>{getTaskTypes(t).find(type => type.value === value.taskBase.taskType)?.label}</Text>
-              <Text>{label}</Text>
+              style={{ color: theme.colors.secondary }}>{getTaskTypes(t).find(type => {
+              let taskType;
+              if (isTask(object)) {
+                taskType = object?.taskBase?.taskType;
+              } else {
+                taskType = object.value.taskBase.taskType;
+              }
+              return type.value === taskType;
+            })?.label}</Text>
+              <Text>{isTask(object) ? object.taskBase.label : object.label}</Text>
             </View>
             <IconButton onPress={() => {
-              handleChange(formik, field.name, values.filter(item => value.id !== item.value.id));
+              handleChange(formik, field.name, values.filter(item => {
+                let id;
+                if (isTask(object)) {
+                  id = object.id;
+                } else {
+                  id = object.value.id;
+                }
+                return id !== (isTask(object) ? item.id : item.value.id);
+              }));
             }} icon={'close-circle'} iconColor={theme.colors.error} />
           </View>))}
         {!!formik.errors[field.name] && (<HelperText type={'error'}>{formik.errors[field.name]}</HelperText>)}

@@ -1492,7 +1492,8 @@ const frJSON = {
   assign_user: 'Attribuer à l\'utilisateur',
   assign_asset: 'Attribuer l\'équipement',
   add_options: 'Ajouter des options',
-  required_task_label: 'Le nom de la tâche est requis'
+  required_task_label: 'Le nom de la tâche est requis',
+  edit_work_order: 'Modifier l\'ordre de travail'
 };
 
 export default frJSON;

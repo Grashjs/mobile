@@ -19,6 +19,7 @@ import VerifyScreen from '../screens/auth/VerifyScreen';
 import LoadingScreen from '../screens/auth/LoadingScreen';
 import WODetailsScreen from '../screens/workOrders/WODetailsScreen';
 import CreateWorkOrder from '../screens/workOrders/CreateWorkOrderScreen';
+import EditWorkOrder from '../screens/workOrders/EditWorkOrderScreen';
 import CreateRequest from '../screens/workOrders/CreateRequestScreen';
 import { AuthStackParamList, RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
@@ -69,6 +70,7 @@ function RootNavigator() {
                     options={{ title: t('tasks') }} />
       <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Screen name='AddWorkOrder' component={CreateWorkOrder} options={{ title: t('create_work_order') }} />
+      <Stack.Screen name='EditWorkOrder' component={EditWorkOrder} options={{ title: t('edit_work_order') }} />
       <Stack.Screen name='AddRequest' component={CreateRequest} options={{ title: t('create_request') }} />
       <Stack.Screen name='AddAsset' component={CreateWorkOrder} options={{ title: t('create_asset') }} />
       <Stack.Screen name='AddLocation' component={CreateWorkOrder} options={{ title: t('create_location') }} />

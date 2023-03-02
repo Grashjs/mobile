@@ -10,15 +10,18 @@ import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import { formatSelect, formatSelectMultiple } from '../../utils/formatters';
 import { getImageAndFiles } from '../../utils/overall';
 import { useDispatch } from '../../store';
-import { addWorkOrder } from '../../slices/workOrder';
+import { addWorkOrder, editWorkOrder } from '../../slices/workOrder';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { formatWorkOrderValues, getWorkOrderFields } from '../../utils/fields';
+import { getWOBaseValues } from '../../utils/woBase';
+import { patchTasks } from '../../slices/task';
 
 export default function CreateWorkOrderScreen({
                                                 navigation,
                                                 route
-                                              }: RootStackScreenProps<'AddWorkOrder'>) {
+                                              }: RootStackScreenProps<'EditWorkOrder'>) {
   const { t } = useTranslation();
+  const { workOrder, tasks } = route.params;
   const [initialDueDate, setInitialDueDate] = useState<Date>(null);
   const { uploadFiles, getWOFieldsAndShapes } = useContext(
     CompanySettingsContext
@@ -29,12 +32,12 @@ export default function CreateWorkOrderScreen({
     title: Yup.string().required(t('required_wo_title'))
   };
 
-  const onCreationSuccess = () => {
-    showSnackBar(t('wo_create_success'), 'success');
+  const onEditSuccess = () => {
+    showSnackBar(t('changes_saved_success'), 'success');
     navigation.goBack();
   };
-  const onCreationFailure = (err) =>
-    showSnackBar(t('wo_create_failure'), 'error');
+  const onEditFailure = (err) =>
+    showSnackBar(t('wo_update_failure'), 'error');
   const getFieldsAndShapes = (): [Array<IField>, { [key: string]: any }] => {
     return getWOFieldsAndShapes(getWorkOrderFields(t), defaultShape);
   };
@@ -45,8 +48,9 @@ export default function CreateWorkOrderScreen({
       navigation={navigation}
       submitText={t('save')}
       values={{
-        requiredSignature: false,
-        dueDate: initialDueDate
+        ...workOrder,
+        tasks: tasks,
+        ...getWOBaseValues(t, workOrder)
       }}
       onChange={({ field, e }) => {
       }}
@@ -54,26 +58,53 @@ export default function CreateWorkOrderScreen({
         let formattedValues = formatWorkOrderValues(values);
         console.log(formattedValues);
         return new Promise<void>((resolve, rej) => {
-          uploadFiles(formattedValues.files, formattedValues.image)
+          //differentiate files from api and formattedValues
+          const files = formattedValues.files.find((file) => file.id)
+            ? []
+            : formattedValues.files;
+          uploadFiles(files, formattedValues.image)
             .then((files) => {
-              const imageAndFiles = getImageAndFiles(files);
+              const imageAndFiles = getImageAndFiles(
+                files,
+                workOrder.image
+              );
               formattedValues = {
                 ...formattedValues,
                 image: imageAndFiles.image,
-                files: imageAndFiles.files
+                files: [...workOrder.files, ...imageAndFiles.files]
               };
-              dispatch(addWorkOrder(formattedValues))
-                .then(() => {
-                  onCreationSuccess();
-                  resolve();
-                })
+              dispatch(
+                //TODO editTask
+                patchTasks(
+                  workOrder?.id,
+                  formattedValues.tasks.map((task) => {
+                    return {
+                      ...task.taskBase,
+                      options: task.taskBase.options.map(
+                        (option) => option.label
+                      )
+                    };
+                  })
+                )
+              )
+                .then(() =>
+                  dispatch(
+                    editWorkOrder(workOrder?.id, formattedValues)
+                  )
+                    .then(onEditSuccess)
+                    .then(() => resolve())
+                    .catch((err) => {
+                      onEditFailure(err);
+                      rej();
+                    })
+                )
                 .catch((err) => {
-                  onCreationFailure(err);
+                  onEditFailure(err);
                   rej();
                 });
             })
             .catch((err) => {
-              onCreationFailure(err);
+              onEditFailure(err);
               rej();
             });
         });

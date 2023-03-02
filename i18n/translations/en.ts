@@ -1349,7 +1349,8 @@ const enJSON = {
   assign_user: 'Assign User',
   assign_asset: 'Assign Asset',
   add_options: 'Add options',
-  required_task_label: 'The task label is required'
+  required_task_label: 'The task label is required',
+  edit_work_order: 'Edit Work Order'
 };
 
 export default enJSON;
