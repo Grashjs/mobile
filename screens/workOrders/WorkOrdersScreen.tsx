@@ -10,11 +10,11 @@ import { getMoreWorkOrders, getWorkOrders } from '../../slices/workOrder';
 import { SearchCriteria } from '../../models/page';
 import { ActivityIndicator, Button, Card, Chip, IconButton, MD3Theme, Text, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
-import WorkOrder, { Priority } from '../../models/workOrder';
+import WorkOrder, { Priority, WorkOrderStatus } from '../../models/workOrder';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import * as React from 'react';
 import { Searchbar } from 'react-native-paper';
-import { getPriorityColor, onSearchQueryChange } from '../../utils/overall';
+import { getPriorityColor, getStatusColor, onSearchQueryChange } from '../../utils/overall';
 import { AuthStackScreenProps, RootStackScreenProps, RootTabScreenProps } from '../../types';
 import Tag from '../../components/Tag';
 import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
@@ -78,20 +78,6 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
   const onRefresh = () => {
     setCriteria(initialCriteria);
   };
-  const getStatusColor = (status): string => {
-    switch (status) {
-      case 'OPEN':
-        return theme.colors.tertiary;
-      case 'IN_PROGRESS':
-        // @ts-ignore
-        return theme.colors.success;
-      case 'ON_HOLD':
-        // @ts-ignore
-        return theme.colors.warning;
-      case 'COMPLETE':
-        return 'black';
-    }
-  };
 
   const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
     const paddingToBottom = 20;
@@ -130,7 +116,8 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
                 onPress={() => navigation.navigate('WODetails', { id: workOrder.id })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
-                <Tag text={t(workOrder.status)} color='white' backgroundColor={getStatusColor(workOrder.status)} />
+                <Tag text={t(workOrder.status)} color='white'
+                     backgroundColor={getStatusColor(workOrder.status, theme)} />
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                   <View style={{ marginRight: 10 }}>
                     <Tag text={`#${workOrder.id}`} color='white' backgroundColor='#545454' />

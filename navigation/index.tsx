@@ -137,21 +137,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
         component={HomeScreen}
         options={({ navigation }: RootTabScreenProps<'Home'>) => ({
           title: t('home'),
-          tabBarIcon: ({ color }) => <TabBarIcon name='home-outline' color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Modal')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1
-              })}>
-              <FontAwesome
-                name='info-circle'
-                size={25}
-                color={theme.colors.secondary}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          )
+          tabBarIcon: ({ color }) => <TabBarIcon name='home-outline' color={color} />
         })}
       />
       <BottomTab.Screen

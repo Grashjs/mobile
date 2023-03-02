@@ -3,7 +3,7 @@ import Meter from '../models/meter';
 import { FilterField, SearchCriteria, SearchOperator } from '../models/page';
 import React from 'react';
 import { sameDay } from './dates';
-import { Priority } from '../models/workOrder';
+import { Priority, WorkOrderStatus } from '../models/workOrder';
 import { MD3Theme } from 'react-native-paper';
 
 export const canAddReading = (meter: Meter): boolean => {
@@ -112,6 +112,27 @@ export const getPriorityColor = (priority: Priority, theme: MD3Theme): string =>
       return theme.colors.warning;
     case 'HIGH':
       return theme.colors.error;
+  }
+};
+export type ExtendedWorkOrderStatus = WorkOrderStatus | 'LATE_WO' | 'TODAY_WO' | 'HIGH_WO';
+export const getStatusColor = (status: ExtendedWorkOrderStatus, theme: MD3Theme): string => {
+  switch (status) {
+    case 'OPEN':
+      return theme.colors.tertiary;
+    case 'IN_PROGRESS':
+      // @ts-ignore
+      return theme.colors.success;
+    case 'ON_HOLD':
+      // @ts-ignore
+      return theme.colors.warning;
+    case 'LATE_WO':
+      return theme.colors.error;
+    case 'TODAY_WO':
+      return theme.colors.background;
+    case 'HIGH_WO':
+      return theme.colors.error;
+    case 'COMPLETE':
+      return 'black';
   }
 };
 
