@@ -1350,7 +1350,8 @@ const enJSON = {
   assign_asset: 'Assign Asset',
   add_options: 'Add options',
   required_task_label: 'The task label is required',
-  edit_work_order: 'Edit Work Order'
+  edit_work_order: 'Edit Work Order',
+  confirmation: 'Confirmation'
 };
 
 export default enJSON;
