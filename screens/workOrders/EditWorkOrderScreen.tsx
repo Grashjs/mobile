@@ -56,7 +56,6 @@ export default function CreateWorkOrderScreen({
       }}
       onSubmit={async (values) => {
         let formattedValues = formatWorkOrderValues(values);
-        console.log(formattedValues);
         return new Promise<void>((resolve, rej) => {
           //differentiate files from api and formattedValues
           const files = formattedValues.files.find((file) => file.id)

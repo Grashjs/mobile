@@ -118,11 +118,8 @@ export const formatWorkOrderValues = (values) => {
   newValues.asset = formatSelect(newValues.asset);
   newValues.assignedTo = formatSelectMultiple(newValues.assignedTo);
   newValues.customers = formatSelectMultiple(newValues.customers);
-  newValues.priority = newValues.priority ? newValues.priority.value
-    :
-    'NONE';
   newValues.category = formatSelect(newValues.category);
-  newValues.tasks = newValues.tasks.map(object => {
+  newValues.tasks = newValues.tasks?.map(object => {
     if (isTask(object)) {
       return object;
     } else {
