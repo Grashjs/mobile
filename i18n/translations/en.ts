@@ -1342,10 +1342,14 @@ const enJSON = {
   select_categories: 'Select Categories',
   estimated_hours_in_text: '{{hours}} estimated hours',
   create_meter: 'Create Meter',
-  create_part: 'Create Part',
   create_location: 'Create Location',
-  create_asset: 'Create Asset',
-  create_request: 'Create Request'
+  create_request: 'Create Request',
+  add_task: 'Add Task',
+  select_task_type: 'Select task type',
+  assign_user: 'Assign User',
+  assign_asset: 'Assign Asset',
+  add_options: 'Add options',
+  required_task_label: 'The task label is required'
 };
 
 export default enJSON;

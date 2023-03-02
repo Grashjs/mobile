@@ -1485,10 +1485,14 @@ const frJSON = {
   select_categories: 'Sélectionner des catégories',
   estimated_hours_in_text: '{{hours}} heures estimées',
   create_meter: 'Créer un compteur',
-  create_part: 'Créer une pièce ',
   create_location: 'Créer un emplacement',
-  create_asset: 'Créer un équipement',
-  create_request: 'Créer une demande'
+  create_request: 'Créer une demande',
+  add_task: 'Ajouter une tâche',
+  select_task_type: 'Choisissez le type de tâche',
+  assign_user: 'Attribuer à l\'utilisateur',
+  assign_asset: 'Attribuer l\'équipement',
+  add_options: 'Ajouter des options',
+  required_task_label: 'Le nom de la tâche est requis'
 };
 
 export default frJSON;

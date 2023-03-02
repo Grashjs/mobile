@@ -46,7 +46,7 @@ export type RootStackParamList = {
   SelectTeams: { onChange: (teams: TeamMiniDTO[]) => void; selected: number[]; multiple: boolean },
   SelectLocations: { onChange: (locations: LocationMiniDTO[]) => void; selected: number[]; multiple: boolean },
   SelectAssets: { onChange: (assets: AssetMiniDTO[]) => void; selected: number[]; multiple: boolean },
-  SelectTasks: { onChange: (tasks: Task[]) => void; selected: number[]; multiple: boolean },
+  SelectTasks: { onChange: (tasks: Task[]) => void; selected: Task[] },
   SelectCategories: { onChange: (categories: Category[]) => void; selected: number[]; multiple: boolean; type: string },
   CompleteWorkOrder: {
     onComplete: (signatureId: number | undefined,

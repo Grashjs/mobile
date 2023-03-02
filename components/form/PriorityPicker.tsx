@@ -12,8 +12,7 @@ export default function PriorityPicker({ value, onChange }: { value: string; onC
       label: getPriorityLabel(option, t),
       value: option,
       style: {
-        backgroundColor: option === value ? theme.colors.background : undefined,
-        color: option === value ? 'white' : 'black'
+        backgroundColor: option === value ? theme.colors.background : undefined
       }
     };
   });

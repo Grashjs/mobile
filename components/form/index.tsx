@@ -20,6 +20,8 @@ import { useState } from 'react';
 import CustomDateTimePicker from '../CustomDateTimePicker';
 import { Switch } from 'react-native-paper';
 import PriorityPicker from './PriorityPicker';
+import { Task } from '../../models/tasks';
+import { getTaskTypes } from '../../utils/displayers';
 
 interface OwnProps {
   fields: Array<IField>;
@@ -60,7 +62,7 @@ export default function Form(props: OwnProps) {
     let values: { label: string; value: number }[] | { label: string; value: number } = formik.values[field.name];
     const excluded = field.excluded;
     let screenPath: keyof RootStackParamList;
-    let onChange: (values: (PartMiniDTO | CustomerMiniDTO | VendorMiniDTO | UserMiniDTO | TeamMiniDTO | AssetMiniDTO | Category)[]) => void;
+    let onChange: (values: (PartMiniDTO | CustomerMiniDTO | VendorMiniDTO | UserMiniDTO | TeamMiniDTO | AssetMiniDTO | Category | Task)[]) => void;
     let additionalNavigationOptions = {};
     switch (field.type2) {
       case 'priority':
@@ -159,6 +161,16 @@ export default function Form(props: OwnProps) {
         };
         additionalNavigationOptions = { type: field.category };
         break;
+      case 'task':
+        screenPath = 'SelectTasks';
+        onChange = (values: Task[]) => {
+          const value = values.map(task => ({
+            label: task.taskBase.label,
+            value: task
+          }));
+          handleChange(formik, field.name, value);
+        };
+        break;
       default:
         return;
     }
@@ -183,7 +195,7 @@ export default function Form(props: OwnProps) {
         }} icon={'close-circle'} iconColor={theme.colors.error} />
       </View>);
     };
-    if (screenPath) {
+    if (screenPath && field.type2 !== 'task') {
       // @ts-ignore
       return (<TouchableOpacity onPress={() => props.navigation.navigate(screenPath, navigationOptions)}
                                 style={{
@@ -201,6 +213,36 @@ export default function Form(props: OwnProps) {
         </View>
         {field.multiple ? (Array.isArray(values) && !!values?.length && values.map(value =>
           renderValue(value))) : values && renderValue(values as { label: string; value: number })}
+        {!!formik.errors[field.name] && (<HelperText type={'error'}>{formik.errors[field.name]}</HelperText>)}
+      </TouchableOpacity>);
+    } else if (field.type2 === 'task') {
+      // @ts-ignore
+      return (<TouchableOpacity onPress={() => props.navigation.navigate(screenPath, navigationOptions)}
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'column'
+                                }}>
+        <View style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <Text>{field.label}</Text>
+          {!values && <IconButton icon={'plus-circle'} />}
+        </View>
+        {values && Array.isArray(values) && values.map(({ label, value }) => (
+          <View
+            style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            {/*@ts-ignore*/}
+            <View><Text
+              style={{ color: theme.colors.secondary }}>{getTaskTypes(t).find(type => type.value === value.taskBase.taskType)?.label}</Text>
+              <Text>{label}</Text>
+            </View>
+            <IconButton onPress={() => {
+              handleChange(formik, field.name, values.filter(item => value.id !== item.value.id));
+            }} icon={'close-circle'} iconColor={theme.colors.error} />
+          </View>))}
         {!!formik.errors[field.name] && (<HelperText type={'error'}>{formik.errors[field.name]}</HelperText>)}
       </TouchableOpacity>);
     }

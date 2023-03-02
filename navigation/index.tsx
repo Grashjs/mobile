@@ -40,6 +40,7 @@ import SelectTeamsModal from '../screens/modals/SelectTeamsModal';
 import SelectLocationsModal from '../screens/modals/SelectLocationsModal';
 import SelectAssetsModal from '../screens/modals/SelectAssetsModal';
 import SelectCategoriesModal from '../screens/modals/SelectCategoryModal';
+import SelectTasksModal from '../screens/modals/SelectTasksModal';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -94,6 +95,8 @@ function RootNavigator() {
                       options={{ title: t('select_assets') }} />
         <Stack.Screen name='SelectCategories' component={SelectCategoriesModal}
                       options={{ title: t('select_categories') }} />
+        <Stack.Screen name='SelectTasks' component={SelectTasksModal}
+                      options={{ title: t('add_task') }} />
       </Stack.Group>
     </Stack.Navigator>
   );
