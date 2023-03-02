@@ -128,7 +128,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
   const { t } = useTranslation();
   return (
     <BottomTab.Navigator
-      initialRouteName='WorkOrders'
+      initialRouteName='Home'
       screenOptions={{
         tabBarActiveTintColor: theme.colors.primary
       }}>

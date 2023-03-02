@@ -17,6 +17,7 @@ import { Searchbar } from 'react-native-paper';
 import { getPriorityColor, onSearchQueryChange } from '../../utils/overall';
 import { AuthStackScreenProps, RootStackScreenProps, RootTabScreenProps } from '../../types';
 import Tag from '../../components/Tag';
+import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
 
 function IconWithLabel({ icon, label }: { icon: IconSource, label: string }) {
   return (
@@ -104,12 +105,14 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
       'feedback'
     ]);
   };
-
+  useDebouncedEffect(() => {
+    onQueryChange(searchQuery);
+  }, [searchQuery], 1000);
   return (
     <View style={{ ...styles.container, backgroundColor: theme.colors.background }}>
       <Searchbar
         placeholder={t('search')}
-        onChangeText={onQueryChange}
+        onChangeText={setSearchQuery}
         value={searchQuery}
       />
       <ScrollView style={styles.scrollView}
