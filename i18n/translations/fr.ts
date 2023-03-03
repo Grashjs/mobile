@@ -1499,7 +1499,8 @@ const frJSON = {
   TODAY_WO: 'Pour aujourd\'hui',
   HIGH_WO: 'Priorité élevée',
   no_element_match_criteria: 'Aucun élément trouvé pour ces critères de recherche',
-  required_part_name: 'Le nom de la pièce est requis'
+  required_part_name: 'Le nom de la pièce est requis',
+  only_assigned_to_me: 'Uniquement assignés à moi'
 };
 
 export default frJSON;

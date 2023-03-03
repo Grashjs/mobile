@@ -8,14 +8,17 @@ export interface WoOverviewStats {
   compliant: number;
   avgCycleTime: number;
 }
+
 export interface IncompleteWoStats {
   total: number;
   averageAge: number;
 }
+
 interface BasicStats {
   count: number;
   estimatedHours: number;
 }
+
 export interface WOStatsByPriority {
   none: BasicStats;
   high: BasicStats;
@@ -42,23 +45,27 @@ export interface WOCountsByUser extends UserMiniDTO {
 export interface WOCountsByCategory extends CategoryMiniDTO {
   count: number;
 }
+
 export interface WOCountsByWeek {
   count: number;
   compliant: number;
   reactive: number;
   date: string;
 }
+
 export interface WOTimeByWeek {
   total: number;
   reactive: number;
   date: string;
 }
+
 export interface WOCostByDate {
   partCost: number;
   additionalCost: number;
   laborCost: number;
   date: string;
 }
+
 export interface WOCostsAndTime {
   total: number;
   average: number;
@@ -67,11 +74,22 @@ export interface WOCostsAndTime {
   partCost: number;
   laborTime: number;
 }
+
 export interface IncompleteWOByAsset extends AssetMiniDTO {
   count: number;
   averageAge: number;
 }
+
 export interface IncompleteWOByUser extends UserMiniDTO {
   count: number;
   averageAge: number;
+}
+
+export interface MobileWOStats {
+  open: number;
+  onHold: number;
+  inProgress: number;
+  complete: number;
+  today: number;
+  high: number;
 }

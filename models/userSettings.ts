@@ -4,4 +4,5 @@ export default interface UserSettings {
   emailUpdatesForWorkOrders: boolean;
   emailUpdatesForRequests: boolean;
   emailUpdatesForPurchaseOrders: boolean;
+  statsForAssignedWorkOrders: boolean;
 }

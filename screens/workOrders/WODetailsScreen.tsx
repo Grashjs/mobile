@@ -392,9 +392,9 @@ export default function WODetailsScreen({
           style={{
             paddingHorizontal: 20
           }}
-          refreshControl={
-            <RefreshControl refreshing={loading || loadingDetails}
-                            onRefresh={getInfos} />}
+          refres hControl={
+          <RefreshControl refreshing={loading || loadingDetails}
+                          onRefresh={getInfos} />}
         >
           <Text variant='displaySmall'>{workOrder.title}</Text>
           <View style={styles.row}>

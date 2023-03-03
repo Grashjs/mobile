@@ -7,7 +7,7 @@ import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
 import { getMoreWorkOrders, getWorkOrders } from '../../slices/workOrder';
-import { SearchCriteria } from '../../models/page';
+import { FilterField, SearchCriteria } from '../../models/page';
 import { ActivityIndicator, Button, Card, Chip, IconButton, MD3Theme, Text, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import WorkOrder, { Priority, WorkOrderStatus } from '../../models/workOrder';
@@ -18,6 +18,7 @@ import { getPriorityColor, getStatusColor, onSearchQueryChange } from '../../uti
 import { AuthStackScreenProps, RootStackScreenProps, RootTabScreenProps } from '../../types';
 import Tag from '../../components/Tag';
 import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
+import { useRoute } from '@react-navigation/native';
 
 function IconWithLabel({ icon, label }: { icon: IconSource, label: string }) {
   return (
@@ -29,13 +30,11 @@ function IconWithLabel({ icon, label }: { icon: IconSource, label: string }) {
 }
 
 export default function WorkOrdersScreen({ navigation, route }: RootTabScreenProps<'WorkOrders'>) {
-  const filterFields = route.params?.filterFields ?? [];
   const { t } = useTranslation();
   const [startedSearch, setStartedSearch] = useState<boolean>(false);
   const { workOrders, loadingGet, currentPageNum, lastPage } = useSelector(
     (state) => state.workOrders
   );
-  const [refreshing, setRefreshing] = useState<boolean>(false);
   const theme = useTheme();
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
@@ -45,29 +44,30 @@ export default function WorkOrdersScreen({ navigation, route }: RootTabScreenPro
   const {
     hasViewPermission
   } = useAuth();
-  const getInitialCriteria = () => {
+  const defaultFilterFields: FilterField[] = [
+    {
+      field: 'priority',
+      operation: 'in',
+      values: ['NONE', 'LOW', 'MEDIUM', 'HIGH'],
+      value: '',
+      enumName: 'PRIORITY'
+    },
+    {
+      field: 'status',
+      operation: 'in',
+      values: ['OPEN', 'IN_PROGRESS', 'ON_HOLD'],
+      value: '',
+      enumName: 'STATUS'
+    },
+    {
+      field: 'archived',
+      operation: 'eq',
+      value: false
+    }
+  ];
+  const getCriteriaFromFilterFields = (filterFields: FilterField[]) => {
     const initialCriteria: SearchCriteria = {
-      filterFields: [
-        {
-          field: 'priority',
-          operation: 'in',
-          values: ['NONE', 'LOW', 'MEDIUM', 'HIGH'],
-          value: '',
-          enumName: 'PRIORITY'
-        },
-        {
-          field: 'status',
-          operation: 'in',
-          values: ['OPEN', 'IN_PROGRESS', 'ON_HOLD'],
-          value: '',
-          enumName: 'STATUS'
-        },
-        {
-          field: 'archived',
-          operation: 'eq',
-          value: false
-        }
-      ],
+      filterFields,
       pageSize: 10,
       pageNum: 0,
       direction: 'DESC'
@@ -76,20 +76,23 @@ export default function WorkOrdersScreen({ navigation, route }: RootTabScreenPro
     filterFields.forEach(filterField => (newFilterFields = newFilterFields.filter(ff => ff.field != filterField.field)));
     return { ...initialCriteria, filterFields: [...newFilterFields, ...filterFields] };
   };
-  const [criteria, setCriteria] = useState<SearchCriteria>(getInitialCriteria());
+  const [criteria, setCriteria] = useState<SearchCriteria>(getCriteriaFromFilterFields(defaultFilterFields));
   useEffect(() => {
     if (hasViewPermission(PermissionEntity.WORK_ORDERS)) {
       dispatch(getWorkOrders({ ...criteria, pageSize: 10, pageNum: 0, direction: 'DESC' }));
     }
   }, [criteria]);
 
+  useEffect(() => {
+    const filterFields = route.params?.filterFields ?? [];
+    if (filterFields.length)
+      setCriteria(getCriteriaFromFilterFields(filterFields));
+  }, [route]);
+
   const onRefresh = () => {
-    setCriteria(getInitialCriteria());
+    setCriteria(getCriteriaFromFilterFields(route.params?.filterFields ?? defaultFilterFields));
   };
 
-  useEffect(() => {
-    setCriteria(getInitialCriteria());
-  }, [filterFields]);
   const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
     const paddingToBottom = 20;
     return layoutMeasurement.height + contentOffset.y >=

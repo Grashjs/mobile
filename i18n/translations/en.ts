@@ -1356,7 +1356,8 @@ const enJSON = {
   TODAY_WO: 'Today',
   HIGH_WO: 'High priority',
   no_element_match_criteria: 'No elements match this criteria',
-  required_part_name: 'Part name is required'
+  required_part_name: 'Part name is required',
+  only_assigned_to_me: 'Only assigned to me'
 };
 
 export default enJSON;
