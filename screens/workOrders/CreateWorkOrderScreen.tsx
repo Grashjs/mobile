@@ -52,7 +52,6 @@ export default function CreateWorkOrderScreen({
       }}
       onSubmit={async (values) => {
         let formattedValues = formatWorkOrderValues(values);
-        console.log(formattedValues);
         return new Promise<void>((resolve, rej) => {
           uploadFiles(formattedValues.files, formattedValues.image)
             .then((files) => {

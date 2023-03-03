@@ -7,16 +7,18 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import WorkOrder from './models/workOrder';
-import { PartMiniDTO } from './models/part';
+import Part, { PartMiniDTO } from './models/part';
 import { Task } from './models/tasks';
 import { Customer, CustomerMiniDTO } from './models/customer';
 import { VendorMiniDTO } from './models/vendor';
-import { UserMiniDTO } from './models/user';
+import User, { UserMiniDTO } from './models/user';
 import { TeamMiniDTO } from './models/team';
-import { LocationMiniDTO } from './models/location';
-import { AssetMiniDTO } from './models/asset';
+import Location, { LocationMiniDTO } from './models/location';
+import Asset, { AssetMiniDTO } from './models/asset';
 import Category from './models/category';
 import { FilterField } from './models/page';
+import Request from './models/request';
+import Meter from './models/meter';
 
 declare global {
   namespace ReactNavigation {
@@ -29,6 +31,12 @@ export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
   AddWorkOrder: undefined;
   EditWorkOrder: { workOrder: WorkOrder; tasks: Task[] };
+  EditRequest: { request: Request };
+  EditAsset: { asset: Asset };
+  EditLocation: { location: Location };
+  EditPart: { part: Part };
+  EditMeter: { meter: Meter };
+  EditUser: { user: User };
   AddRequest: undefined;
   AddAsset: undefined;
   AddLocation: undefined;

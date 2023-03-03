@@ -1498,7 +1498,8 @@ const frJSON = {
   LATE_WO: 'En retard',
   TODAY_WO: 'Pour aujourd\'hui',
   HIGH_WO: 'Priorité élevée',
-  no_element_match_criteria: 'Aucun élément trouvé pour ces critères de recherche'
+  no_element_match_criteria: 'Aucun élément trouvé pour ces critères de recherche',
+  required_part_name: 'Le nom de la pièce est requis'
 };
 
 export default frJSON;

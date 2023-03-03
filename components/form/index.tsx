@@ -1,9 +1,8 @@
-import { Text } from '../Themed';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { IField, IHash } from '../../models/form';
 import * as Yup from 'yup';
 import { ObjectSchema } from 'yup';
-import { Button, HelperText, IconButton, TextInput, useTheme } from 'react-native-paper';
+import { Button, HelperText, IconButton, TextInput, Text, useTheme } from 'react-native-paper';
 import { Formik, FormikProps } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types';
@@ -22,6 +21,7 @@ import { Switch } from 'react-native-paper';
 import PriorityPicker from './PriorityPicker';
 import { isTask, Task } from '../../models/tasks';
 import { getTaskTypes } from '../../utils/displayers';
+import NumberInput from '../NumberInput';
 
 interface OwnProps {
   fields: Array<IField>;
@@ -40,7 +40,6 @@ export default function Form(props: OwnProps) {
   const { t } = useTranslation();
   const shape: IHash<any> = {};
   const theme = useTheme();
-  const [numberInputValue, setNumberInputValue] = useState<number>(0);
   props.fields.forEach((f) => {
     shape[f.name] = Yup.string();
     if (f.required) {
@@ -203,7 +202,8 @@ export default function Form(props: OwnProps) {
     };
     if (screenPath && field.type2 !== 'task') {
       // @ts-ignore
-      return (<TouchableOpacity onPress={() => props.navigation.navigate(screenPath, navigationOptions)}
+      return (<TouchableOpacity disabled={formik.isSubmitting}
+                                onPress={() => props.navigation.navigate(screenPath, navigationOptions)}
                                 style={{
                                   display: 'flex',
                                   flexDirection: 'column'
@@ -219,12 +219,12 @@ export default function Form(props: OwnProps) {
         </View>
         {field.multiple ? (Array.isArray(values) && !!values?.length && values.map(value =>
           renderValue(value))) : values && renderValue(values as { label: string; value: number })}
-        {!!formik.errors[field.name] && (<HelperText type={'error'}>{formik.errors[field.name]}</HelperText>)}
       </TouchableOpacity>);
     } else if (field.type2 === 'task') {
       // @ts-ignore
       // @ts-ignore
-      return (<TouchableOpacity onPress={() => props.navigation.navigate(screenPath, navigationOptions)}
+      return (<TouchableOpacity disabled={formik.isSubmitting}
+                                onPress={() => props.navigation.navigate(screenPath, navigationOptions)}
                                 style={{
                                   display: 'flex',
                                   flexDirection: 'column'
@@ -267,7 +267,6 @@ export default function Form(props: OwnProps) {
               }));
             }} icon={'close-circle'} iconColor={theme.colors.error} />
           </View>))}
-        {!!formik.errors[field.name] && (<HelperText type={'error'}>{formik.errors[field.name]}</HelperText>)}
       </TouchableOpacity>);
     }
   };
@@ -303,39 +302,30 @@ export default function Form(props: OwnProps) {
                       borderRadius: 5
                     }}>
                 {field.type === 'text' ?
-                  <View style={{ width: '100%', alignItems: 'stretch' }}>
-                    <TextInput style={{ width: '100%' }} mode='outlined'
-                               error={!!formik.errors[field.name] || field.error}
-                               label={field.label}
-                               placeholder={field.placeholder ?? field.label}
-                               onBlur={formik.handleBlur(field.name)}
-                               onChangeText={(text) => handleChange(formik, field.name, text)}
-                               value={formik.values[field.name]}
-                               disabled={formik.isSubmitting}
-                               multiline={field.multiple}
-                    />
-                    {Boolean(formik.errors[field.name]) && <HelperText type='error'
-                    >{t(formik.errors[field.name]?.toString())}</HelperText>}
-                  </View> : field.type === 'number' ?
-                    <View style={{ width: '100%', alignItems: 'stretch' }}>
-                      <TextInput style={{ width: '100%' }} mode='outlined'
+                  <TextInput style={{ width: '100%' }} mode='outlined'
+                             error={!!formik.errors[field.name] || field.error}
+                             label={field.label}
+                             placeholder={field.placeholder ?? field.label}
+                             onBlur={formik.handleBlur(field.name)}
+                             onChangeText={(text) => handleChange(formik, field.name, text)}
+                             value={formik.values[field.name]}
+                             disabled={formik.isSubmitting}
+                             multiline={field.multiple}
+                  />
+                  : field.type === 'number' ?
+                    <NumberInput style={{ width: '100%' }} mode='outlined'
                                  error={!!formik.errors[field.name] || field.error}
                                  label={field.label}
                                  defaultValue={formik.values[field.name]}
                                  placeholder={field.placeholder ?? field.label}
                                  onBlur={formik.handleBlur(field.name)}
                                  onChangeText={(newValue) => {
-                                   const formattedValue = Number(newValue.replace(/[^0-9]/g, ''));
-                                   setNumberInputValue(formattedValue);
-                                   handleChange(formik, field.name, formattedValue);
+                                   handleChange(formik, field.name, newValue);
                                  }}
-                                 value={numberInputValue.toString()}
                                  disabled={formik.isSubmitting}
                                  multiline={field.multiple}
-                      />
-                      {Boolean(formik.errors[field.name]) && <HelperText type='error'
-                      >{t(formik.errors[field.name]?.toString())}</HelperText>}
-                    </View> : field.type === 'file' ? <FileUpload
+                    />
+                    : field.type === 'file' ? <FileUpload
                       multiple={field.multiple}
                       title={field.label}
                       type={field.fileType || 'file'}
@@ -359,7 +349,11 @@ export default function Form(props: OwnProps) {
                                   onValueChange={(value) => {
                                     handleChange(formik, field.name, value);
                                   }} />
-                        </View> : renderSelect(formik, field)}
+                        </View> : field.type === 'titleGroupField' ?
+                          <Text variant={'titleMedium'}
+                                style={{ color: theme.colors.primary }}>{field.label}</Text> : renderSelect(formik, field)}
+                {Boolean(formik.errors[field.name]) && <HelperText type='error'
+                >{t(formik.errors[field.name]?.toString())}</HelperText>}
               </View>
             )}
             < Button

@@ -12,7 +12,7 @@ import { getImageAndFiles } from '../../utils/overall';
 import { useDispatch } from '../../store';
 import { addWorkOrder } from '../../slices/workOrder';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
-import { getWorkOrderFields } from '../../utils/fields';
+import { formatRequestValues, getWorkOrderFields } from '../../utils/fields';
 import useAuth from '../../hooks/useAuth';
 import { getWOBaseFields } from '../../utils/woBase';
 import { addRequest } from '../../slices/request';
@@ -20,10 +20,9 @@ import { addRequest } from '../../slices/request';
 export default function CreateRequestScreen({
                                               navigation,
                                               route
-                                            }: RootStackScreenProps<'AddWorkOrder'>) {
+                                            }: RootStackScreenProps<'AddRequest'>) {
   const { t } = useTranslation();
-  const [initialDueDate, setInitialDueDate] = useState<Date>(null);
-  const { uploadFiles, getWOFieldsAndShapes } = useContext(
+  const { uploadFiles } = useContext(
     CompanySettingsContext
   );
   const {
@@ -36,19 +35,11 @@ export default function CreateRequestScreen({
   const dispatch = useDispatch();
   const onCreationSuccess = () => {
     showSnackBar(t('request_create_success'), 'success');
+    navigation.goBack();
   };
   const onCreationFailure = (err) =>
     showSnackBar(t('request_create_failure'), 'error');
-  const formatValues = (values) => {
-    values.primaryUser = formatSelect(values.primaryUser);
-    values.location = formatSelect(values.location);
-    values.team = formatSelect(values.team);
-    values.asset = formatSelect(values.asset);
-    values.assignedTo = formatSelectMultiple(values.assignedTo);
-    values.priority = values.priority?.value;
-    values.category = formatSelect(values.category);
-    return values;
-  };
+
   const defaultFields: Array<IField> = [...getWOBaseFields(t)];
   const defaultShape = {
     title: Yup.string().required(t('required_request_name'))
@@ -112,7 +103,7 @@ export default function CreateRequestScreen({
       onChange={({ field, e }) => {
       }}
       onSubmit={async (values) => {
-        let formattedValues = formatValues(values);
+        let formattedValues = formatRequestValues(values);
         return new Promise<void>((resolve, rej) => {
           uploadFiles(formattedValues.files, formattedValues.image)
             .then((files) => {

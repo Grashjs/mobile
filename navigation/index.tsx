@@ -20,7 +20,11 @@ import LoadingScreen from '../screens/auth/LoadingScreen';
 import WODetailsScreen from '../screens/workOrders/WODetailsScreen';
 import CreateWorkOrder from '../screens/workOrders/CreateWorkOrderScreen';
 import EditWorkOrder from '../screens/workOrders/EditWorkOrderScreen';
-import CreateRequest from '../screens/workOrders/CreateRequestScreen';
+import CreateRequestScreen from '../screens/requests/CreateRequestScreen';
+import CreateAssetScreen from '../screens/assets/CreateAssetScreen';
+import CreateLocationScreen from '../screens/locations/CreateLocationScreen';
+import CreateMeterScreen from '../screens/meters/CreateMeterScreen';
+import CreatePartScreen from '../screens/parts/CreatePartScreen';
 import { AuthStackParamList, RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import useAuth from '../hooks/useAuth';
@@ -71,11 +75,11 @@ function RootNavigator() {
       <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Screen name='AddWorkOrder' component={CreateWorkOrder} options={{ title: t('create_work_order') }} />
       <Stack.Screen name='EditWorkOrder' component={EditWorkOrder} options={{ title: t('edit_work_order') }} />
-      <Stack.Screen name='AddRequest' component={CreateRequest} options={{ title: t('create_request') }} />
-      <Stack.Screen name='AddAsset' component={CreateWorkOrder} options={{ title: t('create_asset') }} />
-      <Stack.Screen name='AddLocation' component={CreateWorkOrder} options={{ title: t('create_location') }} />
-      <Stack.Screen name='AddPart' component={CreateWorkOrder} options={{ title: t('create_part') }} />
-      <Stack.Screen name='AddMeter' component={CreateWorkOrder} options={{ title: t('create_meter') }} />
+      <Stack.Screen name='AddRequest' component={CreateRequestScreen} options={{ title: t('create_request') }} />
+      <Stack.Screen name='AddAsset' component={CreateAssetScreen} options={{ title: t('create_asset') }} />
+      <Stack.Screen name='AddLocation' component={CreateLocationScreen} options={{ title: t('create_location') }} />
+      <Stack.Screen name='AddPart' component={CreatePartScreen} options={{ title: t('create_part') }} />
+      <Stack.Screen name='AddMeter' component={CreateMeterScreen} options={{ title: t('create_meter') }} />
       <Stack.Screen name='AddUser' component={CreateWorkOrder} options={{ title: t('invite_users') }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name='Modal' component={ModalScreen} />
