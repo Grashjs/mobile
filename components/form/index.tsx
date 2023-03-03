@@ -164,7 +164,7 @@ export default function Form(props: OwnProps) {
         screenPath = 'SelectTasks';
         onChange = (values: Task[]) => {
           const value = values.map(task => ({
-            label: isTask(task) ? task.taskBase.label : task.label,
+            label: task.taskBase.label,
             value: task
           }));
           handleChange(formik, field.name, value);
@@ -256,15 +256,16 @@ export default function Form(props: OwnProps) {
               <Text>{isTask(object) ? object.taskBase.label : object.label}</Text>
             </View>
             <IconButton onPress={() => {
-              handleChange(formik, field.name, values.filter(item => {
-                let id;
-                if (isTask(object)) {
-                  id = object.id;
-                } else {
-                  id = object.value.id;
-                }
-                return id !== (isTask(object) ? item.id : item.value.id);
-              }));
+              if (Array.isArray(values))
+                handleChange(formik, field.name, values.filter(item => {
+                  let id;
+                  if (isTask(object)) {
+                    id = object.id;
+                  } else {
+                    id = object.value.id;
+                  }
+                  return id !== (isTask(object) ? item.id : item.value.id);
+                }));
             }} icon={'close-circle'} iconColor={theme.colors.error} />
           </View>))}
       </TouchableOpacity>);

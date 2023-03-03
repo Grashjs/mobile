@@ -1,38 +1,33 @@
 import {
-  Image, Linking,
+  Image,
+  Linking,
   LogBox,
-  Pressable, RefreshControl,
+  Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   TouchableOpacity
 } from 'react-native';
 import { View } from '../../components/Themed';
 import * as FileSystem from 'expo-file-system';
+import { RootStackScreenProps } from '../../types';
 import {
-  RootStackParamList,
-  RootStackScreenProps,
-  RootTabScreenProps
-} from '../../types';
-import {
-  ActivityIndicator,
   AnimatedFAB,
   Button,
-  Card,
+  Dialog,
   Divider,
   IconButton,
-  List,
+  Portal,
+  ProgressBar,
   Provider,
   Text,
-  useTheme,
-  ProgressBar, Dialog, Portal
+  useTheme
 } from 'react-native-paper';
 import Dropdown from 'react-native-dropdown-picker';
 import { useTranslation } from 'react-i18next';
-import { useContext, useEffect, useRef, useState } from 'react';
-import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
-import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
 import * as React from 'react';
-import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
+import { useContext, useEffect, useState } from 'react';
+import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import Tag from '../../components/Tag';
 import { getPriorityColor } from '../../utils/overall';
 import { PermissionEntity } from '../../models/role';
@@ -40,19 +35,15 @@ import useAuth from '../../hooks/useAuth';
 import { controlTimer, getLabors } from '../../slices/labor';
 import { useDispatch, useSelector } from '../../store';
 import { durationToHours } from '../../utils/formatters';
-import {
-  editWOPartQuantities,
-  getPartQuantitiesByWorkOrder
-} from '../../slices/partQuantity';
+import { editWOPartQuantities, getPartQuantitiesByWorkOrder } from '../../slices/partQuantity';
 import { getAdditionalCosts } from '../../slices/additionalCost';
 import { getRelations } from '../../slices/relation';
 import { getTasks } from '../../slices/task';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
-import { date } from 'yup';
 import { deleteWorkOrder, editWorkOrder, getPDFReport } from '../../slices/workOrder';
 import { PlanFeature } from '../../models/subscriptionPlan';
 import PartQuantities from '../../components/PartQuantities';
-import { getTeamsMini } from '../../slices/team';
+import { SheetManager } from 'react-native-actions-sheet';
 
 export default function WODetailsScreen({
                                           navigation,
@@ -93,7 +84,6 @@ export default function WODetailsScreen({
   const [controllingTime, setControllingTime] = useState<boolean>(false);
   const { getFormattedDate, getUserNameById, getFormattedCurrency } =
     useContext(CompanySettingsContext);
-  const actionSheetRef = useRef<ActionSheetRef>(null);
   const [isExtended, setIsExtended] = React.useState(true);
   const statuses = ['OPEN', 'ON_HOLD', 'IN_PROGRESS', 'COMPLETE'].map(
     (status) => ({ value: status, label: t(status) })
@@ -152,7 +142,20 @@ export default function WODetailsScreen({
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Pressable onPress={() => actionSheetRef.current.show()}>
+        <Pressable onPress={() => {
+          SheetManager.show('work-order-details-sheet', {
+            payload: {
+              onEdit: () => navigation.navigate('EditWorkOrder', { workOrder, tasks }),
+              onOpenArchive: () => {
+                setOpenArchive(true);
+              },
+              onDelete: () => {
+                setOpenDelete(true);
+              },
+              onGenerateReport
+            }
+          });
+        }}>
           <IconButton icon='dots-vertical' />
         </Pressable>
       )
@@ -185,7 +188,6 @@ export default function WODetailsScreen({
   };
   const onGenerateReport = () => {
     setLoading(true);
-    actionSheetRef.current.hide();
     dispatch(getPDFReport(workOrder.id))
       .then(async (url: string) => {
         try {
@@ -305,58 +307,6 @@ export default function WODetailsScreen({
       onStatusChange(dropDownValue);
   }, [dropDownValue]);
 
-  const renderActionSheet = () => {
-    const options: {
-      title: string;
-      icon: IconSource;
-      onPress: () => void;
-      color?: string;
-    }[] = [
-      {
-        title: t('edit'),
-        icon: 'pencil',
-        onPress: () => navigation.navigate('EditWorkOrder', { workOrder, tasks })
-      },
-      { title: t('to_export'), icon: 'download-outline', onPress: onGenerateReport },
-      {
-        title: t('archive'), icon: 'archive-outline', onPress: () => {
-          setOpenArchive(true);
-          actionSheetRef.current.hide();
-        }
-      },
-      {
-        title: t('to_delete'),
-        icon: 'delete-outline',
-        onPress: () => {
-          actionSheetRef.current.hide();
-          setOpenDelete(true);
-        },
-        color: theme.colors.error
-      }
-    ];
-
-    return (
-      <ActionSheet ref={actionSheetRef}>
-        <View style={{ padding: 15 }}>
-          <Divider />
-          <List.Section>
-            {options.map((entity, index) => (
-              <List.Item
-                key={index}
-                titleStyle={{ color: entity.color }}
-                title={entity.title}
-                left={() => (
-                  <List.Icon icon={entity.icon} color={entity.color} />
-                )}
-                onPress={entity.onPress}
-              />
-            ))}
-          </List.Section>
-        </View>
-      </ActionSheet>
-    );
-  };
-
   function ObjectField({
                          label,
                          value
@@ -427,7 +377,6 @@ export default function WODetailsScreen({
   if (workOrder) return (
     <View style={styles.container}>
       <Provider theme={theme}>
-        {renderActionSheet()}
         {renderConfirmDelete()}
         {renderConfirmArchive()}
         <ScrollView

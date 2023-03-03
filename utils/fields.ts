@@ -126,6 +126,7 @@ export const formatWorkOrderValues = (values) => {
       return object.value;
     }
   }) ?? [];
+  console.log('bhui', newValues.tasks);
   return newValues;
 };
 export const formatRequestValues = (values) => {
