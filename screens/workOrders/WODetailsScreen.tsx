@@ -61,20 +61,20 @@ export default function WODetailsScreen({
   const [loading, setLoading] = useState<boolean>(false);
   const theme = useTheme();
   const dispatch = useDispatch();
-  const { partQuantitiesByWorkOrder } = useSelector(
+  const { partQuantitiesByWorkOrder, loadingPartQuantities } = useSelector(
     (state) => state.partQuantities
   );
   const partQuantities = partQuantitiesByWorkOrder[workOrder?.id] ?? [];
   const { workOrderHistories } = useSelector(
     (state) => state.workOrderHistories
   );
-  const { relationsByWorkOrder } = useSelector((state) => state.relations);
-  const { tasksByWorkOrder } = useSelector((state) => state.tasks);
+  const { relationsByWorkOrder, loadingRelations } = useSelector((state) => state.relations);
+  const { tasksByWorkOrder, loadingTasks } = useSelector((state) => state.tasks);
   const tasks = tasksByWorkOrder[workOrder?.id] ?? [];
   const currentWorkOrderHistories = workOrderHistories[workOrder?.id] ?? [];
   const currentWorkOrderRelations = relationsByWorkOrder[workOrder?.id] ?? [];
-  const { costsByWorkOrder } = useSelector((state) => state.additionalCosts);
-  const { timesByWorkOrder } = useSelector((state) => state.labors);
+  const { costsByWorkOrder, loadingCosts } = useSelector((state) => state.additionalCosts);
+  const { timesByWorkOrder, loadingLabors } = useSelector((state) => state.labors);
   const labors = timesByWorkOrder[workOrder?.id] ?? [];
   const primaryTime = labors.find(
     (labor) => labor.logged && labor.assignedTo.id === user.id
@@ -90,6 +90,11 @@ export default function WODetailsScreen({
   );
   const [openDelete, setOpenDelete] = React.useState(false);
   const [openArchive, setOpenArchive] = React.useState(false);
+  const loadingDetails = loadingPartQuantities[workOrder.id] ||
+    loadingTasks[workOrder.id] ||
+    loadingCosts[workOrder.id] ||
+    loadingLabors[workOrder.id]
+    || loadingRelations[workOrder.id];
   const fieldsToRender: {
     label: string;
     value: string | number;
@@ -142,7 +147,7 @@ export default function WODetailsScreen({
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Pressable onPress={() => {
+        !loadingTasks[workOrder?.id] && <Pressable onPress={() => {
           SheetManager.show('work-order-details-sheet', {
             payload: {
               onEdit: () => navigation.navigate('EditWorkOrder', { workOrder, tasks }),
@@ -160,8 +165,11 @@ export default function WODetailsScreen({
         </Pressable>
       )
     });
+    //LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+  }, [loadingTasks]);
+
+  useEffect(() => {
     getInfos();
-    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   }, []);
 
   const onDeleteSuccess = () => {
@@ -385,7 +393,8 @@ export default function WODetailsScreen({
             paddingHorizontal: 20
           }}
           refreshControl={
-            <RefreshControl refreshing={loading} onRefresh={getInfos} />}
+            <RefreshControl refreshing={loading || loadingDetails}
+                            onRefresh={getInfos} />}
         >
           <Text variant='displaySmall'>{workOrder.title}</Text>
           <View style={styles.row}>

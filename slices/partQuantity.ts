@@ -6,14 +6,17 @@ import PartQuantity from '../models/partQuantity';
 import api from '../utils/api';
 
 const basePath = 'part-quantities';
+
 interface PartQuantityState {
   partQuantitiesByWorkOrder: { [id: number]: PartQuantity[] };
   partQuantitiesByPurchaseOrder: { [id: number]: PartQuantity[] };
+  loadingPartQuantities: { [id: number]: boolean };
 }
 
 const initialState: PartQuantityState = {
   partQuantitiesByWorkOrder: {},
-  partQuantitiesByPurchaseOrder: {}
+  partQuantitiesByPurchaseOrder: {},
+  loadingPartQuantities: {}
 };
 
 const slice = createSlice({
@@ -65,6 +68,13 @@ const slice = createSlice({
             return partQuantity;
           } else return pq;
         });
+    },
+    setLoadingByWorkOrder(
+      state: PartQuantityState,
+      action: PayloadAction<{ loading: boolean, id: number }>
+    ) {
+      const { loading, id } = action.payload;
+      state.loadingPartQuantities = { ...state.loadingPartQuantities, [id]: loading };
     }
   }
 });
@@ -73,84 +83,90 @@ export const reducer = slice.reducer;
 
 export const getPartQuantitiesByWorkOrder =
   (id: number): AppThunk =>
-  async (dispatch) => {
-    const partQuantities = await api.get<PartQuantity[]>(
-      `${basePath}/work-order/${id}`
-    );
-    dispatch(
-      slice.actions.getPartQuantitiesByWorkOrder({ id, partQuantities })
-    );
-  };
+    async (dispatch) => {
+      dispatch(slice.actions.setLoadingByWorkOrder({ id, loading: true }));
+      try {
+        const partQuantities = await api.get<PartQuantity[]>(
+          `${basePath}/work-order/${id}`
+        );
+        dispatch(
+          slice.actions.getPartQuantitiesByWorkOrder({ id, partQuantities })
+        );
+      } catch {
+      } finally {
+        dispatch(slice.actions.setLoadingByWorkOrder({ id, loading: false }));
+      }
+    };
 
 export const getPartQuantitiesByPurchaseOrder =
   (id: number): AppThunk =>
-  async (dispatch) => {
-    const partQuantities = await api.get<PartQuantity[]>(
-      `${basePath}/purchase-order/${id}`
-    );
-    dispatch(
-      slice.actions.getPartQuantitiesByPurchaseOrder({ id, partQuantities })
-    );
-  };
+    async (dispatch) => {
+      const partQuantities = await api.get<PartQuantity[]>(
+        `${basePath}/purchase-order/${id}`
+      );
+      dispatch(
+        slice.actions.getPartQuantitiesByPurchaseOrder({ id, partQuantities })
+      );
+    };
 
 export const editWOPartQuantities =
   (id: number, parts: number[]): AppThunk =>
-  async (dispatch) => {
-    const partQuantities = await api.patch<PartQuantity[]>(
-      `${basePath}/work-order/${id}`,
-      parts,
-      null,
-      true
-    );
-    dispatch(
-      slice.actions.getPartQuantitiesByWorkOrder({
-        id,
-        partQuantities
-      })
-    );
-  };
+    async (dispatch) => {
+      const partQuantities = await api.patch<PartQuantity[]>(
+        `${basePath}/work-order/${id}`,
+        parts,
+        null,
+        true
+      );
+      dispatch(
+        slice.actions.getPartQuantitiesByWorkOrder({
+          id,
+          partQuantities
+        })
+      );
+    };
 
 export const editPOPartQuantities =
   (id: number, partQuantities: { part: Part; quantity: number }[]): AppThunk =>
-  async (dispatch) => {
-    const partQuantitiesResponse = await api.patch<PartQuantity[]>(
-      `${basePath}/purchase-order/${id}`,
-      partQuantities,
-      null,
-      true
-    );
-    dispatch(
-      slice.actions.getPartQuantitiesByPurchaseOrder({
-        id,
-        partQuantities: partQuantitiesResponse
-      })
-    );
-  };
+    async (dispatch) => {
+      const partQuantitiesResponse = await api.patch<PartQuantity[]>(
+        `${basePath}/purchase-order/${id}`,
+        partQuantities,
+        null,
+        true
+      );
+      dispatch(
+        slice.actions.getPartQuantitiesByPurchaseOrder({
+          id,
+          partQuantities: partQuantitiesResponse
+        })
+      );
+    };
 export const editPartQuantity =
   (rootId: number, id: number, quantity: number, isPO: boolean): AppThunk =>
-  async (dispatch) => {
-    const partQuantity = await api.patch<PartQuantity>(
-      `${basePath}/${id}`,
-      { quantity },
-      null,
-      true
-    );
-    if (isPO)
-      dispatch(
-        slice.actions.editPOPartQuantity({
-          purchaseOrderId: rootId,
-          id,
-          partQuantity
-        })
+    async (dispatch) => {
+      const partQuantity = await api.patch<PartQuantity>(
+        `${basePath}/${id}`,
+        { quantity },
+        null,
+        true
       );
-    else
-      dispatch(
-        slice.actions.editWOPartQuantity({
-          workOrderId: rootId,
-          id,
-          partQuantity
-        })
-      );
-  };
+      if (isPO)
+        dispatch(
+          slice.actions.editPOPartQuantity({
+            purchaseOrderId: rootId,
+            id,
+            partQuantity
+          })
+        );
+      else
+        dispatch(
+          slice.actions.editWOPartQuantity({
+            workOrderId: rootId,
+            id,
+            partQuantity
+          })
+        );
+    };
 
 export default slice;
