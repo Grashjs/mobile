@@ -6,21 +6,92 @@ import { RootTabScreenProps } from '../types';
 import { IconButton, useTheme, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { ExtendedWorkOrderStatus, getStatusColor } from '../utils/overall';
+import { FilterField } from '../models/page';
 
 export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
   const theme = useTheme();
   const { t } = useTranslation();
   const iconButtonStyle = { ...styles.iconButton, backgroundColor: theme.colors.background };
-  const stats: { label: ExtendedWorkOrderStatus; value: number }[] = [{ label: 'OPEN', value: 5 }, {
+  const getTodayDates = () => {
+    const date1 = new Date();
+    const date2 = new Date();
+    date1.setHours(0, 0, 0, 0);
+    date2.setHours(24, 0, 0, 0);
+    return [date1, date2];
+  };
+  const stats: { label: ExtendedWorkOrderStatus; value: number, filterFields: FilterField[] }[] = [{
+    label: 'OPEN',
+    value: 5,
+    filterFields: [{
+      field: 'status',
+      operation: 'in',
+      value: '',
+      values: ['OPEN'],
+      enumName: 'STATUS'
+    }]
+  }, {
     label: 'ON_HOLD',
-    value: 2
+    value: 2,
+    filterFields: [{
+      field: 'status',
+      operation: 'in',
+      value: '',
+      values: ['ON_HOLD'],
+      enumName: 'STATUS'
+    }]
   }, {
     label: 'IN_PROGRESS',
-    value: 5
-  }, { label: 'COMPLETE', value: 2 },
-    { label: 'LATE_WO', value: 3 },
-    { label: 'TODAY_WO', value: 5 },
-    { label: 'HIGH_WO', value: 4 }];
+    value: 5,
+    filterFields: [{
+      field: 'status',
+      operation: 'in',
+      value: '',
+      values: ['IN_PROGRESS'],
+      enumName: 'STATUS'
+    }]
+  }, {
+    label: 'COMPLETE', value: 2,
+    filterFields: [{
+      field: 'status',
+      operation: 'in',
+      value: '',
+      values: ['COMPLETE'],
+      enumName: 'STATUS'
+    }]
+  },
+    // {
+    //   label: 'LATE_WO', value: 3,
+    //   filterField: {
+    //     field: 'dueDate',
+    //     operation: 'ge',
+    //     value: 'ON_HOLD'
+    //   }
+    // },
+    {
+      label: 'TODAY_WO', value: 5,
+      filterFields: [{
+        field: 'dueDate',
+        operation: 'ge',
+        value: getTodayDates()[0],
+        enumName: 'JS_DATE'
+      },
+        {
+          field: 'dueDate',
+          operation: 'le',
+          value: getTodayDates()[1],
+          enumName: 'JS_DATE'
+        }]
+    },
+    {
+      label: 'HIGH_WO', value: 4,
+      filterFields: [{
+        field: 'priority',
+        operation: 'in',
+        value: '',
+        values: ['HIGH'],
+        enumName: 'PRIORITY'
+      }]
+    }];
   return (
     <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background }}>
       <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -45,7 +116,9 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
               justifyContent: 'space-between',
               alignItems: 'center',
               width: '100%'
-            }}>
+            }}
+            onPress={() => navigation.navigate('WorkOrders', { filterFields: stat.filterFields })}
+          >
             <View style={{
               display: 'flex',
               flexDirection: 'row',

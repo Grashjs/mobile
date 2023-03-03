@@ -48,6 +48,7 @@ export default function CompleteWorkOrderModal({ navigation, route }: RootStackS
         validation={Yup.object().shape(getFieldsAndShape()[1])}
         submitText={t('complete_work_order')}
         values={{}}
+        navigation={navigation}
         onChange={({ field, e }) => {
         }}
         onSubmit={async (values) => {

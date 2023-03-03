@@ -44,6 +44,7 @@ const slice = createSlice({
     ) {
       const { workOrders } = action.payload;
       state.workOrders = workOrders;
+      state.currentPageNum = 0;
       state.lastPage = workOrders.last;
     },
     getMoreWorkOrders(

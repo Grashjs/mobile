@@ -28,8 +28,10 @@ function IconWithLabel({ icon, label }: { icon: IconSource, label: string }) {
   );
 }
 
-export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'WorkOrders'>) {
+export default function WorkOrdersScreen({ navigation, route }: RootTabScreenProps<'WorkOrders'>) {
+  const filterFields = route.params?.filterFields ?? [];
   const { t } = useTranslation();
+  const [startedSearch, setStartedSearch] = useState<boolean>(false);
   const { workOrders, loadingGet, currentPageNum, lastPage } = useSelector(
     (state) => state.workOrders
   );
@@ -43,42 +45,51 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
   const {
     hasViewPermission
   } = useAuth();
-  const initialCriteria: SearchCriteria = {
-    filterFields: [
-      {
-        field: 'priority',
-        operation: 'in',
-        values: ['NONE', 'LOW', 'MEDIUM', 'HIGH'],
-        value: '',
-        enumName: 'PRIORITY'
-      },
-      {
-        field: 'status',
-        operation: 'in',
-        values: ['OPEN', 'IN_PROGRESS', 'ON_HOLD'],
-        value: '',
-        enumName: 'STATUS'
-      },
-      {
-        field: 'archived',
-        operation: 'eq',
-        value: false
-      }
-    ],
-    pageSize: 10,
-    pageNum: 0,
-    direction: 'DESC'
+  const getInitialCriteria = () => {
+    const initialCriteria: SearchCriteria = {
+      filterFields: [
+        {
+          field: 'priority',
+          operation: 'in',
+          values: ['NONE', 'LOW', 'MEDIUM', 'HIGH'],
+          value: '',
+          enumName: 'PRIORITY'
+        },
+        {
+          field: 'status',
+          operation: 'in',
+          values: ['OPEN', 'IN_PROGRESS', 'ON_HOLD'],
+          value: '',
+          enumName: 'STATUS'
+        },
+        {
+          field: 'archived',
+          operation: 'eq',
+          value: false
+        }
+      ],
+      pageSize: 10,
+      pageNum: 0,
+      direction: 'DESC'
+    };
+    let newFilterFields = [...initialCriteria.filterFields];
+    filterFields.forEach(filterField => (newFilterFields = newFilterFields.filter(ff => ff.field != filterField.field)));
+    return { ...initialCriteria, filterFields: [...newFilterFields, ...filterFields] };
   };
-  const [criteria, setCriteria] = useState<SearchCriteria>(initialCriteria);
+  const [criteria, setCriteria] = useState<SearchCriteria>(getInitialCriteria());
   useEffect(() => {
-    if (hasViewPermission(PermissionEntity.WORK_ORDERS))
-      dispatch(getWorkOrders(criteria));
+    if (hasViewPermission(PermissionEntity.WORK_ORDERS)) {
+      dispatch(getWorkOrders({ ...criteria, pageSize: 10, pageNum: 0, direction: 'DESC' }));
+    }
   }, [criteria]);
 
   const onRefresh = () => {
-    setCriteria(initialCriteria);
+    setCriteria(getInitialCriteria());
   };
 
+  useEffect(() => {
+    setCriteria(getInitialCriteria());
+  }, [filterFields]);
   const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
     const paddingToBottom = 20;
     return layoutMeasurement.height + contentOffset.y >=
@@ -92,12 +103,14 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
     ]);
   };
   useDebouncedEffect(() => {
-    onQueryChange(searchQuery);
+    if (startedSearch)
+      onQueryChange(searchQuery);
   }, [searchQuery], 1000);
   return (
     <View style={{ ...styles.container, backgroundColor: theme.colors.background }}>
       <Searchbar
         placeholder={t('search')}
+        onFocus={() => setStartedSearch(true)}
         onChangeText={setSearchQuery}
         value={searchQuery}
       />
@@ -111,7 +124,7 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
                   refreshControl={
                     <RefreshControl refreshing={loadingGet} onRefresh={onRefresh} />}
                   scrollEventThrottle={400}>
-        {workOrders.content.map(workOrder => (
+        {!!workOrders.content.length ? workOrders.content.map(workOrder => (
           <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={workOrder.id}
                 onPress={() => navigation.navigate('WODetails', { id: workOrder.id })}>
             <Card.Content>
@@ -133,7 +146,9 @@ export default function WorkOrdersScreen({ navigation }: RootTabScreenProps<'Wor
               {workOrder.location && <IconWithLabel label={workOrder.location.name} icon='map-marker-outline' />}
             </Card.Content>
           </Card>
-        ))}
+        )) : loadingGet ? null : <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+          < Text variant={'titleLarge'}>{t('no_element_match_criteria')}</Text>
+        </View>}
       </ScrollView>
     </View>
   );

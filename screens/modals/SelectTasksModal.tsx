@@ -100,7 +100,7 @@ export default function SelectTasksModal({ navigation, route }: RootStackScreenP
             onPress={() => setType(taskType.value)}
           />
           <Text>{t(taskType.label)}</Text></TouchableOpacity>))}
-    < /View>
+    </View>
     <Text style={{
       paddingHorizontal: 15,
       marginVertical: 10

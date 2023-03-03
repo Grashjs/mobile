@@ -1494,7 +1494,11 @@ const frJSON = {
   add_options: 'Ajouter des options',
   required_task_label: 'Le nom de la tâche est requis',
   edit_work_order: 'Modifier l\'ordre de travail',
-  confirmation: 'Confirmation'
+  confirmation: 'Confirmation',
+  LATE_WO: 'En retard',
+  TODAY_WO: 'Pour aujourd\'hui',
+  HIGH_WO: 'Priorité élevée',
+  no_element_match_criteria: 'Aucun élément trouvé pour ces critères de recherche'
 };
 
 export default frJSON;

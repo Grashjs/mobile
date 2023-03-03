@@ -1351,7 +1351,12 @@ const enJSON = {
   add_options: 'Add options',
   required_task_label: 'The task label is required',
   edit_work_order: 'Edit Work Order',
-  confirmation: 'Confirmation'
+  confirmation: 'Confirmation',
+  LATE_WO: 'Late',
+  TODAY_WO: 'Today',
+  HIGH_WO: 'High priority',
+  no_element_match_criteria: 'No elements match this criteria'
+
 };
 
 export default enJSON;

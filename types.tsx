@@ -16,6 +16,7 @@ import { TeamMiniDTO } from './models/team';
 import { LocationMiniDTO } from './models/location';
 import { AssetMiniDTO } from './models/asset';
 import Category from './models/category';
+import { FilterField } from './models/page';
 
 declare global {
   namespace ReactNavigation {
@@ -61,7 +62,7 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> = Nati
 
 export type RootTabParamList = {
   Home: undefined;
-  WorkOrders: undefined;
+  WorkOrders: { filterFields: FilterField[] };
   AddEntities: undefined;
   Requests: undefined;
   MoreEntities: undefined;
