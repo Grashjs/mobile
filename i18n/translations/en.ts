@@ -1357,7 +1357,12 @@ const enJSON = {
   HIGH_WO: 'High priority',
   no_element_match_criteria: 'No elements match this criteria',
   required_part_name: 'Part name is required',
-  only_assigned_to_me: 'Only assigned to me'
+  only_assigned_to_me: 'Only assigned to me',
+  complete_work_orders: 'Complete Work Orders',
+  this_week: 'This week',
+  all_time: 'All time',
+  compliant_work_orders: 'Compliant Work Orders',
+  stats: 'Stats'
 };
 
 export default enJSON;

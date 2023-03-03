@@ -93,3 +93,10 @@ export interface MobileWOStats {
   today: number;
   high: number;
 }
+
+export interface MobileWOStatsExtended {
+  complete: number;
+  completeWeek: number;
+  compliantRate: number;
+  compliantRateWeek: number;
+}

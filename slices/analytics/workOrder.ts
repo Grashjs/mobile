@@ -16,7 +16,8 @@ import {
   WOStatsByPriority,
   WOStatsByStatus,
   WOTimeByWeek,
-  MobileWOStats
+  MobileWOStats,
+  MobileWOStatsExtended
 } from '../../models/analytics/workOrder';
 
 const basePath = 'analytics/work-orders';
@@ -38,6 +39,7 @@ interface WOStatstate {
   completeCostsByMonth: WOCostByDate[];
   hours: WOHours;
   mobileOverview: MobileWOStats;
+  mobileExtended: MobileWOStatsExtended;
   loading: Omit<Record<keyof WOStatstate, boolean>, 'loading'>;
 }
 
@@ -107,6 +109,12 @@ const initialState: WOStatstate = {
     today: 0,
     high: 0
   },
+  mobileExtended: {
+    complete: 0,
+    completeWeek: 0,
+    compliantRateWeek: 1,
+    compliantRate: 1
+  },
   loading: {
     overview: false,
     incompleteByPriority: false,
@@ -123,7 +131,8 @@ const initialState: WOStatstate = {
     incompleteByAsset: false,
     incompleteByUser: false,
     completeCostsByMonth: false,
-    mobileOverview: false
+    mobileOverview: false,
+    mobileExtended: false
   }
 };
 
@@ -237,6 +246,10 @@ const slice = createSlice({
       const { stats } = action.payload;
       state.mobileOverview = stats;
     },
+    getMobileExtendedOverview(state: WOStatstate, action: PayloadAction<{ stats: MobileWOStatsExtended }>) {
+      const { stats } = action.payload;
+      state.mobileExtended = stats;
+    },
     setLoading(
       state: WOStatstate,
       action: PayloadAction<{ loading: boolean; operation: Operation }>
@@ -264,6 +277,14 @@ export const getMobileOverviewStats = (assignedToMe: boolean): AppThunk => async
   );
   dispatch(slice.actions.getMobileOverview({ stats: overviewStats }));
   dispatch(slice.actions.setLoading({ operation: 'mobileOverview', loading: false }));
+};
+export const getMobileExtendedStats = (): AppThunk => async (dispatch) => {
+  dispatch(slice.actions.setLoading({ operation: 'mobileExtended', loading: true }));
+  const stats = await api.get<MobileWOStatsExtended>(
+    `${basePath}/mobile/complete-compliant`
+  );
+  dispatch(slice.actions.getMobileExtendedOverview({ stats }));
+  dispatch(slice.actions.setLoading({ operation: 'mobileExtended', loading: false }));
 };
 export const getIncompleteStats = (): AppThunk => async (dispatch) => {
   dispatch(slice.actions.setLoading({ operation: 'overview', loading: true }));

@@ -25,6 +25,7 @@ import CreateAssetScreen from '../screens/assets/CreateAssetScreen';
 import CreateLocationScreen from '../screens/locations/CreateLocationScreen';
 import CreateMeterScreen from '../screens/meters/CreateMeterScreen';
 import CreatePartScreen from '../screens/parts/CreatePartScreen';
+import WorkOrderStatsScreen from '../screens/WorkOrderStatsScreen';
 import { AuthStackParamList, RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import useAuth from '../hooks/useAuth';
@@ -81,6 +82,7 @@ function RootNavigator() {
       <Stack.Screen name='AddPart' component={CreatePartScreen} options={{ title: t('create_part') }} />
       <Stack.Screen name='AddMeter' component={CreateMeterScreen} options={{ title: t('create_meter') }} />
       <Stack.Screen name='AddUser' component={CreateWorkOrder} options={{ title: t('invite_users') }} />
+      <Stack.Screen name='WorkOrderStats' component={WorkOrderStatsScreen} options={{ title: t('stats') }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name='Modal' component={ModalScreen} />
         <Stack.Screen name='CompleteWorkOrder' component={CompleteWorkOrderModal}

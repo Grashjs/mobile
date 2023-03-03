@@ -1500,7 +1500,12 @@ const frJSON = {
   HIGH_WO: 'Priorité élevée',
   no_element_match_criteria: 'Aucun élément trouvé pour ces critères de recherche',
   required_part_name: 'Le nom de la pièce est requis',
-  only_assigned_to_me: 'Uniquement assignés à moi'
+  only_assigned_to_me: 'Uniquement assignés à moi',
+  complete_work_orders: 'Bons de travail clôturés',
+  this_week: 'Cette semaine',
+  all_time: 'Tous les temps',
+  compliant_work_orders: 'Bons de travail clôturés à temps',
+  stats: 'Statistiques'
 };
 
 export default frJSON;

@@ -117,10 +117,13 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
     <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background }}
                 refreshControl={
                   <RefreshControl refreshing={loading.mobileOverview}
+                                  colors={[theme.colors.primary]}
                                   onRefresh={onRefresh} />}>
       <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
         <IconButton style={iconButtonStyle}
-                    icon={'poll'} />
+                    icon={'poll'} onPress={() => {
+          navigation.navigate('WorkOrderStats');
+        }} />
         <IconButton style={iconButtonStyle} icon={'bell'} />
         <IconButton style={iconButtonStyle} icon={'package-variant-closed'} />
       </View>

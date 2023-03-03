@@ -67,7 +67,7 @@ export default function WorkOrdersScreen({ navigation, route }: RootTabScreenPro
   ];
   const getCriteriaFromFilterFields = (filterFields: FilterField[]) => {
     const initialCriteria: SearchCriteria = {
-      filterFields,
+      filterFields: defaultFilterFields,
       pageSize: 10,
       pageNum: 0,
       direction: 'DESC'
@@ -76,7 +76,7 @@ export default function WorkOrdersScreen({ navigation, route }: RootTabScreenPro
     filterFields.forEach(filterField => (newFilterFields = newFilterFields.filter(ff => ff.field != filterField.field)));
     return { ...initialCriteria, filterFields: [...newFilterFields, ...filterFields] };
   };
-  const [criteria, setCriteria] = useState<SearchCriteria>(getCriteriaFromFilterFields(defaultFilterFields));
+  const [criteria, setCriteria] = useState<SearchCriteria>(getCriteriaFromFilterFields([]));
   useEffect(() => {
     if (hasViewPermission(PermissionEntity.WORK_ORDERS)) {
       dispatch(getWorkOrders({ ...criteria, pageSize: 10, pageNum: 0, direction: 'DESC' }));
@@ -90,7 +90,7 @@ export default function WorkOrdersScreen({ navigation, route }: RootTabScreenPro
   }, [route]);
 
   const onRefresh = () => {
-    setCriteria(getCriteriaFromFilterFields(route.params?.filterFields ?? defaultFilterFields));
+    setCriteria(getCriteriaFromFilterFields(route.params?.filterFields ?? []));
   };
 
   const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -125,7 +125,7 @@ export default function WorkOrdersScreen({ navigation, route }: RootTabScreenPro
                     }
                   }}
                   refreshControl={
-                    <RefreshControl refreshing={loadingGet} onRefresh={onRefresh} />}
+                    <RefreshControl refreshing={loadingGet} onRefresh={onRefresh} colors={[theme.colors.primary]} />}
                   scrollEventThrottle={400}>
         {!!workOrders.content.length ? workOrders.content.map(workOrder => (
           <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={workOrder.id}
