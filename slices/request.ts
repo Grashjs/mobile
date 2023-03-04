@@ -7,15 +7,20 @@ import WorkOrder from '../models/workOrder';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
 
 const basePath = 'requests';
+
 interface RequestState {
   requests: Page<Request>;
   singleRequest: Request;
+  currentPageNum: number;
+  lastPage: boolean;
   loadingGet: boolean;
 }
 
 const initialState: RequestState = {
   requests: getInitialPage<Request>(),
   singleRequest: null,
+  currentPageNum: 0,
+  lastPage: false,
   loadingGet: false
 };
 
@@ -29,6 +34,17 @@ const slice = createSlice({
     ) {
       const { requests } = action.payload;
       state.requests = requests;
+      state.currentPageNum = 0;
+      state.lastPage = requests.last;
+    },
+    getMoreRequests(
+      state: RequestState,
+      action: PayloadAction<{ requests: Page<Request> }>
+    ) {
+      const { requests } = action.payload;
+      state.requests.content = state.requests.content.concat(requests.content);
+      state.currentPageNum = state.currentPageNum + 1;
+      state.lastPage = requests.last;
     },
     getSingleRequest(
       state: RequestState,
@@ -108,70 +124,84 @@ export const reducer = slice.reducer;
 
 export const getRequests =
   (criteria: SearchCriteria): AppThunk =>
-  async (dispatch) => {
-    try {
-      dispatch(slice.actions.setLoadingGet({ loading: true }));
-      const requests = await api.post<Page<Request>>(
-        `${basePath}/search`,
-        criteria
-      );
-      dispatch(slice.actions.getRequests({ requests }));
-    } finally {
-      dispatch(slice.actions.setLoadingGet({ loading: false }));
-    }
-  };
-
+    async (dispatch) => {
+      try {
+        dispatch(slice.actions.setLoadingGet({ loading: true }));
+        const requests = await api.post<Page<Request>>(
+          `${basePath}/search`,
+          criteria
+        );
+        dispatch(slice.actions.getRequests({ requests }));
+      } finally {
+        dispatch(slice.actions.setLoadingGet({ loading: false }));
+      }
+    };
+export const getMoreRequests =
+  (criteria: SearchCriteria, pageNum: number): AppThunk =>
+    async (dispatch) => {
+      criteria = { ...criteria, pageNum };
+      try {
+        dispatch(slice.actions.setLoadingGet({ loading: true }));
+        const requests = await api.post<Page<Request>>(
+          `${basePath}/search`,
+          criteria
+        );
+        dispatch(slice.actions.getMoreRequests({ requests }));
+      } finally {
+        dispatch(slice.actions.setLoadingGet({ loading: false }));
+      }
+    };
 export const getSingleRequest =
   (id: number): AppThunk =>
-  async (dispatch) => {
-    dispatch(slice.actions.setLoadingGet({ loading: true }));
-    const request = await api.get<Request>(`${basePath}/${id}`);
-    dispatch(slice.actions.getSingleRequest({ request }));
-    dispatch(slice.actions.setLoadingGet({ loading: false }));
-  };
+    async (dispatch) => {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
+      const request = await api.get<Request>(`${basePath}/${id}`);
+      dispatch(slice.actions.getSingleRequest({ request }));
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    };
 export const addRequest =
   (request): AppThunk =>
-  async (dispatch) => {
-    const requestResponse = await api.post<Request>(basePath, request);
-    dispatch(slice.actions.addRequest({ request: requestResponse }));
-  };
+    async (dispatch) => {
+      const requestResponse = await api.post<Request>(basePath, request);
+      dispatch(slice.actions.addRequest({ request: requestResponse }));
+    };
 export const editRequest =
   (id: number, request): AppThunk =>
-  async (dispatch) => {
-    const requestResponse = await api.patch<Request>(
-      `${basePath}/${id}`,
-      request
-    );
-    dispatch(slice.actions.editRequest({ request: requestResponse }));
-  };
+    async (dispatch) => {
+      const requestResponse = await api.patch<Request>(
+        `${basePath}/${id}`,
+        request
+      );
+      dispatch(slice.actions.editRequest({ request: requestResponse }));
+    };
 export const deleteRequest =
   (id: number): AppThunk =>
-  async (dispatch) => {
-    const requestResponse = await api.deletes<{ success: boolean }>(
-      `${basePath}/${id}`
-    );
-    const { success } = requestResponse;
-    if (success) {
-      dispatch(slice.actions.deleteRequest({ id }));
-    }
-  };
+    async (dispatch) => {
+      const requestResponse = await api.deletes<{ success: boolean }>(
+        `${basePath}/${id}`
+      );
+      const { success } = requestResponse;
+      if (success) {
+        dispatch(slice.actions.deleteRequest({ id }));
+      }
+    };
 
 export const approveRequest =
   (id: number): AppThunk =>
-  async (dispatch) => {
-    const workOrder = await api.patch<WorkOrder>(
-      `${basePath}/${id}/approve`,
-      {}
-    );
-    dispatch(slice.actions.approveRequest({ id, workOrder }));
-    return workOrder.id;
-  };
+    async (dispatch) => {
+      const workOrder = await api.patch<WorkOrder>(
+        `${basePath}/${id}/approve`,
+        {}
+      );
+      dispatch(slice.actions.approveRequest({ id, workOrder }));
+      return workOrder.id;
+    };
 export const cancelRequest =
   (id: number): AppThunk =>
-  async (dispatch) => {
-    const request = await api.patch<WorkOrder>(`${basePath}/${id}/cancel`, {});
-    dispatch(slice.actions.cancelRequest({ id }));
-  };
+    async (dispatch) => {
+      const request = await api.patch<WorkOrder>(`${basePath}/${id}/cancel`, {});
+      dispatch(slice.actions.cancelRequest({ id }));
+    };
 
 export const clearSingleRequest = (): AppThunk => async (dispatch) => {
   dispatch(slice.actions.clearSingleRequest({}));

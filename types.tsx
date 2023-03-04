@@ -64,6 +64,8 @@ export type RootStackParamList = {
                  feedback: string | undefined) => Promise<any>; fieldsConfig: { feedback: boolean; signature: boolean };
   }
   NotFound: undefined;
+  Meters: undefined;
+  Parts: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList,

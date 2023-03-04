@@ -264,6 +264,7 @@ export default function Form(props: OwnProps) {
                   } else {
                     id = object.value.id;
                   }
+                  console.log(item.id, item.value);
                   return id !== (isTask(object) ? item.id : item.value.id);
                 }));
             }} icon={'close-circle'} iconColor={theme.colors.error} />

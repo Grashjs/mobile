@@ -5,14 +5,14 @@ import { useContext, useEffect, useState } from 'react';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
-import { getMoreWorkOrders, getWorkOrders } from '../../slices/workOrder';
+import { getMeters, getMoreMeters } from '../../slices/meter';
 import { FilterField, SearchCriteria } from '../../models/page';
 import { Card, IconButton, Searchbar, Text, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
-import WorkOrder from '../../models/workOrder';
+import Meter from '../../models/meter';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
-import { getPriorityColor, getStatusColor, onSearchQueryChange } from '../../utils/overall';
-import { RootTabScreenProps } from '../../types';
+import { onSearchQueryChange } from '../../utils/overall';
+import { RootStackScreenProps } from '../../types';
 import Tag from '../../components/Tag';
 import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
 
@@ -25,11 +25,11 @@ function IconWithLabel({ icon, label }: { icon: IconSource, label: string }) {
   );
 }
 
-export default function WorkOrdersScreen({ navigation, route }: RootTabScreenProps<'WorkOrders'>) {
+export default function MetersScreen({ navigation, route }: RootStackScreenProps<'Meters'>) {
   const { t } = useTranslation();
   const [startedSearch, setStartedSearch] = useState<boolean>(false);
-  const { workOrders, loadingGet, currentPageNum, lastPage } = useSelector(
-    (state) => state.workOrders
+  const { meters, loadingGet, currentPageNum, lastPage } = useSelector(
+    (state) => state.meters
   );
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -40,27 +40,7 @@ export default function WorkOrdersScreen({ navigation, route }: RootTabScreenPro
   const {
     hasViewPermission
   } = useAuth();
-  const defaultFilterFields: FilterField[] = [
-    {
-      field: 'priority',
-      operation: 'in',
-      values: ['NONE', 'LOW', 'MEDIUM', 'HIGH'],
-      value: '',
-      enumName: 'PRIORITY'
-    },
-    {
-      field: 'status',
-      operation: 'in',
-      values: ['OPEN', 'IN_PROGRESS', 'ON_HOLD'],
-      value: '',
-      enumName: 'STATUS'
-    },
-    {
-      field: 'archived',
-      operation: 'eq',
-      value: false
-    }
-  ];
+  const defaultFilterFields: FilterField[] = [];
   const getCriteriaFromFilterFields = (filterFields: FilterField[]) => {
     const initialCriteria: SearchCriteria = {
       filterFields: defaultFilterFields,
@@ -75,18 +55,13 @@ export default function WorkOrdersScreen({ navigation, route }: RootTabScreenPro
   const [criteria, setCriteria] = useState<SearchCriteria>(getCriteriaFromFilterFields([]));
   useEffect(() => {
     if (hasViewPermission(PermissionEntity.WORK_ORDERS)) {
-      dispatch(getWorkOrders({ ...criteria, pageSize: 10, pageNum: 0, direction: 'DESC' }));
+      dispatch(getMeters({ ...criteria, pageSize: 10, pageNum: 0, direction: 'DESC' }));
     }
   }, [criteria]);
 
-  useEffect(() => {
-    const filterFields = route.params?.filterFields ?? [];
-    if (filterFields.length)
-      setCriteria(getCriteriaFromFilterFields(filterFields));
-  }, [route]);
 
   const onRefresh = () => {
-    setCriteria(getCriteriaFromFilterFields(route.params?.filterFields ?? []));
+    setCriteria(getCriteriaFromFilterFields([]));
   };
 
   const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -95,10 +70,10 @@ export default function WorkOrdersScreen({ navigation, route }: RootTabScreenPro
       contentSize.height - paddingToBottom;
   };
   const onQueryChange = (query) => {
-    onSearchQueryChange<WorkOrder>(query, criteria, setCriteria, setSearchQuery, [
-      'title',
-      'description',
-      'feedback'
+    onSearchQueryChange<Meter>(query, criteria, setCriteria, setSearchQuery, [
+      'name',
+      'unit',
+      'category'
     ]);
   };
   useDebouncedEffect(() => {
@@ -117,32 +92,26 @@ export default function WorkOrdersScreen({ navigation, route }: RootTabScreenPro
                   onScroll={({ nativeEvent }) => {
                     if (isCloseToBottom(nativeEvent)) {
                       if (!loadingGet && !lastPage)
-                        dispatch(getMoreWorkOrders(criteria, currentPageNum + 1));
+                        dispatch(getMoreMeters(criteria, currentPageNum + 1));
                     }
                   }}
                   refreshControl={
                     <RefreshControl refreshing={loadingGet} onRefresh={onRefresh} colors={[theme.colors.primary]} />}
                   scrollEventThrottle={400}>
-        {!!workOrders.content.length ? workOrders.content.map(workOrder => (
-          <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={workOrder.id}
-                onPress={() => navigation.navigate('WODetails', { id: workOrder.id })}>
+        {!!meters.content.length ? meters.content.map(meter => (
+          <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={meter.id}
+                onPress={() => navigation.navigate('WODetails', { id: meter.id })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
-                <Tag text={t(workOrder.status)} color='white'
-                     backgroundColor={getStatusColor(workOrder.status, theme)} />
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                   <View style={{ marginRight: 10 }}>
-                    <Tag text={`#${workOrder.id}`} color='white' backgroundColor='#545454' />
+                    <Tag text={`#${meter.id}`} color='white' backgroundColor='#545454' />
                   </View>
-                  <Tag text={t(workOrder.priority)} color='white'
-                       backgroundColor={getPriorityColor(workOrder.priority, theme)} />
                 </View>
               </View>
-              <Text variant='titleMedium'>{workOrder.title}</Text>
-              {workOrder.dueDate &&
-              <IconWithLabel label={getFormattedDate(workOrder.dueDate)} icon='clock-alert-outline' />}
-              {workOrder.asset && <IconWithLabel label={workOrder.asset.name} icon='package-variant-closed' />}
-              {workOrder.location && <IconWithLabel label={workOrder.location.name} icon='map-marker-outline' />}
+              <Text variant='titleMedium'>{meter.name}</Text>
+              {meter.asset && <IconWithLabel label={meter.asset.name} icon='package-variant-closed' />}
+              {meter.location && <IconWithLabel label={meter.location.name} icon='map-marker-outline' />}
             </Card.Content>
           </Card>
         )) : loadingGet ? null : <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>

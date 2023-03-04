@@ -3,13 +3,11 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { FontAwesome } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { useRef } from 'react';
-import { ColorSchemeName, Pressable, View } from 'react-native';
+import { ColorSchemeName, View } from 'react-native';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import HomeScreen from '../screens/HomeScreen';
@@ -30,12 +28,13 @@ import { AuthStackParamList, RootStackParamList, RootTabParamList, RootTabScreen
 import LinkingConfiguration from './LinkingConfiguration';
 import useAuth from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
-import { Divider, IconButton, List, Text, useTheme } from 'react-native-paper';
+import { IconButton, useTheme } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import MoreEntitiesScreen from '../screens/MoreEntitiesScreen';
-import RequestsScreen from '../screens/RequestsScreen';
+import RequestsScreen from '../screens/requests/RequestsScreen';
+import MetersScreen from '../screens/meters/MetersScreen';
 import WorkOrdersScreen from '../screens/workOrders/WorkOrdersScreen';
-import ActionSheet, { ActionSheetRef, SheetManager } from 'react-native-actions-sheet';
+import { SheetManager } from 'react-native-actions-sheet';
 import CompleteWorkOrderModal from '../screens/workOrders/CompleteWorkOrderModal';
 import SelectPartsModal from '../screens/modals/SelectPartsModal';
 import TasksScreen from '../screens/workOrders/TasksScreen';
@@ -47,6 +46,7 @@ import SelectLocationsModal from '../screens/modals/SelectLocationsModal';
 import SelectAssetsModal from '../screens/modals/SelectAssetsModal';
 import SelectCategoriesModal from '../screens/modals/SelectCategoryModal';
 import SelectTasksModal from '../screens/modals/SelectTasksModal';
+import PartsScreen from '../screens/parts/PartsScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -83,6 +83,8 @@ function RootNavigator() {
       <Stack.Screen name='AddMeter' component={CreateMeterScreen} options={{ title: t('create_meter') }} />
       <Stack.Screen name='AddUser' component={CreateWorkOrder} options={{ title: t('invite_users') }} />
       <Stack.Screen name='WorkOrderStats' component={WorkOrderStatsScreen} options={{ title: t('stats') }} />
+      <Stack.Screen name='Meters' component={MetersScreen} options={{ title: t('meters') }} />
+      <Stack.Screen name='Parts' component={PartsScreen} options={{ title: t('parts') }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name='Modal' component={ModalScreen} />
         <Stack.Screen name='CompleteWorkOrder' component={CompleteWorkOrderModal}

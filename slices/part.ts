@@ -4,6 +4,7 @@ import { getInitialPage, Page, SearchCriteria } from '../models/page';
 import type { AppThunk } from '../store';
 import Part, { PartMiniDTO } from '../models/part';
 import api from '../utils/api';
+import Meter from '../models/meter';
 
 const basePath = 'parts';
 
@@ -11,6 +12,8 @@ interface PartState {
   parts: Page<Part>;
   singlePart: Part;
   partsMini: PartMiniDTO[];
+  currentPageNum: number;
+  lastPage: boolean;
   loadingGet: boolean;
 }
 
@@ -18,6 +21,8 @@ const initialState: PartState = {
   parts: getInitialPage<Part>(),
   singlePart: null,
   partsMini: [],
+  currentPageNum: 0,
+  lastPage: false,
   loadingGet: false
 };
 
@@ -28,6 +33,17 @@ const slice = createSlice({
     getParts(state: PartState, action: PayloadAction<{ parts: Page<Part> }>) {
       const { parts } = action.payload;
       state.parts = parts;
+      state.currentPageNum = 0;
+      state.lastPage = parts.last;
+    },
+    getMoreParts(
+      state: PartState,
+      action: PayloadAction<{ parts: Page<Part> }>
+    ) {
+      const { parts } = action.payload;
+      state.parts.content = state.parts.content.concat(parts.content);
+      state.currentPageNum = state.currentPageNum + 1;
+      state.lastPage = parts.last;
     },
     getSinglePart(state: PartState, action: PayloadAction<{ part: Part }>) {
       const { part } = action.payload;
@@ -91,7 +107,21 @@ export const getParts =
         dispatch(slice.actions.setLoadingGet({ loading: false }));
       }
     };
-
+export const getMoreParts =
+  (criteria: SearchCriteria, pageNum: number): AppThunk =>
+    async (dispatch) => {
+      criteria = { ...criteria, pageNum };
+      try {
+        dispatch(slice.actions.setLoadingGet({ loading: true }));
+        const parts = await api.post<Page<Part>>(
+          `${basePath}/search`,
+          criteria
+        );
+        dispatch(slice.actions.getMoreParts({ parts }));
+      } finally {
+        dispatch(slice.actions.setLoadingGet({ loading: false }));
+      }
+    };
 export const getSinglePart =
   (id: number): AppThunk =>
     async (dispatch) => {
