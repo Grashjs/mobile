@@ -28,7 +28,7 @@ const initialState: WorkOrderState = {
   singleWorkOrder: null,
   loadingGet: false,
   currentPageNum: 0,
-  lastPage: false,
+  lastPage: true,
   calendar: {
     events: []
   }

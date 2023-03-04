@@ -4,6 +4,7 @@ import type { AppThunk } from '../store';
 import { Customer, CustomerMiniDTO } from '../models/customer';
 import api from '../utils/api';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
+import Part from '../models/part';
 
 const basePath = 'customers';
 
@@ -11,6 +12,8 @@ interface CustomerState {
   customers: Page<Customer>;
   singleCustomer: Customer;
   customersMini: CustomerMiniDTO[];
+  currentPageNum: number;
+  lastPage: boolean;
   loadingGet: boolean;
 }
 
@@ -18,6 +21,8 @@ const initialState: CustomerState = {
   customers: getInitialPage<Customer>(),
   singleCustomer: null,
   customersMini: [],
+  currentPageNum: 0,
+  lastPage: true,
   loadingGet: false
 };
 
@@ -31,6 +36,15 @@ const slice = createSlice({
     ) {
       const { customers } = action.payload;
       state.customers = customers;
+    },
+    getMoreCustomers(
+      state: CustomerState,
+      action: PayloadAction<{ customers: Page<Customer> }>
+    ) {
+      const { customers } = action.payload;
+      state.customers.content = state.customers.content.concat(customers.content);
+      state.currentPageNum = state.currentPageNum + 1;
+      state.lastPage = customers.last;
     },
     getSingleCustomer(
       state: CustomerState,
@@ -107,6 +121,21 @@ export const getCustomers =
           criteria
         );
         dispatch(slice.actions.getCustomers({ customers }));
+      } finally {
+        dispatch(slice.actions.setLoadingGet({ loading: false }));
+      }
+    };
+export const getMoreCustomers =
+  (criteria: SearchCriteria, pageNum: number): AppThunk =>
+    async (dispatch) => {
+      criteria = { ...criteria, pageNum };
+      try {
+        dispatch(slice.actions.setLoadingGet({ loading: true }));
+        const customers = await api.post<Page<Customer>>(
+          `${basePath}/search`,
+          criteria
+        );
+        dispatch(slice.actions.getMoreCustomers({ customers }));
       } finally {
         dispatch(slice.actions.setLoadingGet({ loading: false }));
       }

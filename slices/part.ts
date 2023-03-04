@@ -4,7 +4,6 @@ import { getInitialPage, Page, SearchCriteria } from '../models/page';
 import type { AppThunk } from '../store';
 import Part, { PartMiniDTO } from '../models/part';
 import api from '../utils/api';
-import Meter from '../models/meter';
 
 const basePath = 'parts';
 
@@ -22,7 +21,7 @@ const initialState: PartState = {
   singlePart: null,
   partsMini: [],
   currentPageNum: 0,
-  lastPage: false,
+  lastPage: true,
   loadingGet: false
 };
 

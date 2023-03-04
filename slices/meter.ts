@@ -22,7 +22,7 @@ const initialState: MeterState = {
   singleMeter: null,
   metersByAsset: {},
   currentPageNum: 0,
-  lastPage: false,
+  lastPage: true,
   loadingGet: false
 };
 

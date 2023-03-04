@@ -2,7 +2,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { IField, IHash } from '../../models/form';
 import * as Yup from 'yup';
 import { ObjectSchema } from 'yup';
-import { Button, HelperText, IconButton, TextInput, Text, useTheme } from 'react-native-paper';
+import { Button, HelperText, IconButton, Switch, Text, TextInput, useTheme } from 'react-native-paper';
 import { Formik, FormikProps } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types';
@@ -15,9 +15,7 @@ import { AssetMiniDTO } from '../../models/asset';
 import Category from '../../models/category';
 import { LocationMiniDTO } from '../../models/location';
 import FileUpload from '../FileUpload';
-import { useState } from 'react';
 import CustomDateTimePicker from '../CustomDateTimePicker';
-import { Switch } from 'react-native-paper';
 import PriorityPicker from './PriorityPicker';
 import { isTask, Task } from '../../models/tasks';
 import { getTaskTypes } from '../../utils/displayers';
@@ -46,7 +44,7 @@ export default function Form(props: OwnProps) {
       shape[f.name] = shape[f.name].required();
     }
   });
-  const handleChange = (formik: FormikProps<IHash<any>>, field, e: { label: string, value: any }[] | string | number | Date | boolean | { label: string, value: any }) => {
+  const handleChange = (formik: FormikProps<IHash<any>>, field, e: ({ label: string; value: number } | { label: string; value: Task } | Task)[] | string | number | Date | boolean | { label: string, value: any }) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     props.onChange && props.onChange({ field, e });
     if (props.fields.length == 1) {
@@ -58,7 +56,7 @@ export default function Form(props: OwnProps) {
   const validationSchema = Yup.object().shape(shape);
 
   const renderSelect = (formik, field: IField) => {
-    let values: { label: string; value: number }[] | { label: string; value: number } = formik.values[field.name];
+    let values: ({ label: string; value: number } | { label: string; value: Task } | Task)[] | { label: string; value: number } = formik.values[field.name];
     const excluded = field.excluded;
     let screenPath: keyof RootStackParamList;
     let onChange: (values: (PartMiniDTO | CustomerMiniDTO | VendorMiniDTO | UserMiniDTO | TeamMiniDTO | AssetMiniDTO | Category | Task)[]) => void;
@@ -217,7 +215,7 @@ export default function Form(props: OwnProps) {
           <Text>{field.label}</Text>
           {!values && <IconButton icon={'plus-circle'} />}
         </View>
-        {field.multiple ? (Array.isArray(values) && !!values?.length && values.map(value =>
+        {field.multiple ? (Array.isArray(values) && !!values?.length && values.map((value: { label: string; value: number }) =>
           renderValue(value))) : values && renderValue(values as { label: string; value: number })}
       </TouchableOpacity>);
     } else if (field.type2 === 'task') {
@@ -257,15 +255,14 @@ export default function Form(props: OwnProps) {
             </View>
             <IconButton onPress={() => {
               if (Array.isArray(values))
-                handleChange(formik, field.name, values.filter(item => {
+                handleChange(formik, field.name, values.filter((item: Task | { label: string, value: Task }) => {
                   let id;
                   if (isTask(object)) {
                     id = object.id;
                   } else {
                     id = object.value.id;
                   }
-                  console.log(item.id, item.value);
-                  return id !== (isTask(object) ? item.id : item.value.id);
+                  return id !== (isTask(object) && isTask(item) ? item.id : isTask(item.value) ? item.value.id : 0);
                 }));
             }} icon={'close-circle'} iconColor={theme.colors.error} />
           </View>))}

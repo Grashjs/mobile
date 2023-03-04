@@ -20,7 +20,7 @@ const initialState: RequestState = {
   requests: getInitialPage<Request>(),
   singleRequest: null,
   currentPageNum: 0,
-  lastPage: false,
+  lastPage: true,
   loadingGet: false
 };
 

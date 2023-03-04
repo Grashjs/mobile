@@ -4,6 +4,8 @@ import type { AppThunk } from '../store';
 import { Vendor, VendorMiniDTO } from '../models/vendor';
 import api from '../utils/api';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
+import Part from '../models/part';
+import { Customer } from '../models/customer';
 
 const basePath = 'vendors';
 
@@ -11,6 +13,8 @@ interface VendorState {
   vendors: Page<Vendor>;
   singleVendor: Vendor;
   vendorsMini: VendorMiniDTO[];
+  currentPageNum: number;
+  lastPage: boolean;
   loadingGet: boolean;
 }
 
@@ -18,6 +22,8 @@ const initialState: VendorState = {
   vendors: getInitialPage<Vendor>(),
   singleVendor: null,
   vendorsMini: [],
+  currentPageNum: 0,
+  lastPage: true,
   loadingGet: false
 };
 
@@ -31,6 +37,15 @@ const slice = createSlice({
     ) {
       const { vendors } = action.payload;
       state.vendors = vendors;
+    },
+    getMoreVendors(
+      state: VendorState,
+      action: PayloadAction<{ vendors: Page<Vendor> }>
+    ) {
+      const { vendors } = action.payload;
+      state.vendors.content = state.vendors.content.concat(vendors.content);
+      state.currentPageNum = state.currentPageNum + 1;
+      state.lastPage = vendors.last;
     },
     getSingleVendor(
       state: VendorState,
@@ -102,7 +117,21 @@ export const getVendors =
         dispatch(slice.actions.setLoadingGet({ loading: false }));
       }
     };
-
+export const getMoreVendors =
+  (criteria: SearchCriteria, pageNum: number): AppThunk =>
+    async (dispatch) => {
+      criteria = { ...criteria, pageNum };
+      try {
+        dispatch(slice.actions.setLoadingGet({ loading: true }));
+        const vendors = await api.post<Page<Vendor>>(
+          `${basePath}/search`,
+          criteria
+        );
+        dispatch(slice.actions.getMoreVendors({ vendors }));
+      } finally {
+        dispatch(slice.actions.setLoadingGet({ loading: false }));
+      }
+    };
 export const getSingleVendor =
   (id: number): AppThunk =>
     async (dispatch) => {
