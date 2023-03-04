@@ -1362,7 +1362,8 @@ const enJSON = {
   this_week: 'This week',
   all_time: 'All time',
   compliant_work_orders: 'Compliant Work Orders',
-  stats: 'Stats'
+  stats: 'Stats',
+  vendors_and_customers: 'Vendors & contractors'
 };
 
 export default enJSON;

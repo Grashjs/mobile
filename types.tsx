@@ -66,6 +66,10 @@ export type RootStackParamList = {
   NotFound: undefined;
   Meters: undefined;
   Parts: undefined;
+  Locations: undefined;
+  Assets: undefined;
+  PeopleTeams: undefined;
+  VendorsCustomers: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList,

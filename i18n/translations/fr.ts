@@ -1505,7 +1505,8 @@ const frJSON = {
   this_week: 'Cette semaine',
   all_time: 'Tous les temps',
   compliant_work_orders: 'Bons de travail clôturés à temps',
-  stats: 'Statistiques'
+  stats: 'Statistiques',
+  vendors_and_customers: 'Fournisseurs & prestataires '
 };
 
 export default frJSON;
