@@ -150,3 +150,29 @@ export function readFileAsync(file: Blob) {
   });
 }
 
+export function toTree(arr: { pid: number, id: number }[]) {
+  let arrMap = new Map(arr.map(item => [item.id, item]));
+  let tree = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    let item = arr[i];
+
+    if (item.pid) {
+      let parentItem = arrMap.get(item.pid);
+
+      if (parentItem) {
+        let children = parentItem.children;
+
+        if (children) {
+          parentItem.children.push(item);
+        } else {
+          parentItem.children = [item];
+        }
+      }
+    } else {
+      tree.push(item);
+    }
+  }
+
+  return tree;
+}

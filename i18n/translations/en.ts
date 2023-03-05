@@ -1363,7 +1363,10 @@ const enJSON = {
   all_time: 'All time',
   compliant_work_orders: 'Compliant Work Orders',
   stats: 'Stats',
-  vendors_and_customers: 'Vendors & contractors'
+  vendors_and_customers: 'Vendors & contractors',
+  no_notification_message: 'Important updates will appear here to help you follow the progress of your work',
+  no_notification: 'No notification',
+  view_children: 'See children'
 };
 
 export default enJSON;

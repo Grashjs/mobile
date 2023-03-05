@@ -5,6 +5,7 @@ import { AssetDTO, AssetMiniDTO, AssetRow } from '../models/asset';
 import api from '../utils/api';
 import WorkOrder from '../models/workOrder';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
+import Part from '../models/part';
 
 const basePath = 'assets';
 
@@ -15,6 +16,8 @@ interface AssetState {
   assetsByLocation: { [key: number]: AssetDTO[] };
   assetsByPart: { [key: number]: AssetDTO[] };
   assetsMini: AssetMiniDTO[];
+  currentPageNum: number;
+  lastPage: boolean;
   loadingGet: boolean;
 }
 
@@ -25,6 +28,8 @@ const initialState: AssetState = {
   assetsByLocation: {},
   assetsByPart: {},
   assetsMini: [],
+  currentPageNum: 0,
+  lastPage: true,
   loadingGet: false
 };
 
@@ -38,6 +43,15 @@ const slice = createSlice({
     ) {
       const { assets } = action.payload;
       state.assets = assets;
+    },
+    getMoreAssets(
+      state: AssetState,
+      action: PayloadAction<{ assets: Page<AssetDTO> }>
+    ) {
+      const { assets } = action.payload;
+      state.assets.content = state.assets.content.concat(assets.content);
+      state.currentPageNum = state.currentPageNum + 1;
+      state.lastPage = assets.last;
     },
     getAssetsMini(
       state: AssetState,
@@ -139,6 +153,21 @@ export const getAssets =
           criteria
         );
         dispatch(slice.actions.getAssets({ assets }));
+      } finally {
+        dispatch(slice.actions.setLoadingGet({ loading: false }));
+      }
+    };
+export const getMoreAssets =
+  (criteria: SearchCriteria, pageNum: number): AppThunk =>
+    async (dispatch) => {
+      criteria = { ...criteria, pageNum };
+      try {
+        dispatch(slice.actions.setLoadingGet({ loading: true }));
+        const assets = await api.post<Page<AssetDTO>>(
+          `${basePath}/search`,
+          criteria
+        );
+        dispatch(slice.actions.getMoreAssets({ assets }));
       } finally {
         dispatch(slice.actions.setLoadingGet({ loading: false }));
       }

@@ -54,7 +54,7 @@ export default function MetersScreen({ navigation, route }: RootStackScreenProps
   };
   const [criteria, setCriteria] = useState<SearchCriteria>(getCriteriaFromFilterFields([]));
   useEffect(() => {
-    if (hasViewPermission(PermissionEntity.WORK_ORDERS)) {
+    if (hasViewPermission(PermissionEntity.METERS)) {
       dispatch(getMeters({ ...criteria, pageSize: 10, pageNum: 0, direction: 'DESC' }));
     }
   }, [criteria]);

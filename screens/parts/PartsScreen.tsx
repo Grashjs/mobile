@@ -44,7 +44,7 @@ export default function PartsScreen({ navigation, route }: RootStackScreenProps<
   };
   const [criteria, setCriteria] = useState<SearchCriteria>(getCriteriaFromFilterFields([]));
   useEffect(() => {
-    if (hasViewPermission(PermissionEntity.WORK_ORDERS)) {
+    if (hasViewPermission(PermissionEntity.PARTS_AND_MULTIPARTS)) {
       dispatch(getParts({ ...criteria, pageSize: 10, pageNum: 0, direction: 'DESC' }));
     }
   }, [criteria]);

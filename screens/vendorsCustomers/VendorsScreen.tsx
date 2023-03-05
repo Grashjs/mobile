@@ -44,7 +44,7 @@ export default function VendorsScreen({ navigation }: RootStackScreenProps<'Vend
   };
   const [criteria, setCriteria] = useState<SearchCriteria>(getCriteriaFromFilterFields([]));
   useEffect(() => {
-    if (hasViewPermission(PermissionEntity.WORK_ORDERS)) {
+    if (hasViewPermission(PermissionEntity.VENDORS_AND_CUSTOMERS)) {
       dispatch(getVendors({ ...criteria, pageSize: 10, pageNum: 0, direction: 'DESC' }));
     }
   }, [criteria]);

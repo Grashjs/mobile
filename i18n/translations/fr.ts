@@ -1503,10 +1503,13 @@ const frJSON = {
   only_assigned_to_me: 'Uniquement assignés à moi',
   complete_work_orders: 'Bons de travail clôturés',
   this_week: 'Cette semaine',
-  all_time: 'Tous les temps',
+  all_time: 'Depuis toujours',
   compliant_work_orders: 'Bons de travail clôturés à temps',
   stats: 'Statistiques',
-  vendors_and_customers: 'Fournisseurs & prestataires '
+  vendors_and_customers: 'Fournisseurs & prestataires ',
+  no_notification_message: 'Des mises à jour importantes s\'afficheront ici pour vous aider a suivre l\'évolution de votre travail',
+  no_notification: 'Aucune notification',
+  view_children: 'Voir les enfants'
 };
 
 export default frJSON;

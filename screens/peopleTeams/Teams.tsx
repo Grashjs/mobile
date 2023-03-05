@@ -44,7 +44,7 @@ export default function Teams({ navigation }: RootStackScreenProps<'PeopleTeams'
   };
   const [criteria, setCriteria] = useState<SearchCriteria>(getCriteriaFromFilterFields([]));
   useEffect(() => {
-    if (hasViewPermission(PermissionEntity.WORK_ORDERS)) {
+    if (hasViewPermission(PermissionEntity.PEOPLE_AND_TEAMS)) {
       dispatch(getTeams({ ...criteria, pageSize: 10, pageNum: 0, direction: 'DESC' }));
     }
   }, [criteria]);

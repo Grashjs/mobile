@@ -134,7 +134,8 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
             visible={!!notifications.filter(notification => !notification.seen).length}>
             {notifications.filter(notification => !notification.seen).length}</Badge>
         </View>
-        <IconButton style={iconButtonStyle} icon={'package-variant-closed'} />
+        <IconButton style={iconButtonStyle} icon={'package-variant-closed'}
+                    onPress={() => navigation.navigate('Assets')} />
       </View>
       <View
         style={{

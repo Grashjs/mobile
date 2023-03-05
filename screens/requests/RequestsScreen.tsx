@@ -54,7 +54,7 @@ export default function RequestsScreen({ navigation, route }: RootTabScreenProps
   };
   const [criteria, setCriteria] = useState<SearchCriteria>(getCriteriaFromFilterFields([]));
   useEffect(() => {
-    if (hasViewPermission(PermissionEntity.WORK_ORDERS)) {
+    if (hasViewPermission(PermissionEntity.REQUESTS)) {
       dispatch(getRequests({ ...criteria, pageSize: 10, pageNum: 0, direction: 'DESC' }));
     }
   }, [criteria]);

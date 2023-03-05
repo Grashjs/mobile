@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet } from 'react-native';
 
 import EditScreenInfo from '../components/EditScreenInfo';
-import { Text, View } from '../components/Themed';
+import { View } from '../components/Themed';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { NotificationType } from '../models/notification';
 import { editNotification } from '../slices/notification';
@@ -17,10 +17,12 @@ import {
   getTeamUrl,
   getWorkOrderUrl
 } from '../utils/urlPaths';
-import { List, useTheme } from 'react-native-paper';
+import { List, useTheme, Text } from 'react-native-paper';
 import { useContext } from 'react';
 import { CompanySettingsContext } from '../contexts/CompanySettingsContext';
 import { useNavigation } from '@react-navigation/native';
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function NotificationsScreen({
                                               navigation
@@ -28,6 +30,7 @@ export default function NotificationsScreen({
   const dispatch = useDispatch();
   const { notifications } = useSelector((state) => state.notifications);
   const theme = useTheme();
+  const { t } = useTranslation();
   const { getFormattedDate } = useContext(CompanySettingsContext);
   const onReadNotification = (notification: Notification) => {
     let url: { route: keyof RootStackParamList, params: {} };
@@ -86,7 +89,7 @@ export default function NotificationsScreen({
   };
   return (
     <ScrollView style={styles.container}>
-      <List.Section>
+      {Boolean(notifications.length) ? <List.Section>
         {[...notifications].reverse().map((notification) => (
           // @ts-ignore
           <List.Item
@@ -101,7 +104,10 @@ export default function NotificationsScreen({
           >
           </List.Item>
         ))}
-      </List.Section>
+      </List.Section> : <View style={{ backgroundColor: 'white', padding: 20, alignItems: 'center', borderRadius: 10 }}>
+        <Text variant={'titleMedium'} style={{ fontWeight: 'bold' }}> {t('no_notification')}</Text>
+        < Text variant={'bodyMedium'}>{t('no_notification_message')}</Text>
+      </View>}
     </ScrollView>
   );
 }
