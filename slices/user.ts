@@ -4,6 +4,7 @@ import { getInitialPage, Page, SearchCriteria } from '../models/page';
 import type { AppThunk } from '../store';
 import { OwnUser as User, UserMiniDTO } from '../models/user';
 import api from '../utils/api';
+import Part from '../models/part';
 
 const basePath = 'users';
 
@@ -12,6 +13,8 @@ interface UserState {
   singleUser: User;
   usersMini: UserMiniDTO[];
   disabledUsersMini: UserMiniDTO[];
+  currentPageNum: number;
+  lastPage: boolean;
   loadingGet: boolean;
 }
 
@@ -20,6 +23,8 @@ const initialState: UserState = {
   singleUser: null,
   usersMini: [],
   disabledUsersMini: [],
+  currentPageNum: 0,
+  lastPage: true,
   loadingGet: false
 };
 
@@ -30,6 +35,15 @@ const slice = createSlice({
     getUsers(state: UserState, action: PayloadAction<{ users: Page<User> }>) {
       const { users } = action.payload;
       state.users = users;
+    },
+    getMoreUsers(
+      state: UserState,
+      action: PayloadAction<{ users: Page<User> }>
+    ) {
+      const { users } = action.payload;
+      state.users.content = state.users.content.concat(users.content);
+      state.currentPageNum = state.currentPageNum + 1;
+      state.lastPage = users.last;
     },
     getSingleUser(state: UserState, action: PayloadAction<{ user: User }>) {
       const { user } = action.payload;
@@ -106,6 +120,21 @@ export const getUsers =
         dispatch(slice.actions.setLoadingGet({ loading: true }));
         const users = await api.post<Page<User>>(`${basePath}/search`, criteria);
         dispatch(slice.actions.getUsers({ users }));
+      } finally {
+        dispatch(slice.actions.setLoadingGet({ loading: false }));
+      }
+    };
+export const getMoreUsers =
+  (criteria: SearchCriteria, pageNum: number): AppThunk =>
+    async (dispatch) => {
+      criteria = { ...criteria, pageNum };
+      try {
+        dispatch(slice.actions.setLoadingGet({ loading: true }));
+        const users = await api.post<Page<User>>(
+          `${basePath}/search`,
+          criteria
+        );
+        dispatch(slice.actions.getMoreUsers({ users }));
       } finally {
         dispatch(slice.actions.setLoadingGet({ loading: false }));
       }

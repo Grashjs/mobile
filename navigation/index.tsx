@@ -48,6 +48,7 @@ import SelectCategoriesModal from '../screens/modals/SelectCategoryModal';
 import SelectTasksModal from '../screens/modals/SelectTasksModal';
 import PartsScreen from '../screens/parts/PartsScreen';
 import VendorsAndCustomersScreen from '../screens/vendorsCustomers';
+import PeopleAndTeamsScreen from '../screens/peopleTeams';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -88,6 +89,8 @@ function RootNavigator() {
       <Stack.Screen name='Parts' component={PartsScreen} options={{ title: t('parts') }} />
       <Stack.Screen name='VendorsCustomers' component={VendorsAndCustomersScreen}
                     options={{ title: t('vendors_and_customers') }} />
+      <Stack.Screen name='PeopleTeams' component={PeopleAndTeamsScreen}
+                    options={{ title: t('people_teams') }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name='Modal' component={ModalScreen} />
         <Stack.Screen name='CompleteWorkOrder' component={CompleteWorkOrderModal}

@@ -11,7 +11,6 @@ export default interface User {
   phone: string;
   jobTitle: string;
   companyName: string;
-  accountType: string;
   lastVisit: string;
   hourlyRate: number;
 }
@@ -29,6 +28,7 @@ export interface OwnUser extends Audit {
   companyId: number;
   image: File;
 }
+
 export interface UserMiniDTO {
   firstName: string;
   lastName: string;
@@ -50,7 +50,6 @@ export const users: User[] = [
     phone: '+00212611223344',
     jobTitle: 'Job',
     companyName: 'Company',
-    accountType: 'Administrator',
     lastVisit: '02/09/22',
     hourlyRate: 4
   },
@@ -62,7 +61,6 @@ export const users: User[] = [
     phone: '+00212611223344',
     jobTitle: 'Job',
     companyName: 'Company',
-    accountType: 'Administrator',
     lastVisit: '02/09/22',
     hourlyRate: 8
   }

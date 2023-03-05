@@ -11,6 +11,8 @@ interface TeamState {
   teams: Page<Team>;
   singleTeam: Team;
   teamsMini: TeamMiniDTO[];
+  currentPageNum: number;
+  lastPage: boolean;
   loadingGet: boolean;
 }
 
@@ -18,6 +20,8 @@ const initialState: TeamState = {
   teams: getInitialPage<Team>(),
   singleTeam: null,
   teamsMini: [],
+  currentPageNum: 0,
+  lastPage: true,
   loadingGet: false
 };
 
@@ -28,6 +32,15 @@ const slice = createSlice({
     getTeams(state: TeamState, action: PayloadAction<{ teams: Page<Team> }>) {
       const { teams } = action.payload;
       state.teams = teams;
+    },
+    getMoreTeams(
+      state: TeamState,
+      action: PayloadAction<{ teams: Page<Team> }>
+    ) {
+      const { teams } = action.payload;
+      state.teams.content = state.teams.content.concat(teams.content);
+      state.currentPageNum = state.currentPageNum + 1;
+      state.lastPage = teams.last;
     },
     getSingleTeam(state: TeamState, action: PayloadAction<{ team: Team }>) {
       const { team } = action.payload;
@@ -91,7 +104,21 @@ export const getTeams =
         dispatch(slice.actions.setLoadingGet({ loading: false }));
       }
     };
-
+export const getMoreTeams =
+  (criteria: SearchCriteria, pageNum: number): AppThunk =>
+    async (dispatch) => {
+      criteria = { ...criteria, pageNum };
+      try {
+        dispatch(slice.actions.setLoadingGet({ loading: true }));
+        const teams = await api.post<Page<Team>>(
+          `${basePath}/search`,
+          criteria
+        );
+        dispatch(slice.actions.getMoreTeams({ teams }));
+      } finally {
+        dispatch(slice.actions.setLoadingGet({ loading: false }));
+      }
+    };
 export const getSingleTeam =
   (id: number): AppThunk =>
     async (dispatch) => {
