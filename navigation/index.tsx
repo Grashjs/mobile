@@ -49,6 +49,7 @@ import SelectTasksModal from '../screens/modals/SelectTasksModal';
 import PartsScreen from '../screens/parts/PartsScreen';
 import VendorsAndCustomersScreen from '../screens/vendorsCustomers';
 import PeopleAndTeamsScreen from '../screens/peopleTeams';
+import NotificationsScreen from '../screens/NotificationsScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -91,6 +92,8 @@ function RootNavigator() {
                     options={{ title: t('vendors_and_customers') }} />
       <Stack.Screen name='PeopleTeams' component={PeopleAndTeamsScreen}
                     options={{ title: t('people_teams') }} />
+      <Stack.Screen name='Notifications' component={NotificationsScreen}
+                    options={{ title: t('Notifications') }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name='Modal' component={ModalScreen} />
         <Stack.Screen name='CompleteWorkOrder' component={CompleteWorkOrderModal}

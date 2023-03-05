@@ -1,43 +1,23 @@
-export const getAssetUrl = (id) => {
-  return `/app/assets/${id}/work-orders`;
-};
+import { RootStackParamList } from '../types';
 
-export const getLocationUrl = (id) => {
-  return `/app/locations/${id}`;
+export const getAssetUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+  return { route: 'AssetDetails', params: { id } };
 };
-
-export const getUserUrl = (id) => {
-  return `/app/people-teams/people/${id}`;
+export const getLocationUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+  return { route: 'LocationDetails', params: { id } };
 };
-export const getTeamUrl = (id) => {
-  return `/app/people-teams/teams/${id}`;
+export const getTeamUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+  return { route: 'TeamDetails', params: { id } };
 };
-
-export const getRequestUrl = (id) => {
-  return `/app/requests/${id}`;
+export const getRequestUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+  return { route: 'RequestDetails', params: { id } };
 };
-
-export const getWorkOrderUrl = (id) => {
-  return `/app/work-orders/${id}`;
+export const getWorkOrderUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+  return { route: 'WODetails', params: { id } };
 };
-
-export const getPartUrl = (id) => {
-  return `/app/inventory/parts/${id}`;
+export const getPartUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+  return { route: 'PartDetails', params: { id } };
 };
-
-export const getMeterUrl = (id) => {
-  return `/app/meters/${id}`;
-};
-
-export const getCustomerUrl = (id) => {
-  return `/app/vendors-customers/customers/${id}`;
-};
-export const getVendorUrl = (id) => {
-  return `/app/vendors-customers/vendors/${id}`;
-};
-export const getPurchaseOrderUrl = (id) => {
-  return `/app/purchase-orders/${id}`;
-};
-export const getPreventiveMaintenanceUrl = (id) => {
-  return `/app/preventive-maintenances/${id}`;
+export const getMeterUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+  return { route: 'MeterDetails', params: { id } };
 };

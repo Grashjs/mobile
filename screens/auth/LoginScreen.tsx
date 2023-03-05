@@ -67,8 +67,8 @@ export default function LoginScreen({ navigation }: AuthStackScreenProps<'Login'
                 value={values.email}
                 mode='outlined'
               />
-              <HelperText type='error'
-                          visible={Boolean(touched.email && errors.email)}>{errors.email?.toString()}</HelperText>
+              {Boolean(touched.email && errors.email) &&
+              <HelperText type='error'>{errors.email?.toString()}</HelperText>}
               <TextInput
                 error={Boolean(touched.password && errors.password)}
                 label={t('password')}
@@ -78,8 +78,8 @@ export default function LoginScreen({ navigation }: AuthStackScreenProps<'Login'
                 secureTextEntry={true}
                 mode='outlined'
               />
-              <HelperText type='error'
-                          visible={Boolean(touched.password && errors.password)}>{errors.password?.toString()}</HelperText>
+              {Boolean(touched.password && errors.password) &&
+              <HelperText type='error'>{errors.password?.toString()}</HelperText>}
               <Button
                 color={theme.colors.primary}
                 onPress={() => handleSubmit()}

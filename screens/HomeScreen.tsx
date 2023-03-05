@@ -3,7 +3,7 @@ import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-
 import EditScreenInfo from '../components/EditScreenInfo';
 import { View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
-import { IconButton, useTheme, Text, Switch } from 'react-native-paper';
+import { IconButton, useTheme, Text, Switch, Badge } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { ExtendedWorkOrderStatus, getStatusColor } from '../utils/overall';
 import { FilterField } from '../models/page';
@@ -12,12 +12,14 @@ import { useEffect } from 'react';
 import { getMobileOverviewStats } from '../slices/analytics/workOrder';
 import { useDispatch, useSelector } from '../store';
 import * as React from 'react';
+import notification, { getNotifications } from '../slices/notification';
 
 export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
   const theme = useTheme();
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { userSettings, fetchUserSettings, patchUserSettings, user } = useAuth();
+  const { notifications } = useSelector((state) => state.notifications);
   const { mobileOverview, loading } = useSelector(state => state.woAnalytics);
   const iconButtonStyle = { ...styles.iconButton, backgroundColor: theme.colors.background };
   const getTodayDates = () => {
@@ -29,6 +31,7 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
   };
   useEffect(() => {
     fetchUserSettings();
+    dispatch(getNotifications());
   }, []);
 
   useEffect(() => {
@@ -124,7 +127,13 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
                     icon={'poll'} onPress={() => {
           navigation.navigate('WorkOrderStats');
         }} />
-        <IconButton style={iconButtonStyle} icon={'bell'} />
+        <View style={{ ...iconButtonStyle, position: 'relative' }}>
+          <IconButton icon={'bell'} onPress={() => navigation.navigate('Notifications')} />
+          <Badge
+            style={{ position: 'absolute', bottom: 0, right: 0, backgroundColor: theme.colors.error }}
+            visible={!!notifications.filter(notification => !notification.seen).length}>
+            {notifications.filter(notification => !notification.seen).length}</Badge>
+        </View>
         <IconButton style={iconButtonStyle} icon={'package-variant-closed'} />
       </View>
       <View

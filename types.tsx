@@ -19,6 +19,7 @@ import Category from './models/category';
 import { FilterField } from './models/page';
 import Request from './models/request';
 import Meter from './models/meter';
+import Notification from './models/notification';
 
 declare global {
   namespace ReactNavigation {
@@ -45,6 +46,15 @@ export type RootStackParamList = {
   AddMeter: undefined;
   AddUser: undefined;
   WODetails: { id: number };
+  AssetDetails: { id: number };
+  LocationDetails: { id: number };
+  RequestDetails: { id: number };
+  UserDetails: { id: number };
+  TeamDetails: { id: number };
+  PartDetails: { id: number };
+  MeterDetails: { id: number };
+  CustomerDetails: { id: number };
+  VendorDetails: { id: number };
   Modal: undefined;
   Tasks: {
     tasksProps: Task[];
@@ -70,6 +80,7 @@ export type RootStackParamList = {
   Assets: undefined;
   PeopleTeams: undefined;
   VendorsCustomers: undefined;
+  Notifications: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList,
