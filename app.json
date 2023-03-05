@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "grash",
+    "name": "Grash",
     "slug": "grash",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -25,10 +25,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.grash.cmms"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "68d23445-e906-46e3-ba99-c6f37e706589"
+      }
     }
   }
 }
