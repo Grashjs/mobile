@@ -100,7 +100,7 @@ export default function MetersScreen({ navigation, route }: RootStackScreenProps
                   scrollEventThrottle={400}>
         {!!meters.content.length ? meters.content.map(meter => (
           <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={meter.id}
-                onPress={() => navigation.navigate('WODetails', { id: meter.id })}>
+                onPress={() => navigation.navigate('MeterDetails', { id: meter.id })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>

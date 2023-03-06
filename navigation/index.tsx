@@ -93,9 +93,9 @@ function RootNavigator() {
       <Stack.Screen name='VendorsCustomers' component={VendorsAndCustomersScreen}
                     options={{ title: t('vendors_and_customers') }} />
       <Stack.Screen name='Assets' component={AssetsScreen}
-                    options={{ title: t('locations') }} />
-      <Stack.Screen name='Locations' component={LocationsScreen}
                     options={{ title: t('assets') }} />
+      <Stack.Screen name='Locations' component={LocationsScreen}
+                    options={{ title: t('locations') }} />
       <Stack.Screen name='PeopleTeams' component={PeopleAndTeamsScreen}
                     options={{ title: t('people_teams') }} />
       <Stack.Screen name='Notifications' component={NotificationsScreen}

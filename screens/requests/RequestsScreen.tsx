@@ -99,7 +99,7 @@ export default function RequestsScreen({ navigation, route }: RootTabScreenProps
                   scrollEventThrottle={400}>
         {!!requests.content.length ? requests.content.map(request => (
           <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={request.id}
-                onPress={() => navigation.navigate('WODetails', { id: request.id })}>
+                onPress={() => navigation.navigate('RequestDetails', { id: request.id })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>
