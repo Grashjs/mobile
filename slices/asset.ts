@@ -229,6 +229,7 @@ export const getAssetChildren =
 export const getAssetDetails =
   (id: number): AppThunk =>
     async (dispatch) => {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
       const asset = await api.get<AssetDTO>(`${basePath}/${id}`);
       dispatch(
         slice.actions.getAssetDetails({
@@ -236,6 +237,7 @@ export const getAssetDetails =
           asset
         })
       );
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
     };
 export const getAssetWorkOrders =
   (id: number): AppThunk =>

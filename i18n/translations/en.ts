@@ -1366,7 +1366,9 @@ const enJSON = {
   vendors_and_customers: 'Vendors & contractors',
   no_notification_message: 'Important updates will appear here to help you follow the progress of your work',
   no_notification: 'No notification',
-  view_children: 'See children'
+  view_children: 'See children',
+  loading: 'Loading',
+  please_wait: 'Please wait...'
 };
 
 export default enJSON;

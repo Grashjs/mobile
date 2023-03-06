@@ -1509,7 +1509,9 @@ const frJSON = {
   vendors_and_customers: 'Fournisseurs & prestataires ',
   no_notification_message: 'Des mises à jour importantes s\'afficheront ici pour vous aider a suivre l\'évolution de votre travail',
   no_notification: 'Aucune notification',
-  view_children: 'Voir les enfants'
+  view_children: 'Voir les enfants',
+  loading: 'Chargement',
+  please_wait: 'Veuillez patienter...'
 };
 
 export default frJSON;
