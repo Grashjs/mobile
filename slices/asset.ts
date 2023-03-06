@@ -19,6 +19,7 @@ interface AssetState {
   currentPageNum: number;
   lastPage: boolean;
   loadingGet: boolean;
+  loadingWorkOrders: boolean;
 }
 
 const initialState: AssetState = {
@@ -30,7 +31,8 @@ const initialState: AssetState = {
   assetsMini: [],
   currentPageNum: 0,
   lastPage: true,
-  loadingGet: false
+  loadingGet: false,
+  loadingWorkOrders: false
 };
 
 const slice = createSlice({
@@ -85,6 +87,13 @@ const slice = createSlice({
     ) {
       const { loading } = action.payload;
       state.loadingGet = loading;
+    },
+    setLoadingWorkOrders(
+      state: AssetState,
+      action: PayloadAction<{ loading: boolean }>
+    ) {
+      const { loading } = action.payload;
+      state.loadingWorkOrders = loading;
     },
     getAssetChildren(
       state: AssetState,
@@ -242,6 +251,7 @@ export const getAssetDetails =
 export const getAssetWorkOrders =
   (id: number): AppThunk =>
     async (dispatch) => {
+      dispatch(slice.actions.setLoadingWorkOrders({ loading: true }));
       const workOrders = await api.get<WorkOrder[]>(`work-orders/asset/${id}`);
       dispatch(
         slice.actions.getAssetWorkOrders({
@@ -249,6 +259,7 @@ export const getAssetWorkOrders =
           workOrders
         })
       );
+      dispatch(slice.actions.setLoadingWorkOrders({ loading: false }));
     };
 
 export const getAssetsByLocation =

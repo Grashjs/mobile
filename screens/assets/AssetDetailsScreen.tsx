@@ -12,6 +12,7 @@ import { getAssetDetails } from '../../slices/asset';
 import LoadingDialog from '../../components/LoadingDialog';
 import AssetDetails from './details/AssetDetails';
 import { TabBar, TabView } from 'react-native-tab-view';
+import AssetWorkOrders from './details/AssetWorkOrders';
 
 export default function AssetDetailsScreen({
                                              navigation,
@@ -36,6 +37,8 @@ export default function AssetDetailsScreen({
     switch (route.key) {
       case 'details':
         return <AssetDetails asset={asset} />;
+      case 'work-orders':
+        return <AssetWorkOrders asset={asset} />;
       case 'files':
         return null;
     }
