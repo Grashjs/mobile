@@ -76,7 +76,7 @@ export type RootStackParamList = {
   NotFound: undefined;
   Meters: undefined;
   Parts: undefined;
-  Locations: undefined;
+  Locations: { id?: number; hierarchy?: number[] };
   Assets: { id?: number; hierarchy?: number[] };
   PeopleTeams: undefined;
   VendorsCustomers: undefined;

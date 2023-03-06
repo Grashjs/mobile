@@ -5,11 +5,11 @@ import { useContext, useEffect, useState } from 'react';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
-import { getAssetChildren, getAssets, getMoreAssets } from '../../slices/asset';
+import { getLocationChildren, getLocations, getMoreLocations } from '../../slices/location';
 import { FilterField, SearchCriteria } from '../../models/page';
 import { Button, Card, IconButton, Searchbar, Text, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
-import Asset, { AssetDTO } from '../../models/asset';
+import Location from '../../models/location';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { onSearchQueryChange } from '../../utils/overall';
 import { RootStackScreenProps } from '../../types';
@@ -25,11 +25,11 @@ function IconWithLabel({ icon, label }: { icon: IconSource, label: string }) {
   );
 }
 
-export default function AssetsScreen({ navigation, route }: RootStackScreenProps<'Assets'>) {
+export default function LocationsScreen({ navigation, route }: RootStackScreenProps<'Locations'>) {
   const { t } = useTranslation();
   const [startedSearch, setStartedSearch] = useState<boolean>(false);
-  const { assets, assetsHierarchy, loadingGet, currentPageNum, lastPage } = useSelector(
-    (state) => state.assets
+  const { locations, locationsHierarchy, loadingGet, currentPageNum, lastPage } = useSelector(
+    (state) => state.locations
   );
   const theme = useTheme();
   const [view, setView] = useState<'hierarchy' | 'list'>('hierarchy');
@@ -52,16 +52,16 @@ export default function AssetsScreen({ navigation, route }: RootStackScreenProps
   };
   const [criteria, setCriteria] = useState<SearchCriteria>(getCriteriaFromFilterFields([]));
   useEffect(() => {
-    if (hasViewPermission(PermissionEntity.ASSETS) && view === 'list') {
-      dispatch(getAssets({ ...criteria, pageSize: 10, pageNum: 0, direction: 'DESC' }));
+    if (hasViewPermission(PermissionEntity.LOCATIONS) && view === 'list') {
+      dispatch(getLocations({ ...criteria, pageSize: 10, pageNum: 0, direction: 'DESC' }));
     }
   }, [criteria]);
-  const [currentAssets, setCurrentAssets] = useState([]);
+  const [currentLocations, setCurrentLocations] = useState([]);
   useEffect(() => {
-    if (route.params?.id && assetsHierarchy.some(asset => asset.hierarchy.includes(route.params.id) && asset.id !== route.params.id)) {
+    if (route.params?.id && locationsHierarchy.some(location => location.hierarchy.includes(route.params.id) && location.id !== route.params.id)) {
       return;
     }
-    dispatch(getAssetChildren(route.params?.id ?? 0, route.params?.hierarchy ?? []));
+    dispatch(getLocationChildren(route.params?.id ?? 0, route.params?.hierarchy ?? []));
   }, [route]);
 
   const onRefresh = () => {
@@ -74,11 +74,9 @@ export default function AssetsScreen({ navigation, route }: RootStackScreenProps
       contentSize.height - paddingToBottom;
   };
   const onQueryChange = (query) => {
-    onSearchQueryChange<AssetDTO>(query, criteria, setCriteria, setSearchQuery, [
+    onSearchQueryChange<Location>(query, criteria, setCriteria, setSearchQuery, [
       'name',
-      'model',
-      'description',
-      'additionalInfos'
+      'address'
     ]);
     setView('list');
   };
@@ -90,13 +88,13 @@ export default function AssetsScreen({ navigation, route }: RootStackScreenProps
   useEffect(() => {
     let result = [];
     if (route.params?.id) {
-      result = assetsHierarchy.filter((asset, index) => {
-          return asset.hierarchy.includes(route.params.id) && asset.id !== route.params.id;
+      result = locationsHierarchy.filter((location, index) => {
+          return location.hierarchy.includes(route.params.id) && location.id !== route.params.id;
         }
       );
-    } else result = assetsHierarchy;
-    setCurrentAssets(result);
-  }, [assetsHierarchy]);
+    } else result = locationsHierarchy;
+    setCurrentLocations(result);
+  }, [locationsHierarchy]);
 
   return (
     <View style={{ ...styles.container, backgroundColor: theme.colors.background }}>
@@ -110,26 +108,25 @@ export default function AssetsScreen({ navigation, route }: RootStackScreenProps
                                      onScroll={({ nativeEvent }) => {
                                        if (isCloseToBottom(nativeEvent)) {
                                          if (!loadingGet && !lastPage)
-                                           dispatch(getMoreAssets(criteria, currentPageNum + 1));
+                                           dispatch(getMoreLocations(criteria, currentPageNum + 1));
                                        }
                                      }}
                                      refreshControl={
                                        <RefreshControl refreshing={loadingGet} onRefresh={onRefresh}
                                                        colors={[theme.colors.primary]} />}
                                      scrollEventThrottle={400}>
-        {!!assets.content.length ? assets.content.map(asset => (
-          <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={asset.id}
-                onPress={() => navigation.navigate('WODetails', { id: asset.id })}>
+        {!!locations.content.length ? locations.content.map(location => (
+          <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={location.id}
+                onPress={() => navigation.navigate('WODetails', { id: location.id })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                   <View style={{ marginRight: 10 }}>
-                    <Tag text={`#${asset.id}`} color='white' backgroundColor='#545454' />
+                    <Tag text={`#${location.id}`} color='white' backgroundColor='#545454' />
                   </View>
                 </View>
               </View>
-              <Text variant='titleMedium'>{asset.name}</Text>
-              {asset.location && <IconWithLabel label={asset.location.name} icon='map-marker-outline' />}
+              <Text variant='titleMedium'>{location.name}</Text>
             </Card.Content>
           </Card>
         )) : loadingGet ? null : <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
@@ -138,23 +135,23 @@ export default function AssetsScreen({ navigation, route }: RootStackScreenProps
       </ScrollView> : <ScrollView style={styles.scrollView} refreshControl={
         <RefreshControl refreshing={loadingGet}
                         colors={[theme.colors.primary]} />}>
-        {!!currentAssets.length && currentAssets.map(asset => (
-          <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={asset.id}
-                onPress={() => navigation.navigate('WODetails', { id: asset.id })}>
+        {!!currentLocations.length && currentLocations.map(location => (
+          <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={location.id}
+                onPress={() => navigation.navigate('WODetails', { id: location.id })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                   <View style={{ marginRight: 10 }}>
-                    <Tag text={`#${asset.id}`} color='white' backgroundColor='#545454' />
+                    <Tag text={`#${location.id}`} color='white' backgroundColor='#545454' />
                   </View>
                 </View>
               </View>
-              <Text variant='titleMedium'>{asset.name}</Text>
-              {asset.location && <IconWithLabel label={asset.location.name} icon='map-marker-outline' />}
+              <Text variant='titleMedium'>{location.name}</Text>
+              {location.location && <IconWithLabel label={location.location.name} icon='map-marker-outline' />}
             </Card.Content>
             <Card.Actions>
-              {asset.hasChildren && <Button onPress={() => {
-                navigation.push('Assets', { id: asset.id, hierarchy: asset.hierarchy });
+              {location.hasChildren && <Button onPress={() => {
+                navigation.push('Locations', { id: location.id, hierarchy: location.hierarchy });
               }}>{t('view_children')}</Button>}
             </Card.Actions>
           </Card>

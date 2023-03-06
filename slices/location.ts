@@ -6,18 +6,27 @@ import Location, {
   LocationRow
 } from '../models/location';
 import api from '../utils/api';
+import { getInitialPage, Page, SearchCriteria } from '../models/page';
+import { AssetDTO } from '../models/asset';
+import Part from '../models/part';
 
 interface LocationState {
-  locations: Location[];
+  locations: Page<Location>;
   locationsHierarchy: LocationRow[];
   locationsMini: LocationMiniDTO[];
+  singleLocation: Location;
+  currentPageNum: number;
+  lastPage: boolean;
   loadingGet: boolean;
 }
 
 const initialState: LocationState = {
-  locations: [],
+  locations: getInitialPage<Location>(),
+  singleLocation: null,
   locationsHierarchy: [],
   locationsMini: [],
+  currentPageNum: 0,
+  lastPage: true,
   loadingGet: false
 };
 
@@ -27,10 +36,21 @@ const slice = createSlice({
   reducers: {
     getLocations(
       state: LocationState,
-      action: PayloadAction<{ locations: Location[] }>
+      action: PayloadAction<{ locations: Page<Location> }>
     ) {
       const { locations } = action.payload;
       state.locations = locations;
+      state.currentPageNum = 0;
+      state.lastPage = locations.last;
+    },
+    getMoreLocations(
+      state: LocationState,
+      action: PayloadAction<{ locations: Page<Location> }>
+    ) {
+      const { locations } = action.payload;
+      state.locations.content = state.locations.content.concat(locations.content);
+      state.currentPageNum = state.currentPageNum + 1;
+      state.lastPage = locations.last;
     },
     getLocationsMini(
       state: LocationState,
@@ -44,20 +64,25 @@ const slice = createSlice({
       action: PayloadAction<{ location: Location }>
     ) {
       const { location } = action.payload;
-      state.locations = [...state.locations, location];
+      state.locations.content = [...state.locations.content, location];
     },
     editLocation(
       state: LocationState,
       action: PayloadAction<{ location: Location }>
     ) {
       const { location } = action.payload;
-      const locationIndex = state.locations.findIndex(
-        (loc) => loc.id === location.id
+      const inContent = state.locations.content.some(
+        (part1) => part1.id === location.id
       );
-      if (locationIndex === -1) {
-        state.locations = [...state.locations, location];
+      if (inContent) {
+        state.locations.content = state.locations.content.map((part1) => {
+          if (part1.id === location.id) {
+            return location;
+          }
+          return part1;
+        });
       } else {
-        state.locations[locationIndex] = location;
+        state.singleLocation = location;
       }
     },
     deleteLocation(
@@ -65,10 +90,8 @@ const slice = createSlice({
       action: PayloadAction<{ id: number }>
     ) {
       const { id } = action.payload;
-      const locationIndex = state.locations.findIndex(
-        (location) => location.id === id
-      );
-      state.locations.splice(locationIndex, 1);
+      const locationIndex = state.locations.content.findIndex((location) => location.id === id);
+      if (locationIndex !== -1) state.locations.content.splice(locationIndex, 1);
     },
     getLocationChildren(
       state: LocationState,
@@ -105,10 +128,35 @@ const slice = createSlice({
 
 export const reducer = slice.reducer;
 
-export const getLocations = (): AppThunk => async (dispatch) => {
-  const locations = await api.get<Location[]>('locations');
-  dispatch(slice.actions.getLocations({ locations }));
-};
+export const getLocations =
+  (criteria: SearchCriteria): AppThunk =>
+    async (dispatch) => {
+      try {
+        dispatch(slice.actions.setLoadingGet({ loading: true }));
+        const locations = await api.post<Page<Location>>(
+          `locations/search`,
+          criteria
+        );
+        dispatch(slice.actions.getLocations({ locations }));
+      } finally {
+        dispatch(slice.actions.setLoadingGet({ loading: false }));
+      }
+    };
+export const getMoreLocations =
+  (criteria: SearchCriteria, pageNum: number): AppThunk =>
+    async (dispatch) => {
+      criteria = { ...criteria, pageNum };
+      try {
+        dispatch(slice.actions.setLoadingGet({ loading: true }));
+        const locations = await api.post<Page<Location>>(
+          `locations/search`,
+          criteria
+        );
+        dispatch(slice.actions.getMoreLocations({ locations }));
+      } finally {
+        dispatch(slice.actions.setLoadingGet({ loading: false }));
+      }
+    };
 export const getLocationsMini = (): AppThunk => async (dispatch) => {
   dispatch(slice.actions.setLoadingGet({ loading: true }));
   const locations = await api.get<LocationMiniDTO[]>('locations/mini');

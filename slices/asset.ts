@@ -43,6 +43,8 @@ const slice = createSlice({
     ) {
       const { assets } = action.payload;
       state.assets = assets;
+      state.currentPageNum = 0;
+      state.lastPage = assets.last;
     },
     getMoreAssets(
       state: AssetState,
