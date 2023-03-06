@@ -12,6 +12,7 @@ import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as React from 'react';
 import { getAssetDetails } from '../../slices/asset';
+import LoadingDialog from '../../components/LoadingDialog';
 
 export default function AssetDetailsScreen({
                                              navigation,
@@ -64,16 +65,6 @@ export default function AssetDetailsScreen({
     });
   }, [asset]);
 
-  const renderLoadingModal = () => {
-    return <Portal>
-      <Dialog visible={loadingGet}>
-        <Dialog.Title>{t('loading')}</Dialog.Title>
-        <Dialog.Content>
-          <Text variant='bodyMedium'>{t('please_wait')}</Text>
-        </Dialog.Content>
-      </Dialog>
-    </Portal>;
-  };
   if (asset)
     return (
       <ScrollView>
@@ -81,9 +72,7 @@ export default function AssetDetailsScreen({
       </ScrollView>
     );
   else return (
-    <Provider theme={theme}>
-      {renderLoadingModal()}
-    </Provider>
+    <LoadingDialog visible={loadingGet} />
   );
 }
 

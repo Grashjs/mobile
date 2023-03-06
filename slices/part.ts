@@ -9,7 +9,7 @@ const basePath = 'parts';
 
 interface PartState {
   parts: Page<Part>;
-  singlePart: Part;
+  partInfos: { [key: number]: { part?: Part } };
   partsMini: PartMiniDTO[];
   currentPageNum: number;
   lastPage: boolean;
@@ -18,7 +18,7 @@ interface PartState {
 
 const initialState: PartState = {
   parts: getInitialPage<Part>(),
-  singlePart: null,
+  partInfos: {},
   partsMini: [],
   currentPageNum: 0,
   lastPage: true,
@@ -44,25 +44,20 @@ const slice = createSlice({
       state.currentPageNum = state.currentPageNum + 1;
       state.lastPage = parts.last;
     },
-    getSinglePart(state: PartState, action: PayloadAction<{ part: Part }>) {
-      const { part } = action.payload;
-      state.singlePart = part;
+    getPartDetails(
+      state: PartState,
+      action: PayloadAction<{ part; id: number }>
+    ) {
+      const { part, id } = action.payload;
+      if (state.partInfos[id]) {
+        state.partInfos[id] = { ...state.partInfos[id], part };
+      } else state.partInfos[id] = { part };
     },
     editPart(state: PartState, action: PayloadAction<{ part: Part }>) {
       const { part } = action.payload;
-      const inContent = state.parts.content.some(
-        (part1) => part1.id === part.id
-      );
-      if (inContent) {
-        state.parts.content = state.parts.content.map((part1) => {
-          if (part1.id === part.id) {
-            return part;
-          }
-          return part1;
-        });
-      } else {
-        state.singlePart = part;
-      }
+      if (state.partInfos[part.id]) {
+        state.partInfos[part.id].part = part;
+      } else state.partInfos[part.id] = { part };
     },
     getPartsMini(
       state: PartState,
@@ -86,9 +81,6 @@ const slice = createSlice({
     ) {
       const { loading } = action.payload;
       state.loadingGet = loading;
-    },
-    clearSinglePart(state: PartState, action: PayloadAction<{}>) {
-      state.singlePart = null;
     }
   }
 });
@@ -121,12 +113,17 @@ export const getMoreParts =
         dispatch(slice.actions.setLoadingGet({ loading: false }));
       }
     };
-export const getSinglePart =
+export const getPartDetails =
   (id: number): AppThunk =>
     async (dispatch) => {
       dispatch(slice.actions.setLoadingGet({ loading: true }));
       const part = await api.get<Part>(`${basePath}/${id}`);
-      dispatch(slice.actions.getSinglePart({ part }));
+      dispatch(
+        slice.actions.getPartDetails({
+          id,
+          part
+        })
+      );
       dispatch(slice.actions.setLoadingGet({ loading: false }));
     };
 
@@ -159,8 +156,4 @@ export const deletePart =
         dispatch(slice.actions.deletePart({ id }));
       }
     };
-export const clearSinglePart = (): AppThunk => async (dispatch) => {
-  dispatch(slice.actions.clearSinglePart({}));
-};
-
 export default slice;

@@ -11,7 +11,7 @@ const basePath = 'vendors';
 
 interface VendorState {
   vendors: Page<Vendor>;
-  singleVendor: Vendor;
+  vendorInfos: { [key: number]: { vendor?: Vendor } };
   vendorsMini: VendorMiniDTO[];
   currentPageNum: number;
   lastPage: boolean;
@@ -20,7 +20,7 @@ interface VendorState {
 
 const initialState: VendorState = {
   vendors: getInitialPage<Vendor>(),
-  singleVendor: null,
+  vendorInfos: {},
   vendorsMini: [],
   currentPageNum: 0,
   lastPage: true,
@@ -47,28 +47,20 @@ const slice = createSlice({
       state.currentPageNum = state.currentPageNum + 1;
       state.lastPage = vendors.last;
     },
-    getSingleVendor(
+    getVendorDetails(
       state: VendorState,
-      action: PayloadAction<{ vendor: Vendor }>
+      action: PayloadAction<{ vendor; id: number }>
     ) {
-      const { vendor } = action.payload;
-      state.singleVendor = vendor;
+      const { vendor, id } = action.payload;
+      if (state.vendorInfos[id]) {
+        state.vendorInfos[id] = { ...state.vendorInfos[id], vendor };
+      } else state.vendorInfos[id] = { vendor };
     },
     editVendor(state: VendorState, action: PayloadAction<{ vendor: Vendor }>) {
       const { vendor } = action.payload;
-      const inContent = state.vendors.content.some(
-        (vendor1) => vendor1.id === vendor.id
-      );
-      if (inContent) {
-        state.vendors.content = state.vendors.content.map((vendor1) => {
-          if (vendor1.id === vendor.id) {
-            return vendor;
-          }
-          return vendor1;
-        });
-      } else {
-        state.singleVendor = vendor;
-      }
+      if (state.vendorInfos[vendor.id]) {
+        state.vendorInfos[vendor.id].vendor = vendor;
+      } else state.vendorInfos[vendor.id] = { vendor };
     },
     getVendorsMini(
       state: VendorState,
@@ -94,9 +86,6 @@ const slice = createSlice({
     ) {
       const { loading } = action.payload;
       state.loadingGet = loading;
-    },
-    clearSingleVendor(state: VendorState, action: PayloadAction<{}>) {
-      state.singleVendor = null;
     }
   }
 });
@@ -132,12 +121,17 @@ export const getMoreVendors =
         dispatch(slice.actions.setLoadingGet({ loading: false }));
       }
     };
-export const getSingleVendor =
+export const getVendorDetails =
   (id: number): AppThunk =>
     async (dispatch) => {
       dispatch(slice.actions.setLoadingGet({ loading: true }));
       const vendor = await api.get<Vendor>(`${basePath}/${id}`);
-      dispatch(slice.actions.getSingleVendor({ vendor }));
+      dispatch(
+        slice.actions.getVendorDetails({
+          id,
+          vendor
+        })
+      );
       dispatch(slice.actions.setLoadingGet({ loading: false }));
     };
 
@@ -170,8 +164,5 @@ export const deleteVendor =
         dispatch(slice.actions.deleteVendor({ id }));
       }
     };
-export const clearSingleVendor = (): AppThunk => async (dispatch) => {
-  dispatch(slice.actions.clearSingleVendor({}));
-};
 
 export default slice;

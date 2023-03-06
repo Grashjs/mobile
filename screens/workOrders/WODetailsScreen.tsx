@@ -40,18 +40,20 @@ import { getAdditionalCosts } from '../../slices/additionalCost';
 import { getRelations } from '../../slices/relation';
 import { getTasks } from '../../slices/task';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
-import { deleteWorkOrder, editWorkOrder, getPDFReport } from '../../slices/workOrder';
+import { deleteWorkOrder, editWorkOrder, getPDFReport, getWorkOrderDetails } from '../../slices/workOrder';
 import { PlanFeature } from '../../models/subscriptionPlan';
 import PartQuantities from '../../components/PartQuantities';
 import { SheetManager } from 'react-native-actions-sheet';
+import LoadingDialog from '../../components/LoadingDialog';
+import { getAssetDetails } from '../../slices/asset';
 
 export default function WODetailsScreen({
                                           navigation,
                                           route
                                         }: RootStackScreenProps<'WODetails'>) {
   const { id } = route.params;
-  const { workOrders } = useSelector((state) => state.workOrders);
-  const workOrder = workOrders.content.find((workOrder) => workOrder?.id === id);
+  const { workOrderInfos, loadingGet } = useSelector((state) => state.workOrders);
+  const workOrder = workOrderInfos[id]?.workOrder;
   const { t } = useTranslation();
   const [openDropDown, setOpenDropDown] = useState<boolean>(false);
   const [dropDownValue, setDropdownValue] = useState<string>(workOrder?.status ?? '');
@@ -90,11 +92,11 @@ export default function WODetailsScreen({
   );
   const [openDelete, setOpenDelete] = React.useState(false);
   const [openArchive, setOpenArchive] = React.useState(false);
-  const loadingDetails = loadingPartQuantities[workOrder.id] ||
-    loadingTasks[workOrder.id] ||
-    loadingCosts[workOrder.id] ||
-    loadingLabors[workOrder.id]
-    || loadingRelations[workOrder.id];
+  const loadingDetails = loadingPartQuantities[workOrder?.id] ||
+    loadingTasks[workOrder?.id] ||
+    loadingCosts[workOrder?.id] ||
+    loadingLabors[workOrder?.id]
+    || loadingRelations[workOrder?.id];
   const fieldsToRender: {
     label: string;
     value: string | number;
@@ -138,6 +140,7 @@ export default function WODetailsScreen({
     }
   ];
   const getInfos = () => {
+    dispatch(getWorkOrderDetails(id));
     dispatch(getPartQuantitiesByWorkOrder(workOrder?.id));
     dispatch(getLabors(workOrder?.id));
     dispatch(getAdditionalCosts(workOrder?.id));
@@ -147,7 +150,7 @@ export default function WODetailsScreen({
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        !loadingTasks[workOrder?.id] && <Pressable onPress={() => {
+        workOrder && !loadingTasks[workOrder?.id] && <Pressable onPress={() => {
           SheetManager.show('work-order-details-sheet', {
             payload: {
               onEdit: () => navigation.navigate('EditWorkOrder', { workOrder, tasks }),
@@ -166,7 +169,7 @@ export default function WODetailsScreen({
       )
     });
     //LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-  }, [loadingTasks]);
+  }, [loadingTasks, workOrder, tasks]);
 
   useEffect(() => {
     getInfos();
@@ -196,10 +199,10 @@ export default function WODetailsScreen({
   };
   const onGenerateReport = () => {
     setLoading(true);
-    dispatch(getPDFReport(workOrder.id))
+    dispatch(getPDFReport(workOrder?.id))
       .then(async (url: string) => {
         try {
-          const { uri } = await FileSystem.downloadAsync(url, FileSystem.documentDirectory + `Work Order #${workOrder.id} report`);
+          const { uri } = await FileSystem.downloadAsync(url, FileSystem.documentDirectory + `Work Order #${workOrder?.id} report`);
           await Linking.openURL(uri);
         } catch (err) {
           console.error(err);
@@ -401,7 +404,7 @@ export default function WODetailsScreen({
             <Text
               variant='titleMedium'
               style={{ marginRight: 10 }}
-            >{`#${workOrder.id}`}</Text>
+            >{`#${workOrder?.id}`}</Text>
             <Tag
               text={t('priority_label', { priority: t(workOrder.priority) })}
               color='white'
@@ -516,7 +519,7 @@ export default function WODetailsScreen({
               <PartQuantities
                 partQuantities={partQuantities}
                 isPO={false}
-                rootId={workOrder.id}
+                rootId={workOrder?.id}
               />
               <Divider style={{ marginTop: 5 }} />
               <Button
@@ -525,7 +528,7 @@ export default function WODetailsScreen({
                     onChange: (selectedParts) => {
                       dispatch(
                         editWOPartQuantities(
-                          workOrder.id,
+                          workOrder?.id,
                           selectedParts.map((part) => part.id)
                         )
                       );
@@ -579,7 +582,7 @@ export default function WODetailsScreen({
                     onChange: (selectedParts) => {
                       dispatch(
                         editWOPartQuantities(
-                          workOrder.id,
+                          workOrder?.id,
                           selectedParts.map((part) => part.id)
                         )
                       );
@@ -596,7 +599,7 @@ export default function WODetailsScreen({
             {!!tasks.length && <View style={styles.shadowedCard}>
               <Text style={{ marginBottom: 10 }}>{t('tasks')}</Text>
               <TouchableOpacity
-                onPress={() => navigation.navigate('Tasks', { workOrderId: workOrder.id, tasksProps: tasks })}
+                onPress={() => navigation.navigate('Tasks', { workOrderId: workOrder?.id, tasksProps: tasks })}
               ><Text variant='titleLarge' style={{ fontWeight: 'bold' }}> {
                 t('remaining_tasks', { count: tasks.filter(task => !task.value).length })}</Text>
                 <Text
@@ -626,7 +629,7 @@ export default function WODetailsScreen({
           extended={isExtended}
           onPress={() => {
             setControllingTime(true);
-            dispatch(controlTimer(!runningTimer, workOrder.id)).finally(() =>
+            dispatch(controlTimer(!runningTimer, workOrder?.id)).finally(() =>
               setControllingTime(false)
             );
           }}
@@ -636,6 +639,9 @@ export default function WODetailsScreen({
         />
       </Provider>
     </View>
+  );
+  else return (
+    <LoadingDialog visible={loadingGet} />
   );
 }
 

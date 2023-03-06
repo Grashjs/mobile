@@ -10,7 +10,7 @@ const basePath = 'customers';
 
 interface CustomerState {
   customers: Page<Customer>;
-  singleCustomer: Customer;
+  customerInfos: { [key: number]: { customer?: Customer } };
   customersMini: CustomerMiniDTO[];
   currentPageNum: number;
   lastPage: boolean;
@@ -19,8 +19,7 @@ interface CustomerState {
 
 const initialState: CustomerState = {
   customers: getInitialPage<Customer>(),
-  singleCustomer: null,
-  customersMini: [],
+  customerInfos: {}, customersMini: [],
   currentPageNum: 0,
   lastPage: true,
   loadingGet: false
@@ -46,31 +45,23 @@ const slice = createSlice({
       state.currentPageNum = state.currentPageNum + 1;
       state.lastPage = customers.last;
     },
-    getSingleCustomer(
+    getCustomerDetails(
       state: CustomerState,
-      action: PayloadAction<{ customer: Customer }>
+      action: PayloadAction<{ customer; id: number }>
     ) {
-      const { customer } = action.payload;
-      state.singleCustomer = customer;
+      const { customer, id } = action.payload;
+      if (state.customerInfos[id]) {
+        state.customerInfos[id] = { ...state.customerInfos[id], customer };
+      } else state.customerInfos[id] = { customer };
     },
     editCustomer(
       state: CustomerState,
       action: PayloadAction<{ customer: Customer }>
     ) {
       const { customer } = action.payload;
-      const inContent = state.customers.content.some(
-        (customer1) => customer1.id === customer.id
-      );
-      if (inContent) {
-        state.customers.content = state.customers.content.map((customer1) => {
-          if (customer1.id === customer.id) {
-            return customer;
-          }
-          return customer1;
-        });
-      } else {
-        state.singleCustomer = customer;
-      }
+      if (state.customerInfos[customer.id]) {
+        state.customerInfos[customer.id].customer = customer;
+      } else state.customerInfos[customer.id] = { customer };
     },
     getCustomersMini(
       state: CustomerState,
@@ -102,9 +93,6 @@ const slice = createSlice({
     ) {
       const { loading } = action.payload;
       state.loadingGet = loading;
-    },
-    clearSingleCustomer(state: CustomerState, action: PayloadAction<{}>) {
-      state.singleCustomer = null;
     }
   }
 });
@@ -141,12 +129,17 @@ export const getMoreCustomers =
       }
     };
 
-export const getSingleCustomer =
+export const getCustomerDetails =
   (id: number): AppThunk =>
     async (dispatch) => {
       dispatch(slice.actions.setLoadingGet({ loading: true }));
       const customer = await api.get<Customer>(`${basePath}/${id}`);
-      dispatch(slice.actions.getSingleCustomer({ customer }));
+      dispatch(
+        slice.actions.getCustomerDetails({
+          id,
+          customer
+        })
+      );
       dispatch(slice.actions.setLoadingGet({ loading: false }));
     };
 
@@ -182,7 +175,4 @@ export const deleteCustomer =
         dispatch(slice.actions.deleteCustomer({ id }));
       }
     };
-export const clearSingleCustomer = (): AppThunk => async (dispatch) => {
-  dispatch(slice.actions.clearSingleCustomer({}));
-};
 export default slice;

@@ -9,7 +9,7 @@ const basePath = 'teams';
 
 interface TeamState {
   teams: Page<Team>;
-  singleTeam: Team;
+  teamInfos: { [key: number]: { team?: Team } };
   teamsMini: TeamMiniDTO[];
   currentPageNum: number;
   lastPage: boolean;
@@ -18,7 +18,7 @@ interface TeamState {
 
 const initialState: TeamState = {
   teams: getInitialPage<Team>(),
-  singleTeam: null,
+  teamInfos: {},
   teamsMini: [],
   currentPageNum: 0,
   lastPage: true,
@@ -42,25 +42,20 @@ const slice = createSlice({
       state.currentPageNum = state.currentPageNum + 1;
       state.lastPage = teams.last;
     },
-    getSingleTeam(state: TeamState, action: PayloadAction<{ team: Team }>) {
-      const { team } = action.payload;
-      state.singleTeam = team;
+    getTeamDetails(
+      state: TeamState,
+      action: PayloadAction<{ team; id: number }>
+    ) {
+      const { team, id } = action.payload;
+      if (state.teamInfos[id]) {
+        state.teamInfos[id] = { ...state.teamInfos[id], team };
+      } else state.teamInfos[id] = { team };
     },
     editTeam(state: TeamState, action: PayloadAction<{ team: Team }>) {
       const { team } = action.payload;
-      const inContent = state.teams.content.some(
-        (team1) => team1.id === team.id
-      );
-      if (inContent) {
-        state.teams.content = state.teams.content.map((team1) => {
-          if (team1.id === team.id) {
-            return team;
-          }
-          return team1;
-        });
-      } else {
-        state.singleTeam = team;
-      }
+      if (state.teamInfos[team.id]) {
+        state.teamInfos[team.id].team = team;
+      } else state.teamInfos[team.id] = { team };
     },
     getTeamsMini(
       state: TeamState,
@@ -84,9 +79,6 @@ const slice = createSlice({
     ) {
       const { loading } = action.payload;
       state.loadingGet = loading;
-    },
-    clearSingleTeam(state: TeamState, action: PayloadAction<{}>) {
-      state.singleTeam = null;
     }
   }
 });
@@ -119,12 +111,17 @@ export const getMoreTeams =
         dispatch(slice.actions.setLoadingGet({ loading: false }));
       }
     };
-export const getSingleTeam =
+export const getTeamDetails =
   (id: number): AppThunk =>
     async (dispatch) => {
       dispatch(slice.actions.setLoadingGet({ loading: true }));
       const team = await api.get<Team>(`${basePath}/${id}`);
-      dispatch(slice.actions.getSingleTeam({ team }));
+      dispatch(
+        slice.actions.getTeamDetails({
+          id,
+          team
+        })
+      );
       dispatch(slice.actions.setLoadingGet({ loading: false }));
     };
 
@@ -156,8 +153,5 @@ export const deleteTeam =
         dispatch(slice.actions.deleteTeam({ id }));
       }
     };
-export const clearSingleTeam = (): AppThunk => async (dispatch) => {
-  dispatch(slice.actions.clearSingleTeam({}));
-};
 
 export default slice;

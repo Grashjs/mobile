@@ -16,10 +16,10 @@ import { formatWorkOrderValues, getWorkOrderFields } from '../../utils/fields';
 import { getWOBaseValues } from '../../utils/woBase';
 import { patchTasks } from '../../slices/task';
 
-export default function CreateWorkOrderScreen({
-                                                navigation,
-                                                route
-                                              }: RootStackScreenProps<'EditWorkOrder'>) {
+export default function EditWorkOrderScreen({
+                                              navigation,
+                                              route
+                                            }: RootStackScreenProps<'EditWorkOrder'>) {
   const { t } = useTranslation();
   const { workOrder, tasks } = route.params;
   const [initialDueDate, setInitialDueDate] = useState<Date>(null);

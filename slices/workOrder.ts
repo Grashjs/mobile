@@ -5,6 +5,7 @@ import WorkOrder from '../models/workOrder';
 import api from '../utils/api';
 import { Task } from '../models/tasks';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
+import { AssetDTO } from '../models/asset';
 
 const basePath = 'work-orders';
 
@@ -12,7 +13,7 @@ interface WorkOrderState {
   workOrders: Page<WorkOrder>;
   workOrdersByLocation: { [key: number]: WorkOrder[] };
   workOrdersByPart: { [key: number]: WorkOrder[] };
-  singleWorkOrder: WorkOrder;
+  workOrderInfos: { [key: number]: { workOrder?: WorkOrder } };
   loadingGet: boolean;
   currentPageNum: number;
   lastPage: boolean;
@@ -25,7 +26,7 @@ const initialState: WorkOrderState = {
   workOrders: getInitialPage<WorkOrder>(),
   workOrdersByLocation: {},
   workOrdersByPart: {},
-  singleWorkOrder: null,
+  workOrderInfos: {},
   loadingGet: false,
   currentPageNum: 0,
   lastPage: true,
@@ -56,12 +57,14 @@ const slice = createSlice({
       state.currentPageNum = state.currentPageNum + 1;
       state.lastPage = workOrders.last;
     },
-    getSingleWorkOrder(
+    getWorkOrderDetails(
       state: WorkOrderState,
-      action: PayloadAction<{ workOrder: WorkOrder }>
+      action: PayloadAction<{ workOrder; id: number }>
     ) {
-      const { workOrder } = action.payload;
-      state.singleWorkOrder = workOrder;
+      const { workOrder, id } = action.payload;
+      if (state.workOrderInfos[id]) {
+        state.workOrderInfos[id] = { ...state.workOrderInfos[id], workOrder };
+      } else state.workOrderInfos[id] = { workOrder };
     },
     addWorkOrder(
       state: WorkOrderState,
@@ -75,21 +78,9 @@ const slice = createSlice({
       action: PayloadAction<{ workOrder: WorkOrder }>
     ) {
       const { workOrder } = action.payload;
-      const inContent = state.workOrders.content.some(
-        (workOrder1) => workOrder1.id === workOrder.id
-      );
-      if (inContent) {
-        state.workOrders.content = state.workOrders.content.map(
-          (workOrder1) => {
-            if (workOrder1.id === workOrder.id) {
-              return workOrder;
-            }
-            return workOrder1;
-          }
-        );
-      } else {
-        state.singleWorkOrder = workOrder;
-      }
+      if (state.workOrderInfos[workOrder.id]) {
+        state.workOrderInfos[workOrder.id].workOrder = workOrder;
+      } else state.workOrderInfos[workOrder.id] = { workOrder };
     },
     deleteWorkOrder(
       state: WorkOrderState,
@@ -101,9 +92,6 @@ const slice = createSlice({
       );
       if (workOrderIndex !== -1)
         state.workOrders.content.splice(workOrderIndex, 1);
-    },
-    clearSingleWorkOrder(state: WorkOrderState, action: PayloadAction<{}>) {
-      state.singleWorkOrder = null;
     },
     getWorkOrdersByLocation(
       state: WorkOrderState,
@@ -167,12 +155,17 @@ export const getMoreWorkOrders =
         dispatch(slice.actions.setLoadingGet({ loading: false }));
       }
     };
-export const getSingleWorkOrder =
+export const getWorkOrderDetails =
   (id: number): AppThunk =>
     async (dispatch) => {
       dispatch(slice.actions.setLoadingGet({ loading: true }));
       const workOrder = await api.get<WorkOrder>(`${basePath}/${id}`);
-      dispatch(slice.actions.getSingleWorkOrder({ workOrder }));
+      dispatch(
+        slice.actions.getWorkOrderDetails({
+          id,
+          workOrder
+        })
+      );
       dispatch(slice.actions.setLoadingGet({ loading: false }));
     };
 export const addWorkOrder =
@@ -263,7 +256,4 @@ export const getWorkOrderEvents =
         })
       );
     };
-export const clearSingleWorkOrder = (): AppThunk => async (dispatch) => {
-  dispatch(slice.actions.clearSingleWorkOrder({}));
-};
 export default slice;

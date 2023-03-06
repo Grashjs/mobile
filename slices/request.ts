@@ -10,7 +10,7 @@ const basePath = 'requests';
 
 interface RequestState {
   requests: Page<Request>;
-  singleRequest: Request;
+  requestInfos: { [key: number]: { request?: Request } };
   currentPageNum: number;
   lastPage: boolean;
   loadingGet: boolean;
@@ -18,7 +18,7 @@ interface RequestState {
 
 const initialState: RequestState = {
   requests: getInitialPage<Request>(),
-  singleRequest: null,
+  requestInfos: {},
   currentPageNum: 0,
   lastPage: true,
   loadingGet: false
@@ -46,12 +46,15 @@ const slice = createSlice({
       state.currentPageNum = state.currentPageNum + 1;
       state.lastPage = requests.last;
     },
-    getSingleRequest(
+
+    getRequestDetails(
       state: RequestState,
-      action: PayloadAction<{ request: Request }>
+      action: PayloadAction<{ request; id: number }>
     ) {
-      const { request } = action.payload;
-      state.singleRequest = request;
+      const { request, id } = action.payload;
+      if (state.requestInfos[id]) {
+        state.requestInfos[id] = { ...state.requestInfos[id], request };
+      } else state.requestInfos[id] = { request };
     },
     addRequest(
       state: RequestState,
@@ -65,19 +68,9 @@ const slice = createSlice({
       action: PayloadAction<{ request: Request }>
     ) {
       const { request } = action.payload;
-      const inContent = state.requests.content.some(
-        (request1) => request1.id === request.id
-      );
-      if (inContent) {
-        state.requests.content = state.requests.content.map((request1) => {
-          if (request1.id === request.id) {
-            return request;
-          }
-          return request1;
-        });
-      } else {
-        state.singleRequest = request;
-      }
+      if (state.requestInfos[request.id]) {
+        state.requestInfos[request.id].request = request;
+      } else state.requestInfos[request.id] = { request };
     },
     deleteRequest(state: RequestState, action: PayloadAction<{ id: number }>) {
       const { id } = action.payload;
@@ -113,9 +106,6 @@ const slice = createSlice({
     ) {
       const { loading } = action.payload;
       state.loadingGet = loading;
-    },
-    clearSingleRequest(state: RequestState, action: PayloadAction<{}>) {
-      state.singleRequest = null;
     }
   }
 });
@@ -151,12 +141,17 @@ export const getMoreRequests =
         dispatch(slice.actions.setLoadingGet({ loading: false }));
       }
     };
-export const getSingleRequest =
+export const getRequestDetails =
   (id: number): AppThunk =>
     async (dispatch) => {
       dispatch(slice.actions.setLoadingGet({ loading: true }));
       const request = await api.get<Request>(`${basePath}/${id}`);
-      dispatch(slice.actions.getSingleRequest({ request }));
+      dispatch(
+        slice.actions.getRequestDetails({
+          id,
+          request
+        })
+      );
       dispatch(slice.actions.setLoadingGet({ loading: false }));
     };
 export const addRequest =
@@ -203,7 +198,4 @@ export const cancelRequest =
       dispatch(slice.actions.cancelRequest({ id }));
     };
 
-export const clearSingleRequest = (): AppThunk => async (dispatch) => {
-  dispatch(slice.actions.clearSingleRequest({}));
-};
 export default slice;

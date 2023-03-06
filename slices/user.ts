@@ -10,7 +10,7 @@ const basePath = 'users';
 
 interface UserState {
   users: Page<User>;
-  singleUser: User;
+  userInfos: { [key: number]: { user?: User } };
   usersMini: UserMiniDTO[];
   disabledUsersMini: UserMiniDTO[];
   currentPageNum: number;
@@ -20,7 +20,7 @@ interface UserState {
 
 const initialState: UserState = {
   users: getInitialPage<User>(),
-  singleUser: null,
+  userInfos: {},
   usersMini: [],
   disabledUsersMini: [],
   currentPageNum: 0,
@@ -45,25 +45,21 @@ const slice = createSlice({
       state.currentPageNum = state.currentPageNum + 1;
       state.lastPage = users.last;
     },
-    getSingleUser(state: UserState, action: PayloadAction<{ user: User }>) {
-      const { user } = action.payload;
-      state.singleUser = user;
+    getUserDetails(
+      state: UserState,
+      action: PayloadAction<{ user; id: number }>
+    ) {
+      const { user, id } = action.payload;
+      if (state.userInfos[id]) {
+        state.userInfos[id] = { ...state.userInfos[id], user };
+      } else state.userInfos[id] = { user };
     },
+
     editUser(state: UserState, action: PayloadAction<{ user: User }>) {
       const { user } = action.payload;
-      const inContent = state.users.content.some(
-        (user1) => user1.id === user.id
-      );
-      if (inContent) {
-        state.users.content = state.users.content.map((user1) => {
-          if (user1.id === user.id) {
-            return user;
-          }
-          return user1;
-        });
-      } else {
-        state.singleUser = user;
-      }
+      if (state.userInfos[user.id]) {
+        state.userInfos[user.id].user = user;
+      } else state.userInfos[user.id] = { user };
     },
     getSingleUserMini(
       state: UserState,
@@ -104,9 +100,6 @@ const slice = createSlice({
     ) {
       const { loading } = action.payload;
       state.loadingGet = loading;
-    },
-    clearSingleUser(state: UserState, action: PayloadAction<{}>) {
-      state.singleUser = null;
     }
   }
 });
@@ -140,15 +133,19 @@ export const getMoreUsers =
       }
     };
 
-export const getSingleUser =
+export const getUserDetails =
   (id: number): AppThunk =>
     async (dispatch) => {
       dispatch(slice.actions.setLoadingGet({ loading: true }));
       const user = await api.get<User>(`${basePath}/${id}`);
-      dispatch(slice.actions.getSingleUser({ user }));
+      dispatch(
+        slice.actions.getUserDetails({
+          id,
+          user
+        })
+      );
       dispatch(slice.actions.setLoadingGet({ loading: false }));
     };
-
 export const editUser =
   (id: number, user): AppThunk =>
     async (dispatch) => {
@@ -198,9 +195,5 @@ export const inviteUsers =
         }
       );
     };
-
-export const clearSingleUser = (): AppThunk => async (dispatch) => {
-  dispatch(slice.actions.clearSingleUser({}));
-};
 
 export default slice;

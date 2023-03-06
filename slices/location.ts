@@ -12,9 +12,9 @@ import Part from '../models/part';
 
 interface LocationState {
   locations: Page<Location>;
+  locationInfos: { [key: number]: { location?: Location } };
   locationsHierarchy: LocationRow[];
   locationsMini: LocationMiniDTO[];
-  singleLocation: Location;
   currentPageNum: number;
   lastPage: boolean;
   loadingGet: boolean;
@@ -22,7 +22,7 @@ interface LocationState {
 
 const initialState: LocationState = {
   locations: getInitialPage<Location>(),
-  singleLocation: null,
+  locationInfos: {},
   locationsHierarchy: [],
   locationsMini: [],
   currentPageNum: 0,
@@ -52,6 +52,15 @@ const slice = createSlice({
       state.currentPageNum = state.currentPageNum + 1;
       state.lastPage = locations.last;
     },
+    getLocationDetails(
+      state: LocationState,
+      action: PayloadAction<{ location; id: number }>
+    ) {
+      const { location, id } = action.payload;
+      if (state.locationInfos[id]) {
+        state.locationInfos[id] = { ...state.locationInfos[id], location };
+      } else state.locationInfos[id] = { location };
+    },
     getLocationsMini(
       state: LocationState,
       action: PayloadAction<{ locations: LocationMiniDTO[] }>
@@ -71,19 +80,9 @@ const slice = createSlice({
       action: PayloadAction<{ location: Location }>
     ) {
       const { location } = action.payload;
-      const inContent = state.locations.content.some(
-        (part1) => part1.id === location.id
-      );
-      if (inContent) {
-        state.locations.content = state.locations.content.map((part1) => {
-          if (part1.id === location.id) {
-            return location;
-          }
-          return part1;
-        });
-      } else {
-        state.singleLocation = location;
-      }
+      if (state.locationInfos[location.id]) {
+        state.locationInfos[location.id].location = location;
+      } else state.locationInfos[location.id] = { location };
     },
     deleteLocation(
       state: LocationState,
@@ -157,6 +156,19 @@ export const getMoreLocations =
         dispatch(slice.actions.setLoadingGet({ loading: false }));
       }
     };
+export const getLocationDetails =
+  (id: number): AppThunk =>
+    async (dispatch) => {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
+      const location = await api.get<Location>(`locations/${id}`);
+      dispatch(
+        slice.actions.getLocationDetails({
+          id,
+          location
+        })
+      );
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    };
 export const getLocationsMini = (): AppThunk => async (dispatch) => {
   dispatch(slice.actions.setLoadingGet({ loading: true }));
   const locations = await api.get<LocationMiniDTO[]>('locations/mini');
@@ -176,12 +188,6 @@ export const editLocation =
         `locations/${id}`,
         location
       );
-      dispatch(slice.actions.editLocation({ location: locationResponse }));
-    };
-export const getSingleLocation =
-  (id: number): AppThunk =>
-    async (dispatch) => {
-      const locationResponse = await api.get<Location>(`locations/${id}`);
       dispatch(slice.actions.editLocation({ location: locationResponse }));
     };
 export const deleteLocation =
