@@ -128,7 +128,7 @@ export const getStatusColor = (status: ExtendedWorkOrderStatus, theme: MD3Theme)
     case 'LATE_WO':
       return theme.colors.error;
     case 'TODAY_WO':
-      return theme.colors.background;
+      return theme.colors.primary;
     case 'HIGH_WO':
       return theme.colors.error;
     case 'COMPLETE':

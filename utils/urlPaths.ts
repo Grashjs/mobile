@@ -21,3 +21,12 @@ export const getPartUrl = (id): { route: keyof RootStackParamList, params: {} } 
 export const getMeterUrl = (id): { route: keyof RootStackParamList, params: {} } => {
   return { route: 'MeterDetails', params: { id } };
 };
+export const getUserUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+  return { route: 'UserDetails', params: { id } };
+};
+export const getCustomerUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+  return { route: 'CustomerDetails', params: { id } };
+};
+export const getVendorUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+  return { route: 'VendorDetails', params: { id } };
+};

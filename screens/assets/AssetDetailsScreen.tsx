@@ -1,18 +1,17 @@
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 
 import { View } from '../../components/Themed';
 import { RootStackScreenProps } from '../../types';
 import { useDispatch, useSelector } from '../../store';
 import { useTranslation } from 'react-i18next';
-import useAuth from '../../hooks/useAuth';
-import { useContext, useEffect, useState } from 'react';
-import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
-import { Button, Dialog, IconButton, Portal, Provider, Text, useTheme } from 'react-native-paper';
-import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
-import { SheetManager } from 'react-native-actions-sheet';
 import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { IconButton, useTheme } from 'react-native-paper';
+import { SheetManager } from 'react-native-actions-sheet';
 import { getAssetDetails } from '../../slices/asset';
 import LoadingDialog from '../../components/LoadingDialog';
+import AssetDetails from './details/AssetDetails';
+import { TabBar, TabView } from 'react-native-tab-view';
 
 export default function AssetDetailsScreen({
                                              navigation,
@@ -23,30 +22,33 @@ export default function AssetDetailsScreen({
   const { t } = useTranslation();
   const { assetInfos, loadingGet } = useSelector(state => state.assets);
   const asset = assetInfos[id]?.asset;
-  const { hasEditPermission, user, companySettings, hasFeature } = useAuth();
-  const { showSnackBar } = useContext(CustomSnackBarContext);
-  const { getFormattedDate } = useContext(CompanySettingsContext);
-  const [loading, setLoading] = useState<boolean>(false);
-  const theme = useTheme();
   const dispatch = useDispatch();
-  const fieldsToRender: {
-    label: string;
-    value: string | number;
-  }[] = [
-    {
-      label: t('description'),
-      value: asset?.description
-    },
-
-    {
-      label: t('category'),
-      value: asset?.category?.name
-    },
-    {
-      label: t('created_at'),
-      value: getFormattedDate(asset?.createdAt)
+  const theme = useTheme();
+  const layout = useWindowDimensions();
+  const [tabIndex, setTabIndex] = useState(0);
+  const [tabs] = useState([
+    { key: 'details', title: t('details') },
+    { key: 'work-orders', title: t('work_orders') },
+    { key: 'files', title: t('files') },
+    { key: 'parts', title: t('parts') }
+  ]);
+  const renderScene = ({ route, jumpTo }) => {
+    switch (route.key) {
+      case 'details':
+        return <AssetDetails asset={asset} />;
+      case 'files':
+        return null;
     }
-  ];
+  };
+  const renderTabBar = props => (
+    <TabBar
+      {...props}
+      scrollEnabled
+      indicatorStyle={{ backgroundColor: 'white' }}
+      style={{ backgroundColor: theme.colors.primary }}
+    />
+  );
+
   useEffect(() => {
     dispatch(getAssetDetails(id));
   }, []);
@@ -67,9 +69,15 @@ export default function AssetDetailsScreen({
 
   if (asset)
     return (
-      <ScrollView>
-
-      </ScrollView>
+      <View style={styles.container}>
+        <TabView
+          renderTabBar={renderTabBar}
+          navigationState={{ index: tabIndex, routes: tabs }}
+          renderScene={renderScene}
+          onIndexChange={setTabIndex}
+          initialLayout={{ width: layout.width }}
+        />
+      </View>
     );
   else return (
     <LoadingDialog visible={loadingGet} />

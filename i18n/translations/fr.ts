@@ -1511,7 +1511,8 @@ const frJSON = {
   no_notification: 'Aucune notification',
   view_children: 'Voir les enfants',
   loading: 'Chargement',
-  please_wait: 'Veuillez patienter...'
+  please_wait: 'Veuillez patienter...',
+  add_file: 'Ajouter un fichier'
 };
 
 export default frJSON;

@@ -1368,7 +1368,8 @@ const enJSON = {
   no_notification: 'No notification',
   view_children: 'See children',
   loading: 'Loading',
-  please_wait: 'Please wait...'
+  please_wait: 'Please wait...',
+  add_file: 'Add file'
 };
 
 export default enJSON;
