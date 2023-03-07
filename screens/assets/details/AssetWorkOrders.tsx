@@ -36,6 +36,11 @@ export default function AssetWorkOrders({ asset }: { asset: AssetDTO }) {
           <Divider />
         </TouchableOpacity>
       ))}
+      {!loadingWorkOrders && workOrders.length === 0 && (
+        <View style={{ padding: 20 }}>
+          <Text variant={'titleLarge'}>{t('no_wo_linked_asset')}</Text>
+        </View>
+      )}
     </ScrollView>
   );
 }

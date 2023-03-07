@@ -1,18 +1,19 @@
 import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 
-import { View } from '../../components/Themed';
-import { RootStackScreenProps } from '../../types';
-import { useDispatch, useSelector } from '../../store';
+import { View } from '../../../components/Themed';
+import { RootStackScreenProps } from '../../../types';
+import { useDispatch, useSelector } from '../../../store';
 import { useTranslation } from 'react-i18next';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { IconButton, useTheme } from 'react-native-paper';
 import { SheetManager } from 'react-native-actions-sheet';
-import { getAssetDetails } from '../../slices/asset';
-import LoadingDialog from '../../components/LoadingDialog';
-import AssetDetails from './details/AssetDetails';
+import { getAssetDetails } from '../../../slices/asset';
+import LoadingDialog from '../../../components/LoadingDialog';
+import AssetDetails from './AssetDetails';
 import { TabBar, TabView } from 'react-native-tab-view';
-import AssetWorkOrders from './details/AssetWorkOrders';
+import AssetWorkOrders from './AssetWorkOrders';
+import AssetFiles from './AssetFiles';
 
 export default function AssetDetailsScreen({
                                              navigation,
@@ -40,7 +41,9 @@ export default function AssetDetailsScreen({
       case 'work-orders':
         return <AssetWorkOrders asset={asset} />;
       case 'files':
-        return null;
+        return <AssetFiles asset={asset} />;
+      case 'parts':
+        return <AssetFiles asset={asset} />;
     }
   };
   const renderTabBar = props => (

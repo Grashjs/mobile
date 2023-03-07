@@ -84,6 +84,7 @@ export default function LoginScreen({ navigation }: AuthStackScreenProps<'Login'
                 color={theme.colors.primary}
                 onPress={() => handleSubmit()}
                 loading={isSubmitting}
+                style={{ marginTop: 20 }}
                 disabled={isSubmitting}
                 mode='contained'
               >
