@@ -213,6 +213,7 @@ export const deleteWorkOrder =
 export const getWorkOrdersByLocation =
   (id: number): AppThunk =>
     async (dispatch) => {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
       const workOrders = await api.get<WorkOrder[]>(`${basePath}/location/${id}`);
       dispatch(
         slice.actions.getWorkOrdersByLocation({
@@ -220,6 +221,7 @@ export const getWorkOrdersByLocation =
           workOrders
         })
       );
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
     };
 
 export const getWorkOrdersByPart =

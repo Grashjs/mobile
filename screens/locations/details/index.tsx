@@ -8,25 +8,24 @@ import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { Button, Dialog, IconButton, Portal, Text, useTheme } from 'react-native-paper';
 import { SheetManager } from 'react-native-actions-sheet';
-import { deleteAsset, getAssetDetails } from '../../../slices/asset';
+import { deleteLocation, getLocationDetails } from '../../../slices/location';
 import LoadingDialog from '../../../components/LoadingDialog';
-import AssetDetails from './AssetDetails';
+import LocationDetails from './LocationDetails';
 import { TabBar, TabView } from 'react-native-tab-view';
-import AssetWorkOrders from './AssetWorkOrders';
-import AssetFiles from './AssetFiles';
-import AssetParts from './AssetParts';
-import { deleteWorkOrder } from '../../../slices/workOrder';
+import LocationWorkOrders from './LocationWorkOrders';
 import { CustomSnackBarContext } from '../../../contexts/CustomSnackBarContext';
+import LocationAssets from './LocationAssets';
+import LocationFiles from './LocationFiles';
 
-export default function AssetDetailsScreen({
-                                             navigation,
-                                             route
-                                           }: RootStackScreenProps<'AssetDetails'>) {
+export default function LocationDetailsHome({
+                                              navigation,
+                                              route
+                                            }: RootStackScreenProps<'LocationDetails'>) {
   const { id } = route.params;
 
   const { t } = useTranslation();
-  const { assetInfos, loadingGet } = useSelector(state => state.assets);
-  const asset = assetInfos[id]?.asset;
+  const { locationInfos, loadingGet } = useSelector(state => state.locations);
+  const location = locationInfos[id]?.location;
   const dispatch = useDispatch();
   const theme = useTheme();
   const layout = useWindowDimensions();
@@ -37,18 +36,18 @@ export default function AssetDetailsScreen({
     { key: 'details', title: t('details') },
     { key: 'work-orders', title: t('work_orders') },
     { key: 'files', title: t('files') },
-    { key: 'parts', title: t('parts') }
+    { key: 'assets', title: t('assets') }
   ]);
   const renderScene = ({ route, jumpTo }) => {
     switch (route.key) {
       case 'details':
-        return <AssetDetails asset={asset} />;
+        return <LocationDetails location={location} />;
       case 'work-orders':
-        return <AssetWorkOrders asset={asset} />;
+        return <LocationWorkOrders location={location} />;
+      case 'assets':
+        return <LocationAssets location={location} />;
       case 'files':
-        return <AssetFiles asset={asset} />;
-      case 'parts':
-        return <AssetParts asset={asset} />;
+        return <LocationFiles location={location} />;
     }
   };
   const renderTabBar = props => (
@@ -61,18 +60,16 @@ export default function AssetDetailsScreen({
   );
 
   useEffect(() => {
-    dispatch(getAssetDetails(id));
+    dispatch(getLocationDetails(id));
   }, []);
   useEffect(() => {
     navigation.setOptions({
-      title: asset?.name ?? t('loading'),
+      title: location?.name ?? t('loading'),
       headerRight: () => (
         <Pressable onPress={() => {
-          SheetManager.show('asset-details-sheet', {
+          SheetManager.show('location-details-sheet', {
             payload: {
-              onEdit: () => navigation.navigate('EditAsset', { asset: asset }),
-              onAddFile: () => null,
-              onAddPart: () => null,
+              onEdit: () => navigation.navigate('EditLocation', { location: location }),
               onDelete: () => setOpenDelete(true)
             }
           });
@@ -81,17 +78,17 @@ export default function AssetDetailsScreen({
         </Pressable>
       )
     });
-  }, [asset]);
+  }, [location]);
 
   const onDeleteSuccess = () => {
-    showSnackBar(t('asset_remove_success'), 'success');
+    showSnackBar(t('location_delete_success'), 'success');
     navigation.goBack();
   };
   const onDeleteFailure = (err) =>
-    showSnackBar(t('asset_remove_failure'), 'error');
+    showSnackBar(t('location_delete_failure'), 'error');
 
   const handleDelete = () => {
-    dispatch(deleteAsset(asset?.id)).then(onDeleteSuccess).catch(onDeleteFailure);
+    dispatch(deleteLocation(location?.id)).then(onDeleteSuccess).catch(onDeleteFailure);
     setOpenDelete(false);
   };
   const renderConfirmDelete = () => {
@@ -99,7 +96,7 @@ export default function AssetDetailsScreen({
       <Dialog visible={openDelete} onDismiss={() => setOpenDelete(false)}>
         <Dialog.Title>{t('confirmation')}</Dialog.Title>
         <Dialog.Content>
-          <Text variant='bodyMedium'>{t('confirm_delete_asset')}</Text>
+          <Text variant='bodyMedium'>{t('confirm_delete_location')}</Text>
         </Dialog.Content>
         <Dialog.Actions>
           <Button onPress={() => setOpenDelete(false)}>{t('cancel')}</Button>
@@ -108,7 +105,7 @@ export default function AssetDetailsScreen({
       </Dialog>
     </Portal>;
   };
-  if (asset)
+  if (location)
     return (
       <View style={styles.container}>
         {renderConfirmDelete()}

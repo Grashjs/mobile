@@ -7,7 +7,7 @@ import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { RootStackParamList } from '../../types';
 import { useTranslation } from 'react-i18next';
 
-export default function AssetDetailsSheet(props: SheetProps<{ onEdit: () => void; onAddFile: () => void; onAddPart: () => void; onDelete: () => void }>) {
+export default function LocationDetailsSheet(props: SheetProps<{ onEdit: () => void; onAddFile: () => void; onDelete: () => void }>) {
   const { t } = useTranslation();
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const theme = useTheme();

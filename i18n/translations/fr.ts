@@ -1506,7 +1506,7 @@ const frJSON = {
   all_time: 'Depuis toujours',
   compliant_work_orders: 'Bons de travail clôturés à temps',
   stats: 'Statistiques',
-  vendors_and_customers: 'Fournisseurs & prestataires ',
+  vendors_and_customers: 'Fournisseurs & Prestataires ',
   no_notification_message: 'Des mises à jour importantes s\'afficheront ici pour vous aider a suivre l\'évolution de votre travail',
   no_notification: 'Aucune notification',
   view_children: 'Voir les enfants',
@@ -1514,7 +1514,9 @@ const frJSON = {
   please_wait: 'Veuillez patienter...',
   add_file: 'Ajouter un fichier',
   asset_update_failure:
-    'La modification de l\'équipement ne s\'est pas bien passée'
+    'La modification de l\'équipement ne s\'est pas bien passée',
+  no_wo_linked_location: 'Aucun ordre de travail trouvé dans cet emplacement',
+  confirm_delete_file_location: 'Etes-vous surs de vouloir retirer ce fichier de cet emplacement ?'
 };
 
 export default frJSON;

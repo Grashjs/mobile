@@ -52,8 +52,10 @@ import PeopleAndTeamsScreen from '../screens/peopleTeams';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import AssetsScreen from '../screens/assets/AssetsScreen';
 import LocationsScreen from '../screens/locations/LocationsScreen';
-import AssetDetailsScreen from '../screens/assets/details/AssetDetailsScreen';
+import AssetDetails from '../screens/assets/details';
 import EditAssetScreen from '../screens/assets/EditAssetScreen';
+import LocationDetails from '../screens/locations/details';
+import EditLocationScreen from '../screens/locations/EditLocationScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -96,12 +98,16 @@ function RootNavigator() {
                     options={{ title: t('vendors_and_customers') }} />
       <Stack.Screen name='Assets' component={AssetsScreen}
                     options={{ title: t('assets') }} />
-      <Stack.Screen name='AssetDetails' component={AssetDetailsScreen}
+      <Stack.Screen name='AssetDetails' component={AssetDetails}
                     options={{ title: t('asset') }} />
       <Stack.Screen name='EditAsset' component={EditAssetScreen}
                     options={{ title: t('edit_asset') }} />
       <Stack.Screen name='Locations' component={LocationsScreen}
                     options={{ title: t('locations') }} />
+      <Stack.Screen name='LocationDetails' component={LocationDetails}
+                    options={{ title: t('location') }} />
+      <Stack.Screen name='EditLocation' component={EditLocationScreen}
+                    options={{ title: t('edit_location') }} />
       <Stack.Screen name='PeopleTeams' component={PeopleAndTeamsScreen}
                     options={{ title: t('people_teams') }} />
       <Stack.Screen name='Notifications' component={NotificationsScreen}

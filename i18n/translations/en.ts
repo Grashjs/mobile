@@ -1370,7 +1370,9 @@ const enJSON = {
   loading: 'Loading',
   please_wait: 'Please wait...',
   add_file: 'Add file',
-  asset_update_failure: 'The Asset couldn\'t be edited'
+  asset_update_failure: 'The Asset couldn\'t be edited',
+  no_wo_linked_location: 'No Work Order in this location',
+  confirm_delete_file_location: 'Are you sure you want to remove this file from this location?'
 };
 
 export default enJSON;

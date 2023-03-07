@@ -59,7 +59,7 @@ export default function MoreEntitiesScreen({ navigation }: RootTabScreenProps<'M
     <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background, paddingHorizontal: 10 }}>
       {entities.map(({ label, icon, color, backgroundColor, link }) => (
         //@ts-ignore
-        <TouchableOpacity onPress={() => navigation.navigate(link)}>
+        <TouchableOpacity key={label} onPress={() => navigation.navigate(link)}>
           <View style={{
             backgroundColor,
             display: 'flex',
