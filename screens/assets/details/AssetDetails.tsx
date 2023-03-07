@@ -12,6 +12,7 @@ import { Customer } from '../../../models/customer';
 import { Vendor } from '../../../models/vendor';
 import Team from '../../../models/team';
 import { getCustomerUrl, getTeamUrl, getUserUrl, getVendorUrl } from '../../../utils/urlPaths';
+import ListField from '../../../components/ListField';
 
 export default function AssetDetails({ asset }: { asset: Asset }) {
   const { getFormattedDate, getFormattedCurrency } = useContext(CompanySettingsContext);
@@ -48,39 +49,6 @@ export default function AssetDetails({ asset }: { asset: Asset }) {
       value: getFormattedDate(asset?.warrantyExpirationDate)
     }
   ];
-  const ListField = <T extends { id: number }>({
-                                                 values,
-                                                 label,
-                                                 getHref,
-                                                 getValueLabel
-                                               }: {
-    values: T[];
-    label: string;
-    getHref: (value: T) => { route: keyof RootStackParamList; params: {} };
-    getValueLabel: (value: T) => string;
-  }) => {
-    return (
-      !!values?.length && (
-        <View>
-          <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
-            <Text>{label}</Text>
-            <View>
-              {values.map((value, index) => (
-                <TouchableOpacity style={{ marginTop: 5 }} key={label}
-                  // @ts-ignore
-                                  onPress={() => navigation.navigate(getHref(value).route, getHref(value).params)}>
-                  <Text style={{
-                    fontWeight: 'bold',
-                    color: theme.colors.primary
-                  }}>{getValueLabel(value)}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-          <Divider />
-        </View>
-      ));
-  };
   return (
     <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background }}>
       {fieldsToRender.map(field => field.value && (

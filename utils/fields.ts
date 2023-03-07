@@ -525,7 +525,7 @@ export const getPartFields = (t): IField[] => {
     },
     {
       name: 'nonStock',
-      type: 'checkbox',
+      type: 'switch',
       label: t('non_stock')
     },
     {
