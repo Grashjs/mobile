@@ -14,6 +14,7 @@ import AssetDetails from './AssetDetails';
 import { TabBar, TabView } from 'react-native-tab-view';
 import AssetWorkOrders from './AssetWorkOrders';
 import AssetFiles from './AssetFiles';
+import AssetParts from './AssetParts';
 
 export default function AssetDetailsScreen({
                                              navigation,
@@ -43,7 +44,7 @@ export default function AssetDetailsScreen({
       case 'files':
         return <AssetFiles asset={asset} />;
       case 'parts':
-        return <AssetFiles asset={asset} />;
+        return <AssetParts asset={asset} />;
     }
   };
   const renderTabBar = props => (
