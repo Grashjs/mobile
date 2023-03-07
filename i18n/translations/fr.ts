@@ -1512,7 +1512,9 @@ const frJSON = {
   view_children: 'Voir les enfants',
   loading: 'Chargement',
   please_wait: 'Veuillez patienter...',
-  add_file: 'Ajouter un fichier'
+  add_file: 'Ajouter un fichier',
+  asset_update_failure:
+    'La modification de l\'équipement ne s\'est pas bien passée'
 };
 
 export default frJSON;

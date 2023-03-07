@@ -7,7 +7,7 @@ import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { RootStackParamList } from '../../types';
 import { useTranslation } from 'react-i18next';
 
-export default function AssetDetailsSheet(props: SheetProps<{ onEdit: () => void; onGenerateReport: () => void; onOpenArchive: () => void; onDelete: () => void }>) {
+export default function AssetDetailsSheet(props: SheetProps<{ onEdit: () => void; onAddFile: () => void; onAddPart: () => void; onDelete: () => void }>) {
   const { t } = useTranslation();
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const theme = useTheme();
@@ -22,9 +22,9 @@ export default function AssetDetailsSheet(props: SheetProps<{ onEdit: () => void
       icon: 'pencil',
       onPress: props.payload.onEdit
     },
-    { title: t('add_file'), icon: 'paperclip', onPress: props.payload.onGenerateReport },
+    { title: t('add_file'), icon: 'paperclip', onPress: props.payload.onAddFile },
     {
-      title: t('add_part'), icon: 'nut', onPress: props.payload.onOpenArchive
+      title: t('add_part'), icon: 'nut', onPress: props.payload.onAddPart
     },
     {
       title: t('to_delete'),

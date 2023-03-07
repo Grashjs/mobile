@@ -22,7 +22,6 @@ export default function EditWorkOrderScreen({
                                             }: RootStackScreenProps<'EditWorkOrder'>) {
   const { t } = useTranslation();
   const { workOrder, tasks } = route.params;
-  const [initialDueDate, setInitialDueDate] = useState<Date>(null);
   const { uploadFiles, getWOFieldsAndShapes } = useContext(
     CompanySettingsContext
   );

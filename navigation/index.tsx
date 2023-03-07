@@ -53,6 +53,7 @@ import NotificationsScreen from '../screens/NotificationsScreen';
 import AssetsScreen from '../screens/assets/AssetsScreen';
 import LocationsScreen from '../screens/locations/LocationsScreen';
 import AssetDetailsScreen from '../screens/assets/details/AssetDetailsScreen';
+import EditAssetScreen from '../screens/assets/EditAssetScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -97,6 +98,8 @@ function RootNavigator() {
                     options={{ title: t('assets') }} />
       <Stack.Screen name='AssetDetails' component={AssetDetailsScreen}
                     options={{ title: t('asset') }} />
+      <Stack.Screen name='EditAsset' component={EditAssetScreen}
+                    options={{ title: t('edit_asset') }} />
       <Stack.Screen name='Locations' component={LocationsScreen}
                     options={{ title: t('locations') }} />
       <Stack.Screen name='PeopleTeams' component={PeopleAndTeamsScreen}

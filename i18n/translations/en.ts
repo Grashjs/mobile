@@ -1369,7 +1369,8 @@ const enJSON = {
   view_children: 'See children',
   loading: 'Loading',
   please_wait: 'Please wait...',
-  add_file: 'Add file'
+  add_file: 'Add file',
+  asset_update_failure: 'The Asset couldn\'t be edited'
 };
 
 export default enJSON;

@@ -66,7 +66,7 @@ export default function AssetDetails({ asset }: { asset: Asset }) {
             <Text>{label}</Text>
             <View>
               {values.map((value, index) => (
-                <TouchableOpacity style={{ marginTop: 5 }}
+                <TouchableOpacity style={{ marginTop: 5 }} key={label}
                   // @ts-ignore
                                   onPress={() => navigation.navigate(getHref(value).route, getHref(value).params)}>
                   <Text style={{
@@ -84,7 +84,7 @@ export default function AssetDetails({ asset }: { asset: Asset }) {
   return (
     <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background }}>
       {fieldsToRender.map(field => field.value && (
-        <View>
+        <View key={field.label}>
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
             <Text>{field.label}</Text>
             <Text style={{ fontWeight: 'bold' }}>{field.value}</Text>

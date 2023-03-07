@@ -14,7 +14,7 @@ import { VendorMiniDTO } from './models/vendor';
 import User, { UserMiniDTO } from './models/user';
 import { TeamMiniDTO } from './models/team';
 import Location, { LocationMiniDTO } from './models/location';
-import Asset, { AssetMiniDTO } from './models/asset';
+import Asset, { AssetDTO, AssetMiniDTO } from './models/asset';
 import Category from './models/category';
 import { FilterField } from './models/page';
 import Request from './models/request';
@@ -34,7 +34,7 @@ export type RootStackParamList = {
   WorkOrderStats: undefined;
   EditWorkOrder: { workOrder: WorkOrder; tasks: Task[] };
   EditRequest: { request: Request };
-  EditAsset: { asset: Asset };
+  EditAsset: { asset: AssetDTO };
   EditLocation: { location: Location };
   EditPart: { part: Part };
   EditMeter: { meter: Meter };

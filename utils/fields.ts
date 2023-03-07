@@ -291,7 +291,7 @@ export const getAssetFields = (t): Array<IField> => {
       type: 'titleGroupField',
       label: t('structure')
     },
-    { name: 'parts', type: 'select', type2: 'part', label: t('parts') },
+    { name: 'parts', type: 'select', type2: 'part', label: t('parts'), multiple: true },
     {
       name: 'parentAsset',
       type: 'select',
