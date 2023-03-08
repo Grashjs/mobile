@@ -1518,7 +1518,9 @@ const frJSON = {
   no_wo_linked_location: 'Aucun ordre de travail trouvé dans cet emplacement',
   confirm_delete_file_location: 'Etes-vous surs de vouloir retirer ce fichier de cet emplacement ?',
   confirm_delete_file_part: 'Etes-vous surs de vouloir retirer ce fichier de cette pièce ?',
-  no_wo_linked_part: 'Aucun ordre de travail lié à cette pièce'
+  no_wo_linked_part: 'Aucun ordre de travail lié à cette pièce',
+  edit_customer: 'Modifier le prestataire'
+
 };
 
 export default frJSON;

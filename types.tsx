@@ -10,7 +10,7 @@ import WorkOrder from './models/workOrder';
 import Part, { PartMiniDTO } from './models/part';
 import { Task } from './models/tasks';
 import { Customer, CustomerMiniDTO } from './models/customer';
-import { VendorMiniDTO } from './models/vendor';
+import { Vendor, VendorMiniDTO } from './models/vendor';
 import User, { UserMiniDTO } from './models/user';
 import { TeamMiniDTO } from './models/team';
 import Location, { LocationMiniDTO } from './models/location';
@@ -39,6 +39,8 @@ export type RootStackParamList = {
   EditPart: { part: Part };
   EditMeter: { meter: Meter };
   EditUser: { user: User };
+  EditCustomer: { customer: Customer };
+  EditVendor: { vendor: Vendor };
   AddRequest: undefined;
   AddAsset: undefined;
   AddLocation: undefined;

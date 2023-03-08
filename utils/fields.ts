@@ -593,3 +593,101 @@ export const getPartFields = (t): IField[] => {
     }
   ];
 };
+export const getCustomerFields = (t): IField[] => {
+  return [
+    {
+      name: 'details',
+      type: 'titleGroupField',
+      label: t('details')
+    },
+    {
+      name: 'name',
+      type: 'text',
+      label: t('customer_name'),
+      placeholder: 'Jonh Doe',
+      required: true
+    },
+    {
+      name: 'address',
+      type: 'text',
+      label: t('address'),
+      placeholder: t('address')
+    },
+    {
+      name: 'phone',
+      type: 'text',
+      label: t('phone'),
+      placeholder: '+212611223344',
+      required: true
+    },
+    {
+      name: 'website',
+      type: 'text',
+      label: t('website'),
+      placeholder: 'https://web-site.com'
+    },
+    {
+      name: 'email',
+      type: 'text',
+      label: t('email'),
+      placeholder: 'john.doe@gmail.com'
+    },
+    {
+      name: 'customerType',
+      type: 'text',
+      label: t('customer_type'),
+      placeholder: t('customer_type_description')
+    },
+    {
+      name: 'description',
+      type: 'text',
+      label: t('description'),
+      multiple: true,
+      placeholder: t('customer_description_description')
+    },
+    {
+      name: 'rate',
+      type: 'number',
+      label: t('hourly_rate'),
+      placeholder: t('hourly_rate'),
+      icon: '$'
+      // helperText: 'Changes will only apply to Work Orders created in the future'
+    },
+    {
+      name: 'details',
+      type: 'titleGroupField',
+      label: t('billing_information')
+    },
+    {
+      name: 'billingAddress',
+      type: 'text',
+      label: t('address'),
+      placeholder: t('address')
+    },
+    {
+      name: 'billingAddress2',
+      type: 'text',
+      label: t('address_line_2'),
+      placeholder: t('address_line_2')
+    },
+    {
+      name: 'billingName',
+      type: 'text',
+      label: t('billing_name'),
+      placeholder: t('billing_name')
+    },
+    {
+      name: 'billingCurrency',
+      type: 'select',
+      type2: 'currency',
+      label: t('currency'),
+      placeholder: t('select_currency')
+    }
+  ];
+};
+export const formatCustomerValues = (values) => {
+  const newValues = { ...values };
+  newValues.billingCurrency = formatSelect(newValues.billingCurrency);
+  newValues.rate = newValues.rate ? Number(newValues.rate) : null;
+  return newValues;
+};
