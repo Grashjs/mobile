@@ -66,6 +66,8 @@ import MeterDetails from '../screens/meters/MeterDetails';
 import EditMeterScreen from '../screens/meters/EditMeterScreen';
 import TeamDetails from '../screens/peopleTeams/TeamDetails';
 import EditTeamScreen from '../screens/peopleTeams/EditTeamScreen';
+import RequestDetails from '../screens/requests/RequestDetails';
+import EditRequestScreen from '../screens/requests/EditRequestScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -107,6 +109,8 @@ function RootNavigator() {
       <Stack.Screen name='EditMeter' component={EditMeterScreen} options={{ title: t('edit_meter') }} />
       <Stack.Screen name='Parts' component={PartsScreen} options={{ title: t('parts') }} />
       <Stack.Screen name='PartDetails' component={PartDetails} options={{ title: t('part') }} />
+      <Stack.Screen name='RequestDetails' component={RequestDetails} options={{ title: t('request_details') }} />
+      <Stack.Screen name='EditRequest' component={EditRequestScreen} options={{ title: t('edit_request') }} />
       <Stack.Screen name='EditPart' component={EditPartScreen} options={{ title: t('update_part') }} />
       <Stack.Screen name='VendorsCustomers' component={VendorsAndCustomersScreen}
                     options={{ title: t('vendors_and_customers') }} />

@@ -64,6 +64,14 @@ export default function RequestsScreen({ navigation, route }: RootTabScreenProps
     setCriteria(getCriteriaFromFilterFields([]));
   };
 
+  const getStatusMeta = (request: Request): [string, string] => {
+    if (request.workOrder) {
+      // @ts-ignore
+      return [t('approved'), theme.colors.success];
+    } else if (request.cancelled) {
+      return [t('rejected'), theme.colors.error];
+    } else return [t('pending'), theme.colors.primary];
+  };
   const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
     const paddingToBottom = 20;
     return layoutMeasurement.height + contentOffset.y >=
@@ -99,15 +107,23 @@ export default function RequestsScreen({ navigation, route }: RootTabScreenProps
                   scrollEventThrottle={400}>
         {!!requests.content.length ? requests.content.map(request => (
           <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={request.id}
-                onPress={() => navigation.navigate('RequestDetails', { id: request.id })}>
+                onPress={() => {
+                  if (request.workOrder) {
+                    navigation.navigate('WODetails', { id: request.workOrder.id });
+                  } else navigation.navigate('RequestDetails', { id: request.id });
+                }}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                   <View style={{ marginRight: 10 }}>
                     <Tag text={`#${request.id}`} color='white' backgroundColor='#545454' />
                   </View>
-                  <Tag text={t(request.priority)} color='white'
-                       backgroundColor={getPriorityColor(request.priority, theme)} />
+                  <View style={{ marginRight: 10 }}>
+                    <Tag text={t(request.priority)} color='white'
+                         backgroundColor={getPriorityColor(request.priority, theme)} />
+                  </View>
+                  <Tag text={getStatusMeta(request)[0]} color='white'
+                       backgroundColor={getStatusMeta(request)[1]} />
                 </View>
               </View>
               <Text variant='titleMedium'>{request.title}</Text>

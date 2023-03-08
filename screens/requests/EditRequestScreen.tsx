@@ -4,39 +4,34 @@ import Form from '../../components/form';
 import * as Yup from 'yup';
 import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { IField } from '../../models/form';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
-import { formatSelect, formatSelectMultiple } from '../../utils/formatters';
 import { getImageAndFiles } from '../../utils/overall';
 import { useDispatch } from '../../store';
-import { addWorkOrder } from '../../slices/workOrder';
+import { editRequest } from '../../slices/request';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
-import { formatRequestValues, getWorkOrderFields } from '../../utils/fields';
-import useAuth from '../../hooks/useAuth';
-import { getWOBaseFields } from '../../utils/woBase';
-import { addRequest } from '../../slices/request';
+import { formatRequestValues } from '../../utils/fields';
+import { getWOBaseValues } from '../../utils/woBase';
 
-export default function CreateRequestScreen({
-                                              navigation,
-                                              route
-                                            }: RootStackScreenProps<'AddRequest'>) {
+export default function EditRequestScreen({
+                                            navigation,
+                                            route
+                                          }: RootStackScreenProps<'EditRequest'>) {
   const { t } = useTranslation();
+  const { request } = route.params;
   const { uploadFiles, getRequestFieldsAndShapes } = useContext(
     CompanySettingsContext
   );
-  const {
-    companySettings
-  } = useAuth();
+
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const dispatch = useDispatch();
-  const onCreationSuccess = () => {
-    showSnackBar(t('request_create_success'), 'success');
+
+  const onEditSuccess = () => {
+    showSnackBar(t('changes_saved_success'), 'success');
     navigation.goBack();
   };
-  const onCreationFailure = (err) =>
-    showSnackBar(t('request_create_failure'), 'error');
-
+  const onEditFailure = (err) =>
+    showSnackBar(t('request_edit_failure'), 'error');
 
   return (<View style={styles.container}>
     <Form
@@ -44,27 +39,36 @@ export default function CreateRequestScreen({
       validation={Yup.object().shape(getRequestFieldsAndShapes()[1])}
       navigation={navigation}
       submitText={t('save')}
-      values={{ dueDate: null }}
+      values={{
+        ...request,
+        ...getWOBaseValues(t, request)
+      }}
       onChange={({ field, e }) => {
       }}
       onSubmit={async (values) => {
         let formattedValues = formatRequestValues(values);
         return new Promise<void>((resolve, rej) => {
-          uploadFiles(formattedValues.files, formattedValues.image)
+          const files = formattedValues.files.find((file) => file.id)
+            ? []
+            : formattedValues.files;
+          uploadFiles(files, formattedValues.image)
             .then((files) => {
-              const imageAndFiles = getImageAndFiles(files);
+              const imageAndFiles = getImageAndFiles(
+                files,
+                request.image
+              );
               formattedValues = {
                 ...formattedValues,
                 image: imageAndFiles.image,
-                files: imageAndFiles.files
+                files: [...request.files, ...imageAndFiles.files]
               };
-              dispatch(addRequest(formattedValues))
-                .then(onCreationSuccess)
-                .catch(onCreationFailure)
+              dispatch(editRequest(request?.id, formattedValues))
+                .then(onEditSuccess)
+                .catch(onEditFailure)
                 .finally(resolve);
             })
             .catch((err) => {
-              onCreationFailure(err);
+              onEditFailure(err);
               rej(err);
             });
         });

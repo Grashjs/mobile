@@ -9,6 +9,7 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { AuthProvider } from './AuthContext';
+import { getWOBaseFields } from '../utils/woBase';
 
 type CompanySettingsContext = {
   getFormattedDate: (dateString: string, hideTime?: boolean) => string;
@@ -21,6 +22,7 @@ type CompanySettingsContext = {
     defaultFields: Array<IField>,
     defaultShape: { [key: string]: any }
   ) => [Array<IField>, { [key: string]: any }];
+  getRequestFieldsAndShapes: () => [Array<IField>, { [key: string]: any }];
   getFormattedCurrency: (amount: number | string) => string;
 };
 
@@ -32,7 +34,7 @@ export const CompanySettingsContext = createContext<CompanySettingsContext>(
 export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
   const { companySettings, getFilteredFields, isAuthenticated } = useAuth();
   const dispatch = useDispatch();
-  const { generalPreferences } = companySettings ?? {
+  const { generalPreferences, workOrderRequestConfiguration } = companySettings ?? {
     dateFormat: 'DDMMYY',
     currency: { code: '$' }
   };
@@ -167,6 +169,59 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
     });
     return [fields, shape];
   };
+
+  const getRequestFieldsAndShapes = (): [Array<IField>, { [key: string]: any }] => {
+    const defaultFields: Array<IField> = [...getWOBaseFields(t)];
+    const defaultShape = {
+      title: Yup.string().required(t('required_request_name'))
+    };
+    let fields = [...getFilteredFields(defaultFields)];
+    let shape = { ...defaultShape };
+    const fieldsToConfigure = [
+      'asset',
+      'location',
+      'primaryUser',
+      'category',
+      'dueDate',
+      'team'
+    ];
+    fieldsToConfigure.forEach((name) => {
+      const fieldConfig =
+        workOrderRequestConfiguration.fieldConfigurations.find(
+          (fc) => fc.fieldName === name
+        );
+      const fieldIndexInFields = fields.findIndex(
+        (field) => field.name === name
+      );
+      if (fieldConfig.fieldType === 'REQUIRED') {
+        fields[fieldIndexInFields] = {
+          ...fields[fieldIndexInFields],
+          required: true
+        };
+        const requiredMessage = t('required_field');
+        let yupSchema;
+        switch (fields[fieldIndexInFields].type) {
+          case 'text':
+            yupSchema = Yup.string().required(requiredMessage);
+            break;
+          case 'date':
+            yupSchema = Yup.string().required(requiredMessage);
+            break;
+          case 'number':
+            yupSchema = Yup.number().required(requiredMessage);
+            break;
+          default:
+            yupSchema = Yup.object().required(requiredMessage).nullable();
+            break;
+        }
+        shape[name] = yupSchema;
+      } else if (fieldConfig.fieldType === 'HIDDEN') {
+        fields.splice(fieldIndexInFields, 1);
+      }
+    });
+
+    return [fields, shape];
+  };
   useEffect(() => {
     if (isAuthenticated)
       dispatch(getUsersMini());
@@ -178,6 +233,7 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
         uploadFiles,
         getUserNameById,
         getWOFieldsAndShapes,
+        getRequestFieldsAndShapes,
         getFormattedCurrency
       }}
     >
