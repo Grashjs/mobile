@@ -62,6 +62,8 @@ import CustomerDetailsScreen from '../screens/vendorsCustomers/details/CustomerD
 import EditCustomerScreen from '../screens/vendorsCustomers/EditCustomerScreen';
 import VendorDetailsScreen from '../screens/vendorsCustomers/details/VendorDetailsScreen';
 import EditVendorScreen from '../screens/vendorsCustomers/EditVendorScreen';
+import MeterDetails from '../screens/meters/MeterDetails';
+import EditMeterScreen from '../screens/meters/EditMeterScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -99,6 +101,8 @@ function RootNavigator() {
       <Stack.Screen name='AddUser' component={CreateWorkOrder} options={{ title: t('invite_users') }} />
       <Stack.Screen name='WorkOrderStats' component={WorkOrderStatsScreen} options={{ title: t('stats') }} />
       <Stack.Screen name='Meters' component={MetersScreen} options={{ title: t('meters') }} />
+      <Stack.Screen name='MeterDetails' component={MeterDetails} options={{ title: t('meter_details') }} />
+      <Stack.Screen name='EditMeter' component={EditMeterScreen} options={{ title: t('edit_meter') }} />
       <Stack.Screen name='Parts' component={PartsScreen} options={{ title: t('parts') }} />
       <Stack.Screen name='PartDetails' component={PartDetails} options={{ title: t('part') }} />
       <Stack.Screen name='EditPart' component={EditPartScreen} options={{ title: t('update_part') }} />

@@ -6,6 +6,7 @@ import PartDetailsSheet from './PartDetailsSheet';
 import LocationDetailsSheet from './LocationDetailsSheet';
 import CustomerDetailsSheet from './CustomerDetailsSheet';
 import VendorDetailsSheet from './VendorDetailsSheet';
+import MeterDetailsSheet from './MeterDetailsSheet';
 
 registerSheet('create-entities-sheet', CreateEntitiesSheet);
 registerSheet('work-order-details-sheet', WorkOrderDetailsSheet);
@@ -14,4 +15,5 @@ registerSheet('location-details-sheet', LocationDetailsSheet);
 registerSheet('part-details-sheet', PartDetailsSheet);
 registerSheet('customer-details-sheet', CustomerDetailsSheet);
 registerSheet('vendor-details-sheet', VendorDetailsSheet);
+registerSheet('meter-details-sheet', MeterDetailsSheet);
 export {};
