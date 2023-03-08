@@ -60,6 +60,8 @@ import PartDetails from '../screens/parts/details';
 import EditPartScreen from '../screens/parts/EditPartScreen';
 import CustomerDetailsScreen from '../screens/vendorsCustomers/details/CustomerDetailsScreen';
 import EditCustomerScreen from '../screens/vendorsCustomers/EditCustomerScreen';
+import VendorDetailsScreen from '../screens/vendorsCustomers/details/VendorDetailsScreen';
+import EditVendorScreen from '../screens/vendorsCustomers/EditVendorScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -106,6 +108,10 @@ function RootNavigator() {
                     options={{ title: t('customer') }} />
       <Stack.Screen name='EditCustomer' component={EditCustomerScreen}
                     options={{ title: t('edit_customer') }} />
+      <Stack.Screen name='VendorDetails' component={VendorDetailsScreen}
+                    options={{ title: t('vendor') }} />
+      <Stack.Screen name='EditVendor' component={EditVendorScreen}
+                    options={{ title: t('edit_vendor') }} />
       <Stack.Screen name='Assets' component={AssetsScreen}
                     options={{ title: t('assets') }} />
       <Stack.Screen name='AssetDetails' component={AssetDetails}

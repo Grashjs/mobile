@@ -691,3 +691,66 @@ export const formatCustomerValues = (values) => {
   newValues.rate = newValues.rate ? Number(newValues.rate) : null;
   return newValues;
 };
+
+export const getVendorFields = (t): IField[] => {
+  return [
+    {
+      name: 'companyName',
+      type: 'text',
+      label: t('company_name'),
+      placeholder: 'Grash',
+      required: true
+    },
+    {
+      name: 'address',
+      type: 'text',
+      label: t('address'),
+      placeholder: t('address')
+    },
+    {
+      name: 'phone',
+      type: 'text',
+      label: t('phone'),
+      placeholder: '+00212611223344'
+    },
+    {
+      name: 'website',
+      type: 'text',
+      label: t('website'),
+      placeholder: 'https://web-site.com'
+    },
+    {
+      name: 'name',
+      type: 'text',
+      label: t('name'),
+      placeholder: 'John Doe',
+      required: true
+    },
+    {
+      name: 'email',
+      type: 'text',
+      label: t('email'),
+      placeholder: 'john.doe@gmail.com'
+    },
+    {
+      name: 'vendorType',
+      type: 'text',
+      label: t('vendor_type'),
+      placeholder: t('vendor_type_description')
+    },
+    {
+      name: 'description',
+      type: 'text',
+      label: t('Description'),
+      multiple: true,
+      placeholder: t('description')
+    },
+    {
+      name: 'rate',
+      type: 'number',
+      label: t('hourly_rate'),
+      placeholder: t('hourly_rate'),
+      icon: '$'
+    }
+  ];
+};

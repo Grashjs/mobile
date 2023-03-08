@@ -7,34 +7,34 @@ import { View } from '../../../components/Themed';
 import { Button, Dialog, Divider, IconButton, Portal, Text, useTheme } from 'react-native-paper';
 import LoadingDialog from '../../../components/LoadingDialog';
 import { useContext, useEffect, useState } from 'react';
-import { deleteCustomer, getCustomerDetails } from '../../../slices/customer';
+import { deleteVendor, getVendorDetails } from '../../../slices/vendor';
 import { SheetManager } from 'react-native-actions-sheet';
 import { deletePart } from '../../../slices/part';
 import { CustomSnackBarContext } from '../../../contexts/CustomSnackBarContext';
 import { CompanySettingsContext } from '../../../contexts/CompanySettingsContext';
 
-export default function CustomerDetailsScreen({ navigation, route }: RootStackScreenProps<'CustomerDetails'>) {
+export default function VendorDetailsScreen({ navigation, route }: RootStackScreenProps<'VendorDetails'>) {
   const { id } = route.params;
-  const { customerInfos, loadingGet } = useSelector((state) => state.customers);
-  const customer = customerInfos[id]?.customer;
+  const { vendorInfos, loadingGet } = useSelector((state) => state.vendors);
+  const vendor = vendorInfos[id]?.vendor;
   const theme = useTheme();
-  const { getFormattedCurrency } = useContext(CompanySettingsContext);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { showSnackBar } = useContext(CustomSnackBarContext);
+  const { getFormattedCurrency } = useContext(CompanySettingsContext);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   useEffect(() => {
-    dispatch(getCustomerDetails(route.params.id));
+    dispatch(getVendorDetails(route.params.id));
   }, [route]);
 
   useEffect(() => {
     navigation.setOptions({
-      title: customer?.name ?? t('loading'),
+      title: vendor?.name ?? t('loading'),
       headerRight: () => (
         <Pressable onPress={() => {
-          SheetManager.show('customer-details-sheet', {
+          SheetManager.show('vendor-details-sheet', {
             payload: {
-              onEdit: () => navigation.navigate('EditCustomer', { customer }),
+              onEdit: () => navigation.navigate('EditVendor', { vendor }),
               onDelete: () => setOpenDelete(true)
             }
           });
@@ -43,31 +43,27 @@ export default function CustomerDetailsScreen({ navigation, route }: RootStackSc
         </Pressable>
       )
     });
-  }, [customer]);
+  }, [vendor]);
   const fieldsToRender: { label: string; value: string }[] = [
     {
       label: t('address'),
-      value: customer?.address
+      value: vendor?.address
     },
     {
       label: t('phone'),
-      value: customer?.phone
+      value: vendor?.phone
     },
     {
       label: t('email'),
-      value: customer?.email
+      value: vendor?.email
     },
     {
       label: t('type'),
-      value: customer?.customerType
-    },
-    {
-      label: t('billing_currency'),
-      value: customer?.billingCurrency?.name
+      value: vendor?.vendorType
     },
     {
       label: t('hourly_rate'),
-      value: !!customer?.rate ? getFormattedCurrency(customer.rate) : null
+      value: !!vendor?.rate ? getFormattedCurrency(vendor.rate) : null
     }
   ];
 
@@ -92,14 +88,14 @@ export default function CustomerDetailsScreen({ navigation, route }: RootStackSc
   }
 
   const onDeleteSuccess = () => {
-    showSnackBar(t('customer_delete_success'), 'success');
+    showSnackBar(t('vendor_delete_success'), 'success');
     navigation.goBack();
   };
   const onDeleteFailure = (err) =>
-    showSnackBar(t('customer_delete_failure'), 'error');
+    showSnackBar(t('vendor_delete_failure'), 'error');
 
   const handleDelete = () => {
-    dispatch(deleteCustomer(customer?.id)).then(onDeleteSuccess).catch(onDeleteFailure);
+    dispatch(deleteVendor(vendor?.id)).then(onDeleteSuccess).catch(onDeleteFailure);
     setOpenDelete(false);
   };
   const renderConfirmDelete = () => {
@@ -107,7 +103,7 @@ export default function CustomerDetailsScreen({ navigation, route }: RootStackSc
       <Dialog visible={openDelete} onDismiss={() => setOpenDelete(false)}>
         <Dialog.Title>{t('confirmation')}</Dialog.Title>
         <Dialog.Content>
-          <Text variant='bodyMedium'>{t('confirm_delete_customer')}</Text>
+          <Text variant='bodyMedium'>{t('confirm_delete_vendor')}</Text>
         </Dialog.Content>
         <Dialog.Actions>
           <Button onPress={() => setOpenDelete(false)}>{t('cancel')}</Button>
@@ -116,20 +112,20 @@ export default function CustomerDetailsScreen({ navigation, route }: RootStackSc
       </Dialog>
     </Portal>);
   };
-  if (customer) return (
+  if (vendor) return (
     <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background }}>
       {renderConfirmDelete()}
       {fieldsToRender.map(
         ({ label, value }, index) =>
           value && <BasicField key={label} label={label} value={value} />
       )}
-      {customer.website && (
+      {vendor.website && (
         <View>
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
             <Text>{t('website')}</Text>
             <TouchableOpacity
-              onPress={() => Linking.openURL(customer.website.startsWith('https://') ? customer.website : 'https://' + customer.website)}>
-              <Text style={{ fontWeight: 'bold', color: theme.colors.primary }}>{customer.website}</Text>
+              onPress={() => Linking.openURL(vendor.website.startsWith('https://') ? vendor.website : 'https://' + vendor.website)}>
+              <Text style={{ fontWeight: 'bold', color: theme.colors.primary }}>{vendor.website}</Text>
             </TouchableOpacity>
           </View>
           <Divider />

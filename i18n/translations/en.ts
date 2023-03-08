@@ -1375,7 +1375,8 @@ const enJSON = {
   confirm_delete_file_location: 'Are you sure you want to remove this file from this location?',
   confirm_delete_file_part: 'Are you sure you want to remove this file from this part?',
   no_wo_linked_part: 'No Work Order linked to this part',
-  edit_customer: 'Edit contractor'
+  edit_customer: 'Edit contractor',
+  edit_vendor: 'Edit vendor'
 };
 
 export default enJSON;

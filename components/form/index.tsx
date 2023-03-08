@@ -293,12 +293,10 @@ export default function Form(props: OwnProps) {
             {props.fields.map((field, index) =>
               <View key={index}
                     style={{
-                      marginTop: 5,
                       width: '100%',
                       backgroundColor: 'white',
                       paddingHorizontal: 10,
-                      paddingVertical: 10,
-                      borderRadius: 5
+                      paddingVertical: 10
                     }}>
                 {field.type === 'text' ?
                   <TextInput style={{ width: '100%' }} mode='outlined'

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { TextInput } from 'react-native-paper';
+import { isNumeric } from '../utils/validators';
 
 export default function NumberInput(props: {
   style: any;
@@ -13,7 +14,7 @@ export default function NumberInput(props: {
   disabled: boolean;
   multiline: boolean
 }) {
-  const [numberInputValue, setNumberInputValue] = useState<number>(Number(props.defaultValue));
+  const [numberInputValue, setNumberInputValue] = useState<number>(isNumeric(props.defaultValue) ? Number(props.defaultValue) : 0);
   return (
     <TextInput {...props} value={numberInputValue.toString()} onChangeText={(newValue) => {
       const formattedValue = Number(newValue.replace(/[^0-9]/g, ''));
