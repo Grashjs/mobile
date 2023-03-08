@@ -12,7 +12,7 @@ import { Task } from './models/tasks';
 import { Customer, CustomerMiniDTO } from './models/customer';
 import { Vendor, VendorMiniDTO } from './models/vendor';
 import User, { UserMiniDTO } from './models/user';
-import { TeamMiniDTO } from './models/team';
+import Team, { TeamMiniDTO } from './models/team';
 import Location, { LocationMiniDTO } from './models/location';
 import Asset, { AssetDTO, AssetMiniDTO } from './models/asset';
 import Category from './models/category';
@@ -41,6 +41,7 @@ export type RootStackParamList = {
   EditUser: { user: User };
   EditCustomer: { customer: Customer };
   EditVendor: { vendor: Vendor };
+  EditTeam: { team: Team };
   AddRequest: undefined;
   AddAsset: undefined;
   AddLocation: undefined;

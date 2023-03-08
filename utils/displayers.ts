@@ -1,4 +1,5 @@
 import { TaskType } from '../models/tasks';
+import User, { UserMiniDTO } from '../models/user';
 
 export const enumerate = (array: string[]) =>
   array.reduce(
@@ -16,4 +17,8 @@ export const getTaskTypes = (t) => {
     { label: t('meter_reading'), value: 'METER' }
   ];
   return taskTypes;
+};
+
+export const getUserInitials = (user: UserMiniDTO) => {
+  return `${user.firstName.charAt(0).toUpperCase()}${user.lastName.charAt(0).toUpperCase()}`;
 };

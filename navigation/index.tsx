@@ -64,6 +64,8 @@ import VendorDetailsScreen from '../screens/vendorsCustomers/details/VendorDetai
 import EditVendorScreen from '../screens/vendorsCustomers/EditVendorScreen';
 import MeterDetails from '../screens/meters/MeterDetails';
 import EditMeterScreen from '../screens/meters/EditMeterScreen';
+import TeamDetails from '../screens/peopleTeams/TeamDetails';
+import EditTeamScreen from '../screens/peopleTeams/EditTeamScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -130,6 +132,10 @@ function RootNavigator() {
                     options={{ title: t('edit_location') }} />
       <Stack.Screen name='PeopleTeams' component={PeopleAndTeamsScreen}
                     options={{ title: t('people_teams') }} />
+      <Stack.Screen name='TeamDetails' component={TeamDetails}
+                    options={{ title: t('team') }} />
+      <Stack.Screen name='EditTeam' component={EditTeamScreen}
+                    options={{ title: t('edit') }} />
       <Stack.Screen name='Notifications' component={NotificationsScreen}
                     options={{ title: t('Notifications') }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>

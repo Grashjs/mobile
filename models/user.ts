@@ -34,6 +34,7 @@ export interface UserMiniDTO {
   lastName: string;
   image: File;
   id: number;
+  phone: string;
 }
 
 export interface UserResponseDTO extends OwnUser {

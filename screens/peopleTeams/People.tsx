@@ -1,4 +1,4 @@
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { Linking, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from '../../store';
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
@@ -7,13 +7,14 @@ import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
 import { getMoreUsers, getUsers } from '../../slices/user';
 import { FilterField, SearchCriteria } from '../../models/page';
-import { Card, Searchbar, Text, useTheme } from 'react-native-paper';
+import { Avatar, Card, Divider, IconButton, Searchbar, Text, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import User from '../../models/user';
 import { onSearchQueryChange } from '../../utils/overall';
 import { RootStackScreenProps } from '../../types';
 import Tag from '../../components/Tag';
 import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
+import { getUserInitials } from '../../utils/displayers';
 
 export default function People({ navigation }: RootStackScreenProps<'PeopleTeams'>) {
   const { t } = useTranslation();
@@ -91,19 +92,25 @@ export default function People({ navigation }: RootStackScreenProps<'PeopleTeams
                     <RefreshControl refreshing={loadingGet} onRefresh={onRefresh} colors={[theme.colors.primary]} />}
                   scrollEventThrottle={400}>
         {!!users.content.length ? users.content.map(user => (
-          <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={user.id}
-                onPress={() => navigation.navigate('UserDetails', { id: user.id })}>
-            <Card.Content>
-              <View style={{ ...styles.row, justifyContent: 'space-between' }}>
-                <View style={{ ...styles.row, justifyContent: 'space-between' }}>
-                  <View style={{ marginRight: 10 }}>
-                    <Tag text={`#${user.id}`} color='white' backgroundColor='#545454' />
-                  </View>
-                </View>
-              </View>
-              <Text variant='titleMedium'>{`${user.firstName} ${user.lastName}`}</Text>
-            </Card.Content>
-          </Card>
+          <TouchableOpacity onPress={() => {
+            navigation.navigate('UserDetails', { id: user.id });
+          }}>
+            <View style={{
+              display: 'flex',
+              flexDirection: 'row',
+              padding: 20,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              backgroundColor: 'white'
+            }}>
+              {user.image ? <Avatar.Image source={{ uri: user.image.url }} /> :
+                <Avatar.Text size={50} label={getUserInitials(user)} />}
+              <Text>{`${user.firstName} ${user.lastName}`}</Text>
+              <View>{user.phone &&
+              <IconButton onPress={() => Linking.openURL(`tel:${user.phone}`)} icon={'phone'} />}</View>
+            </View>
+            <Divider />
+          </TouchableOpacity>
         )) : loadingGet ? null : <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
           < Text variant={'titleLarge'}>{t('no_element_match_criteria')}</Text>
         </View>}

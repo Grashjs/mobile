@@ -754,3 +754,30 @@ export const getVendorFields = (t): IField[] => {
     }
   ];
 };
+export const getTeamFields = (t): IField[] => {
+  return [
+    {
+      name: 'name',
+      type: 'text',
+      label: t('name'),
+      placeholder: t('team_name'),
+      required: true
+    },
+    {
+      name: 'description',
+      type: 'text',
+      multiple: true,
+      label: t('description'),
+      placeholder: t('description')
+    },
+    {
+      name: 'users',
+      type: 'select',
+      type2: 'user',
+      multiple: true,
+      label: t('people_in_team'),
+      placeholder: t('people_in_team')
+    }
+  ];
+  ;
+};
