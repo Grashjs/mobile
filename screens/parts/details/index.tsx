@@ -70,7 +70,8 @@ export default function PartDetailsHome({
           SheetManager.show('part-details-sheet', {
             payload: {
               onEdit: () => navigation.navigate('EditPart', { part: part }),
-              onDelete: () => setOpenDelete(true)
+              onDelete: () => setOpenDelete(true),
+              part
             }
           });
         }}>

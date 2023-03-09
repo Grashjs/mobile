@@ -25,7 +25,9 @@ export default function RequestDetails({ navigation, route }: RootStackScreenPro
     CompanySettingsContext
   );
   const {
-    hasViewPermission
+    hasViewPermission,
+    hasEditPermission,
+    hasDeletePermission
   } = useAuth();
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -104,9 +106,11 @@ export default function RequestDetails({ navigation, route }: RootStackScreenPro
       headerRight: () => (
 
         <View style={{ display: 'flex', flexDirection: 'row' }}>
-          <IconButton onPress={() => setOpenDelete(true)} icon='delete-outline' />
+          {hasDeletePermission(PermissionEntity.REQUESTS, request) &&
+          <IconButton onPress={() => setOpenDelete(true)} icon='delete-outline' />}
           {!request?.workOrder &&
           !request?.cancelled &&
+          hasEditPermission(PermissionEntity.REQUESTS, request) &&
           <IconButton icon={'pencil'} onPress={() => navigation.navigate('EditRequest', { request })} />}
           {approving ? <ActivityIndicator /> : !request?.workOrder &&
             !request?.cancelled &&

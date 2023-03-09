@@ -71,7 +71,8 @@ export default function AssetDetailsHome({
           SheetManager.show('asset-details-sheet', {
             payload: {
               onEdit: () => navigation.navigate('EditAsset', { asset: asset }),
-              onDelete: () => setOpenDelete(true)
+              onDelete: () => setOpenDelete(true),
+              asset
             }
           });
         }}>

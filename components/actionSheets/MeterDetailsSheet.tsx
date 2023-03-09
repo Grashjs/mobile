@@ -6,27 +6,35 @@ import { useRef } from 'react';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { RootStackParamList } from '../../types';
 import { useTranslation } from 'react-i18next';
+import useAuth from '../../hooks/useAuth';
+import { PermissionEntity } from '../../models/role';
+import Meter from '../../models/meter';
 
-export default function MeterDetailsSheet(props: SheetProps<{ onEdit: () => void; onDelete: () => void }>) {
+export default function MeterDetailsSheet(props: SheetProps<{ onEdit: () => void; onDelete: () => void; meter: Meter; }>) {
   const { t } = useTranslation();
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const theme = useTheme();
+  const { hasEditPermission, hasDeletePermission } = useAuth();
   const options: {
     title: string;
     icon: IconSource;
     onPress: () => void;
     color?: string;
+    shown: boolean;
   }[] = [
     {
       title: t('edit'),
       icon: 'pencil',
-      onPress: props.payload.onEdit
+      onPress: props.payload.onEdit,
+      shown: hasEditPermission(PermissionEntity.METERS, props.payload.meter)
+
     },
     {
       title: t('to_delete'),
       icon: 'delete-outline',
       onPress: props.payload.onDelete,
-      color: theme.colors.error
+      color: theme.colors.error,
+      shown: hasDeletePermission(PermissionEntity.METERS, props.payload.meter)
     }
   ];
 
@@ -35,7 +43,7 @@ export default function MeterDetailsSheet(props: SheetProps<{ onEdit: () => void
       <View style={{ padding: 15 }}>
         <Divider />
         <List.Section>
-          {options.map((entity, index) => (
+          {options.filter(option => option.shown).map((entity, index) => (
             <List.Item
               key={index}
               titleStyle={{ color: entity.color }}

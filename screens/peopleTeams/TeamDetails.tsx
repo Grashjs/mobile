@@ -68,7 +68,8 @@ export default function TeamDetails({ navigation, route }: RootStackScreenProps<
           SheetManager.show('team-details-sheet', {
             payload: {
               onEdit: () => navigation.navigate('EditTeam', { team }),
-              onDelete: () => setOpenDelete(true)
+              onDelete: () => setOpenDelete(true),
+              team
             }
           });
         }}>

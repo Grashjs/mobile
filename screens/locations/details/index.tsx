@@ -70,7 +70,8 @@ export default function LocationDetailsHome({
           SheetManager.show('location-details-sheet', {
             payload: {
               onEdit: () => navigation.navigate('EditLocation', { location: location }),
-              onDelete: () => setOpenDelete(true)
+              onDelete: () => setOpenDelete(true),
+              location
             }
           });
         }}>

@@ -1,32 +1,38 @@
 import ActionSheet, { ActionSheetRef, SheetProps } from 'react-native-actions-sheet';
 import { View } from 'react-native';
-import { Divider, List, Text, useTheme } from 'react-native-paper';
+import { Divider, List, useTheme } from 'react-native-paper';
 import * as React from 'react';
 import { useRef } from 'react';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
-import { RootStackParamList } from '../../types';
 import { useTranslation } from 'react-i18next';
+import useAuth from '../../hooks/useAuth';
+import { Customer } from '../../models/customer';
+import { PermissionEntity } from '../../models/role';
 
-export default function CustomerDetailsSheet(props: SheetProps<{ onEdit: () => void; onDelete: () => void }>) {
+export default function CustomerDetailsSheet(props: SheetProps<{ onEdit: () => void; onDelete: () => void; customer: Customer }>) {
   const { t } = useTranslation();
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const theme = useTheme();
+  const { hasEditPermission, hasDeletePermission } = useAuth();
   const options: {
     title: string;
     icon: IconSource;
     onPress: () => void;
     color?: string;
+    shown: boolean;
   }[] = [
     {
       title: t('edit'),
       icon: 'pencil',
-      onPress: props.payload.onEdit
+      onPress: props.payload.onEdit,
+      shown: hasEditPermission(PermissionEntity.VENDORS_AND_CUSTOMERS, props.payload.customer)
     },
     {
       title: t('to_delete'),
       icon: 'delete-outline',
       onPress: props.payload.onDelete,
-      color: theme.colors.error
+      color: theme.colors.error,
+      shown: hasDeletePermission(PermissionEntity.VENDORS_AND_CUSTOMERS, props.payload.customer)
     }
   ];
 
@@ -35,7 +41,7 @@ export default function CustomerDetailsSheet(props: SheetProps<{ onEdit: () => v
       <View style={{ padding: 15 }}>
         <Divider />
         <List.Section>
-          {options.map((entity, index) => (
+          {options.filter(option => option.shown).map((entity, index) => (
             <List.Item
               key={index}
               titleStyle={{ color: entity.color }}

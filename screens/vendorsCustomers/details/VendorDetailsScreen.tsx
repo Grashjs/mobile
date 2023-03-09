@@ -35,7 +35,8 @@ export default function VendorDetailsScreen({ navigation, route }: RootStackScre
           SheetManager.show('vendor-details-sheet', {
             payload: {
               onEdit: () => navigation.navigate('EditVendor', { vendor }),
-              onDelete: () => setOpenDelete(true)
+              onDelete: () => setOpenDelete(true),
+              vendor
             }
           });
         }}>

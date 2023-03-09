@@ -90,7 +90,8 @@ export default function MeterDetails({ navigation, route }: RootStackScreenProps
           SheetManager.show('meter-details-sheet', {
             payload: {
               onEdit: () => navigation.navigate('EditMeter', { meter }),
-              onDelete: () => setOpenDelete(true)
+              onDelete: () => setOpenDelete(true),
+              meter
             }
           });
         }}>

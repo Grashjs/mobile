@@ -35,7 +35,8 @@ export default function CustomerDetailsScreen({ navigation, route }: RootStackSc
           SheetManager.show('customer-details-sheet', {
             payload: {
               onEdit: () => navigation.navigate('EditCustomer', { customer }),
-              onDelete: () => setOpenDelete(true)
+              onDelete: () => setOpenDelete(true),
+              customer
             }
           });
         }}>

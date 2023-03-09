@@ -6,31 +6,41 @@ import { useRef } from 'react';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { RootStackParamList } from '../../types';
 import { useTranslation } from 'react-i18next';
+import useAuth from '../../hooks/useAuth';
+import { PermissionEntity } from '../../models/role';
+import WorkOrder from '../../models/workOrder';
 
-export default function WorkOrderDetailsSheet(props: SheetProps<{ onEdit: () => void; onGenerateReport: () => void; onOpenArchive: () => void; onDelete: () => void }>) {
+export default function WorkOrderDetailsSheet(props: SheetProps<{ onEdit: () => void; onGenerateReport: () => void; onOpenArchive: () => void; onDelete: () => void; workOrder: WorkOrder }>) {
   const { t } = useTranslation();
   const actionSheetRef = useRef<ActionSheetRef>(null);
+  const { hasEditPermission, hasDeletePermission } = useAuth();
   const theme = useTheme();
   const options: {
     title: string;
     icon: IconSource;
     onPress: () => void;
     color?: string;
+    shown: boolean;
   }[] = [
     {
       title: t('edit'),
       icon: 'pencil',
-      onPress: props.payload.onEdit
+      onPress: props.payload.onEdit,
+      shown: hasEditPermission(PermissionEntity.WORK_ORDERS, props.payload.workOrder)
     },
-    { title: t('to_export'), icon: 'download-outline', onPress: props.payload.onGenerateReport },
+    { title: t('to_export'), icon: 'download-outline', onPress: props.payload.onGenerateReport, shown: true },
     {
-      title: t('archive'), icon: 'archive-outline', onPress: props.payload.onOpenArchive
+      title: t('archive'),
+      icon: 'archive-outline',
+      onPress: props.payload.onOpenArchive,
+      shown: hasEditPermission(PermissionEntity.WORK_ORDERS, props.payload.workOrder)
     },
     {
       title: t('to_delete'),
       icon: 'delete-outline',
       onPress: props.payload.onDelete,
-      color: theme.colors.error
+      color: theme.colors.error,
+      shown: hasDeletePermission(PermissionEntity.WORK_ORDERS, props.payload.workOrder)
     }
   ];
 
@@ -39,7 +49,7 @@ export default function WorkOrderDetailsSheet(props: SheetProps<{ onEdit: () => 
       <View style={{ padding: 15 }}>
         <Divider />
         <List.Section>
-          {options.map((entity, index) => (
+          {options.filter(option => option.shown).map((entity, index) => (
             <List.Item
               key={index}
               titleStyle={{ color: entity.color }}

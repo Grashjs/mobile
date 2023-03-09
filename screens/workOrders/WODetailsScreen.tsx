@@ -1,16 +1,7 @@
-import {
-  Image,
-  Linking,
-  LogBox,
-  Pressable,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity
-} from 'react-native';
+import { Image, Linking, Pressable, RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { View } from '../../components/Themed';
 import * as FileSystem from 'expo-file-system';
-import { RootStackScreenProps } from '../../types';
+import { RootStackParamList, RootStackScreenProps } from '../../types';
 import {
   AnimatedFAB,
   Button,
@@ -45,7 +36,6 @@ import { PlanFeature } from '../../models/subscriptionPlan';
 import PartQuantities from '../../components/PartQuantities';
 import { SheetManager } from 'react-native-actions-sheet';
 import LoadingDialog from '../../components/LoadingDialog';
-import { getAssetDetails } from '../../slices/asset';
 
 export default function WODetailsScreen({
                                           navigation,
@@ -125,18 +115,27 @@ export default function WODetailsScreen({
   const touchableFields: {
     label: string;
     value: string | number;
+    link: { route: keyof RootStackParamList; id: number }
   }[] = [
     {
       label: t('asset'),
-      value: workOrder?.asset?.name
+      value: workOrder?.asset?.name,
+      link: { route: 'AssetDetails', id: workOrder?.asset?.id }
     },
     {
       label: t('location'),
-      value: workOrder?.location?.name
+      value: workOrder?.location?.name,
+      link: { route: 'LocationDetails', id: workOrder?.location?.id }
     },
     {
       label: t('team'),
-      value: workOrder?.team?.name
+      value: workOrder?.team?.name,
+      link: { route: 'TeamDetails', id: workOrder?.team?.id }
+    },
+    {
+      label: t('primary_worker'),
+      value: workOrder?.primaryUser ? `${workOrder.primaryUser.firstName} ${workOrder.primaryUser.lastName}` : null,
+      link: { route: 'UserDetails', id: workOrder?.primaryUser?.id }
     }
   ];
   const getInfos = () => {
@@ -160,7 +159,8 @@ export default function WODetailsScreen({
               onDelete: () => {
                 setOpenDelete(true);
               },
-              onGenerateReport
+              onGenerateReport,
+              workOrder
             }
           });
         }}>
@@ -320,21 +320,24 @@ export default function WODetailsScreen({
 
   function ObjectField({
                          label,
-                         value
+                         value,
+                         link
                        }: {
     label: string;
     value: string | number;
+    link: { route: keyof RootStackParamList; id: number }
   }) {
-    if (value)
+    if (value) {
       return (
-        <TouchableOpacity style={{ marginTop: 20 }}>
+        // @ts-ignore
+        <TouchableOpacity onPress={() => navigation.navigate(link.route, { id: link.id })} style={{ marginTop: 20 }}>
           <Text variant='titleMedium' style={{ fontWeight: 'bold' }}>
             {label}
           </Text>
           <Text variant='bodyLarge'>{value}</Text>
         </TouchableOpacity>
       );
-    else return null;
+    } else return null;
   }
 
   function BasicField({
@@ -431,14 +434,8 @@ export default function WODetailsScreen({
                 value && <BasicField key={label} label={label} value={value} />
             )}
             {touchableFields.map(
-              ({ label, value }) =>
-                value && <ObjectField key={label} label={label} value={value} />
-            )}
-            {workOrder.primaryUser && (
-              <ObjectField
-                label={t('primary_worker')}
-                value={getUserNameById(workOrder.primaryUser.id)}
-              />
+              ({ label, value, link }) =>
+                value && <ObjectField key={label} label={label} value={value} link={link} />
             )}
             {(workOrder.parentRequest || workOrder.createdBy) && (
               <ObjectField
@@ -446,12 +443,7 @@ export default function WODetailsScreen({
                   workOrder.parentRequest ? t('approved_by') : t('created_by')
                 }
                 value={getUserNameById(workOrder.createdBy)}
-              />
-            )}
-            {workOrder.parentPreventiveMaintenance && (
-              <ObjectField
-                label={t('preventive_maintenance')}
-                value={workOrder.parentPreventiveMaintenance.name}
+                link={{ route: 'UserDetails', id: workOrder.createdBy }}
               />
             )}
             {workOrder.status === 'COMPLETE' && (
@@ -460,6 +452,7 @@ export default function WODetailsScreen({
                   <ObjectField
                     label={t('completed_by')}
                     value={`${workOrder.completedBy.firstName} ${workOrder.completedBy.lastName}`}
+                    link={{ route: 'UserDetails', id: workOrder.completedBy.id }}
                   />
                 )}
                 <BasicField
@@ -490,6 +483,7 @@ export default function WODetailsScreen({
               <ObjectField
                 label={t('requested_by')}
                 value={getUserNameById(workOrder.parentRequest.createdBy)}
+                link={{ route: 'RequestDetails', id: workOrder.parentRequest.id }}
               />
             )}
             {!!workOrder.assignedTo.length && (
@@ -523,6 +517,7 @@ export default function WODetailsScreen({
               />
               <Divider style={{ marginTop: 5 }} />
               <Button
+                disabled={!hasEditPermission(PermissionEntity.WORK_ORDERS, workOrder)}
                 onPress={() =>
                   navigation.navigate('SelectParts', {
                     onChange: (selectedParts) => {
@@ -577,6 +572,7 @@ export default function WODetailsScreen({
               )}
               <Divider style={{ marginTop: 5 }} />
               <Button
+                disabled={!hasEditPermission(PermissionEntity.WORK_ORDERS, workOrder)}
                 onPress={() =>
                   navigation.navigate('SelectParts', {
                     onChange: (selectedParts) => {
