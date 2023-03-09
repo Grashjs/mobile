@@ -333,7 +333,7 @@ export default function Form(props: OwnProps) {
                     /> : field.type === 'date' ?
                       <CustomDateTimePicker label={field.label}
                                             onChange={date => handleChange(formik, field.name, date)}
-                                            value={formik.values[field.name]} />
+                                            value={new Date(formik.values[field.name])} />
                       : field.type === 'switch' ?
                         <View style={{
                           display: 'flex',

@@ -92,7 +92,7 @@ export default function People({ navigation }: RootStackScreenProps<'PeopleTeams
                     <RefreshControl refreshing={loadingGet} onRefresh={onRefresh} colors={[theme.colors.primary]} />}
                   scrollEventThrottle={400}>
         {!!users.content.length ? users.content.map(user => (
-          <TouchableOpacity onPress={() => {
+          <TouchableOpacity key={user.id} onPress={() => {
             navigation.navigate('UserDetails', { id: user.id });
           }}>
             <View style={{

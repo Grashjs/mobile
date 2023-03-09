@@ -144,7 +144,7 @@ export default function MeterDetails({ navigation, route }: RootStackScreenProps
         </View>
       ))}
       <Text variant={'titleMedium'} style={{ color: theme.colors.primary, padding: 20 }}>{t('reading_history')}</Text>
-      {currentMeterReadings.map(reading => (
+      {[...currentMeterReadings].reverse().map(reading => (
         <BasicField label={getFormattedDate(reading.createdAt)} value={`${reading.value} ${meter.unit}`} />
       ))}
     </ScrollView>
