@@ -20,20 +20,20 @@ export default function VendorDetailsSheet(props: SheetProps<{ onEdit: () => voi
     icon: IconSource;
     onPress: () => void;
     color?: string;
-    shown: boolean;
+    visible: boolean;
   }[] = [
     {
       title: t('edit'),
       icon: 'pencil',
       onPress: props.payload.onEdit,
-      shown: hasEditPermission(PermissionEntity.VENDORS_AND_CUSTOMERS, props.payload.vendor)
+      visible: hasEditPermission(PermissionEntity.VENDORS_AND_CUSTOMERS, props.payload.vendor)
     },
     {
       title: t('to_delete'),
       icon: 'delete-outline',
       onPress: props.payload.onDelete,
       color: theme.colors.error,
-      shown: hasDeletePermission(PermissionEntity.VENDORS_AND_CUSTOMERS, props.payload.vendor)
+      visible: hasDeletePermission(PermissionEntity.VENDORS_AND_CUSTOMERS, props.payload.vendor)
     }
   ];
 
@@ -42,7 +42,7 @@ export default function VendorDetailsSheet(props: SheetProps<{ onEdit: () => voi
       <View style={{ padding: 15 }}>
         <Divider />
         <List.Section>
-          {options.filter(option => option.shown).map((entity, index) => (
+          {options.filter(option => option.visible).map((entity, index) => (
             <List.Item
               key={index}
               titleStyle={{ color: entity.color }}

@@ -1,21 +1,23 @@
 import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-
-import EditScreenInfo from '../components/EditScreenInfo';
 import { View } from '../components/Themed';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
-import { IconButton, useTheme, Text, Divider } from 'react-native-paper';
+import { IconButton, Text, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList, RootTabScreenProps } from '../types';
+import useAuth from '../hooks/useAuth';
+import { PermissionEntity } from '../models/role';
 
 export default function MoreEntitiesScreen({ navigation }: RootTabScreenProps<'MoreEntities'>) {
   const theme = useTheme();
   const { t } = useTranslation();
-  const entities: { label: string; icon: IconSource; color: string; backgroundColor: string; link: keyof RootStackParamList }[] = [{
+  const { hasViewPermission } = useAuth();
+  const entities: { label: string; icon: IconSource; color: string; backgroundColor: string; link: keyof RootStackParamList; visible: boolean }[] = [{
     label: 'locations',
     icon: 'map-marker',
     color: '#2491d1',
     backgroundColor: '#c8cfd3',
-    link: 'Locations'
+    link: 'Locations',
+    visible: hasViewPermission(PermissionEntity.LOCATIONS)
   },
     {
       label: 'assets',
@@ -23,28 +25,32 @@ export default function MoreEntitiesScreen({ navigation }: RootTabScreenProps<'M
       // @ts-ignore
       color: theme.colors.warning,
       backgroundColor: '#d2d0c4',
-      link: 'Assets'
+      link: 'Assets',
+      visible: hasViewPermission(PermissionEntity.ASSETS)
     },
     {
       label: 'parts',
       icon: 'archive-outline',
       color: '#8324d1',
       backgroundColor: '#cfc8d3',
-      link: 'Parts'
+      link: 'Parts',
+      visible: hasViewPermission(PermissionEntity.PARTS_AND_MULTIPARTS)
     },
     {
       label: 'meters',
       icon: 'gauge',
       color: '#d12444',
       backgroundColor: '#d3c8ca',
-      link: 'Meters'
+      link: 'Meters',
+      visible: hasViewPermission(PermissionEntity.METERS)
     },
     {
       label: 'people_teams',
       icon: 'account',
       color: '#245bd1',
       backgroundColor: '#c8ccd3',
-      link: 'PeopleTeams'
+      link: 'PeopleTeams',
+      visible: hasViewPermission(PermissionEntity.PEOPLE_AND_TEAMS)
     },
     {
       label: 'vendors_and_customers',
@@ -52,12 +58,13 @@ export default function MoreEntitiesScreen({ navigation }: RootTabScreenProps<'M
       //@ts-ignore
       color: theme.colors.warning,
       backgroundColor: '#d2d0c4',
-      link: 'VendorsCustomers'
+      link: 'VendorsCustomers',
+      visible: hasViewPermission(PermissionEntity.VENDORS_AND_CUSTOMERS)
     }
   ];
   return (
     <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background, paddingHorizontal: 10 }}>
-      {entities.map(({ label, icon, color, backgroundColor, link }) => (
+      {entities.filter(entity => entity.visible).map(({ label, icon, color, backgroundColor, link }) => (
         //@ts-ignore
         <TouchableOpacity key={label} onPress={() => navigation.navigate(link)}>
           <View style={{

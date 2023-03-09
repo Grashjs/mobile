@@ -20,27 +20,27 @@ export default function WorkOrderDetailsSheet(props: SheetProps<{ onEdit: () => 
     icon: IconSource;
     onPress: () => void;
     color?: string;
-    shown: boolean;
+    visible: boolean;
   }[] = [
     {
       title: t('edit'),
       icon: 'pencil',
       onPress: props.payload.onEdit,
-      shown: hasEditPermission(PermissionEntity.WORK_ORDERS, props.payload.workOrder)
+      visible: hasEditPermission(PermissionEntity.WORK_ORDERS, props.payload.workOrder)
     },
-    { title: t('to_export'), icon: 'download-outline', onPress: props.payload.onGenerateReport, shown: true },
+    { title: t('to_export'), icon: 'download-outline', onPress: props.payload.onGenerateReport, visible: true },
     {
       title: t('archive'),
       icon: 'archive-outline',
       onPress: props.payload.onOpenArchive,
-      shown: hasEditPermission(PermissionEntity.WORK_ORDERS, props.payload.workOrder)
+      visible: hasEditPermission(PermissionEntity.WORK_ORDERS, props.payload.workOrder)
     },
     {
       title: t('to_delete'),
       icon: 'delete-outline',
       onPress: props.payload.onDelete,
       color: theme.colors.error,
-      shown: hasDeletePermission(PermissionEntity.WORK_ORDERS, props.payload.workOrder)
+      visible: hasDeletePermission(PermissionEntity.WORK_ORDERS, props.payload.workOrder)
     }
   ];
 
@@ -49,7 +49,7 @@ export default function WorkOrderDetailsSheet(props: SheetProps<{ onEdit: () => 
       <View style={{ padding: 15 }}>
         <Divider />
         <List.Section>
-          {options.filter(option => option.shown).map((entity, index) => (
+          {options.filter(option => option.visible).map((entity, index) => (
             <List.Item
               key={index}
               titleStyle={{ color: entity.color }}

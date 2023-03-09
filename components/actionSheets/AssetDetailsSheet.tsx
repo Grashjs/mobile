@@ -19,20 +19,20 @@ export default function AssetDetailsSheet(props: SheetProps<{ onEdit: () => void
     icon: IconSource;
     onPress: () => void;
     color?: string;
-    shown: boolean;
+    visible: boolean;
   }[] = [
     {
       title: t('edit'),
       icon: 'pencil',
       onPress: props.payload.onEdit,
-      shown: hasEditPermission(PermissionEntity.ASSETS, props.payload.asset)
+      visible: hasEditPermission(PermissionEntity.ASSETS, props.payload.asset)
     },
     {
       title: t('to_delete'),
       icon: 'delete-outline',
       onPress: props.payload.onDelete,
       color: theme.colors.error,
-      shown: hasDeletePermission(PermissionEntity.ASSETS, props.payload.asset)
+      visible: hasDeletePermission(PermissionEntity.ASSETS, props.payload.asset)
     }
   ];
 
@@ -41,7 +41,7 @@ export default function AssetDetailsSheet(props: SheetProps<{ onEdit: () => void
       <View style={{ padding: 15 }}>
         <Divider />
         <List.Section>
-          {options.filter(option => option.shown).map((entity, index) => (
+          {options.filter(option => option.visible).map((entity, index) => (
             <List.Item
               key={index}
               titleStyle={{ color: entity.color }}

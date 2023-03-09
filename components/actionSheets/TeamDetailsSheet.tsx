@@ -20,20 +20,20 @@ export default function TeamDetailsSheet(props: SheetProps<{ onEdit: () => void;
     icon: IconSource;
     onPress: () => void;
     color?: string;
-    shown: boolean;
+    visible: boolean;
   }[] = [
     {
       title: t('edit'),
       icon: 'pencil',
       onPress: props.payload.onEdit,
-      shown: hasEditPermission(PermissionEntity.PEOPLE_AND_TEAMS, props.payload.team)
+      visible: hasEditPermission(PermissionEntity.PEOPLE_AND_TEAMS, props.payload.team)
     },
     {
       title: t('to_delete'),
       icon: 'delete-outline',
       onPress: props.payload.onDelete,
       color: theme.colors.error,
-      shown: hasDeletePermission(PermissionEntity.PEOPLE_AND_TEAMS, props.payload.team)
+      visible: hasDeletePermission(PermissionEntity.PEOPLE_AND_TEAMS, props.payload.team)
     }
   ];
 
@@ -42,7 +42,7 @@ export default function TeamDetailsSheet(props: SheetProps<{ onEdit: () => void;
       <View style={{ padding: 15 }}>
         <Divider />
         <List.Section>
-          {options.filter(option => option.shown).map((entity, index) => (
+          {options.filter(option => option.visible).map((entity, index) => (
             <List.Item
               key={index}
               titleStyle={{ color: entity.color }}

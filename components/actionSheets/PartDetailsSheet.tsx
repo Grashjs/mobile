@@ -20,13 +20,13 @@ export default function PartDetailsSheet(props: SheetProps<{ onEdit: () => void;
     icon: IconSource;
     onPress: () => void;
     color?: string;
-    shown: boolean;
+    visible: boolean;
   }[] = [
     {
       title: t('edit'),
       icon: 'pencil',
       onPress: props.payload.onEdit,
-      shown: hasEditPermission(PermissionEntity.PARTS_AND_MULTIPARTS, props.payload.part)
+      visible: hasEditPermission(PermissionEntity.PARTS_AND_MULTIPARTS, props.payload.part)
 
     },
     {
@@ -34,7 +34,7 @@ export default function PartDetailsSheet(props: SheetProps<{ onEdit: () => void;
       icon: 'delete-outline',
       onPress: props.payload.onDelete,
       color: theme.colors.error,
-      shown: hasDeletePermission(PermissionEntity.PARTS_AND_MULTIPARTS, props.payload.part)
+      visible: hasDeletePermission(PermissionEntity.PARTS_AND_MULTIPARTS, props.payload.part)
     }
   ];
 
@@ -43,7 +43,7 @@ export default function PartDetailsSheet(props: SheetProps<{ onEdit: () => void;
       <View style={{ padding: 15 }}>
         <Divider />
         <List.Section>
-          {options.filter(option => option.shown).map((entity, index) => (
+          {options.filter(option => option.visible).map((entity, index) => (
             <List.Item
               key={index}
               titleStyle={{ color: entity.color }}

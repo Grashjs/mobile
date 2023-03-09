@@ -20,20 +20,20 @@ export default function LocationDetailsSheet(props: SheetProps<{ onEdit: () => v
     icon: IconSource;
     onPress: () => void;
     color?: string;
-    shown: boolean;
+    visible: boolean;
   }[] = [
     {
       title: t('edit'),
       icon: 'pencil',
       onPress: props.payload.onEdit,
-      shown: hasEditPermission(PermissionEntity.LOCATIONS, props.payload.location)
+      visible: hasEditPermission(PermissionEntity.LOCATIONS, props.payload.location)
     },
     {
       title: t('to_delete'),
       icon: 'delete-outline',
       onPress: props.payload.onDelete,
       color: theme.colors.error,
-      shown: hasDeletePermission(PermissionEntity.LOCATIONS, props.payload.location)
+      visible: hasDeletePermission(PermissionEntity.LOCATIONS, props.payload.location)
     }
   ];
 
@@ -42,7 +42,7 @@ export default function LocationDetailsSheet(props: SheetProps<{ onEdit: () => v
       <View style={{ padding: 15 }}>
         <Divider />
         <List.Section>
-          {options.filter(option => option.shown).map((entity, index) => (
+          {options.filter(option => option.visible).map((entity, index) => (
             <List.Item
               key={index}
               titleStyle={{ color: entity.color }}

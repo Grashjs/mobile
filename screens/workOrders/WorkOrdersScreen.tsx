@@ -1,7 +1,7 @@
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from '../../store';
 import * as React from 'react';
-import { useContext, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
@@ -107,48 +107,50 @@ export default function WorkOrdersScreen({ navigation, route }: RootTabScreenPro
   }, [searchQuery], 1000);
   return (
     <View style={{ ...styles.container, backgroundColor: theme.colors.background }}>
-      <Searchbar
+      {hasViewPermission(PermissionEntity.WORK_ORDERS) ? <Fragment><Searchbar
         placeholder={t('search')}
         onFocus={() => setStartedSearch(true)}
         onChangeText={setSearchQuery}
         value={searchQuery}
       />
-      <ScrollView style={styles.scrollView}
-                  onScroll={({ nativeEvent }) => {
-                    if (isCloseToBottom(nativeEvent)) {
-                      if (!loadingGet && !lastPage)
-                        dispatch(getMoreWorkOrders(criteria, currentPageNum + 1));
-                    }
-                  }}
-                  refreshControl={
-                    <RefreshControl refreshing={loadingGet} onRefresh={onRefresh} colors={[theme.colors.primary]} />}
-                  scrollEventThrottle={400}>
-        {!!workOrders.content.length ? workOrders.content.map(workOrder => (
-          <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={workOrder.id}
-                onPress={() => navigation.navigate('WODetails', { id: workOrder.id })}>
-            <Card.Content>
-              <View style={{ ...styles.row, justifyContent: 'space-between' }}>
-                <Tag text={t(workOrder.status)} color='white'
-                     backgroundColor={getStatusColor(workOrder.status, theme)} />
+        <ScrollView style={styles.scrollView}
+                    onScroll={({ nativeEvent }) => {
+                      if (isCloseToBottom(nativeEvent)) {
+                        if (!loadingGet && !lastPage)
+                          dispatch(getMoreWorkOrders(criteria, currentPageNum + 1));
+                      }
+                    }}
+                    refreshControl={
+                      <RefreshControl refreshing={loadingGet} onRefresh={onRefresh} colors={[theme.colors.primary]} />}
+                    scrollEventThrottle={400}>
+          {!!workOrders.content.length ? workOrders.content.map(workOrder => (
+            <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={workOrder.id}
+                  onPress={() => navigation.navigate('WODetails', { id: workOrder.id })}>
+              <Card.Content>
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>
-                  <View style={{ marginRight: 10 }}>
-                    <Tag text={`#${workOrder.id}`} color='white' backgroundColor='#545454' />
+                  <Tag text={t(workOrder.status)} color='white'
+                       backgroundColor={getStatusColor(workOrder.status, theme)} />
+                  <View style={{ ...styles.row, justifyContent: 'space-between' }}>
+                    <View style={{ marginRight: 10 }}>
+                      <Tag text={`#${workOrder.id}`} color='white' backgroundColor='#545454' />
+                    </View>
+                    <Tag text={t(workOrder.priority)} color='white'
+                         backgroundColor={getPriorityColor(workOrder.priority, theme)} />
                   </View>
-                  <Tag text={t(workOrder.priority)} color='white'
-                       backgroundColor={getPriorityColor(workOrder.priority, theme)} />
                 </View>
-              </View>
-              <Text variant='titleMedium'>{workOrder.title}</Text>
-              {workOrder.dueDate &&
-              <IconWithLabel label={getFormattedDate(workOrder.dueDate)} icon='clock-alert-outline' />}
-              {workOrder.asset && <IconWithLabel label={workOrder.asset.name} icon='package-variant-closed' />}
-              {workOrder.location && <IconWithLabel label={workOrder.location.name} icon='map-marker-outline' />}
-            </Card.Content>
-          </Card>
-        )) : loadingGet ? null : <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
-          < Text variant={'titleLarge'}>{t('no_element_match_criteria')}</Text>
-        </View>}
-      </ScrollView>
+                <Text variant='titleMedium'>{workOrder.title}</Text>
+                {workOrder.dueDate &&
+                <IconWithLabel label={getFormattedDate(workOrder.dueDate)} icon='clock-alert-outline' />}
+                {workOrder.asset && <IconWithLabel label={workOrder.asset.name} icon='package-variant-closed' />}
+                {workOrder.location && <IconWithLabel label={workOrder.location.name} icon='map-marker-outline' />}
+              </Card.Content>
+            </Card>
+          )) : loadingGet ? null : <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+            < Text variant={'titleLarge'}>{t('no_element_match_criteria')}</Text>
+          </View>}
+        </ScrollView></Fragment> : <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+        <Text variant={'titleLarge'}>{t('no_access_wo')}</Text>
+      </View>}
     </View>
   );
 }
