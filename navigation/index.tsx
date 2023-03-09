@@ -69,6 +69,7 @@ import EditTeamScreen from '../screens/peopleTeams/EditTeamScreen';
 import RequestDetails from '../screens/requests/RequestDetails';
 import EditRequestScreen from '../screens/requests/EditRequestScreen';
 import UserDetails from '../screens/peopleTeams/UserDetails';
+import UserProfile from '../screens/peopleTeams/Profile';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -141,6 +142,8 @@ function RootNavigator() {
                     options={{ title: t('team') }} />
       <Stack.Screen name='UserDetails' component={UserDetails}
                     options={{ title: t('user_details') }} />
+      <Stack.Screen name='UserProfile' component={UserProfile}
+                    options={{ title: t('profile') }} />
       <Stack.Screen name='EditTeam' component={EditTeamScreen}
                     options={{ title: t('edit') }} />
       <Stack.Screen name='Notifications' component={NotificationsScreen}

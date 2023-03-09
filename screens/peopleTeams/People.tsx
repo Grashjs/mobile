@@ -18,6 +18,7 @@ import { getUserInitials } from '../../utils/displayers';
 
 export default function People({ navigation }: RootStackScreenProps<'PeopleTeams'>) {
   const { t } = useTranslation();
+  const currentUser = useAuth().user;
   const [startedSearch, setStartedSearch] = useState<boolean>(false);
   const { users, loadingGet, currentPageNum, lastPage } = useSelector(
     (state) => state.users
@@ -93,7 +94,9 @@ export default function People({ navigation }: RootStackScreenProps<'PeopleTeams
                   scrollEventThrottle={400}>
         {!!users.content.length ? users.content.map(user => (
           <TouchableOpacity key={user.id} onPress={() => {
-            navigation.navigate('UserDetails', { id: user.id });
+            if (user.id === currentUser.id) {
+              navigation.navigate('UserProfile');
+            } else navigation.navigate('UserDetails', { id: user.id });
           }}>
             <View style={{
               display: 'flex',

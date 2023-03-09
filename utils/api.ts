@@ -5,6 +5,9 @@ async function api<T>(url: string, options): Promise<T> {
   return fetch(url, { headers: await authHeader(false), ...options }).then(
     (response) => {
       if (!response.ok) {
+        if (response.status === 403) {
+          AsyncStorage.clear();
+        }
         throw new Error(response.statusText);
       }
       return response.json() as Promise<T>;

@@ -4,10 +4,11 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from '../../store';
 import { RootStackScreenProps } from '../../types';
-import { Divider, Text, useTheme } from 'react-native-paper';
+import { Avatar, Divider, Text, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { View } from '../../components/Themed';
 import { getUserDetails } from '../../slices/user';
+import { getUserInitials } from '../../utils/displayers';
 
 export default function UserDetails({ navigation, route }: RootStackScreenProps<'UserDetails'>) {
   const { id } = route.params;
@@ -84,6 +85,10 @@ export default function UserDetails({ navigation, route }: RootStackScreenProps<
 
   if (user) return (
     <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <View style={{ alignItems: 'center', paddingTop: 20 }}>
+        {user.image ? <Avatar.Image source={{ uri: user.image.url }} /> :
+          <Avatar.Text size={50} label={getUserInitials(user)} />}
+      </View>
       {fieldsToRender.map(field => <BasicField key={field.label} label={field.label} value={field.value} />
       )}
     </ScrollView>

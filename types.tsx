@@ -53,6 +53,7 @@ export type RootStackParamList = {
   LocationDetails: { id: number };
   RequestDetails: { id: number };
   UserDetails: { id: number };
+  UserProfile: undefined;
   TeamDetails: { id: number };
   PartDetails: { id: number };
   MeterDetails: { id: number };
