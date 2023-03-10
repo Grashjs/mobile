@@ -1521,7 +1521,9 @@ const frJSON = {
   no_wo_linked_part: 'Aucun ordre de travail lié à cette pièce',
   edit_customer: 'Modifier le prestataire',
   edit_vendor: 'Modifier le fournisseur',
-  reading_history: 'Historique de lecture'
+  reading_history: 'Historique de lecture',
+  user_invite_success: 'L\'utilisateur a été invité',
+  user_invite_failure: 'L\'utilisateur n\'a pas pu être invité'
 };
 
 export default frJSON;

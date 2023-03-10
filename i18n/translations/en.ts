@@ -1377,7 +1377,9 @@ const enJSON = {
   no_wo_linked_part: 'No Work Order linked to this part',
   edit_customer: 'Edit contractor',
   edit_vendor: 'Edit vendor',
-  reading_history: 'Reading history'
+  reading_history: 'Reading history',
+  user_invite_success: 'The user has been invited',
+  user_invite_failure: 'The user couldn\'t be invited'
 };
 
 export default enJSON;

@@ -70,6 +70,7 @@ import RequestDetails from '../screens/requests/RequestDetails';
 import EditRequestScreen from '../screens/requests/EditRequestScreen';
 import UserDetails from '../screens/peopleTeams/UserDetails';
 import UserProfile from '../screens/peopleTeams/Profile';
+import InviteUserScreen from '../screens/peopleTeams/InviteUserScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -104,7 +105,7 @@ function RootNavigator() {
       <Stack.Screen name='AddLocation' component={CreateLocationScreen} options={{ title: t('create_location') }} />
       <Stack.Screen name='AddPart' component={CreatePartScreen} options={{ title: t('create_part') }} />
       <Stack.Screen name='AddMeter' component={CreateMeterScreen} options={{ title: t('create_meter') }} />
-      <Stack.Screen name='AddUser' component={CreateWorkOrder} options={{ title: t('invite_users') }} />
+      <Stack.Screen name='AddUser' component={InviteUserScreen} options={{ title: t('invite_users') }} />
       <Stack.Screen name='WorkOrderStats' component={WorkOrderStatsScreen} options={{ title: t('stats') }} />
       <Stack.Screen name='Meters' component={MetersScreen} options={{ title: t('meters') }} />
       <Stack.Screen name='MeterDetails' component={MeterDetails} options={{ title: t('meter_details') }} />
