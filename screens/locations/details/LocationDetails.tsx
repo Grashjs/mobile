@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import Location from '../../../models/location';
 import { useContext } from 'react';
 import { CompanySettingsContext } from '../../../contexts/CompanySettingsContext';
-import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { View } from '../../../components/Themed';
 import { Divider, Text, useTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -13,6 +13,7 @@ import { Vendor } from '../../../models/vendor';
 import Team from '../../../models/team';
 import { getCustomerUrl, getTeamUrl, getUserUrl, getVendorUrl } from '../../../utils/urlPaths';
 import ListField from '../../../components/ListField';
+import * as React from 'react';
 
 export default function LocationDetails({ location }: { location: Location }) {
   const { t } = useTranslation();
@@ -28,6 +29,14 @@ export default function LocationDetails({ location }: { location: Location }) {
   ];
   return (
     <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background }}>
+      {location.image && (
+        <View style={{ marginVertical: 20 }}>
+          <Image
+            style={{ height: 200 }}
+            source={{ uri: location.image.url }}
+          />
+        </View>
+      )}
       {fieldsToRender.map(field => field.value && (
         <View key={field.label}>
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>

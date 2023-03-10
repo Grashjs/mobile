@@ -9,6 +9,8 @@ import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-
 import { useTheme, Text, Divider } from 'react-native-paper';
 import { View } from '../../../components/Themed';
 import * as React from 'react';
+import Tag from '../../../components/Tag';
+import { getStatusColor } from '../../../utils/overall';
 
 export default function AssetWorkOrders({ asset }: { asset: AssetDTO }) {
   const { t }: { t: any } = useTranslation();
@@ -30,9 +32,9 @@ export default function AssetWorkOrders({ asset }: { asset: AssetDTO }) {
       {workOrders.map(workOrder => (
         <TouchableOpacity key={workOrder.id} onPress={() => navigation.navigate('WODetails', { id: workOrder.id })}>
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
-            <Text style={{ fontWeight: 'bold' }}>{workOrder.title}</Text>
-            <Text>{t(workOrder.status)}</Text>
-          </View>
+            <Text style={{ fontWeight: 'bold', marginRight: 5 }}>{workOrder.title}</Text>
+            <Tag text={t(workOrder.status)} color='white'
+                 backgroundColor={getStatusColor(workOrder.status, theme)} /></View>
           <Divider />
         </TouchableOpacity>
       ))}

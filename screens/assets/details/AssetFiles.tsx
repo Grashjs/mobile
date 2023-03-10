@@ -5,10 +5,11 @@ import { CompanySettingsContext } from '../../../contexts/CompanySettingsContext
 import { AssetDTO } from '../../../models/asset';
 import { useNavigation } from '@react-navigation/native';
 import { editAsset, getAssetWorkOrders } from '../../../slices/asset';
-import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Linking, RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme, Text, Divider, Portal, Dialog, Button, IconButton } from 'react-native-paper';
 import { View } from '../../../components/Themed';
 import * as React from 'react';
+import * as FileSystem from 'expo-file-system';
 
 export default function AssetFiles({ asset }: { asset: AssetDTO }) {
   const { t }: { t: any } = useTranslation();
@@ -44,7 +45,10 @@ export default function AssetFiles({ asset }: { asset: AssetDTO }) {
     <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background }}>
       {renderConfirmDialog()}
       {asset.files.map(file => (
-        <TouchableOpacity key={file.id} onPress={() => navigation.navigate('WODetails', { id: file.id })}>
+        <TouchableOpacity key={file.id} onPress={async () => {
+          const { uri } = await FileSystem.downloadAsync(file.url, FileSystem.documentDirectory + file.name);
+          await Linking.openURL(uri);
+        }}>
           <View style={{
             display: 'flex',
             flexDirection: 'row',

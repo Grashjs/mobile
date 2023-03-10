@@ -8,6 +8,7 @@ import {
   Dialog,
   Divider,
   IconButton,
+  List,
   Portal,
   ProgressBar,
   Provider,
@@ -29,6 +30,7 @@ import { durationToHours } from '../../utils/formatters';
 import { editWOPartQuantities, getPartQuantitiesByWorkOrder } from '../../slices/partQuantity';
 import { getAdditionalCosts } from '../../slices/additionalCost';
 import { getRelations } from '../../slices/relation';
+import Relation, { relationTypes } from '../../models/relation';
 import { getTasks } from '../../slices/task';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { deleteWorkOrder, editWorkOrder, getPDFReport, getWorkOrderDetails } from '../../slices/workOrder';
@@ -36,6 +38,7 @@ import { PlanFeature } from '../../models/subscriptionPlan';
 import PartQuantities from '../../components/PartQuantities';
 import { SheetManager } from 'react-native-actions-sheet';
 import LoadingDialog from '../../components/LoadingDialog';
+import WorkOrder from '../../models/workOrder';
 
 export default function WODetailsScreen({
                                           navigation,
@@ -312,6 +315,67 @@ export default function WODetailsScreen({
         status
       })
     ).finally(() => setLoading(false));
+  };
+  const groupRelations = (
+    relations: Relation[]
+  ): { [key: string]: { id: number; workOrder: WorkOrder }[] } => {
+    const isParent = (relation: Relation): boolean => {
+      return relation.parent.id === workOrder.id;
+    };
+    const result = {};
+    relationTypes.forEach((relationType) => {
+      result[relationType] = [];
+    });
+    relations.forEach((relation) => {
+      switch (relation.relationType) {
+        case 'BLOCKS':
+          if (isParent(relation)) {
+            result['BLOCKS'].push({
+              id: relation.id,
+              workOrder: relation.child
+            });
+          } else
+            result['BLOCKED_BY'].push({
+              id: relation.id,
+              workOrder: relation.parent
+            });
+          break;
+        case 'DUPLICATE_OF':
+          if (isParent(relation)) {
+            result['DUPLICATE_OF'].push({
+              id: relation.id,
+              workOrder: relation.child
+            });
+          } else
+            result['DUPLICATED_BY'].push({
+              id: relation.id,
+              workOrder: relation.parent
+            });
+          break;
+        case 'RELATED_TO':
+          result['RELATED_TO'].push({
+            id: relation.id,
+            workOrder: isParent(relation) ? relation.child : relation.parent
+          });
+          break;
+        case 'SPLIT_FROM':
+          if (isParent(relation)) {
+            result['SPLIT_FROM'].push({
+              id: relation.id,
+              workOrder: relation.child
+            });
+          } else
+            result['SPLIT_TO'].push({
+              id: relation.id,
+              workOrder: relation.parent
+            });
+          break;
+        default:
+          break;
+      }
+    });
+
+    return result;
   };
   useEffect(() => {
     if (dropDownValue !== workOrder?.status)
@@ -604,6 +668,22 @@ export default function WODetailsScreen({
                 <ProgressBar progress={tasks.filter(task => task.value).length / tasks.length} />
               </TouchableOpacity>
             </View>}
+            {!!currentWorkOrderRelations.length && <View style={styles.shadowedCard}>
+              <Text style={{ marginBottom: 10 }}>{t('links')}</Text>
+              {Object.entries(
+                groupRelations(currentWorkOrderRelations)
+              ).map(
+                ([relationType, relations]) =>
+                  !!relations.length && (
+                    <View>
+                      <Text style={{ fontWeight: 'bold' }}>{t(relationType)}</Text>
+                      {relations.map((relation) => (
+                        <List.Item title={relation.workOrder.title}
+                                   onPress={() => navigation.push('WODetails', { id: relation.workOrder.id })}
+                                   description={getFormattedDate(relation.workOrder.createdAt)} />
+                      ))}
+                    </View>
+                  ))}</View>}
           </View>
         </ScrollView>
         <AnimatedFAB

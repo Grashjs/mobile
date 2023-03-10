@@ -1,4 +1,4 @@
-import { Pressable, ScrollView } from 'react-native';
+import { Image, Pressable, ScrollView } from 'react-native';
 import LoadingDialog from '../../components/LoadingDialog';
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
@@ -124,6 +124,14 @@ export default function MeterDetails({ navigation, route }: RootStackScreenProps
   if (meter) return (
     <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background }}>
       {renderConfirmDelete()}
+      {meter.image && (
+        <View style={{ marginVertical: 20 }}>
+          <Image
+            style={{ height: 200 }}
+            source={{ uri: meter.image.url }}
+          />
+        </View>
+      )}
       {fieldsToRender.map(field => <BasicField key={field.label} label={field.label} value={field.value} />
       )}
       <ListField

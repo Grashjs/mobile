@@ -5,9 +5,10 @@ import { useTranslation } from 'react-i18next';
 import Part from '../../../models/part';
 import { useNavigation } from '@react-navigation/native';
 import { editPart } from '../../../slices/part';
-import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Linking, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { Button, Dialog, Divider, IconButton, Portal, Text, useTheme } from 'react-native-paper';
 import { View } from '../../../components/Themed';
+import * as FileSystem from 'expo-file-system';
 
 export default function PartFiles({ part }: { part: Part }) {
   const { t }: { t: any } = useTranslation();
@@ -43,7 +44,10 @@ export default function PartFiles({ part }: { part: Part }) {
     <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background }}>
       {renderConfirmDialog()}
       {part.files.map(file => (
-        <TouchableOpacity key={file.id} onPress={() => navigation.navigate('WODetails', { id: file.id })}>
+        <TouchableOpacity key={file.id} onPress={async () => {
+          const { uri } = await FileSystem.downloadAsync(file.url, FileSystem.documentDirectory + file.name);
+          await Linking.openURL(uri);
+        }}>
           <View style={{
             display: 'flex',
             flexDirection: 'row',

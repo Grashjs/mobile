@@ -1,4 +1,4 @@
-import { ScrollView, TouchableOpacity } from 'react-native';
+import { Image, ScrollView, TouchableOpacity } from 'react-native';
 import LoadingDialog from '../../components/LoadingDialog';
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
@@ -167,6 +167,14 @@ export default function RequestDetails({ navigation, route }: RootStackScreenPro
       {renderConfirmDelete()}
       {request.cancelled && (
         <BasicField label={t('status')} value={t('cancelled')} />
+      )}
+      {request.image && (
+        <View style={{ marginVertical: 20 }}>
+          <Image
+            style={{ height: 200 }}
+            source={{ uri: request.image.url }}
+          />
+        </View>
       )}
       {fieldsToRender.map(field => <BasicField key={field.label} label={field.label} value={field.value} />
       )}
