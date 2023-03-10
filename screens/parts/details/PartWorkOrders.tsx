@@ -8,6 +8,8 @@ import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-
 import { Divider, Text, useTheme } from 'react-native-paper';
 import { View } from '../../../components/Themed';
 import { getWorkOrdersByPart } from '../../../slices/workOrder';
+import { getStatusColor } from '../../../utils/overall';
+import Tag from '../../../components/Tag';
 
 export default function PartWorkOrders({ part }: { part: Part }) {
   const { t }: { t: any } = useTranslation();
@@ -19,7 +21,6 @@ export default function PartWorkOrders({ part }: { part: Part }) {
 
   useEffect(() => {
     if (part) dispatch(getWorkOrdersByPart(part.id));
-    ;
   }, [part]);
 
   return (
@@ -30,8 +31,9 @@ export default function PartWorkOrders({ part }: { part: Part }) {
       {workOrders.map(workOrder => (
         <TouchableOpacity key={workOrder.id} onPress={() => navigation.navigate('WODetails', { id: workOrder.id })}>
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
-            <Text style={{ fontWeight: 'bold' }}>{workOrder.title}</Text>
-            <Text>{t(workOrder.status)}</Text>
+            <Text style={{ fontWeight: 'bold', marginRight: 5 }}>{workOrder.title}</Text>
+            <Tag text={t(workOrder.status)} color='white'
+                 backgroundColor={getStatusColor(workOrder.status, theme)} />
           </View>
           <Divider />
         </TouchableOpacity>

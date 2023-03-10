@@ -143,11 +143,11 @@ export default function WODetailsScreen({
   ];
   const getInfos = () => {
     dispatch(getWorkOrderDetails(id));
-    dispatch(getPartQuantitiesByWorkOrder(workOrder?.id));
-    dispatch(getLabors(workOrder?.id));
-    dispatch(getAdditionalCosts(workOrder?.id));
-    dispatch(getTasks(workOrder?.id));
-    dispatch(getRelations(workOrder?.id));
+    dispatch(getPartQuantitiesByWorkOrder(id));
+    dispatch(getLabors(id));
+    dispatch(getAdditionalCosts(id));
+    dispatch(getTasks(id));
+    dispatch(getRelations(id));
   };
   useEffect(() => {
     navigation.setOptions({

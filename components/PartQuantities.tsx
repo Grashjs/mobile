@@ -22,6 +22,7 @@ import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import partQuantity, { editPartQuantity } from '../slices/partQuantity';
 import { useDispatch } from '../store';
 import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
+import { useNavigation } from '@react-navigation/native';
 
 export default function PartQuantities({
                                          partQuantities,
@@ -38,7 +39,7 @@ export default function PartQuantities({
   const [quantity, setQuantity] = useState<number>(0);
   const [currentPartQuantity, setCurrentPartQuantity] = useState<PartQuantity>();
   const [loading, setLoading] = useState<boolean>(false);
-
+  const navigation = useNavigation();
   const showModal = () => {
     actionSheetRef.current.hide();
     setOpenModal(true);
@@ -49,7 +50,7 @@ export default function PartQuantities({
   }, [currentPartQuantity]);
 
   const hideModal = () => setOpenModal(false);
-  const onPartQuantityChange = (value: number, partQuantityId) => {
+  const onPartQuantityChange = (value: number, partQuantityId: number) => {
     setLoading(true);
     dispatch(
       editPartQuantity(rootId, partQuantityId, value, isPO)
@@ -97,7 +98,7 @@ export default function PartQuantities({
                 style={{ marginTop: 15 }}
                 mode={'contained'}
                 buttonColor={theme.colors.primary}
-                onPress={() => onPartQuantityChange(quantity, currentPartQuantity)}>{t('save')}</Button>
+                onPress={() => onPartQuantityChange(quantity, currentPartQuantity.id)}>{t('save')}</Button>
       </Modal></Portal>);
   };
   return (<View>
@@ -115,7 +116,8 @@ export default function PartQuantities({
               fontWeight: 'bold',
               color: 'white'
             }}>{`${partQuantity.quantity}x`}</Text>
-          <TouchableOpacity style={{ display: 'flex', flexDirection: 'column', marginLeft: 5 }}><Text
+          <TouchableOpacity onPress={() => navigation.navigate('PartDetails', { id: partQuantity.part.id })}
+                            style={{ display: 'flex', flexDirection: 'column', marginLeft: 5 }}><Text
             style={{ fontWeight: 'bold' }}
             variant='bodyLarge'>{partQuantity.part.name}</Text>
             <Text>{getFormattedCurrency(partQuantity.part.cost)}</Text>
