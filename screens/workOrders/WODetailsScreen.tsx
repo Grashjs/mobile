@@ -26,7 +26,7 @@ import { PermissionEntity } from '../../models/role';
 import useAuth from '../../hooks/useAuth';
 import { controlTimer, getLabors } from '../../slices/labor';
 import { useDispatch, useSelector } from '../../store';
-import { durationToHours } from '../../utils/formatters';
+import { durationToHours, getHoursAndMinutesAndSeconds } from '../../utils/formatters';
 import { editWOPartQuantities, getPartQuantitiesByWorkOrder } from '../../slices/partQuantity';
 import { getAdditionalCosts } from '../../slices/additionalCost';
 import { getRelations } from '../../slices/relation';
@@ -684,6 +684,32 @@ export default function WODetailsScreen({
                       ))}
                     </View>
                   ))}</View>}
+            {!!labors.filter((labor) => !labor.logged).length && (<View style={styles.shadowedCard}>
+              <Text style={{ marginBottom: 10 }}>{t('labors')}</Text>
+              {labors.filter((labor) => !labor.logged).map(
+                labor => (
+                  <List.Item
+                    key={labor.id}
+                    title={labor.assignedTo ? `${labor.assignedTo.firstName} ${labor.assignedTo.lastName}` : t('not_assigned')}
+                    description={`${
+                      getHoursAndMinutesAndSeconds(labor.duration)[0]
+                    }h ${
+                      getHoursAndMinutesAndSeconds(labor.duration)[1]
+                    }m`} />
+                ))}
+            </View>)
+            }
+            {!!currentWorkOrderHistories.length && (<View style={styles.shadowedCard}>
+              <Text style={{ marginBottom: 10 }}>{t('history')}</Text>
+              {currentWorkOrderHistories.map(
+                workOrderHistory => (
+                  <List.Item
+                    key={workOrderHistory.id}
+                    title={`${workOrderHistory.user.firstName} ${workOrderHistory.user.lastName}`}
+                    description={getFormattedDate(workOrderHistory.createdAt)} />
+                ))}
+            </View>)
+            }
           </View>
         </ScrollView>
         <AnimatedFAB
