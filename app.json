@@ -24,9 +24,9 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff",
-        "versionCode": 2
+        "backgroundColor": "#ffffff"
       },
+      "versionCode": 2,
       "package": "com.grash.cmms"
     },
     "web": {
