@@ -96,7 +96,7 @@ export default function People({ navigation }: RootStackScreenProps<'PeopleTeams
           <TouchableOpacity key={user.id} onPress={() => {
             if (user.id === currentUser.id) {
               navigation.navigate('UserProfile');
-            } else navigation.navigate('UserDetails', { id: user.id });
+            } else navigation.push('UserDetails', { id: user.id });
           }}>
             <View style={{
               display: 'flex',

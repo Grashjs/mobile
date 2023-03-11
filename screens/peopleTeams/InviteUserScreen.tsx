@@ -101,6 +101,7 @@ export default function InviteUserScreen({ navigation }: RootStackScreenProps<'A
             ? role.description
             : t(defaultRoles[role.code].description)}
                      descriptionNumberOfLines={10}
+                     onPress={() => setSelectedRole(role.id)}
                      left={props => <RadioButton
                        value='first'
                        status={selectedRole === role.id ? 'checked' : 'unchecked'}

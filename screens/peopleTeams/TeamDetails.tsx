@@ -85,7 +85,7 @@ export default function TeamDetails({ navigation, route }: RootStackScreenProps<
       {renderConfirmDelete()}
       {team.users.map(user => (
         <TouchableOpacity key={user.id} onPress={() => {
-          navigation.navigate('UserDetails', { id: user.id });
+          navigation.push('UserDetails', { id: user.id });
         }}>
           <View style={{
             display: 'flex',

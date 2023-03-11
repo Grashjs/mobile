@@ -95,7 +95,7 @@ export default function CustomersScreen({ navigation }: RootStackScreenProps<'Ve
                   scrollEventThrottle={400}>
         {!!customers.content.length ? customers.content.map(customer => (
           <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={customer.id}
-                onPress={() => navigation.navigate('CustomerDetails', { id: customer.id })}>
+                onPress={() => navigation.push('CustomerDetails', { id: customer.id })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>

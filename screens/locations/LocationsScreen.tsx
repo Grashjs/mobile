@@ -117,7 +117,7 @@ export default function LocationsScreen({ navigation, route }: RootStackScreenPr
                                      scrollEventThrottle={400}>
         {!!locations.content.length ? locations.content.map(location => (
           <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={location.id}
-                onPress={() => navigation.navigate('LocationDetails', { id: location.id })}>
+                onPress={() => navigation.push('LocationDetails', { id: location.id })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>
@@ -137,7 +137,7 @@ export default function LocationsScreen({ navigation, route }: RootStackScreenPr
                         colors={[theme.colors.primary]} />}>
         {!!currentLocations.length && currentLocations.map(location => (
           <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={location.id}
-                onPress={() => navigation.navigate('LocationDetails', { id: location.id })}>
+                onPress={() => navigation.push('LocationDetails', { id: location.id })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>

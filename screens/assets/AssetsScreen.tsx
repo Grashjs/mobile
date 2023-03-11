@@ -119,7 +119,7 @@ export default function AssetsScreen({ navigation, route }: RootStackScreenProps
                                      scrollEventThrottle={400}>
         {!!assets.content.length ? assets.content.map(asset => (
           <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={asset.id}
-                onPress={() => navigation.navigate('AssetDetails', { id: asset.id })}>
+                onPress={() => navigation.push('AssetDetails', { id: asset.id })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>
@@ -140,7 +140,7 @@ export default function AssetsScreen({ navigation, route }: RootStackScreenProps
                         colors={[theme.colors.primary]} />}>
         {!!currentAssets.length && currentAssets.map(asset => (
           <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={asset.id}
-                onPress={() => navigation.navigate('AssetDetails', { id: asset.id })}>
+                onPress={() => navigation.push('AssetDetails', { id: asset.id })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>

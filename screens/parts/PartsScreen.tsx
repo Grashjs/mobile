@@ -93,7 +93,7 @@ export default function PartsScreen({ navigation, route }: RootStackScreenProps<
                   scrollEventThrottle={400}>
         {!!parts.content.length ? parts.content.map(part => (
           <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={part.id}
-                onPress={() => navigation.navigate('PartDetails', { id: part.id })}>
+                onPress={() => navigation.push('PartDetails', { id: part.id })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>

@@ -109,8 +109,8 @@ export default function RequestsScreen({ navigation, route }: RootTabScreenProps
             <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={request.id}
                   onPress={() => {
                     if (request.workOrder) {
-                      navigation.navigate('WODetails', { id: request.workOrder.id });
-                    } else navigation.navigate('RequestDetails', { id: request.id });
+                      navigation.push('WODetails', { id: request.workOrder.id });
+                    } else navigation.push('RequestDetails', { id: request.id });
                   }}>
               <Card.Content>
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>

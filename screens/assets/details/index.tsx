@@ -42,13 +42,13 @@ export default function AssetDetailsHome({
   const renderScene = ({ route, jumpTo }) => {
     switch (route.key) {
       case 'details':
-        return <AssetDetails asset={asset} />;
+        return <AssetDetails asset={asset} navigation={navigation} />;
       case 'work-orders':
-        return <AssetWorkOrders asset={asset} />;
+        return <AssetWorkOrders asset={asset} navigation={navigation} />;
       case 'files':
         return <AssetFiles asset={asset} />;
       case 'parts':
-        return <AssetParts asset={asset} />;
+        return <AssetParts asset={asset} navigation={navigation} />;
     }
   };
   const renderTabBar = props => (

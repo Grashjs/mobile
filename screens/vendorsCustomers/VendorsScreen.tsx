@@ -93,7 +93,7 @@ export default function VendorsScreen({ navigation }: RootStackScreenProps<'Vend
                   scrollEventThrottle={400}>
         {!!vendors.content.length ? vendors.content.map(vendor => (
           <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={vendor.id}
-                onPress={() => navigation.navigate('VendorDetails', { id: vendor.id })}>
+                onPress={() => navigation.push('VendorDetails', { id: vendor.id })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>

@@ -1,27 +1,22 @@
-import { useContext, useEffect } from 'react';
+import * as React from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from '../../../store';
 import { useTranslation } from 'react-i18next';
-import { CompanySettingsContext } from '../../../contexts/CompanySettingsContext';
 import Location from '../../../models/location';
-import { useNavigation } from '@react-navigation/native';
 import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { useTheme, Text, Divider } from 'react-native-paper';
+import { Divider, Text, useTheme } from 'react-native-paper';
 import { View } from '../../../components/Themed';
-import * as React from 'react';
-import { getFloorPlans } from '../../../slices/floorPlan';
 import { getWorkOrdersByLocation } from '../../../slices/workOrder';
 
-export default function LocationWorkOrders({ location }: { location: Location }) {
+export default function LocationWorkOrders({ location, navigation }: { location: Location; navigation: any }) {
   const { t }: { t: any } = useTranslation();
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const theme = useTheme();
   const { workOrdersByLocation, loadingGet } = useSelector((state) => state.workOrders);
   const workOrders = workOrdersByLocation[location.id] ?? [];
 
   useEffect(() => {
     if (location) dispatch(getWorkOrdersByLocation(location.id));
-    ;
   }, [location]);
 
   return (
@@ -30,7 +25,7 @@ export default function LocationWorkOrders({ location }: { location: Location })
                   <RefreshControl refreshing={loadingGet}
                                   colors={[theme.colors.primary]} />}>
       {workOrders.map(workOrder => (
-        <TouchableOpacity key={workOrder.id} onPress={() => navigation.navigate('WODetails', { id: workOrder.id })}>
+        <TouchableOpacity key={workOrder.id} onPress={() => navigation.push('WODetails', { id: workOrder.id })}>
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
             <Text style={{ fontWeight: 'bold' }}>{workOrder.title}</Text>
             <Text>{t(workOrder.status)}</Text>

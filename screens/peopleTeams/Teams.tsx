@@ -89,7 +89,7 @@ export default function Teams({ navigation }: RootStackScreenProps<'PeopleTeams'
                   scrollEventThrottle={400}>
         {!!teams.content.length ? teams.content.map(team => (
           <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={team.id}
-                onPress={() => navigation.navigate('TeamDetails', { id: team.id })}>
+                onPress={() => navigation.push('TeamDetails', { id: team.id })}>
             <Card.Content>
               <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                 <View style={{ ...styles.row, justifyContent: 'space-between' }}>

@@ -43,9 +43,9 @@ export default function PartDetailsHome({
       case 'details':
         return <PartDetails part={part} />;
       case 'work-orders':
-        return <PartWorkOrders part={part} />;
+        return <PartWorkOrders part={part} navigation={navigation} />;
       case 'assets':
-        return <PartAssets part={part} />;
+        return <PartAssets part={part} navigation={navigation} />;
       case 'files':
         return <PartFiles part={part} />;
     }

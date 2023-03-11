@@ -10,10 +10,9 @@ import { useTheme, Text, Divider, Portal, Dialog, Button, IconButton } from 'rea
 import { View } from '../../../components/Themed';
 import * as React from 'react';
 
-export default function AssetParts({ asset }: { asset: AssetDTO }) {
+export default function AssetParts({ asset, navigation }: { asset: AssetDTO; navigation: any }) {
   const { t }: { t: any } = useTranslation();
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const theme = useTheme();
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [currentFileId, setCurrentFileId] = useState<number>();
@@ -44,7 +43,7 @@ export default function AssetParts({ asset }: { asset: AssetDTO }) {
     <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background }}>
       {renderConfirmDialog()}
       {asset.parts.map(part => (
-        <TouchableOpacity key={part.id} onPress={() => navigation.navigate('PartDetails', { id: part.id })}>
+        <TouchableOpacity key={part.id} onPress={() => navigation.push('PartDetails', { id: part.id })}>
           <View style={{
             display: 'flex',
             flexDirection: 'row',

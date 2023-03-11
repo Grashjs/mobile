@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from '../../../store';
 import { useTranslation } from 'react-i18next';
 import Part from '../../../models/part';
-import { useNavigation } from '@react-navigation/native';
 import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { Divider, Text, useTheme } from 'react-native-paper';
 import { View } from '../../../components/Themed';
@@ -11,10 +10,9 @@ import { getWorkOrdersByPart } from '../../../slices/workOrder';
 import { getStatusColor } from '../../../utils/overall';
 import Tag from '../../../components/Tag';
 
-export default function PartWorkOrders({ part }: { part: Part }) {
+export default function PartWorkOrders({ part, navigation }: { part: Part; navigation: any }) {
   const { t }: { t: any } = useTranslation();
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const theme = useTheme();
   const { workOrdersByPart, loadingGet } = useSelector((state) => state.workOrders);
   const workOrders = workOrdersByPart[part.id] ?? [];
@@ -29,7 +27,7 @@ export default function PartWorkOrders({ part }: { part: Part }) {
                   <RefreshControl refreshing={loadingGet}
                                   colors={[theme.colors.primary]} />}>
       {workOrders.map(workOrder => (
-        <TouchableOpacity key={workOrder.id} onPress={() => navigation.navigate('WODetails', { id: workOrder.id })}>
+        <TouchableOpacity key={workOrder.id} onPress={() => navigation.push('WODetails', { id: workOrder.id })}>
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
             <Text style={{ fontWeight: 'bold', marginRight: 5 }}>{workOrder.title}</Text>
             <Tag text={t(workOrder.status)} color='white'

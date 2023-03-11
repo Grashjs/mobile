@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Grash",
+    "name": "Grash CMMS",
     "slug": "grash",
     "version": "1.0.1",
     "orientation": "portrait",
@@ -26,7 +26,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "versionCode": 2,
+      "versionCode": 3,
       "package": "com.grash.cmms"
     },
     "web": {

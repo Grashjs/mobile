@@ -43,9 +43,9 @@ export default function LocationDetailsHome({
       case 'details':
         return <LocationDetails location={location} />;
       case 'work-orders':
-        return <LocationWorkOrders location={location} />;
+        return <LocationWorkOrders location={location} navigation={navigation} />;
       case 'assets':
-        return <LocationAssets location={location} />;
+        return <LocationAssets location={location} navigation={navigation} />;
       case 'files':
         return <LocationFiles location={location} />;
     }

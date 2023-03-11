@@ -5,7 +5,6 @@ import { CompanySettingsContext } from '../../../contexts/CompanySettingsContext
 import { Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { View } from '../../../components/Themed';
 import { Divider, Text, useTheme } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../../types';
 import { UserMiniDTO } from '../../../models/user';
 import { Customer } from '../../../models/customer';
@@ -15,10 +14,9 @@ import { getCustomerUrl, getTeamUrl, getUserUrl, getVendorUrl } from '../../../u
 import ListField from '../../../components/ListField';
 import * as React from 'react';
 
-export default function AssetDetails({ asset }: { asset: Asset }) {
+export default function AssetDetails({ asset, navigation }: { asset: Asset; navigation: any }) {
   const { getFormattedDate, getFormattedCurrency } = useContext(CompanySettingsContext);
   const { t } = useTranslation();
-  const navigation = useNavigation();
   const theme = useTheme();
   const fieldsToRender: {
     label: string;
@@ -71,7 +69,7 @@ export default function AssetDetails({ asset }: { asset: Asset }) {
       {asset.primaryUser && <View>
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
           <Text>{t('primary_worker')}</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('UserDetails', { id: asset.primaryUser.id })}>
+          <TouchableOpacity onPress={() => navigation.push('UserDetails', { id: asset.primaryUser.id })}>
             <Text style={{
               fontWeight: 'bold',
               color: theme.colors.primary
@@ -83,7 +81,7 @@ export default function AssetDetails({ asset }: { asset: Asset }) {
       {asset.location && <View>
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
           <Text>{t('location')}</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('LocationDetails', { id: asset.location.id })}>
+          <TouchableOpacity onPress={() => navigation.push('LocationDetails', { id: asset.location.id })}>
             <Text style={{
               fontWeight: 'bold',
               color: theme.colors.primary

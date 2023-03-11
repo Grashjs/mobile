@@ -36,7 +36,7 @@ export default function RequestDetails({ navigation, route }: RootStackScreenPro
     setApproving(true);
     dispatch(approveRequest(request.id))
       .then((workOrderId: number) => {
-        navigation.navigate('WODetails', { id: workOrderId });
+        navigation.push('WODetails', { id: workOrderId });
       })
       .finally(() => setApproving(false));
   };
