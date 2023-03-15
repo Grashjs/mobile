@@ -15,7 +15,8 @@ type CompanySettingsContext = {
   getFormattedDate: (dateString: string, hideTime?: boolean) => string;
   uploadFiles: (
     files: any[],
-    images: any[]
+    images: any[],
+    hidden?: boolean
   ) => Promise<{ id: number; type: FileType }[]>;
   getUserNameById: (id: number) => string | null;
   getWOFieldsAndShapes: (
@@ -69,11 +70,12 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
   };
   const uploadFiles = async (
     files: [],
-    images: []
+    images: [],
+    hidden?: boolean
   ): Promise<{ id: number; type: FileType }[]> => {
     let result: { id: number; type: FileType }[] = [];
     if (files?.length) {
-      await dispatch(addFiles(files)).then((fileIds) => {
+      await dispatch(addFiles(files, 'OTHER', undefined, `${hidden}`)).then((fileIds) => {
         if (Array.isArray(fileIds))
           result = [
             ...fileIds.map((id) => {
@@ -83,7 +85,7 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
       });
     }
     if (images?.length) {
-      await dispatch(addFiles(images, 'IMAGE')).then((images) => {
+      await dispatch(addFiles(images, 'IMAGE', undefined, `${hidden}`)).then((images) => {
         if (Array.isArray(images))
           result = [
             ...result,

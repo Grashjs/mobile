@@ -55,7 +55,8 @@ const slice = createSlice({
     },
     addFiles(state: FileState, action: PayloadAction<{ files: File[] }>) {
       const { files } = action.payload;
-      state.files.content = [...state.files.content, ...files];
+      let visibleFiles = files.filter((file) => !file.hidden);
+      state.files.content = [...state.files.content, ...visibleFiles];
     },
     deleteFile(state: FileState, action: PayloadAction<{ id: number }>) {
       const { id } = action.payload;
@@ -106,7 +107,8 @@ export const editFile =
     };
 
 export const addFiles =
-  (files: any[], fileType: FileType = 'OTHER', taskId?: number): AppThunk =>
+  (files: any[], fileType: FileType = 'OTHER', taskId?: number, hidden?: 'true' | 'false'
+  ): AppThunk =>
     async (dispatch) => {
       let formData = new FormData();
       const companyId = await AsyncStorage.getItem('companyId');
@@ -117,6 +119,7 @@ export const addFiles =
       });
       formData.append('folder', `company ${companyId}`);
       formData.append('type', fileType);
+      formData.append('hidden', hidden);
       const baseRoute = `${basePath}/upload`;
       const filesResponse = await api.post<File[]>(
         taskId ? `${baseRoute}?taskId=${taskId}` : baseRoute,

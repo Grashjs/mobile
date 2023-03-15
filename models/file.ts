@@ -6,12 +6,15 @@ export default interface File extends Audit {
   id: number;
   url: string;
   type: FileType;
+  hidden: boolean;
 }
+
 export interface FileMiniDTO {
   name: string;
   id: number;
   url: string;
 }
+
 export const files: File[] = [
   {
     name: 'File1',
@@ -21,6 +24,7 @@ export const files: File[] = [
     createdBy: 1,
     updatedAt: 'string',
     updatedBy: 1,
+    hidden: false,
     type: 'OTHER'
   }
 ];
