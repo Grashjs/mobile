@@ -1524,7 +1524,7 @@ const frJSON = {
   reading_history: 'Historique de lecture',
   user_invite_success: 'L\'utilisateur a été invité',
   user_invite_failure: 'L\'utilisateur n\'a pas pu être invité',
-  create_child_asset: 'Créer un équipement enfant'
+  not_enough_part: 'Cette pièce n\'est plus en stock'
 };
 
 export default frJSON;

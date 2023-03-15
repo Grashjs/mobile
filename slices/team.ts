@@ -32,6 +32,8 @@ const slice = createSlice({
     getTeams(state: TeamState, action: PayloadAction<{ teams: Page<Team> }>) {
       const { teams } = action.payload;
       state.teams = teams;
+      state.currentPageNum = 0;
+      state.lastPage = teams.last;
     },
     getMoreTeams(
       state: TeamState,

@@ -1,10 +1,10 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { View } from '../components/Themed';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { NotificationType } from '../models/notification';
-import { editNotification } from '../slices/notification';
+import { editNotification, getMoreNotifications } from '../slices/notification';
 import Notification from '../models/notification';
 import { RootStackParamList, RootStackScreenProps } from '../types';
 import { useDispatch, useSelector } from '../store';
@@ -23,12 +23,20 @@ import { CompanySettingsContext } from '../contexts/CompanySettingsContext';
 import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+import { getMoreAssets } from '../slices/asset';
+import { SearchCriteria } from '../models/page';
 
 export default function NotificationsScreen({
                                               navigation
                                             }: RootStackScreenProps<'Notifications'>) {
   const dispatch = useDispatch();
-  const { notifications } = useSelector((state) => state.notifications);
+  const { notifications, loadingGet, lastPage, currentPageNum } = useSelector((state) => state.notifications);
+  const criteria: SearchCriteria = {
+    filterFields: [],
+    pageSize: 15,
+    pageNum: 0,
+    direction: 'DESC'
+  };
   const theme = useTheme();
   const { t } = useTranslation();
   const { getFormattedDate } = useContext(CompanySettingsContext);
@@ -87,10 +95,22 @@ export default function NotificationsScreen({
     INFO: 'information',
     PURCHASE_ORDER: 'comma-circle-outline'
   };
+  const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+    const paddingToBottom = 20;
+    return layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom;
+  };
   return (
-    <ScrollView style={styles.container}>
-      {Boolean(notifications.length) ? <List.Section>
-        {[...notifications].reverse().map((notification) => (
+    <ScrollView style={styles.container}
+                refreshControl={<RefreshControl refreshing={loadingGet} colors={[theme.colors.primary]} />}
+                onScroll={({ nativeEvent }) => {
+                  if (isCloseToBottom(nativeEvent)) {
+                    if (!loadingGet && !lastPage)
+                      dispatch(getMoreNotifications(criteria, currentPageNum + 1));
+                  }
+                }}>
+      {Boolean(notifications.content.length) ? <List.Section>
+        {notifications.content.map((notification) => (
           // @ts-ignore
           <List.Item
             title={notification.message}

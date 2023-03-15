@@ -1380,7 +1380,8 @@ const enJSON = {
   reading_history: 'Reading history',
   user_invite_success: 'The user has been invited',
   user_invite_failure: 'The user couldn\'t be invited',
-  create_child_asset: 'Create a child asset'
+  create_child_asset: 'Create a child asset',
+  not_enough_part: 'There is not enough of this part'
 };
 
 export default enJSON;

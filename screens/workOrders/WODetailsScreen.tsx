@@ -591,6 +591,8 @@ export default function WODetailsScreen({
                           workOrder?.id,
                           selectedParts.map((part) => part.id)
                         )
+                      ).catch((error) =>
+                        showSnackBar(t('not_enough_part'), 'error')
                       );
                     },
                     selected: partQuantities.map(
@@ -636,26 +638,27 @@ export default function WODetailsScreen({
                 </View>
               )}
               <Divider style={{ marginTop: 5 }} />
-              <Button
-                disabled={!hasEditPermission(PermissionEntity.WORK_ORDERS, workOrder)}
-                onPress={() =>
-                  navigation.navigate('SelectParts', {
-                    onChange: (selectedParts) => {
-                      dispatch(
-                        editWOPartQuantities(
-                          workOrder?.id,
-                          selectedParts.map((part) => part.id)
-                        )
-                      );
-                    },
-                    selected: partQuantities.map(
-                      (partQuantity) => partQuantity.part.id
-                    )
-                  })
-                }
-              >
-                {t('add_additional_cost')}
-              </Button>
+              {/*<Button*/}
+              {/*TODO*/}
+              {/*  disabled={!hasEditPermission(PermissionEntity.WORK_ORDERS, workOrder)}*/}
+              {/*  onPress={() =>*/}
+              {/*    navigation.navigate('SelectParts', {*/}
+              {/*      onChange: (selectedParts) => {*/}
+              {/*        dispatch(*/}
+              {/*          editWOPartQuantities(*/}
+              {/*            workOrder?.id,*/}
+              {/*            selectedParts.map((part) => part.id)*/}
+              {/*          )*/}
+              {/*        );*/}
+              {/*      },*/}
+              {/*      selected: partQuantities.map(*/}
+              {/*        (partQuantity) => partQuantity.part.id*/}
+              {/*      )*/}
+              {/*    })*/}
+              {/*  }*/}
+              {/*>*/}
+              {/*  {t('add_additional_cost')}*/}
+              {/*</Button>*/}
             </View>
             {!!tasks.length && <View style={styles.shadowedCard}>
               <Text style={{ marginBottom: 10 }}>{t('tasks')}</Text>

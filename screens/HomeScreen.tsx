@@ -6,7 +6,7 @@ import { RootTabScreenProps } from '../types';
 import { IconButton, useTheme, Text, Switch, Badge } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { ExtendedWorkOrderStatus, getStatusColor } from '../utils/overall';
-import { FilterField } from '../models/page';
+import { FilterField, SearchCriteria } from '../models/page';
 import useAuth from '../hooks/useAuth';
 import { useEffect } from 'react';
 import { getMobileOverviewStats } from '../slices/analytics/workOrder';
@@ -22,6 +22,12 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
   const { notifications } = useSelector((state) => state.notifications);
   const { mobileOverview, loading } = useSelector(state => state.woAnalytics);
   const iconButtonStyle = { ...styles.iconButton, backgroundColor: theme.colors.background };
+  const notificationsCriteria: SearchCriteria = {
+    filterFields: [],
+    pageSize: 15,
+    pageNum: 0,
+    direction: 'DESC'
+  };
   const getTodayDates = () => {
     const date1 = new Date();
     const date2 = new Date();
@@ -29,9 +35,10 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
     date2.setHours(24, 0, 0, 0);
     return [date1, date2];
   };
+
   useEffect(() => {
     fetchUserSettings();
-    dispatch(getNotifications());
+    dispatch(getNotifications(notificationsCriteria));
   }, []);
 
   useEffect(() => {
@@ -131,8 +138,8 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
           <IconButton icon={'bell'} onPress={() => navigation.navigate('Notifications')} />
           <Badge
             style={{ position: 'absolute', bottom: 0, right: 0, backgroundColor: theme.colors.error }}
-            visible={!!notifications.filter(notification => !notification.seen).length}>
-            {notifications.filter(notification => !notification.seen).length}</Badge>
+            visible={!!notifications.content.filter(notification => !notification.seen).length}>
+            {notifications.content.filter(notification => !notification.seen).length}</Badge>
         </View>
         <IconButton style={iconButtonStyle} icon={'package-variant-closed'}
                     onPress={() => navigation.navigate('Assets')} />

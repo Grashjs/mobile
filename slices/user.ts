@@ -35,6 +35,8 @@ const slice = createSlice({
     getUsers(state: UserState, action: PayloadAction<{ users: Page<User> }>) {
       const { users } = action.payload;
       state.users = users;
+      state.currentPageNum = 0;
+      state.lastPage = users.last;
     },
     getMoreUsers(
       state: UserState,
