@@ -13,9 +13,11 @@ import { getUserUrl } from '../../utils/urlPaths';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { deleteMeter, getMeterDetails } from '../../slices/meter';
 import { getWorkOrderMeterTriggers } from '../../slices/workOrderMeterTrigger';
-import { getReadings } from '../../slices/reading';
+import { createReading, getReadings } from '../../slices/reading';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import { SheetManager } from 'react-native-actions-sheet';
+import { canAddReading } from '../../utils/overall';
+import NumberInput from '../../components/NumberInput';
 
 export default function MeterDetails({ navigation, route }: RootStackScreenProps<'MeterDetails'>) {
   const { id } = route.params;
@@ -26,12 +28,16 @@ export default function MeterDetails({ navigation, route }: RootStackScreenProps
   );
   const currentMeterTriggers = metersTriggers[id] ?? [];
   const currentMeterReadings = readingsByMeter[id] ?? [];
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const meter = meterInfos[id]?.meter;
   const theme = useTheme();
+  const [readingValue, setReadingValue] = useState<number>(0);
+  const [addedReading, setAddedReading] = useState<boolean>(false);
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const { getFormattedDate } = useContext(
     CompanySettingsContext
   );
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [openDelete, setOpenDelete] = useState<boolean>(false);
@@ -101,6 +107,14 @@ export default function MeterDetails({ navigation, route }: RootStackScreenProps
     });
   }, [meter]);
 
+  const onAddReading = () => {
+    setIsSubmitting(true);
+    dispatch(createReading(meter.id, { value: readingValue })).then(() => {
+      setAddedReading(true);
+      setOpenModal(false);
+    }).finally(() => setIsSubmitting(false));
+  };
+
   function BasicField({
                         label,
                         value
@@ -121,9 +135,32 @@ export default function MeterDetails({ navigation, route }: RootStackScreenProps
     else return null;
   }
 
+  const renderAddReading = () => {
+    return (<Portal>
+      <Dialog visible={openModal} onDismiss={() => setOpenModal(false)} style={{ backgroundColor: 'white' }}>
+        <Dialog.Title>{t('add_reading')}</Dialog.Title>
+        <Dialog.Content>
+          <NumberInput style={{ width: '100%' }} mode='outlined'
+                       label={t('reading')}
+                       defaultValue={'0'}
+                       placeholder={t('meter_reading')}
+                       onChangeText={(newValue) => {
+                         setReadingValue(Number(newValue));
+                       }}
+                       disabled={isSubmitting}
+                       error={false} onBlur={function(e: any): void {
+          }} multiline={false} /></Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={() => setOpenModal(false)}>{t('cancel')}</Button>
+          <Button onPress={onAddReading} loading={isSubmitting} disabled={isSubmitting}>{t('add')}</Button>
+        </Dialog.Actions>
+      </Dialog>
+    </Portal>);
+  };
   if (meter) return (
     <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background }}>
       {renderConfirmDelete()}
+      {renderAddReading()}
       {meter.image && (
         <View style={{ marginVertical: 20 }}>
           <Image
@@ -142,10 +179,13 @@ export default function MeterDetails({ navigation, route }: RootStackScreenProps
           `${user.firstName} ${user.lastName}`
         }
       />
+      {canAddReading(meter) && !addedReading &&
+      <Button onPress={() => setOpenModal(true)} mode={'contained'}
+              style={{ marginHorizontal: 20, marginVertical: 20 }}>{t('add_reading')}</Button>}
       {!!currentMeterTriggers.length &&
       <Text variant={'titleMedium'} style={{ color: theme.colors.primary, padding: 20 }}>{t('wo_triggers')}</Text>}
       {currentMeterTriggers.map(trigger => (
-        <View style={{ padding: 20 }}>
+        <View style={{ padding: 20 }} key={trigger.id}>
           <Text style={{ fontWeight: 'bold' }}>{trigger.name}</Text>
           <Text>{`${trigger.triggerCondition === 'MORE_THAN'
             ? t('greater_than')
@@ -154,7 +194,8 @@ export default function MeterDetails({ navigation, route }: RootStackScreenProps
       ))}
       <Text variant={'titleMedium'} style={{ color: theme.colors.primary, padding: 20 }}>{t('reading_history')}</Text>
       {[...currentMeterReadings].reverse().map(reading => (
-        <BasicField label={getFormattedDate(reading.createdAt)} value={`${reading.value} ${meter.unit}`} />
+        <BasicField key={reading.id} label={getFormattedDate(reading.createdAt)}
+                    value={`${reading.value} ${meter.unit}`} />
       ))}
     </ScrollView>
   );
