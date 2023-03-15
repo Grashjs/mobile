@@ -577,6 +577,7 @@ export default function WODetailsScreen({
               <PartQuantities
                 partQuantities={partQuantities}
                 isPO={false}
+                navigation={navigation}
                 rootId={workOrder?.id}
               />
               <Divider style={{ marginTop: 5 }} />

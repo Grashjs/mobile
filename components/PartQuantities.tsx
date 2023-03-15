@@ -27,8 +27,9 @@ import { useNavigation } from '@react-navigation/native';
 export default function PartQuantities({
                                          partQuantities,
                                          rootId,
+                                         navigation,
                                          isPO
-                                       }: { partQuantities: PartQuantity[]; rootId: number, isPO: boolean }) {
+                                       }: { partQuantities: PartQuantity[]; rootId: number, isPO: boolean; navigation: any }) {
   const { getFormattedCurrency } = useContext(CompanySettingsContext);
   const theme = useTheme();
   const { t } = useTranslation();
@@ -39,7 +40,6 @@ export default function PartQuantities({
   const [quantity, setQuantity] = useState<number>(0);
   const [currentPartQuantity, setCurrentPartQuantity] = useState<PartQuantity>();
   const [loading, setLoading] = useState<boolean>(false);
-  const navigation = useNavigation();
   const showModal = () => {
     actionSheetRef.current.hide();
     setOpenModal(true);
@@ -116,7 +116,7 @@ export default function PartQuantities({
               fontWeight: 'bold',
               color: 'white'
             }}>{`${partQuantity.quantity}x`}</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('PartDetails', { id: partQuantity.part.id })}
+          <TouchableOpacity onPress={() => navigation.push('PartDetails', { id: partQuantity.part.id })}
                             style={{ display: 'flex', flexDirection: 'column', marginLeft: 5 }}><Text
             style={{ fontWeight: 'bold' }}
             variant='bodyLarge'>{partQuantity.part.name}</Text>

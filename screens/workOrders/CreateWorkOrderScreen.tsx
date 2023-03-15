@@ -46,7 +46,11 @@ export default function CreateWorkOrderScreen({
       submitText={t('save')}
       values={{
         requiredSignature: false,
-        dueDate: initialDueDate
+        dueDate: initialDueDate,
+        location: route.params.location ? {
+          label: route.params.location.name,
+          value: route.params.location.id.toString()
+        } : null
       }}
       onChange={({ field, e }) => {
       }}

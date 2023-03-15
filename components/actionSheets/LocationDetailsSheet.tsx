@@ -10,10 +10,10 @@ import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
 import Location from '../../models/location';
 
-export default function LocationDetailsSheet(props: SheetProps<{ onEdit: () => void; onAddFile: () => void; onDelete: () => void, location: Location }>) {
+export default function LocationDetailsSheet(props: SheetProps<{ onEdit: () => void; onAddFile: () => void; onDelete: () => void, onCreateWorkOrder: () => void, location: Location }>) {
   const { t } = useTranslation();
   const actionSheetRef = useRef<ActionSheetRef>(null);
-  const { hasEditPermission, hasDeletePermission } = useAuth();
+  const { hasEditPermission, hasDeletePermission, hasCreatePermission } = useAuth();
   const theme = useTheme();
   const options: {
     title: string;
@@ -27,6 +27,12 @@ export default function LocationDetailsSheet(props: SheetProps<{ onEdit: () => v
       icon: 'pencil',
       onPress: props.payload.onEdit,
       visible: hasEditPermission(PermissionEntity.LOCATIONS, props.payload.location)
+    },
+    {
+      title: t('create_work_order'),
+      icon: 'clipboard-text',
+      onPress: props.payload.onCreateWorkOrder,
+      visible: hasCreatePermission(PermissionEntity.WORK_ORDERS)
     },
     {
       title: t('to_delete'),

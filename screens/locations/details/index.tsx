@@ -69,8 +69,9 @@ export default function LocationDetailsHome({
         <Pressable onPress={() => {
           SheetManager.show('location-details-sheet', {
             payload: {
-              onEdit: () => navigation.navigate('EditLocation', { location: location }),
+              onEdit: () => navigation.navigate('EditLocation', { location }),
               onDelete: () => setOpenDelete(true),
+              onCreateWorkOrder: () => navigation.push('AddWorkOrder', { location }),
               location
             }
           });
