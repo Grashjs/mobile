@@ -50,6 +50,10 @@ export default function CreateWorkOrderScreen({
         location: route.params.location ? {
           label: route.params.location.name,
           value: route.params.location.id.toString()
+        } : null,
+        asset: route.params.asset ? {
+          label: route.params.asset.name,
+          value: route.params.asset.id.toString()
         } : null
       }}
       onChange={({ field, e }) => {

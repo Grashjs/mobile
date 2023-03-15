@@ -30,7 +30,7 @@ declare global {
 
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
-  AddWorkOrder: { location?: Location };
+  AddWorkOrder: { location?: Location, asset?: AssetDTO };
   WorkOrderStats: undefined;
   EditWorkOrder: { workOrder: WorkOrder; tasks: Task[] };
   EditRequest: { request: Request };
@@ -43,7 +43,7 @@ export type RootStackParamList = {
   EditVendor: { vendor: Vendor };
   EditTeam: { team: Team };
   AddRequest: undefined;
-  AddAsset: { location?: Location };
+  AddAsset: { location?: Location; parentAsset?: AssetDTO };
   AddLocation: undefined;
   AddPart: undefined;
   AddMeter: undefined;

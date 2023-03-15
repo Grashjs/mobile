@@ -1523,7 +1523,8 @@ const frJSON = {
   edit_vendor: 'Modifier le fournisseur',
   reading_history: 'Historique de lecture',
   user_invite_success: 'L\'utilisateur a été invité',
-  user_invite_failure: 'L\'utilisateur n\'a pas pu être invité'
+  user_invite_failure: 'L\'utilisateur n\'a pas pu être invité',
+  create_child_asset: 'Créer un équipement enfant'
 };
 
 export default frJSON;

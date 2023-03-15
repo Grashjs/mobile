@@ -9,9 +9,9 @@ import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
 import { AssetDTO } from '../../models/asset';
 
-export default function AssetDetailsSheet(props: SheetProps<{ onEdit: () => void; onAddFile: () => void; onAddPart: () => void; onDelete: () => void; asset: AssetDTO }>) {
+export default function AssetDetailsSheet(props: SheetProps<{ onEdit: () => void; onAddFile: () => void; onAddPart: () => void; onCreateWorkOrder: () => void; onCreateChildAsset: () => void; onDelete: () => void; asset: AssetDTO }>) {
   const { t } = useTranslation();
-  const { hasEditPermission, hasDeletePermission } = useAuth();
+  const { hasEditPermission, hasDeletePermission, hasCreatePermission } = useAuth();
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const theme = useTheme();
   const options: {
@@ -26,6 +26,18 @@ export default function AssetDetailsSheet(props: SheetProps<{ onEdit: () => void
       icon: 'pencil',
       onPress: props.payload.onEdit,
       visible: hasEditPermission(PermissionEntity.ASSETS, props.payload.asset)
+    },
+    {
+      title: t('create_work_order'),
+      icon: 'clipboard-text',
+      onPress: props.payload.onCreateWorkOrder,
+      visible: hasCreatePermission(PermissionEntity.WORK_ORDERS)
+    },
+    {
+      title: t('create_child_asset'),
+      icon: 'package-variant-closed',
+      onPress: props.payload.onCreateChildAsset,
+      visible: hasCreatePermission(PermissionEntity.ASSETS)
     },
     {
       title: t('to_delete'),

@@ -70,8 +70,10 @@ export default function AssetDetailsHome({
         <Pressable onPress={() => {
           SheetManager.show('asset-details-sheet', {
             payload: {
-              onEdit: () => navigation.navigate('EditAsset', { asset: asset }),
+              onEdit: () => navigation.navigate('EditAsset', { asset }),
               onDelete: () => setOpenDelete(true),
+              onCreateWorkOrder: () => navigation.push('AddWorkOrder', { asset }),
+              onCreateChildAsset: () => navigation.push('AddAsset', { parentAsset: asset }),
               asset
             }
           });

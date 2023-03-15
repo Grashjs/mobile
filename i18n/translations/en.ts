@@ -1379,7 +1379,8 @@ const enJSON = {
   edit_vendor: 'Edit vendor',
   reading_history: 'Reading history',
   user_invite_success: 'The user has been invited',
-  user_invite_failure: 'The user couldn\'t be invited'
+  user_invite_failure: 'The user couldn\'t be invited',
+  create_child_asset: 'Create a child asset'
 };
 
 export default enJSON;

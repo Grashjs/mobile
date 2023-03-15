@@ -48,6 +48,10 @@ export default function CreateAssetScreen({
         location: route.params.location ? {
           label: route.params.location.name,
           value: route.params.location.id.toString()
+        } : null,
+        parentAsset: route.params.parentAsset ? {
+          label: route.params.parentAsset.name,
+          value: route.params.parentAsset.id.toString()
         } : null
       }}
       onChange={({ field, e }) => {
