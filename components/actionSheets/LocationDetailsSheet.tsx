@@ -10,7 +10,7 @@ import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
 import Location from '../../models/location';
 
-export default function LocationDetailsSheet(props: SheetProps<{ onEdit: () => void; onAddFile: () => void; onDelete: () => void, onCreateWorkOrder: () => void, location: Location }>) {
+export default function LocationDetailsSheet(props: SheetProps<{ onEdit: () => void; onAddFile: () => void; onDelete: () => void, onCreateWorkOrder: () => void, onCreateAsset: () => void, location: Location }>) {
   const { t } = useTranslation();
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const { hasEditPermission, hasDeletePermission, hasCreatePermission } = useAuth();
@@ -33,6 +33,12 @@ export default function LocationDetailsSheet(props: SheetProps<{ onEdit: () => v
       icon: 'clipboard-text',
       onPress: props.payload.onCreateWorkOrder,
       visible: hasCreatePermission(PermissionEntity.WORK_ORDERS)
+    },
+    {
+      title: t('create_asset'),
+      icon: 'package-variant-closed',
+      onPress: props.payload.onCreateAsset,
+      visible: hasCreatePermission(PermissionEntity.ASSETS)
     },
     {
       title: t('to_delete'),

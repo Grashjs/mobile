@@ -72,6 +72,7 @@ export default function LocationDetailsHome({
               onEdit: () => navigation.navigate('EditLocation', { location }),
               onDelete: () => setOpenDelete(true),
               onCreateWorkOrder: () => navigation.push('AddWorkOrder', { location }),
+              onCreateAsset: () => navigation.push('AddAsset', { location }),
               location
             }
           });

@@ -44,7 +44,11 @@ export default function CreateAssetScreen({
       submitText={t('create_asset')}
       values={{
         inServiceDate: null,
-        warrantyExpirationDate: null
+        warrantyExpirationDate: null,
+        location: route.params.location ? {
+          label: route.params.location.name,
+          value: route.params.location.id.toString()
+        } : null
       }}
       onChange={({ field, e }) => {
       }}

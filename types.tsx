@@ -43,7 +43,7 @@ export type RootStackParamList = {
   EditVendor: { vendor: Vendor };
   EditTeam: { team: Team };
   AddRequest: undefined;
-  AddAsset: undefined;
+  AddAsset: { location?: Location };
   AddLocation: undefined;
   AddPart: undefined;
   AddMeter: undefined;
