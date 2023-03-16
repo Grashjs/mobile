@@ -73,6 +73,7 @@ import UserProfile from '../screens/peopleTeams/Profile';
 import InviteUserScreen from '../screens/peopleTeams/InviteUserScreen';
 import { navigationRef } from './RootNavigation';
 import SettingsScreen from '../screens/SettingsScreen';
+import PdfViewer from '../screens/PdfViewer';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -154,6 +155,8 @@ function RootNavigator() {
                     options={{ title: t('Notifications') }} />
       <Stack.Screen name='Settings' component={SettingsScreen}
                     options={{ title: t('settings') }} />
+      <Stack.Screen name='PDFViewer' component={PdfViewer}
+                    options={{ title: t('document') }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name='Modal' component={ModalScreen} />
         <Stack.Screen name='CompleteWorkOrder' component={CompleteWorkOrderModal}

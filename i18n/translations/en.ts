@@ -1383,7 +1383,8 @@ const enJSON = {
   create_child_asset: 'Create a child asset',
   not_enough_part: 'There is not enough of this part',
   update_profile: 'Update profile',
-  confirm_logout: 'Are you sure you want to logout ?'
+  confirm_logout: 'Are you sure you want to logout ?',
+  report: 'Report'
 };
 
 export default enJSON;

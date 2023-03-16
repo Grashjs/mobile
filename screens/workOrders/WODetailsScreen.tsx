@@ -1,6 +1,5 @@
-import { Image, Linking, Pressable, RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, Pressable, RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { View } from '../../components/Themed';
-import * as FileSystem from 'expo-file-system';
 import { RootStackParamList, RootStackScreenProps } from '../../types';
 import {
   AnimatedFAB,
@@ -203,13 +202,8 @@ export default function WODetailsScreen({
   const onGenerateReport = () => {
     setLoading(true);
     dispatch(getPDFReport(workOrder?.id))
-      .then(async (url: string) => {
-        try {
-          const { uri } = await FileSystem.downloadAsync(url, FileSystem.documentDirectory + `Work Order #${workOrder?.id} report`);
-          await Linking.openURL(uri);
-        } catch (err) {
-          console.error(err);
-        }
+      .then(async (uri: string) => {
+        navigation.navigate('PDFViewer', { uri, title: t('report') });
       })
       .catch((err: Error) => console.error(err.message))
       .finally(() => setLoading(false));

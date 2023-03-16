@@ -24,10 +24,12 @@
     "expo": "~47.0.12",
     "expo-asset": "~8.7.0",
     "expo-constants": "~14.0.2",
+    "expo-device": "~5.0.0",
     "expo-document-picker": "~11.0.1",
     "expo-font": "~11.0.1",
     "expo-image-picker": "~14.0.2",
     "expo-linking": "~3.3.1",
+    "expo-notifications": "~0.17.0",
     "expo-splash-screen": "~0.17.5",
     "expo-status-bar": "~1.4.2",
     "expo-system-ui": "~2.0.1",
@@ -51,11 +53,11 @@
     "react-native-tab-view": "^3.4.1",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.9",
+    "react-native-webview": "11.23.1",
     "react-redux": "^8.0.5",
     "redux-thunk": "^2.4.2",
-    "yup": "^1.0.0",
-    "expo-notifications": "~0.17.0",
-    "expo-device": "~5.0.0"
+    "rn-pdf-reader-js": "^4.1.1",
+    "yup": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

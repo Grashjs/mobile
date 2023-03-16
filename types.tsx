@@ -86,6 +86,7 @@ export type RootStackParamList = {
   VendorsCustomers: undefined;
   Notifications: undefined;
   Settings: undefined;
+  PDFViewer: { uri: string, title: string }
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList,

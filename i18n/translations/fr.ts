@@ -1526,7 +1526,8 @@ const frJSON = {
   user_invite_failure: 'L\'utilisateur n\'a pas pu être invité',
   not_enough_part: 'Cette pièce n\'est plus en stock',
   update_profile: 'Editer le profil',
-  confirm_logout: 'Etes-vous sur de vouloir vous déconnecter ?'
+  confirm_logout: 'Etes-vous sur de vouloir vous déconnecter ?',
+  report: 'Rapport'
 };
 
 export default frJSON;
