@@ -6,30 +6,23 @@ import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import { Provider } from 'react-redux';
 import { Subscription } from 'expo-modules-core';
-import store, { useDispatch } from './store';
+import store from './store';
 import { CompanySettingsProvider } from './contexts/CompanySettingsContext';
 import { CustomSnackbarProvider } from './contexts/CustomSnackBarContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { MD3LightTheme as DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { useEffect, useRef, useState } from 'react';
-import { LogBox, Platform } from 'react-native';
+import { Alert, Linking, LogBox, Platform } from 'react-native';
 import { SheetProvider } from 'react-native-actions-sheet';
 import './components/actionSheets/sheets';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import api from './utils/api';
-import {
-  getAssetUrl,
-  getLocationUrl,
-  getMeterUrl, getNotificationUrl,
-  getPartUrl,
-  getRequestUrl,
-  getTeamUrl,
-  getWorkOrderUrl
-} from './utils/urlPaths';
+import { getNotificationUrl } from './utils/urlPaths';
 import { NotificationType } from './models/notification';
-import { RootStackParamList } from './types';
 import { navigate } from './navigation/RootNavigation';
+import * as Permissions from 'expo-permissions';
+import { useTranslation } from 'react-i18next';
 
 const theme = {
   ...DefaultTheme,
@@ -93,9 +86,9 @@ async function registerForPushNotificationsAsync() {
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
-  const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState<Notifications.Notification>(null);
   const notificationListener = useRef<Subscription>();
+  const { t } = useTranslation();
   const savePushToken =
     (token: string) =>
       api.post<{ success: boolean }>(
@@ -103,9 +96,32 @@ export default function App() {
         { token }
       );
   const responseListener = useRef<Subscription>();
+  const checkPushNotificationState = async () => {
+    let { status: existingStatus } = await Permissions.getAsync(
+      Permissions.NOTIFICATIONS
+    );
+
+    if (existingStatus !== 'granted') {
+      const status = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      existingStatus = status.status;
+    }
+    if (existingStatus !== 'granted') {
+      Alert.alert(
+        'No Notification Permission',
+        'Please goto setting and activate notification permission manually',
+        [
+          { text: t('cancel'), onPress: () => console.log('cancel') },
+          { text: t('allow'), onPress: () => Linking.openURL('app-settings:') }
+        ],
+        { cancelable: false }
+      );
+      return;
+    }
+  };
   useEffect(() => {
     LogBox.ignoreLogs(['Warning: Async Storage has been extracted from react-native core']);
-    registerForPushNotificationsAsync().then(token => savePushToken(token));
+    checkPushNotificationState().then(() =>
+      registerForPushNotificationsAsync().then(token => savePushToken(token)));
 
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
@@ -155,4 +171,4 @@ export default function App() {
       </SafeAreaProvider>
     );
   }
-}
+};
