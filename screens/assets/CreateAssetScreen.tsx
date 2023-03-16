@@ -45,11 +45,11 @@ export default function CreateAssetScreen({
       values={{
         inServiceDate: null,
         warrantyExpirationDate: null,
-        location: route.params.location ? {
+        location: route.params?.location ? {
           label: route.params.location.name,
           value: route.params.location.id.toString()
         } : null,
-        parentAsset: route.params.parentAsset ? {
+        parentAsset: route.params?.parentAsset ? {
           label: route.params.parentAsset.name,
           value: route.params.parentAsset.id.toString()
         } : null
