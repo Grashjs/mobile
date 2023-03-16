@@ -18,6 +18,18 @@ import './components/actionSheets/sheets';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import api from './utils/api';
+import {
+  getAssetUrl,
+  getLocationUrl,
+  getMeterUrl, getNotificationUrl,
+  getPartUrl,
+  getRequestUrl,
+  getTeamUrl,
+  getWorkOrderUrl
+} from './utils/urlPaths';
+import { NotificationType } from './models/notification';
+import { RootStackParamList } from './types';
+import { navigate } from './navigation/RootNavigation';
 
 const theme = {
   ...DefaultTheme,
@@ -101,7 +113,13 @@ export default function App() {
     });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response.notification);
+      const data = response.notification.request.content.data;
+      const type = data.type as NotificationType;
+      const id = data.id as number;
+      let url = getNotificationUrl(type, id);
+      if (url) {
+        navigate(url.route, url.params);
+      }
     });
 
     return () => {

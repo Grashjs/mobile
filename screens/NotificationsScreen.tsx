@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from '../store';
 import {
   getAssetUrl,
   getLocationUrl,
-  getMeterUrl,
+  getMeterUrl, getNotificationUrl,
   getPartUrl,
   getRequestUrl,
   getTeamUrl,
@@ -43,33 +43,7 @@ export default function NotificationsScreen({
   const onReadNotification = (notification: Notification) => {
     let url: { route: keyof RootStackParamList, params: {} };
     const id = notification.resourceId;
-    switch (notification.notificationType) {
-      case 'INFO':
-        break;
-      case 'ASSET':
-        url = getAssetUrl(id);
-        break;
-      case 'REQUEST':
-        url = getRequestUrl(id);
-        break;
-      case 'WORK_ORDER':
-        url = getWorkOrderUrl(id);
-        break;
-      case 'PART':
-        url = getPartUrl(id);
-        break;
-      case 'METER':
-        url = getMeterUrl(id);
-        break;
-      case 'LOCATION':
-        url = getLocationUrl(id);
-        break;
-      case 'TEAM':
-        url = getTeamUrl(id);
-        break;
-      default:
-        break;
-    }
+    url = getNotificationUrl(notification.notificationType, id);
     if (notification.seen) {
       if (url) {
         // @ts-ignore
