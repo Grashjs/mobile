@@ -29,7 +29,7 @@ export default function AssetDetailsSheet(props: SheetProps<{ onEdit: () => void
     },
     {
       title: t('create_work_order'),
-      icon: 'clipboard-text',
+      icon: 'clipboard-text-outline',
       onPress: props.payload.onCreateWorkOrder,
       visible: hasCreatePermission(PermissionEntity.WORK_ORDERS)
     },

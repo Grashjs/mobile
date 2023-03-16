@@ -30,7 +30,7 @@ export default function LocationDetailsSheet(props: SheetProps<{ onEdit: () => v
     },
     {
       title: t('create_work_order'),
-      icon: 'clipboard-text',
+      icon: 'clipboard-text-outline',
       onPress: props.payload.onCreateWorkOrder,
       visible: hasCreatePermission(PermissionEntity.WORK_ORDERS)
     },

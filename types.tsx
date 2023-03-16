@@ -85,6 +85,7 @@ export type RootStackParamList = {
   PeopleTeams: undefined;
   VendorsCustomers: undefined;
   Notifications: undefined;
+  Settings: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList,

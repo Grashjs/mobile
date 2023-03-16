@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, View } from 'react-native';
+import { ColorSchemeName, Pressable, View } from 'react-native';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import HomeScreen from '../screens/HomeScreen';
@@ -72,6 +72,7 @@ import UserDetails from '../screens/peopleTeams/UserDetails';
 import UserProfile from '../screens/peopleTeams/Profile';
 import InviteUserScreen from '../screens/peopleTeams/InviteUserScreen';
 import { navigationRef } from './RootNavigation';
+import SettingsScreen from '../screens/SettingsScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -151,6 +152,8 @@ function RootNavigator() {
                     options={{ title: t('edit') }} />
       <Stack.Screen name='Notifications' component={NotificationsScreen}
                     options={{ title: t('Notifications') }} />
+      <Stack.Screen name='Settings' component={SettingsScreen}
+                    options={{ title: t('settings') }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name='Modal' component={ModalScreen} />
         <Stack.Screen name='CompleteWorkOrder' component={CompleteWorkOrderModal}
@@ -211,7 +214,14 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
         component={HomeScreen}
         options={({ navigation }: RootTabScreenProps<'Home'>) => ({
           title: t('home'),
-          tabBarIcon: ({ color }) => <TabBarIcon name='home-outline' color={color} />
+          tabBarIcon: ({ color }) => <TabBarIcon name='home-outline' color={color} />,
+          headerRight: () => (
+            <Pressable onPress={() => {
+              navigation.navigate('Settings');
+            }}>
+              <IconButton icon='cog-outline' />
+            </Pressable>
+          )
         })}
       />
       <BottomTab.Screen
@@ -219,7 +229,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
         component={WorkOrdersScreen}
         options={{
           title: t('work_orders'),
-          tabBarIcon: ({ color }) => <TabBarIcon name='clipboard-text' color={color} />
+          tabBarIcon: ({ color }) => <TabBarIcon name='clipboard-text-outline' color={color} />
         }}
       />
       <BottomTab.Screen

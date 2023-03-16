@@ -135,7 +135,7 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
           navigation.navigate('WorkOrderStats');
         }} />
         <View style={{ ...iconButtonStyle, position: 'relative' }}>
-          <IconButton icon={'bell'} onPress={() => navigation.navigate('Notifications')} />
+          <IconButton icon={'bell-outline'} onPress={() => navigation.navigate('Notifications')} />
           <Badge
             style={{ position: 'absolute', bottom: 0, right: 0, backgroundColor: theme.colors.error }}
             visible={!!notifications.content.filter(notification => !notification.seen).length}>

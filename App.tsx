@@ -128,10 +128,10 @@ export default function App() {
     };
   }, []);
 
-  useEffect(() => {
-    //TODO remove
-    console.log(expoPushToken);
-  }, [expoPushToken]);
+  /*  useEffect(() => {
+      TODO remove
+      console.log(expoPushToken);
+    }, [expoPushToken]);*/
 
   if (!isLoadingComplete) {
     return null;
