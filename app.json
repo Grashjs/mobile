@@ -27,7 +27,8 @@
         "backgroundColor": "#ffffff"
       },
       "versionCode": 3,
-      "package": "com.grash.cmms"
+      "package": "com.grash.cmms",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
