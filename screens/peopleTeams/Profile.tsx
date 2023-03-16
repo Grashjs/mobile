@@ -1,21 +1,36 @@
 import { ScrollView } from 'react-native';
 import LoadingDialog from '../../components/LoadingDialog';
 import * as React from 'react';
-import { useEffect } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from '../../store';
 import { RootStackScreenProps } from '../../types';
-import { Avatar, Divider, Switch, Text, useTheme } from 'react-native-paper';
+import {
+  Avatar,
+  Divider,
+  Switch,
+  Text,
+  useTheme,
+  Button,
+  Portal,
+  Dialog,
+  TextInput,
+  HelperText
+} from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { View } from '../../components/Themed';
-import { getUserDetails } from '../../slices/user';
+import { Formik } from 'formik';
 import useAuth from '../../hooks/useAuth';
 import UserSettings from '../../models/userSettings';
 import { getUserInitials } from '../../utils/displayers';
+import * as Yup from 'yup';
+import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 
 export default function UserProfile({ navigation, route }: RootStackScreenProps<'UserProfile'>) {
-  const { user, fetchUserSettings, patchUserSettings, userSettings } = useAuth();
+  const { user, fetchUserSettings, patchUserSettings, userSettings, updatePassword } = useAuth();
   const theme = useTheme();
   const { t } = useTranslation();
+  const { showSnackBar } = useContext(CustomSnackBarContext);
+  const [openChangePassword, setOpenChangePassword] = useState<boolean>();
   const fieldsToRender = [
     {
       label: t('id'),
@@ -73,6 +88,9 @@ export default function UserProfile({ navigation, route }: RootStackScreenProps<
     }
   ];
 
+  const onChangePassword = () => {
+
+  };
   useEffect(() => {
     fetchUserSettings();
   }, []);
@@ -97,8 +115,101 @@ export default function UserProfile({ navigation, route }: RootStackScreenProps<
     else return null;
   }
 
+  const renderChangePassword = () => {
+    return (<Portal theme={theme}>
+      <Dialog visible={openChangePassword} onDismiss={() => setOpenChangePassword(false)}
+              style={{ backgroundColor: 'white', borderRadius: 5 }}>
+        <Dialog.Title>{t('change_password')}</Dialog.Title>
+        <Formik
+          initialValues={{
+            oldPassword: '',
+            newPassword: '',
+            confirmPassword: ''
+          }}
+          validationSchema={Yup.object().shape({
+            oldPassword: Yup.string()
+              .required(t('required_old_password'))
+              .min(8, t('invalid_password')),
+            newPassword: Yup.string()
+              .required(t('required_new_password'))
+              .min(8, t('invalid_password')),
+            confirmPassword: Yup.string().oneOf(
+              [Yup.ref('newPassword'), null],
+              t('passwords_must_match')
+            )
+          })}
+          onSubmit={async (
+            _values,
+            { resetForm, setErrors, setStatus, setSubmitting }
+          ) => {
+            setSubmitting(true);
+            return updatePassword(_values)
+              .then(() => {
+                setOpenChangePassword(false);
+                showSnackBar(t('password_change_success'), 'success');
+              })
+              .catch((err) => showSnackBar(t('wrong_password'), 'error'))
+              .finally(() => setSubmitting(false));
+          }}
+        >
+          {({
+              errors,
+              handleBlur,
+              handleChange,
+              handleSubmit,
+              isSubmitting,
+              touched,
+              values
+            }) => (
+            <Fragment>
+              <Dialog.Content>
+                <TextInput
+                  error={Boolean(touched.oldPassword && errors.oldPassword)}
+                  label={t('current_password')}
+                  onBlur={handleBlur('oldPassword')}
+                  onChangeText={handleChange('oldPassword')}
+                  value={values.oldPassword}
+                  secureTextEntry={true}
+                  mode='outlined'
+                />
+                {Boolean(touched.oldPassword && errors.oldPassword) && <HelperText type='error'
+                >{errors.oldPassword?.toString()}</HelperText>}
+                <TextInput
+                  error={Boolean(touched.newPassword && errors.newPassword)}
+                  label={t('new_password')}
+                  onBlur={handleBlur('newPassword')}
+                  onChangeText={handleChange('newPassword')}
+                  value={values.newPassword}
+                  secureTextEntry={true}
+                  mode='outlined'
+                />
+                {Boolean(touched.newPassword && errors.newPassword) && <HelperText type='error'
+                >{errors.newPassword?.toString()}</HelperText>}
+                <TextInput
+                  error={Boolean(touched.confirmPassword && errors.confirmPassword)}
+                  label={t('confirm_password')}
+                  onBlur={handleBlur('confirmPassword')}
+                  onChangeText={handleChange('confirmPassword')}
+                  value={values.confirmPassword}
+                  secureTextEntry={true}
+                  mode='outlined'
+                />
+                {Boolean(touched.confirmPassword && errors.confirmPassword) && <HelperText type='error'
+                >{errors.confirmPassword?.toString()}</HelperText>}
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button onPress={() => setOpenChangePassword(false)}>{t('cancel')}</Button>
+                <Button loading={isSubmitting} disabled={isSubmitting}
+                        onPress={() => handleSubmit()}>{t('change_password')}</Button>
+              </Dialog.Actions>
+            </Fragment>)}
+        </Formik>
+      </Dialog>
+    </Portal>);
+  };
   return (
     <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background, paddingHorizontal: 10 }}>
+      {renderChangePassword()}
       <View style={{ alignItems: 'center', paddingTop: 20 }}>
         {user.image ? <Avatar.Image source={{ uri: user.image.url }} /> :
           <Avatar.Text size={50} label={getUserInitials(user)} />}
@@ -116,6 +227,10 @@ export default function UserProfile({ navigation, route }: RootStackScreenProps<
           </View>
           <Divider />
         </View>))}
+      <View>
+        <Button style={{ marginHorizontal: 20, marginBottom: 20 }} mode={'outlined'}
+                onPress={() => setOpenChangePassword(true)}>{t('change_password')}</Button>
+      </View>
     </ScrollView>
   );
 }
