@@ -9,6 +9,7 @@ import { getUserInitials } from '../utils/displayers';
 import * as React from 'react';
 import { RootStackScreenProps } from '../types';
 import { useState } from 'react';
+import appJson from '../app.json';
 
 export default function SettingsScreen({ navigation }: RootStackScreenProps<'Settings'>) {
   const theme = useTheme();
@@ -44,6 +45,11 @@ export default function SettingsScreen({ navigation }: RootStackScreenProps<'Set
                    title={t('Sign out')}
                    titleStyle={{ color: theme.colors.error }}
                    onPress={() => setOpenLogout(true)} />
+        <List.Item style={{ paddingHorizontal: 20 }}
+                   left={props => <IconButton icon={'information-outline'} />}
+                   title={t('Version')}
+                   description={appJson.expo.version}
+        />
       </View>
     </View>
   );
