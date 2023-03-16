@@ -37,6 +37,8 @@ const slice = createSlice({
     ) {
       const { vendors } = action.payload;
       state.vendors = vendors;
+      state.currentPageNum = 0;
+      state.lastPage = vendors.last;
     },
     getMoreVendors(
       state: VendorState,

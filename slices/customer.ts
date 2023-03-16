@@ -35,6 +35,8 @@ const slice = createSlice({
     ) {
       const { customers } = action.payload;
       state.customers = customers;
+      state.currentPageNum = 0;
+      state.lastPage = customers.last;
     },
     getMoreCustomers(
       state: CustomerState,

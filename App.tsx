@@ -5,15 +5,18 @@ import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import { Provider } from 'react-redux';
+import { Subscription } from 'expo-modules-core';
 import store from './store';
 import { CompanySettingsProvider } from './contexts/CompanySettingsContext';
 import { CustomSnackbarProvider } from './contexts/CustomSnackBarContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { MD3LightTheme as DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
-import { useEffect } from 'react';
-import { LogBox } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { LogBox, Platform } from 'react-native';
 import { SheetProvider } from 'react-native-actions-sheet';
 import './components/actionSheets/sheets';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
 
 const theme = {
   ...DefaultTheme,
@@ -35,14 +38,75 @@ const theme = {
     tertiaryContainer: 'black'
   }
 };
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false
+  })
+});
+
+async function registerForPushNotificationsAsync() {
+  let token;
+  if (Device.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log(token);
+  } else {
+    alert('Must use physical device for Push Notifications');
+  }
+
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#5569ff'
+    });
+  }
+
+  return token;
+}
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
-
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState<Notifications.Notification>(null);
+  const notificationListener = useRef<Subscription>();
+  const responseListener = useRef<Subscription>();
   useEffect(() => {
     LogBox.ignoreLogs(['Warning: Async Storage has been extracted from react-native core']);
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+      //TODO maybe showNotification alert
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response.notification);
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, []);
+
+  useEffect(() => {
+    //TODO remove
+    console.log(expoPushToken);
+  }, [expoPushToken]);
 
   if (!isLoadingComplete) {
     return null;
