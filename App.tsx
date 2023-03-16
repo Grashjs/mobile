@@ -6,7 +6,7 @@ import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import { Provider } from 'react-redux';
 import { Subscription } from 'expo-modules-core';
-import store from './store';
+import store, { useDispatch } from './store';
 import { CompanySettingsProvider } from './contexts/CompanySettingsContext';
 import { CustomSnackbarProvider } from './contexts/CustomSnackBarContext';
 import { AuthProvider } from './contexts/AuthContext';
@@ -17,6 +17,7 @@ import { SheetProvider } from 'react-native-actions-sheet';
 import './components/actionSheets/sheets';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import api from './utils/api';
 
 const theme = {
   ...DefaultTheme,
@@ -83,10 +84,16 @@ export default function App() {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState<Notifications.Notification>(null);
   const notificationListener = useRef<Subscription>();
+  const savePushToken =
+    (token: string) =>
+      api.post<{ success: boolean }>(
+        `notifications/push-token`,
+        { token }
+      );
   const responseListener = useRef<Subscription>();
   useEffect(() => {
     LogBox.ignoreLogs(['Warning: Async Storage has been extracted from react-native core']);
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+    registerForPushNotificationsAsync().then(token => savePushToken(token));
 
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
