@@ -138,8 +138,13 @@ export default function WorkOrdersScreen({ navigation, route }: RootTabScreenPro
                         iconColor={_.isEqual(
                           criteria.filterFields,
                           defaultFilterFields
-                        ) ? undefined : 'black'}
-                        style={{ backgroundColor: theme.colors.background }}
+                        ) ? undefined : 'white'}
+                        style={{
+                          backgroundColor: _.isEqual(
+                            criteria.filterFields,
+                            defaultFilterFields
+                          ) ? theme.colors.background : 'black'
+                        }}
                         onPress={() => navigation.navigate('WorkOrderFilters', {
                           filterFields: criteria.filterFields,
                           onFilterChange

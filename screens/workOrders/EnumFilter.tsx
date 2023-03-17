@@ -29,6 +29,8 @@ export default function EnumFilter({
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [newFilterFields, setNewFilterFields] = useState<FilterField[]>(filterFields);
   const [statuses, setStatuses] = useState<boolean[]>([]);
+  //do not trigger change if statuses didn't change
+  const [statusesJustOnOpen, setStatusesJustOnOpen] = useState<boolean[]>(null);
   const isSelected = !_.isEqual(statuses, completeOptions.map(option => initialOptions.includes(option)));
   const switchValue = (index: number, option: string) => {
     const newFilterFields = [...filterFields];
@@ -60,7 +62,10 @@ export default function EnumFilter({
     return <Portal>
       <Dialog visible={openDialog} onDismiss={() => {
         setOpenDialog(false);
-        onChange(newFilterFields);
+        if (!_.isEqual(statusesJustOnOpen, statuses)) {
+          onChange(newFilterFields);
+          setStatusesJustOnOpen(null);
+        }
       }} style={{ backgroundColor: 'white' }}>
         <Dialog.Title>{t('select')}</Dialog.Title>
         <Dialog.Content>
@@ -88,6 +93,11 @@ export default function EnumFilter({
     <TouchableOpacity
       onPress={() => {
         setOpenDialog(true);
+        setStatusesJustOnOpen(completeOptions.map(option => filterFields.some(
+          (filterField) =>
+            filterField.field === fieldName &&
+            filterField.values.includes(option)
+        )));
       }}
       style={{
         backgroundColor: isSelected ? 'black' : theme.colors.background,
