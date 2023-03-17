@@ -82,7 +82,7 @@ export default function EnumFilter({
                 status={statuses[index] ? 'checked' : 'unchecked'}
                 onPress={() => switchValue(index, option)}
               />
-              <Text>{option}</Text>
+              <Text>{t(option)}</Text>
             </TouchableOpacity>
           ))}
         </Dialog.Content>
