@@ -11,7 +11,6 @@ export interface IField {
   type:
     | 'number'
     | 'text'
-    | 'checkbox'
     | 'file'
     | 'groupCheckbox'
     | 'select'

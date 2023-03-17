@@ -15,6 +15,9 @@ import { getPriorityColor, getStatusColor, onSearchQueryChange } from '../../uti
 import { RootTabScreenProps } from '../../types';
 import Tag from '../../components/Tag';
 import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
+import _ from 'lodash';
+import EnumFilter from './EnumFilter';
+
 
 function IconWithLabel({ icon, label }: { icon: IconSource, label: string }) {
   return (
@@ -88,7 +91,11 @@ export default function WorkOrdersScreen({ navigation, route }: RootTabScreenPro
   const onRefresh = () => {
     setCriteria(getCriteriaFromFilterFields(route.params?.filterFields ?? []));
   };
-
+  const onFilterChange = (newFilters: FilterField[]) => {
+    const newCriteria = { ...criteria };
+    newCriteria.filterFields = newFilters;
+    setCriteria(newCriteria);
+  };
   const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
     const paddingToBottom = 20;
     return layoutMeasurement.height + contentOffset.y >=
@@ -123,6 +130,46 @@ export default function WorkOrdersScreen({ navigation, route }: RootTabScreenPro
                     refreshControl={
                       <RefreshControl refreshing={loadingGet} onRefresh={onRefresh} colors={[theme.colors.primary]} />}
                     scrollEventThrottle={400}>
+          <ScrollView horizontal style={{ backgroundColor: 'white', borderRadius: 5 }}>
+            <IconButton icon={_.isEqual(
+              criteria.filterFields,
+              defaultFilterFields
+            ) ? 'filter-outline' : 'filter-check'}
+                        iconColor={_.isEqual(
+                          criteria.filterFields,
+                          defaultFilterFields
+                        ) ? undefined : 'black'}
+                        style={{ backgroundColor: theme.colors.background }}
+                        onPress={() => navigation.navigate('WorkOrderFilters', {
+                          filterFields: criteria.filterFields,
+                          onFilterChange
+                        })} />
+            <EnumFilter
+              filterFields={criteria.filterFields}
+              onChange={onFilterChange}
+              completeOptions={['NONE', 'LOW', 'MEDIUM', 'HIGH']}
+              initialOptions={['NONE', 'LOW', 'MEDIUM', 'HIGH']}
+              fieldName='priority'
+              icon='signal'
+            />
+            <EnumFilter
+              filterFields={criteria.filterFields}
+              onChange={onFilterChange}
+              completeOptions={[
+                'OPEN',
+                'IN_PROGRESS',
+                'ON_HOLD',
+                'COMPLETE'
+              ]}
+              initialOptions={[
+                'OPEN',
+                'IN_PROGRESS',
+                'ON_HOLD'
+              ]}
+              fieldName='status'
+              icon='circle-double'
+            />
+          </ScrollView>
           {!!workOrders.content.length ? workOrders.content.map(workOrder => (
             <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={workOrder.id}
                   onPress={() => navigation.push('WODetails', { id: workOrder.id })}>
