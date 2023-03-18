@@ -14,8 +14,8 @@ import { getWOBaseFields } from '../utils/woBase';
 type CompanySettingsContext = {
   getFormattedDate: (dateString: string, hideTime?: boolean) => string;
   uploadFiles: (
-    files: any[],
-    images: any[],
+    files: { uri: string; name: string; type: string }[],
+    images: { uri: string; name: string; type: string }[],
     hidden?: boolean
   ) => Promise<{ id: number; type: FileType }[]>;
   getUserNameById: (id: number) => string | null;
@@ -70,8 +70,8 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
       : `${amount} ${code}`;
   };
   const uploadFiles = async (
-    files: [],
-    images: [],
+    files: { uri: string; name: string; type: string }[],
+    images: { uri: string; name: string; type: string }[],
     hidden?: boolean
   ): Promise<{ id: number; type: FileType }[]> => {
     let result: { id: number; type: FileType }[] = [];

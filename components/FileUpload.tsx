@@ -14,13 +14,14 @@ import {
 import { DocumentResult } from 'expo-document-picker';
 import { useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
+import mime from 'mime';
 
 interface OwnProps {
   title: string;
   type: 'image' | 'file' | 'spreadsheet';
   multiple: boolean;
   description: string;
-  onChange: (files: any) => void;
+  onChange: (files: { uri: string; name: string; type: string }[]) => void;
 }
 
 export default function FileUpload({
@@ -82,13 +83,13 @@ export default function FileUpload({
 
       if (!result.canceled) {
         setImages(result.assets.map((asset) => asset.uri));
-        const newImages = await Promise.all(
-          result.assets.map(async (asset) => {
-            const response = await fetch(asset.uri);
-            return await response.blob();
-          })
+        onChange(
+          result.assets.map((asset) => ({
+            uri: asset.uri,
+            name: asset.fileName,
+            type: mime.getType(asset.fileName)
+          }))
         );
-        onChange(newImages);
       }
     }
   };
@@ -98,8 +99,13 @@ export default function FileUpload({
       let result = await DocumentPicker.getDocumentAsync({});
       if (result.type !== 'cancel') {
         setFile(result);
-        const response = await fetch(result.uri);
-        onChange([await response.blob()]);
+        onChange([
+          {
+            uri: result.uri,
+            name: result.name,
+            type: mime.getType(result.name)
+          }
+        ]);
       }
     }
   };

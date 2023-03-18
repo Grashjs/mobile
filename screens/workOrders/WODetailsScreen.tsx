@@ -225,7 +225,7 @@ export default function WODetailsScreen({
     getInfos();
   }, []);
 
-  const actualDownload = async (uri: string): Promise<any> => {
+  const actualDownload = (uri: string): Promise<any> => {
     const fileName = `Report of #${workOrder.title}`;
     //Define path to store file along with the extension
     const path = `${DocumentDirectoryPath}/${fileName}.pdf`;
@@ -287,12 +287,13 @@ export default function WODetailsScreen({
               actualDownload(uri);
             } else {
               Alert.alert(
+                //TODO translate
                 'Permission Denied!',
                 'You need to give storage permission to download the file'
               );
             }
           } catch (err) {
-            console.warn(err);
+            console.error(err);
           }
         }
       })

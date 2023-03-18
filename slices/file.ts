@@ -5,7 +5,6 @@ import File, { FileType } from '../models/file';
 import api, { authHeader } from '../utils/api';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
 import { AsyncStorage } from 'react-native';
-import { readFileAsync } from '../utils/overall';
 
 const basePath = 'files';
 
@@ -108,7 +107,7 @@ export const editFile =
 
 export const addFiles =
   (
-    files: any[],
+    files: { uri: string; name: string; type: string }[],
     fileType: FileType = 'OTHER',
     taskId?: number,
     hidden?: 'true' | 'false'
@@ -118,7 +117,8 @@ export const addFiles =
     const companyId = await AsyncStorage.getItem('companyId');
     const headers = await authHeader(false);
     delete headers['Content-Type'];
-    files.forEach((file: Blob) => {
+    files.forEach((file) => {
+      //@ts-ignore
       formData.append('files', file);
     });
     formData.append('folder', `company ${companyId}`);
