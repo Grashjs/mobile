@@ -1,6 +1,7 @@
 import {
   Alert,
   Image,
+  Linking,
   PermissionsAndroid,
   Platform,
   Pressable,
@@ -823,6 +824,21 @@ export default function WODetailsScreen({
                       }
                     />
                   </TouchableOpacity>
+                </View>
+              )}
+              {!!workOrder.files.length && (
+                <View style={styles.shadowedCard}>
+                  <Text style={{ marginBottom: 10 }}>{t('files')}</Text>
+                  {workOrder.files.map((file) => (
+                    <List.Item
+                      key={file.id}
+                      titleStyle={{ color: theme.colors.primary }}
+                      title={file.name}
+                      onPress={() => {
+                        Linking.openURL(file.url);
+                      }}
+                    />
+                  ))}
                 </View>
               )}
               {!!currentWorkOrderRelations.length && (

@@ -68,11 +68,7 @@ export default function AssetFiles({ asset }: { asset: AssetDTO }) {
         <TouchableOpacity
           key={file.id}
           onPress={async () => {
-            const { uri } = await FileSystem.downloadAsync(
-              file.url,
-              FileSystem.documentDirectory + file.name
-            );
-            await Linking.openURL(uri);
+            await Linking.openURL(file.url);
           }}
         >
           <View

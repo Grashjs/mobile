@@ -65,12 +65,8 @@ export default function PartFiles({ part }: { part: Part }) {
       {part.files.map((file) => (
         <TouchableOpacity
           key={file.id}
-          onPress={async () => {
-            const { uri } = await FileSystem.downloadAsync(
-              file.url,
-              FileSystem.documentDirectory + file.name
-            );
-            await Linking.openURL(uri);
+          onPress={() => {
+            Linking.openURL(file.url);
           }}
         >
           <View
