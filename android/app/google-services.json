@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "217460307536",
+    "project_id": "grash-374523",
+    "storage_bucket": "grash-374523.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217460307536:android:4357d63a9beae499f78355",
+        "android_client_info": {
+          "package_name": "com.grash.cmms"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "217460307536-6u3skuuoo47emkc85gesdljr1smubn6f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBI4Ar1FlxRrDLEIvPltot4vQndWJA1fZg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "217460307536-6u3skuuoo47emkc85gesdljr1smubn6f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

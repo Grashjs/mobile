@@ -1,5 +1,8 @@
 import {
+  Alert,
   Image,
+  PermissionsAndroid,
+  Platform,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -56,6 +59,11 @@ import PartQuantities from '../../components/PartQuantities';
 import { SheetManager } from 'react-native-actions-sheet';
 import LoadingDialog from '../../components/LoadingDialog';
 import WorkOrder from '../../models/workOrder';
+import {
+  DocumentDirectoryPath,
+  downloadFile,
+  DownloadFileOptions
+} from 'react-native-fs';
 
 export default function WODetailsScreen({
   navigation,
@@ -217,6 +225,29 @@ export default function WODetailsScreen({
     getInfos();
   }, []);
 
+  const actualDownload = async (uri: string): Promise<any> => {
+    const fileName = `Report of #${workOrder.title}`;
+    //Define path to store file along with the extension
+    const path = `${DocumentDirectoryPath}/${fileName}.pdf`;
+    //Define options
+    const options: DownloadFileOptions = {
+      fromUrl: uri,
+      toFile: path
+    };
+    //Call downloadFile
+    const response = downloadFile(options);
+    return response.promise.then(async (res) => {
+      //Transform response
+      if (res && res.statusCode === 200 && res.bytesWritten > 0) {
+        navigation.navigate('PDFViewer', {
+          uri,
+          title: workOrder.title
+        });
+      } else {
+        console.log(res);
+      }
+    });
+  };
   const onDeleteSuccess = () => {
     showSnackBar(t('wo_delete_success'), 'success');
     navigation.goBack();
@@ -245,7 +276,25 @@ export default function WODetailsScreen({
     setLoading(true);
     dispatch(getPDFReport(workOrder?.id))
       .then(async (uri: string) => {
-        navigation.navigate('PDFViewer', { uri, title: t('report') });
+        if (Platform.OS === 'ios') {
+          actualDownload(uri);
+        } else {
+          try {
+            const granted = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+              actualDownload(uri);
+            } else {
+              Alert.alert(
+                'Permission Denied!',
+                'You need to give storage permission to download the file'
+              );
+            }
+          } catch (err) {
+            console.warn(err);
+          }
+        }
       })
       .catch((err: Error) => console.error(err.message))
       .finally(() => setLoading(false));
@@ -428,8 +477,8 @@ export default function WODetailsScreen({
   }) {
     if (value) {
       return (
-        // @ts-ignore
         <TouchableOpacity
+          // @ts-ignore
           onPress={() => navigation.navigate(link.route, { id: link.id })}
           style={{ marginTop: 20 }}
         >
