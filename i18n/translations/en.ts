@@ -1388,7 +1388,8 @@ const enJSON = {
   not_enough_part: 'There is not enough of this part',
   update_profile: 'Update profile',
   confirm_logout: 'Are you sure you want to logout ?',
-  report: 'Report'
+  report: 'Report',
+  end_cannot_be_ulterior_to_start: 'End date cannot be ulterior to start date'
 };
 
 export default enJSON;

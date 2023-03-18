@@ -1535,7 +1535,9 @@ const frJSON = {
   not_enough_part: "Cette pièce n'est plus en stock",
   update_profile: 'Editer le profil',
   confirm_logout: 'Etes-vous sur de vouloir vous déconnecter ?',
-  report: 'Rapport'
+  report: 'Rapport',
+  end_cannot_be_ulterior_to_start:
+    'La date de fin ne peut pas être antérieure à la date de début'
 };
 
 export default frJSON;

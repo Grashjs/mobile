@@ -225,6 +225,16 @@ export default function WorkOrdersScreen({
                 fieldName="status"
                 icon="circle-double"
               />
+              {!_.isEqual(criteria.filterFields, defaultFilterFields) && (
+                <IconButton
+                  icon={'close'}
+                  iconColor={theme.colors.error}
+                  style={{
+                    backgroundColor: theme.colors.background
+                  }}
+                  onPress={() => onFilterChange(defaultFilterFields)}
+                />
+              )}
             </ScrollView>
             {!!workOrders.content.length ? (
               workOrders.content.map((workOrder) => (

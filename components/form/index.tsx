@@ -28,6 +28,7 @@ import PriorityPicker from './PriorityPicker';
 import { isTask, Task } from '../../models/tasks';
 import { getTaskTypes } from '../../utils/displayers';
 import NumberInput from '../NumberInput';
+import DateRangePicker from './DateRangePicker';
 
 interface OwnProps {
   fields: Array<IField>;
@@ -66,6 +67,7 @@ export default function Form(props: OwnProps) {
       | Date
       | boolean
       | { label: string; value: any }
+      | [string, string]
   ) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     props.onChange && props.onChange({ field, e });
@@ -500,6 +502,16 @@ export default function Form(props: OwnProps) {
                   >
                     {field.label}
                   </Text>
+                ) : field.type === 'dateRange' ? (
+                  <View>
+                    <Text style={{ fontWeight: 'bold' }}>{field.label}</Text>
+                    <DateRangePicker
+                      value={formik.values[field.name] ?? [null, null]}
+                      onChange={(newValue) => {
+                        handleChange(formik, field.name, newValue);
+                      }}
+                    />
+                  </View>
                 ) : (
                   renderSelect(formik, field)
                 )}
