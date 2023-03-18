@@ -6,7 +6,14 @@ import { useDispatch, useSelector } from '../../../store';
 import { useTranslation } from 'react-i18next';
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
-import { Button, Dialog, IconButton, Portal, Text, useTheme } from 'react-native-paper';
+import {
+  Button,
+  Dialog,
+  IconButton,
+  Portal,
+  Text,
+  useTheme
+} from 'react-native-paper';
 import { SheetManager } from 'react-native-actions-sheet';
 import { deleteAsset, getAssetDetails } from '../../../slices/asset';
 import LoadingDialog from '../../../components/LoadingDialog';
@@ -19,13 +26,13 @@ import { deleteWorkOrder } from '../../../slices/workOrder';
 import { CustomSnackBarContext } from '../../../contexts/CustomSnackBarContext';
 
 export default function AssetDetailsHome({
-                                           navigation,
-                                           route
-                                         }: RootStackScreenProps<'AssetDetails'>) {
+  navigation,
+  route
+}: RootStackScreenProps<'AssetDetails'>) {
   const { id } = route.params;
 
   const { t } = useTranslation();
-  const { assetInfos, loadingGet } = useSelector(state => state.assets);
+  const { assetInfos, loadingGet } = useSelector((state) => state.assets);
   const asset = assetInfos[id]?.asset;
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -51,7 +58,7 @@ export default function AssetDetailsHome({
         return <AssetParts asset={asset} navigation={navigation} />;
     }
   };
-  const renderTabBar = props => (
+  const renderTabBar = (props) => (
     <TabBar
       {...props}
       scrollEnabled
@@ -67,18 +74,22 @@ export default function AssetDetailsHome({
     navigation.setOptions({
       title: asset?.name ?? t('loading'),
       headerRight: () => (
-        <Pressable onPress={() => {
-          SheetManager.show('asset-details-sheet', {
-            payload: {
-              onEdit: () => navigation.navigate('EditAsset', { asset }),
-              onDelete: () => setOpenDelete(true),
-              onCreateWorkOrder: () => navigation.push('AddWorkOrder', { asset }),
-              onCreateChildAsset: () => navigation.push('AddAsset', { parentAsset: asset }),
-              asset
-            }
-          });
-        }}>
-          <IconButton icon='dots-vertical' />
+        <Pressable
+          onPress={() => {
+            SheetManager.show('asset-details-sheet', {
+              payload: {
+                onEdit: () => navigation.navigate('EditAsset', { asset }),
+                onDelete: () => setOpenDelete(true),
+                onCreateWorkOrder: () =>
+                  navigation.push('AddWorkOrder', { asset }),
+                onCreateChildAsset: () =>
+                  navigation.push('AddAsset', { parentAsset: asset }),
+                asset
+              }
+            });
+          }}
+        >
+          <IconButton icon="dots-vertical" />
         </Pressable>
       )
     });
@@ -92,22 +103,26 @@ export default function AssetDetailsHome({
     showSnackBar(t('asset_remove_failure'), 'error');
 
   const handleDelete = () => {
-    dispatch(deleteAsset(asset?.id)).then(onDeleteSuccess).catch(onDeleteFailure);
+    dispatch(deleteAsset(asset?.id))
+      .then(onDeleteSuccess)
+      .catch(onDeleteFailure);
     setOpenDelete(false);
   };
   const renderConfirmDelete = () => {
-    return <Portal>
-      <Dialog visible={openDelete} onDismiss={() => setOpenDelete(false)}>
-        <Dialog.Title>{t('confirmation')}</Dialog.Title>
-        <Dialog.Content>
-          <Text variant='bodyMedium'>{t('confirm_delete_asset')}</Text>
-        </Dialog.Content>
-        <Dialog.Actions>
-          <Button onPress={() => setOpenDelete(false)}>{t('cancel')}</Button>
-          <Button onPress={handleDelete}>{t('to_delete')}</Button>
-        </Dialog.Actions>
-      </Dialog>
-    </Portal>;
+    return (
+      <Portal>
+        <Dialog visible={openDelete} onDismiss={() => setOpenDelete(false)}>
+          <Dialog.Title>{t('confirmation')}</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">{t('confirm_delete_asset')}</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setOpenDelete(false)}>{t('cancel')}</Button>
+            <Button onPress={handleDelete}>{t('to_delete')}</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+    );
   };
   if (asset)
     return (
@@ -122,15 +137,11 @@ export default function AssetDetailsHome({
         />
       </View>
     );
-  else return (
-    <LoadingDialog visible={loadingGet} />
-  );
+  else return <LoadingDialog visible={loadingGet} />;
 }
 
-const styles = StyleSheet.create(
-  {
-    container: {
-      flex: 1
-    }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
   }
-);
+});

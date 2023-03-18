@@ -4,7 +4,15 @@ import { useTranslation } from 'react-i18next';
 import { RootStackScreenProps } from '../../../types';
 import { useDispatch, useSelector } from '../../../store';
 import { View } from '../../../components/Themed';
-import { Button, Dialog, Divider, IconButton, Portal, Text, useTheme } from 'react-native-paper';
+import {
+  Button,
+  Dialog,
+  Divider,
+  IconButton,
+  Portal,
+  Text,
+  useTheme
+} from 'react-native-paper';
 import LoadingDialog from '../../../components/LoadingDialog';
 import { useContext, useEffect, useState } from 'react';
 import { deleteCustomer, getCustomerDetails } from '../../../slices/customer';
@@ -13,7 +21,10 @@ import { deletePart } from '../../../slices/part';
 import { CustomSnackBarContext } from '../../../contexts/CustomSnackBarContext';
 import { CompanySettingsContext } from '../../../contexts/CompanySettingsContext';
 
-export default function CustomerDetailsScreen({ navigation, route }: RootStackScreenProps<'CustomerDetails'>) {
+export default function CustomerDetailsScreen({
+  navigation,
+  route
+}: RootStackScreenProps<'CustomerDetails'>) {
   const { id } = route.params;
   const { customerInfos, loadingGet } = useSelector((state) => state.customers);
   const customer = customerInfos[id]?.customer;
@@ -31,16 +42,18 @@ export default function CustomerDetailsScreen({ navigation, route }: RootStackSc
     navigation.setOptions({
       title: customer?.name ?? t('loading'),
       headerRight: () => (
-        <Pressable onPress={() => {
-          SheetManager.show('customer-details-sheet', {
-            payload: {
-              onEdit: () => navigation.navigate('EditCustomer', { customer }),
-              onDelete: () => setOpenDelete(true),
-              customer
-            }
-          });
-        }}>
-          <IconButton icon='dots-vertical' />
+        <Pressable
+          onPress={() => {
+            SheetManager.show('customer-details-sheet', {
+              payload: {
+                onEdit: () => navigation.navigate('EditCustomer', { customer }),
+                onDelete: () => setOpenDelete(true),
+                customer
+              }
+            });
+          }}
+        >
+          <IconButton icon="dots-vertical" />
         </Pressable>
       )
     });
@@ -73,16 +86,23 @@ export default function CustomerDetailsScreen({ navigation, route }: RootStackSc
   ];
 
   function BasicField({
-                        label,
-                        value
-                      }: {
+    label,
+    value
+  }: {
     label: string;
     value: string | number;
   }) {
     if (value)
       return (
         <View>
-          <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              padding: 20
+            }}
+          >
             <Text>{label}</Text>
             <Text style={{ fontWeight: 'bold' }}>{value}</Text>
           </View>
@@ -100,45 +120,66 @@ export default function CustomerDetailsScreen({ navigation, route }: RootStackSc
     showSnackBar(t('customer_delete_failure'), 'error');
 
   const handleDelete = () => {
-    dispatch(deleteCustomer(customer?.id)).then(onDeleteSuccess).catch(onDeleteFailure);
+    dispatch(deleteCustomer(customer?.id))
+      .then(onDeleteSuccess)
+      .catch(onDeleteFailure);
     setOpenDelete(false);
   };
   const renderConfirmDelete = () => {
-    return (<Portal>
-      <Dialog visible={openDelete} onDismiss={() => setOpenDelete(false)}>
-        <Dialog.Title>{t('confirmation')}</Dialog.Title>
-        <Dialog.Content>
-          <Text variant='bodyMedium'>{t('confirm_delete_customer')}</Text>
-        </Dialog.Content>
-        <Dialog.Actions>
-          <Button onPress={() => setOpenDelete(false)}>{t('cancel')}</Button>
-          <Button onPress={handleDelete}>{t('to_delete')}</Button>
-        </Dialog.Actions>
-      </Dialog>
-    </Portal>);
+    return (
+      <Portal>
+        <Dialog visible={openDelete} onDismiss={() => setOpenDelete(false)}>
+          <Dialog.Title>{t('confirmation')}</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">{t('confirm_delete_customer')}</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setOpenDelete(false)}>{t('cancel')}</Button>
+            <Button onPress={handleDelete}>{t('to_delete')}</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+    );
   };
-  if (customer) return (
-    <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      {renderConfirmDelete()}
-      {fieldsToRender.map(
-        ({ label, value }, index) =>
-          value && <BasicField key={label} label={label} value={value} />
-      )}
-      {customer.website && (
-        <View>
-          <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
-            <Text>{t('website')}</Text>
-            <TouchableOpacity
-              onPress={() => Linking.openURL(customer.website.startsWith('https://') ? customer.website : 'https://' + customer.website)}>
-              <Text style={{ fontWeight: 'bold', color: theme.colors.primary }}>{customer.website}</Text>
-            </TouchableOpacity>
+  if (customer)
+    return (
+      <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+        {renderConfirmDelete()}
+        {fieldsToRender.map(
+          ({ label, value }, index) =>
+            value && <BasicField key={label} label={label} value={value} />
+        )}
+        {customer.website && (
+          <View>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                padding: 20
+              }}
+            >
+              <Text>{t('website')}</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  Linking.openURL(
+                    customer.website.startsWith('https://')
+                      ? customer.website
+                      : 'https://' + customer.website
+                  )
+                }
+              >
+                <Text
+                  style={{ fontWeight: 'bold', color: theme.colors.primary }}
+                >
+                  {customer.website}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <Divider />
           </View>
-          <Divider />
-        </View>
-      )}
-    </ScrollView>
-  );
-  else return (
-    <LoadingDialog visible={loadingGet} />
-  );
+        )}
+      </ScrollView>
+    );
+  else return <LoadingDialog visible={loadingGet} />;
 }

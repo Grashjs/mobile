@@ -13,16 +13,12 @@ import useAuth from '../../hooks/useAuth';
 import { addLocation, getLocationChildren } from '../../slices/location';
 
 export default function CreateLocationScreen({
-                                               navigation,
-                                               route
-                                             }: RootStackScreenProps<'AddLocation'>) {
+  navigation,
+  route
+}: RootStackScreenProps<'AddLocation'>) {
   const { t } = useTranslation();
-  const { uploadFiles } = useContext(
-    CompanySettingsContext
-  );
-  const {
-    getFilteredFields
-  } = useAuth();
+  const { uploadFiles } = useContext(CompanySettingsContext);
+  const { getFilteredFields } = useAuth();
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const dispatch = useDispatch();
   const onCreationSuccess = () => {
@@ -36,41 +32,44 @@ export default function CreateLocationScreen({
     name: Yup.string().required(t('required_location_name'))
   };
 
-  return (<View style={styles.container}>
-    <Form
-      fields={getFilteredFields(getLocationFields(t))}
-      validation={Yup.object().shape(shape)}
-      navigation={navigation}
-      submitText={t('create_location')}
-      values={{}}
-      onChange={({ field, e }) => {
-      }}
-      onSubmit={async (values) => {
-        let formattedValues = formatLocationValues(values);
-        return new Promise<void>((resolve, rej) => {
-          uploadFiles(formattedValues.files, formattedValues.image)
-            .then((files) => {
-              formattedValues = {
-                ...formattedValues,
-                image: files.length ? { id: files[0].id } : null,
-                files: files.map((file) => {
-                  return { id: file.id };
-                })
-              };
-              dispatch(addLocation(formattedValues))
-                .then(onCreationSuccess)
-                .then(() => {
-                  dispatch(getLocationChildren(0, []));
-                })
-                .catch(onCreationFailure)
-                .finally(resolve);
-            })
-            .catch((err) => {
-              onCreationFailure(err);
-              rej(err);
-            });
-        });
-      }} /></View>);
+  return (
+    <View style={styles.container}>
+      <Form
+        fields={getFilteredFields(getLocationFields(t))}
+        validation={Yup.object().shape(shape)}
+        navigation={navigation}
+        submitText={t('create_location')}
+        values={{}}
+        onChange={({ field, e }) => {}}
+        onSubmit={async (values) => {
+          let formattedValues = formatLocationValues(values);
+          return new Promise<void>((resolve, rej) => {
+            uploadFiles(formattedValues.files, formattedValues.image)
+              .then((files) => {
+                formattedValues = {
+                  ...formattedValues,
+                  image: files.length ? { id: files[0].id } : null,
+                  files: files.map((file) => {
+                    return { id: file.id };
+                  })
+                };
+                dispatch(addLocation(formattedValues))
+                  .then(onCreationSuccess)
+                  .then(() => {
+                    dispatch(getLocationChildren(0, []));
+                  })
+                  .catch(onCreationFailure)
+                  .finally(resolve);
+              })
+              .catch((err) => {
+                onCreationFailure(err);
+                rej(err);
+              });
+          });
+        }}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

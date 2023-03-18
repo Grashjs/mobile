@@ -6,10 +6,14 @@ import { TouchableOpacity } from 'react-native';
 import { CompanySettingsContext } from '../contexts/CompanySettingsContext';
 
 export default function CustomDateTimePicker({
-                                               onChange,
-                                               value,
-                                               label
-                                             }: { onChange: (date: Date) => void; value: Date, label: string }) {
+  onChange,
+  value,
+  label
+}: {
+  onChange: (date: Date) => void;
+  value: Date;
+  label: string;
+}) {
   const theme = useTheme();
   const { getFormattedDate } = useContext(CompanySettingsContext);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -21,21 +25,25 @@ export default function CustomDateTimePicker({
   };
   return (
     <View>
-      <TouchableOpacity onPress={showDatePicker}
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center'
-                        }}>
-        <Text>
-          {label}
-        </Text>
-        {value && <Text style={{ color: theme.colors.primary }}>{getFormattedDate(value.toString())}</Text>}
+      <TouchableOpacity
+        onPress={showDatePicker}
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
+      >
+        <Text>{label}</Text>
+        {value && (
+          <Text style={{ color: theme.colors.primary }}>
+            {getFormattedDate(value.toString())}
+          </Text>
+        )}
       </TouchableOpacity>
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
-        mode='datetime'
+        mode="datetime"
         onConfirm={(newValue) => {
           onChange(newValue);
           hideDatePicker();

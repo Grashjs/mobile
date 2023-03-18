@@ -10,7 +10,10 @@ import store from './store';
 import { CompanySettingsProvider } from './contexts/CompanySettingsContext';
 import { CustomSnackbarProvider } from './contexts/CustomSnackBarContext';
 import { AuthProvider } from './contexts/AuthContext';
-import { MD3LightTheme as DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+import {
+  MD3LightTheme as DefaultTheme,
+  Provider as PaperProvider
+} from 'react-native-paper';
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Linking, LogBox, Platform } from 'react-native';
 import { SheetProvider } from 'react-native-actions-sheet';
@@ -55,7 +58,8 @@ Notifications.setNotificationHandler({
 async function registerForPushNotificationsAsync() {
   let token;
   if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
     if (existingStatus !== 'granted') {
       const { status } = await Notifications.requestPermissionsAsync();
@@ -86,15 +90,12 @@ async function registerForPushNotificationsAsync() {
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
-  const [notification, setNotification] = useState<Notifications.Notification>(null);
+  const [notification, setNotification] =
+    useState<Notifications.Notification>(null);
   const notificationListener = useRef<Subscription>();
   const { t } = useTranslation();
-  const savePushToken =
-    (token: string) =>
-      api.post<{ success: boolean }>(
-        `notifications/push-token`,
-        { token }
-      );
+  const savePushToken = (token: string) =>
+    api.post<{ success: boolean }>(`notifications/push-token`, { token });
   const responseListener = useRef<Subscription>();
   const checkPushNotificationState = async () => {
     let { status: existingStatus } = await Permissions.getAsync(
@@ -119,27 +120,34 @@ export default function App() {
     }
   };
   useEffect(() => {
-    LogBox.ignoreLogs(['Warning: Async Storage has been extracted from react-native core']);
+    LogBox.ignoreLogs([
+      'Warning: Async Storage has been extracted from react-native core'
+    ]);
     checkPushNotificationState().then(() =>
-      registerForPushNotificationsAsync().then(token => savePushToken(token)));
+      registerForPushNotificationsAsync().then((token) => savePushToken(token))
+    );
 
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
-      //TODO maybe showNotification alert
-    });
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+        //TODO maybe showNotification alert
+      });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      const data = response.notification.request.content.data;
-      const type = data.type as NotificationType;
-      const id = data.id as number;
-      let url = getNotificationUrl(type, id);
-      if (url) {
-        navigate(url.route, url.params);
-      }
-    });
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        const data = response.notification.request.content.data;
+        const type = data.type as NotificationType;
+        const id = data.id as number;
+        let url = getNotificationUrl(type, id);
+        if (url) {
+          navigate(url.route, url.params);
+        }
+      });
 
     return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
@@ -171,4 +179,4 @@ export default function App() {
       </SafeAreaProvider>
     );
   }
-};
+}

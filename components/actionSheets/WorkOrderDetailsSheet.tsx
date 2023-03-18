@@ -1,4 +1,7 @@
-import ActionSheet, { ActionSheetRef, SheetProps } from 'react-native-actions-sheet';
+import ActionSheet, {
+  ActionSheetRef,
+  SheetProps
+} from 'react-native-actions-sheet';
 import { View } from 'react-native';
 import { Divider, List, Text, useTheme } from 'react-native-paper';
 import * as React from 'react';
@@ -10,7 +13,15 @@ import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
 import WorkOrder from '../../models/workOrder';
 
-export default function WorkOrderDetailsSheet(props: SheetProps<{ onEdit: () => void; onGenerateReport: () => void; onOpenArchive: () => void; onDelete: () => void; workOrder: WorkOrder }>) {
+export default function WorkOrderDetailsSheet(
+  props: SheetProps<{
+    onEdit: () => void;
+    onGenerateReport: () => void;
+    onOpenArchive: () => void;
+    onDelete: () => void;
+    workOrder: WorkOrder;
+  }>
+) {
   const { t } = useTranslation();
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const { hasEditPermission, hasDeletePermission } = useAuth();
@@ -26,21 +37,35 @@ export default function WorkOrderDetailsSheet(props: SheetProps<{ onEdit: () => 
       title: t('edit'),
       icon: 'pencil',
       onPress: props.payload.onEdit,
-      visible: hasEditPermission(PermissionEntity.WORK_ORDERS, props.payload.workOrder)
+      visible: hasEditPermission(
+        PermissionEntity.WORK_ORDERS,
+        props.payload.workOrder
+      )
     },
-    { title: t('to_export'), icon: 'download-outline', onPress: props.payload.onGenerateReport, visible: true },
+    {
+      title: t('to_export'),
+      icon: 'download-outline',
+      onPress: props.payload.onGenerateReport,
+      visible: true
+    },
     {
       title: t('archive'),
       icon: 'archive-outline',
       onPress: props.payload.onOpenArchive,
-      visible: hasEditPermission(PermissionEntity.WORK_ORDERS, props.payload.workOrder)
+      visible: hasEditPermission(
+        PermissionEntity.WORK_ORDERS,
+        props.payload.workOrder
+      )
     },
     {
       title: t('to_delete'),
       icon: 'delete-outline',
       onPress: props.payload.onDelete,
       color: theme.colors.error,
-      visible: hasDeletePermission(PermissionEntity.WORK_ORDERS, props.payload.workOrder)
+      visible: hasDeletePermission(
+        PermissionEntity.WORK_ORDERS,
+        props.payload.workOrder
+      )
     }
   ];
 
@@ -49,23 +74,24 @@ export default function WorkOrderDetailsSheet(props: SheetProps<{ onEdit: () => 
       <View style={{ padding: 15 }}>
         <Divider />
         <List.Section>
-          {options.filter(option => option.visible).map((entity, index) => (
-            <List.Item
-              key={index}
-              titleStyle={{ color: entity.color }}
-              title={entity.title}
-              left={() => (
-                <List.Icon icon={entity.icon} color={entity.color} />
-              )}
-              onPress={() => {
-                actionSheetRef.current.hide();
-                entity.onPress();
-              }}
-            />
-          ))}
+          {options
+            .filter((option) => option.visible)
+            .map((entity, index) => (
+              <List.Item
+                key={index}
+                titleStyle={{ color: entity.color }}
+                title={entity.title}
+                left={() => (
+                  <List.Icon icon={entity.icon} color={entity.color} />
+                )}
+                onPress={() => {
+                  actionSheetRef.current.hide();
+                  entity.onPress();
+                }}
+              />
+            ))}
         </List.Section>
       </View>
     </ActionSheet>
   );
-  ;
 }

@@ -9,7 +9,9 @@ import CustomersScreen from './CustomersScreen';
 import VendorsScreen from './VendorsScreen';
 import { useTheme } from 'react-native-paper';
 
-export default function VendorsCustomers(props: RootStackScreenProps<'VendorsCustomers'>) {
+export default function VendorsCustomers(
+  props: RootStackScreenProps<'VendorsCustomers'>
+) {
   const [tabIndex, setTabIndex] = useState(0);
   const { t } = useTranslation();
   const theme = useTheme();
@@ -26,7 +28,7 @@ export default function VendorsCustomers(props: RootStackScreenProps<'VendorsCus
         return <VendorsScreen {...props} />;
     }
   };
-  const renderTabBar = props => (
+  const renderTabBar = (props) => (
     <TabBar
       {...props}
       indicatorStyle={{ backgroundColor: 'white' }}

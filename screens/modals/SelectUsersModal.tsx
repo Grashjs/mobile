@@ -1,4 +1,10 @@
-import { Pressable, RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 import { View } from '../../components/Themed';
 import { RootStackScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +15,10 @@ import { UserMiniDTO } from '../../models/user';
 import { getUsersMini } from '../../slices/user';
 import { Checkbox, Divider, Text, useTheme } from 'react-native-paper';
 
-export default function SelectUsersModal({ navigation, route }: RootStackScreenProps<'SelectUsers'>) {
+export default function SelectUsersModal({
+  navigation,
+  route
+}: RootStackScreenProps<'SelectUsers'>) {
   const { onChange, selected, multiple } = route.params;
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
@@ -34,14 +43,20 @@ export default function SelectUsersModal({ navigation, route }: RootStackScreenP
   }, [selected]);
 
   useEffect(() => {
-    if (multiple) navigation.setOptions({
-      headerRight: () => <Pressable disabled={!selectedUsers.length} onPress={() => {
-        onChange(selectedUsers);
-        navigation.goBack();
-      }}><Text
-        variant='titleMedium'>{t('add')}
-      </Text></Pressable>
-    });
+    if (multiple)
+      navigation.setOptions({
+        headerRight: () => (
+          <Pressable
+            disabled={!selectedUsers.length}
+            onPress={() => {
+              onChange(selectedUsers);
+              navigation.goBack();
+            }}
+          >
+            <Text variant="titleMedium">{t('add')}</Text>
+          </Pressable>
+        )
+      });
   }, [selectedUsers]);
 
   useEffect(() => {
@@ -51,7 +66,7 @@ export default function SelectUsersModal({ navigation, route }: RootStackScreenP
   const onSelect = (ids: number[]) => {
     setSelectedIds(Array.from(new Set([...selectedIds, ...ids])));
     if (!multiple) {
-      onChange([usersMini.find(user => user.id === ids[0])]);
+      onChange([usersMini.find((user) => user.id === ids[0])]);
       navigation.goBack();
     }
   };
@@ -71,33 +86,51 @@ export default function SelectUsersModal({ navigation, route }: RootStackScreenP
     <View style={styles.container}>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={loadingGet} onRefresh={() => dispatch(getUsersMini())} />}
-        style={{ flex: 1, paddingHorizontal: 20, backgroundColor: theme.colors.background }}>{
-        usersMini.map(user => (
-          <TouchableOpacity onPress={() => {
-            toggle(user.id);
-          }} key={user.id} style={{
-            marginTop: 5,
-            borderRadius: 5,
-            padding: 10,
-            backgroundColor: 'white',
-            display: 'flex',
-            flexDirection: 'row',
-            elevation: 2,
-            alignItems: 'center'
-          }}>
-            {multiple && <Checkbox
-              status={selectedIds.includes(user.id) ? 'checked' : 'unchecked'}
-              onPress={() => {
-                toggle(user.id);
-              }}
-            />}
+          <RefreshControl
+            refreshing={loadingGet}
+            onRefresh={() => dispatch(getUsersMini())}
+          />
+        }
+        style={{
+          flex: 1,
+          paddingHorizontal: 20,
+          backgroundColor: theme.colors.background
+        }}
+      >
+        {usersMini.map((user) => (
+          <TouchableOpacity
+            onPress={() => {
+              toggle(user.id);
+            }}
+            key={user.id}
+            style={{
+              marginTop: 5,
+              borderRadius: 5,
+              padding: 10,
+              backgroundColor: 'white',
+              display: 'flex',
+              flexDirection: 'row',
+              elevation: 2,
+              alignItems: 'center'
+            }}
+          >
+            {multiple && (
+              <Checkbox
+                status={selectedIds.includes(user.id) ? 'checked' : 'unchecked'}
+                onPress={() => {
+                  toggle(user.id);
+                }}
+              />
+            )}
             <View style={{ display: 'flex', flexDirection: 'column' }}>
-              <Text variant={'titleMedium'}>{`${user.firstName} ${user.lastName}`}</Text>
+              <Text
+                variant={'titleMedium'}
+              >{`${user.firstName} ${user.lastName}`}</Text>
             </View>
             <Divider />
-          </TouchableOpacity>))
-      }</ScrollView>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 }

@@ -12,14 +12,20 @@ export default function NumberInput(props: {
   onBlur: (e) => void;
   onChangeText: (value: string) => void;
   disabled: boolean;
-  multiline: boolean
+  multiline: boolean;
 }) {
-  const [numberInputValue, setNumberInputValue] = useState<number>(isNumeric(props.defaultValue) ? Number(props.defaultValue) : 0);
+  const [numberInputValue, setNumberInputValue] = useState<number>(
+    isNumeric(props.defaultValue) ? Number(props.defaultValue) : 0
+  );
   return (
-    <TextInput {...props} value={numberInputValue.toString()} onChangeText={(newValue) => {
-      const formattedValue = Number(newValue.replace(/[^0-9]/g, ''));
-      setNumberInputValue(formattedValue);
-      props.onChangeText(formattedValue.toString());
-    }} />
+    <TextInput
+      {...props}
+      value={numberInputValue.toString()}
+      onChangeText={(newValue) => {
+        const formattedValue = Number(newValue.replace(/[^0-9]/g, ''));
+        setNumberInputValue(formattedValue);
+        props.onChangeText(formattedValue.toString());
+      }}
+    />
   );
 }

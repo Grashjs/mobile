@@ -89,50 +89,47 @@ export const reducer = slice.reducer;
 
 export const getParts =
   (criteria: SearchCriteria): AppThunk =>
-    async (dispatch) => {
-      try {
-        dispatch(slice.actions.setLoadingGet({ loading: true }));
-        const parts = await api.post<Page<Part>>(`${basePath}/search`, criteria);
-        dispatch(slice.actions.getParts({ parts }));
-      } finally {
-        dispatch(slice.actions.setLoadingGet({ loading: false }));
-      }
-    };
+  async (dispatch) => {
+    try {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
+      const parts = await api.post<Page<Part>>(`${basePath}/search`, criteria);
+      dispatch(slice.actions.getParts({ parts }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
+  };
 export const getMoreParts =
   (criteria: SearchCriteria, pageNum: number): AppThunk =>
-    async (dispatch) => {
-      criteria = { ...criteria, pageNum };
-      try {
-        dispatch(slice.actions.setLoadingGet({ loading: true }));
-        const parts = await api.post<Page<Part>>(
-          `${basePath}/search`,
-          criteria
-        );
-        dispatch(slice.actions.getMoreParts({ parts }));
-      } finally {
-        dispatch(slice.actions.setLoadingGet({ loading: false }));
-      }
-    };
+  async (dispatch) => {
+    criteria = { ...criteria, pageNum };
+    try {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
+      const parts = await api.post<Page<Part>>(`${basePath}/search`, criteria);
+      dispatch(slice.actions.getMoreParts({ parts }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
+  };
 export const getPartDetails =
   (id: number): AppThunk =>
-    async (dispatch) => {
-      dispatch(slice.actions.setLoadingGet({ loading: true }));
-      const part = await api.get<Part>(`${basePath}/${id}`);
-      dispatch(
-        slice.actions.getPartDetails({
-          id,
-          part
-        })
-      );
-      dispatch(slice.actions.setLoadingGet({ loading: false }));
-    };
+  async (dispatch) => {
+    dispatch(slice.actions.setLoadingGet({ loading: true }));
+    const part = await api.get<Part>(`${basePath}/${id}`);
+    dispatch(
+      slice.actions.getPartDetails({
+        id,
+        part
+      })
+    );
+    dispatch(slice.actions.setLoadingGet({ loading: false }));
+  };
 
 export const editPart =
   (id: number, part): AppThunk =>
-    async (dispatch) => {
-      const partResponse = await api.patch<Part>(`${basePath}/${id}`, part);
-      dispatch(slice.actions.editPart({ part: partResponse }));
-    };
+  async (dispatch) => {
+    const partResponse = await api.patch<Part>(`${basePath}/${id}`, part);
+    dispatch(slice.actions.editPart({ part: partResponse }));
+  };
 export const getPartsMini = (): AppThunk => async (dispatch) => {
   dispatch(slice.actions.setLoadingGet({ loading: true }));
   const parts = await api.get<PartMiniDTO[]>(`${basePath}/mini`);
@@ -141,19 +138,19 @@ export const getPartsMini = (): AppThunk => async (dispatch) => {
 };
 export const addPart =
   (part): AppThunk =>
-    async (dispatch) => {
-      const partResponse = await api.post<Part>(basePath, part);
-      dispatch(slice.actions.addPart({ part: partResponse }));
-    };
+  async (dispatch) => {
+    const partResponse = await api.post<Part>(basePath, part);
+    dispatch(slice.actions.addPart({ part: partResponse }));
+  };
 export const deletePart =
   (id: number): AppThunk =>
-    async (dispatch) => {
-      const partResponse = await api.deletes<{ success: boolean }>(
-        `${basePath}/${id}`
-      );
-      const { success } = partResponse;
-      if (success) {
-        dispatch(slice.actions.deletePart({ id }));
-      }
-    };
+  async (dispatch) => {
+    const partResponse = await api.deletes<{ success: boolean }>(
+      `${basePath}/${id}`
+    );
+    const { success } = partResponse;
+    if (success) {
+      dispatch(slice.actions.deletePart({ id }));
+    }
+  };
 export default slice;

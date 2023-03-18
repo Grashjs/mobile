@@ -11,7 +11,8 @@ import { useDispatch, useSelector } from '../store';
 import {
   getAssetUrl,
   getLocationUrl,
-  getMeterUrl, getNotificationUrl,
+  getMeterUrl,
+  getNotificationUrl,
   getPartUrl,
   getRequestUrl,
   getTeamUrl,
@@ -27,10 +28,12 @@ import { getMoreAssets } from '../slices/asset';
 import { SearchCriteria } from '../models/page';
 
 export default function NotificationsScreen({
-                                              navigation
-                                            }: RootStackScreenProps<'Notifications'>) {
+  navigation
+}: RootStackScreenProps<'Notifications'>) {
   const dispatch = useDispatch();
-  const { notifications, loadingGet, lastPage, currentPageNum } = useSelector((state) => state.notifications);
+  const { notifications, loadingGet, lastPage, currentPageNum } = useSelector(
+    (state) => state.notifications
+  );
   const criteria: SearchCriteria = {
     filterFields: [],
     pageSize: 15,
@@ -41,7 +44,7 @@ export default function NotificationsScreen({
   const { t } = useTranslation();
   const { getFormattedDate } = useContext(CompanySettingsContext);
   const onReadNotification = (notification: Notification) => {
-    let url: { route: keyof RootStackParamList, params: {} };
+    let url: { route: keyof RootStackParamList; params: {} };
     const id = notification.resourceId;
     url = getNotificationUrl(notification.notificationType, id);
     if (notification.seen) {
@@ -50,13 +53,12 @@ export default function NotificationsScreen({
         navigation.navigate(url.route, url.params);
       }
     } else
-      dispatch(editNotification(notification.id, { seen: true }))
-        .then(() => {
-          if (url) {
-            // @ts-ignore
-            navigation.navigate(url.route, url.params);
-          }
-        });
+      dispatch(editNotification(notification.id, { seen: true })).then(() => {
+        if (url) {
+          // @ts-ignore
+          navigation.navigate(url.route, url.params);
+        }
+      });
   };
   const notificationIcons: Record<NotificationType, IconSource> = {
     ASSET: 'package-variant-closed',
@@ -69,39 +71,74 @@ export default function NotificationsScreen({
     INFO: 'information',
     PURCHASE_ORDER: 'comma-circle-outline'
   };
-  const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+  const isCloseToBottom = ({
+    layoutMeasurement,
+    contentOffset,
+    contentSize
+  }) => {
     const paddingToBottom = 20;
-    return layoutMeasurement.height + contentOffset.y >=
-      contentSize.height - paddingToBottom;
+    return (
+      layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom
+    );
   };
   return (
-    <ScrollView style={styles.container}
-                refreshControl={<RefreshControl refreshing={loadingGet} colors={[theme.colors.primary]} />}
-                onScroll={({ nativeEvent }) => {
-                  if (isCloseToBottom(nativeEvent)) {
-                    if (!loadingGet && !lastPage)
-                      dispatch(getMoreNotifications(criteria, currentPageNum + 1));
-                  }
-                }}>
-      {Boolean(notifications.content.length) ? <List.Section>
-        {notifications.content.map((notification) => (
-          // @ts-ignore
-          <List.Item
-            title={notification.message}
-            titleNumberOfLines={2}
-            description={getFormattedDate(notification.createdAt)}
-            left={(props) => <List.Icon {...props} icon={notificationIcons[notification.notificationType]}
-                                        color={notification.seen ? 'black' : theme.colors.primary} />}
-            style={{ backgroundColor: notification.seen ? 'white' : theme.colors.background }}
-            key={notification.id}
-            onPress={() => onReadNotification(notification)}
-          >
-          </List.Item>
-        ))}
-      </List.Section> : <View style={{ backgroundColor: 'white', padding: 20, alignItems: 'center', borderRadius: 10 }}>
-        <Text variant={'titleMedium'} style={{ fontWeight: 'bold' }}> {t('no_notification')}</Text>
-        < Text variant={'bodyMedium'}>{t('no_notification_message')}</Text>
-      </View>}
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl
+          refreshing={loadingGet}
+          colors={[theme.colors.primary]}
+        />
+      }
+      onScroll={({ nativeEvent }) => {
+        if (isCloseToBottom(nativeEvent)) {
+          if (!loadingGet && !lastPage)
+            dispatch(getMoreNotifications(criteria, currentPageNum + 1));
+        }
+      }}
+    >
+      {Boolean(notifications.content.length) ? (
+        <List.Section>
+          {notifications.content.map((notification) => (
+            // @ts-ignore
+            <List.Item
+              title={notification.message}
+              titleNumberOfLines={2}
+              description={getFormattedDate(notification.createdAt)}
+              left={(props) => (
+                <List.Icon
+                  {...props}
+                  icon={notificationIcons[notification.notificationType]}
+                  color={notification.seen ? 'black' : theme.colors.primary}
+                />
+              )}
+              style={{
+                backgroundColor: notification.seen
+                  ? 'white'
+                  : theme.colors.background
+              }}
+              key={notification.id}
+              onPress={() => onReadNotification(notification)}
+            ></List.Item>
+          ))}
+        </List.Section>
+      ) : (
+        <View
+          style={{
+            backgroundColor: 'white',
+            padding: 20,
+            alignItems: 'center',
+            borderRadius: 10
+          }}
+        >
+          <Text variant={'titleMedium'} style={{ fontWeight: 'bold' }}>
+            {' '}
+            {t('no_notification')}
+          </Text>
+          <Text variant={'bodyMedium'}>{t('no_notification_message')}</Text>
+        </View>
+      )}
     </ScrollView>
   );
 }

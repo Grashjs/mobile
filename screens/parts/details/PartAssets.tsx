@@ -8,7 +8,13 @@ import { Divider, Text, useTheme } from 'react-native-paper';
 import { View } from '../../../components/Themed';
 import { getAssetsByPart } from '../../../slices/asset';
 
-export default function PartAssets({ part, navigation }: { part: Part; navigation: any }) {
+export default function PartAssets({
+  part,
+  navigation
+}: {
+  part: Part;
+  navigation: any;
+}) {
   const { t }: { t: any } = useTranslation();
   const dispatch = useDispatch();
   const { assetsByPart } = useSelector((state) => state.assets);
@@ -20,16 +26,23 @@ export default function PartAssets({ part, navigation }: { part: Part; navigatio
   }, []);
 
   return (
-    <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background }}>
-      {assets.map(asset => (
-        <TouchableOpacity key={asset.id} onPress={() => navigation.push('AssetDetails', { id: asset.id })}>
-          <View style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            padding: 20,
-            alignItems: 'center'
-          }}>
+    <ScrollView
+      style={{ ...styles.container, backgroundColor: theme.colors.background }}
+    >
+      {assets.map((asset) => (
+        <TouchableOpacity
+          key={asset.id}
+          onPress={() => navigation.push('AssetDetails', { id: asset.id })}
+        >
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              padding: 20,
+              alignItems: 'center'
+            }}
+          >
             <Text style={{ fontWeight: 'bold' }}>{asset.name}</Text>
             <Text>{asset.description}</Text>
           </View>
@@ -39,10 +52,8 @@ export default function PartAssets({ part, navigation }: { part: Part; navigatio
     </ScrollView>
   );
 }
-const styles = StyleSheet.create(
-  {
-    container: {
-      flex: 1
-    }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
   }
-);
+});

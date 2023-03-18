@@ -4,7 +4,13 @@ import { useState } from 'react';
 import { getPriorityLabel } from '../../utils/formatters';
 import { useTranslation } from 'react-i18next';
 
-export default function PriorityPicker({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+export default function PriorityPicker({
+  value,
+  onChange
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
   const { t } = useTranslation();
   const theme = useTheme();
   const options = ['NONE', 'LOW', 'MEDIUM', 'HIGH'].map((option) => {

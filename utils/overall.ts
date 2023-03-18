@@ -100,7 +100,10 @@ export const onSearchQueryChange = <T>(
   setCriteria({ ...criteria, filterFields: newFilterFields });
 };
 
-export const getPriorityColor = (priority: Priority, theme: MD3Theme): string => {
+export const getPriorityColor = (
+  priority: Priority,
+  theme: MD3Theme
+): string => {
   switch (priority) {
     case 'NONE':
       return theme.colors.tertiary;
@@ -114,8 +117,15 @@ export const getPriorityColor = (priority: Priority, theme: MD3Theme): string =>
       return theme.colors.error;
   }
 };
-export type ExtendedWorkOrderStatus = WorkOrderStatus | 'LATE_WO' | 'TODAY_WO' | 'HIGH_WO';
-export const getStatusColor = (status: ExtendedWorkOrderStatus, theme: MD3Theme): string => {
+export type ExtendedWorkOrderStatus =
+  | WorkOrderStatus
+  | 'LATE_WO'
+  | 'TODAY_WO'
+  | 'HIGH_WO';
+export const getStatusColor = (
+  status: ExtendedWorkOrderStatus,
+  theme: MD3Theme
+): string => {
   switch (status) {
     case 'OPEN':
       return theme.colors.tertiary;

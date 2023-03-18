@@ -1,4 +1,7 @@
-import ActionSheet, { ActionSheetRef, SheetProps } from 'react-native-actions-sheet';
+import ActionSheet, {
+  ActionSheetRef,
+  SheetProps
+} from 'react-native-actions-sheet';
 import { View } from 'react-native';
 import { Divider, List, Text, useTheme } from 'react-native-paper';
 import * as React from 'react';
@@ -10,7 +13,14 @@ import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
 import Part from '../../models/part';
 
-export default function PartDetailsSheet(props: SheetProps<{ onEdit: () => void; onAddFile: () => void; onDelete: () => void; part: Part; }>) {
+export default function PartDetailsSheet(
+  props: SheetProps<{
+    onEdit: () => void;
+    onAddFile: () => void;
+    onDelete: () => void;
+    part: Part;
+  }>
+) {
   const { t } = useTranslation();
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const theme = useTheme();
@@ -26,15 +36,20 @@ export default function PartDetailsSheet(props: SheetProps<{ onEdit: () => void;
       title: t('edit'),
       icon: 'pencil',
       onPress: props.payload.onEdit,
-      visible: hasEditPermission(PermissionEntity.PARTS_AND_MULTIPARTS, props.payload.part)
-
+      visible: hasEditPermission(
+        PermissionEntity.PARTS_AND_MULTIPARTS,
+        props.payload.part
+      )
     },
     {
       title: t('to_delete'),
       icon: 'delete-outline',
       onPress: props.payload.onDelete,
       color: theme.colors.error,
-      visible: hasDeletePermission(PermissionEntity.PARTS_AND_MULTIPARTS, props.payload.part)
+      visible: hasDeletePermission(
+        PermissionEntity.PARTS_AND_MULTIPARTS,
+        props.payload.part
+      )
     }
   ];
 
@@ -43,23 +58,24 @@ export default function PartDetailsSheet(props: SheetProps<{ onEdit: () => void;
       <View style={{ padding: 15 }}>
         <Divider />
         <List.Section>
-          {options.filter(option => option.visible).map((entity, index) => (
-            <List.Item
-              key={index}
-              titleStyle={{ color: entity.color }}
-              title={entity.title}
-              left={() => (
-                <List.Icon icon={entity.icon} color={entity.color} />
-              )}
-              onPress={() => {
-                actionSheetRef.current.hide();
-                entity.onPress();
-              }}
-            />
-          ))}
+          {options
+            .filter((option) => option.visible)
+            .map((entity, index) => (
+              <List.Item
+                key={index}
+                titleStyle={{ color: entity.color }}
+                title={entity.title}
+                left={() => (
+                  <List.Icon icon={entity.icon} color={entity.color} />
+                )}
+                onPress={() => {
+                  actionSheetRef.current.hide();
+                  entity.onPress();
+                }}
+              />
+            ))}
         </List.Section>
       </View>
     </ActionSheet>
   );
-  ;
 }

@@ -14,9 +14,9 @@ import { formatPartValues, getPartFields } from '../../utils/fields';
 import useAuth from '../../hooks/useAuth';
 
 export default function EditPartScreen({
-                                         navigation,
-                                         route
-                                       }: RootStackScreenProps<'EditPart'>) {
+  navigation,
+  route
+}: RootStackScreenProps<'EditPart'>) {
   const { t } = useTranslation();
   const { part } = route.params;
   const { getFilteredFields } = useAuth();
@@ -33,72 +33,71 @@ export default function EditPartScreen({
     showSnackBar(t('changes_saved_success'), 'success');
     navigation.goBack();
   };
-  const onEditFailure = (err) =>
-    showSnackBar(t('part_edit_failure'), 'error');
+  const onEditFailure = (err) => showSnackBar(t('part_edit_failure'), 'error');
 
-  return (<View style={styles.container}>
-    <Form
-      fields={getFilteredFields(getPartFields(t))}
-      validation={Yup.object().shape(shape)}
-      navigation={navigation}
-      submitText={t('save')}
-      values={{
-        ...part,
-        assignedTo: part?.assignedTo.map((user) => {
-          return {
-            label: `${user.firstName} ${user.lastName}`,
-            value: user.id.toString()
-          };
-        }),
-        teams: part?.teams.map((team) => {
-          return {
-            label: team.name,
-            value: team.id.toString()
-          };
-        }),
-        vendors: part?.vendors.map((vendor) => {
-          return {
-            label: vendor.companyName,
-            value: vendor.id.toString()
-          };
-        }),
-        customers: part?.customers.map((customer) => {
-          return {
-            label: customer.name,
-            value: customer.id.toString()
-          };
-        })
-      }}
-      onChange={({ field, e }) => {
-      }}
-      onSubmit={async (values) => {
-        let formattedValues = formatPartValues(values);
-        return new Promise<void>((resolve, rej) => {
-          const files = formattedValues.files.find((file) => file.id)
-            ? []
-            : formattedValues.files;
-          uploadFiles(files, formattedValues.image)
-            .then((files) => {
-              const imageAndFiles = getImageAndFiles(
-                files,
-                part.image
-              );
-              formattedValues = {
-                ...formattedValues,
-                image: imageAndFiles.image,
-                files: [...part.files, ...imageAndFiles.files]
-              };
-              dispatch(editPart(part.id, formattedValues))
-                .then(onEditSuccess)
-                .catch(onEditFailure)
-                .finally(resolve);
-            })
-            .catch((err) => {
-              onEditFailure(err);
-              rej(err);
-            });
-        });
-      }} /></View>);
+  return (
+    <View style={styles.container}>
+      <Form
+        fields={getFilteredFields(getPartFields(t))}
+        validation={Yup.object().shape(shape)}
+        navigation={navigation}
+        submitText={t('save')}
+        values={{
+          ...part,
+          assignedTo: part?.assignedTo.map((user) => {
+            return {
+              label: `${user.firstName} ${user.lastName}`,
+              value: user.id.toString()
+            };
+          }),
+          teams: part?.teams.map((team) => {
+            return {
+              label: team.name,
+              value: team.id.toString()
+            };
+          }),
+          vendors: part?.vendors.map((vendor) => {
+            return {
+              label: vendor.companyName,
+              value: vendor.id.toString()
+            };
+          }),
+          customers: part?.customers.map((customer) => {
+            return {
+              label: customer.name,
+              value: customer.id.toString()
+            };
+          })
+        }}
+        onChange={({ field, e }) => {}}
+        onSubmit={async (values) => {
+          let formattedValues = formatPartValues(values);
+          return new Promise<void>((resolve, rej) => {
+            const files = formattedValues.files.find((file) => file.id)
+              ? []
+              : formattedValues.files;
+            uploadFiles(files, formattedValues.image)
+              .then((files) => {
+                const imageAndFiles = getImageAndFiles(files, part.image);
+                formattedValues = {
+                  ...formattedValues,
+                  image: imageAndFiles.image,
+                  files: [...part.files, ...imageAndFiles.files]
+                };
+                dispatch(editPart(part.id, formattedValues))
+                  .then(onEditSuccess)
+                  .catch(onEditFailure)
+                  .finally(resolve);
+              })
+              .catch((err) => {
+                onEditFailure(err);
+                rej(err);
+              });
+          });
+        }}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

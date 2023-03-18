@@ -13,16 +13,12 @@ import useAuth from '../../hooks/useAuth';
 import { addMeter } from '../../slices/meter';
 
 export default function CreateMeterScreen({
-                                            navigation,
-                                            route
-                                          }: RootStackScreenProps<'AddMeter'>) {
+  navigation,
+  route
+}: RootStackScreenProps<'AddMeter'>) {
   const { t } = useTranslation();
-  const { uploadFiles } = useContext(
-    CompanySettingsContext
-  );
-  const {
-    getFilteredFields
-  } = useAuth();
+  const { uploadFiles } = useContext(CompanySettingsContext);
+  const { getFilteredFields } = useAuth();
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const dispatch = useDispatch();
   const onCreationSuccess = () => {
@@ -41,34 +37,37 @@ export default function CreateMeterScreen({
     asset: Yup.object().required(t('required_asset')).nullable()
   };
 
-  return (<View style={styles.container}>
-    <Form
-      fields={getFilteredFields(getMeterFields(t))}
-      validation={Yup.object().shape(shape)}
-      navigation={navigation}
-      submitText={t('add_meter')}
-      values={{}}
-      onChange={({ field, e }) => {
-      }}
-      onSubmit={async (values) => {
-        let formattedValues = formatMeterValues(values);
-        return new Promise<void>((resolve, rej) => {
-          uploadFiles([], values.image)
-            .then((files) => {
-              formattedValues = {
-                ...formattedValues,
-                image: files.length ? { id: files[0].id } : null
-              };
-              dispatch(addMeter(formattedValues))
-                .then(onCreationSuccess)
-                .catch(onCreationFailure)
-                .finally(resolve);
-            })
-            .catch((err) => {
-              rej(err);
-            });
-        });
-      }} /></View>);
+  return (
+    <View style={styles.container}>
+      <Form
+        fields={getFilteredFields(getMeterFields(t))}
+        validation={Yup.object().shape(shape)}
+        navigation={navigation}
+        submitText={t('add_meter')}
+        values={{}}
+        onChange={({ field, e }) => {}}
+        onSubmit={async (values) => {
+          let formattedValues = formatMeterValues(values);
+          return new Promise<void>((resolve, rej) => {
+            uploadFiles([], values.image)
+              .then((files) => {
+                formattedValues = {
+                  ...formattedValues,
+                  image: files.length ? { id: files[0].id } : null
+                };
+                dispatch(addMeter(formattedValues))
+                  .then(onCreationSuccess)
+                  .catch(onCreationFailure)
+                  .finally(resolve);
+              })
+              .catch((err) => {
+                rej(err);
+              });
+          });
+        }}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

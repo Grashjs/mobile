@@ -4,8 +4,10 @@ import PDFReader from 'rn-pdf-reader-js';
 import { RootStackScreenProps } from '../types';
 import { useEffect } from 'react';
 
-
-export default function PdfViewer({ navigation, route }: RootStackScreenProps<'PDFViewer'>) {
+export default function PdfViewer({
+  navigation,
+  route
+}: RootStackScreenProps<'PDFViewer'>) {
   useEffect(() => {
     navigation.setOptions({
       title: route.params.title
@@ -17,7 +19,8 @@ export default function PdfViewer({ navigation, route }: RootStackScreenProps<'P
         style={{ height: '100%', width: '100%' }}
         source={{
           uri: route.params.uri
-        }} />
+        }}
+      />
     </View>
   );
 }

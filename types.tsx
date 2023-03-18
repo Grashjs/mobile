@@ -4,7 +4,10 @@
  */
 
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
+import {
+  CompositeScreenProps,
+  NavigatorScreenParams
+} from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import WorkOrder from './models/workOrder';
 import Part, { PartMiniDTO } from './models/part';
@@ -23,14 +26,13 @@ import Notification from './models/notification';
 
 declare global {
   namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList {
-    }
+    interface RootParamList extends RootStackParamList {}
   }
 }
 
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
-  AddWorkOrder: { location?: Location, asset?: AssetDTO };
+  AddWorkOrder: { location?: Location; asset?: AssetDTO };
   WorkOrderStats: undefined;
   EditWorkOrder: { workOrder: WorkOrder; tasks: Task[] };
   EditRequest: { request: Request };
@@ -64,19 +66,51 @@ export type RootStackParamList = {
     tasksProps: Task[];
     workOrderId: number;
   };
-  SelectParts: { onChange: (parts: PartMiniDTO[]) => void; selected: number[] },
-  SelectCustomers: { onChange: (customers: CustomerMiniDTO[]) => void; selected: number[]; multiple: boolean },
-  SelectVendors: { onChange: (vendors: VendorMiniDTO[]) => void; selected: number[]; multiple: boolean },
-  SelectUsers: { onChange: (users: UserMiniDTO[]) => void; selected: number[]; multiple: boolean },
-  SelectTeams: { onChange: (teams: TeamMiniDTO[]) => void; selected: number[]; multiple: boolean },
-  SelectLocations: { onChange: (locations: LocationMiniDTO[]) => void; selected: number[]; multiple: boolean },
-  SelectAssets: { onChange: (assets: AssetMiniDTO[]) => void; selected: number[]; multiple: boolean },
-  SelectTasks: { onChange: (tasks: Task[]) => void; selected: Task[] },
-  SelectCategories: { onChange: (categories: Category[]) => void; selected: number[]; multiple: boolean; type: string },
+  SelectParts: { onChange: (parts: PartMiniDTO[]) => void; selected: number[] };
+  SelectCustomers: {
+    onChange: (customers: CustomerMiniDTO[]) => void;
+    selected: number[];
+    multiple: boolean;
+  };
+  SelectVendors: {
+    onChange: (vendors: VendorMiniDTO[]) => void;
+    selected: number[];
+    multiple: boolean;
+  };
+  SelectUsers: {
+    onChange: (users: UserMiniDTO[]) => void;
+    selected: number[];
+    multiple: boolean;
+  };
+  SelectTeams: {
+    onChange: (teams: TeamMiniDTO[]) => void;
+    selected: number[];
+    multiple: boolean;
+  };
+  SelectLocations: {
+    onChange: (locations: LocationMiniDTO[]) => void;
+    selected: number[];
+    multiple: boolean;
+  };
+  SelectAssets: {
+    onChange: (assets: AssetMiniDTO[]) => void;
+    selected: number[];
+    multiple: boolean;
+  };
+  SelectTasks: { onChange: (tasks: Task[]) => void; selected: Task[] };
+  SelectCategories: {
+    onChange: (categories: Category[]) => void;
+    selected: number[];
+    multiple: boolean;
+    type: string;
+  };
   CompleteWorkOrder: {
-    onComplete: (signatureId: number | undefined,
-                 feedback: string | undefined) => Promise<any>; fieldsConfig: { feedback: boolean; signature: boolean };
-  }
+    onComplete: (
+      signatureId: number | undefined,
+      feedback: string | undefined
+    ) => Promise<any>;
+    fieldsConfig: { feedback: boolean; signature: boolean };
+  };
   NotFound: undefined;
   Meters: undefined;
   Parts: undefined;
@@ -86,12 +120,15 @@ export type RootStackParamList = {
   VendorsCustomers: undefined;
   Notifications: undefined;
   Settings: undefined;
-  PDFViewer: { uri: string, title: string };
-  WorkOrderFilters: { filterFields: FilterField[]; onFilterChange: (filterFields: FilterField[]) => void; }
+  PDFViewer: { uri: string; title: string };
+  WorkOrderFilters: {
+    filterFields: FilterField[];
+    onFilterChange: (filterFields: FilterField[]) => void;
+  };
 };
 
-export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList,
-  Screen>;
+export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
+  NativeStackScreenProps<RootStackParamList, Screen>;
 
 export type RootTabParamList = {
   Home: undefined;
@@ -101,13 +138,16 @@ export type RootTabParamList = {
   MoreEntities: undefined;
 };
 
-export type RootTabScreenProps<Screen extends keyof RootTabParamList> = CompositeScreenProps<BottomTabScreenProps<RootTabParamList, Screen>,
-  NativeStackScreenProps<RootStackParamList>>;
+export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
+  CompositeScreenProps<
+    BottomTabScreenProps<RootTabParamList, Screen>,
+    NativeStackScreenProps<RootStackParamList>
+  >;
 export type AuthStackParamList = {
   Welcome: undefined;
   Register: undefined;
   Login: undefined;
-  Verify: undefined
+  Verify: undefined;
 };
-export type AuthStackScreenProps<Screen extends keyof AuthStackParamList> = NativeStackScreenProps<AuthStackParamList,
-  Screen>;
+export type AuthStackScreenProps<Screen extends keyof AuthStackParamList> =
+  NativeStackScreenProps<AuthStackParamList, Screen>;

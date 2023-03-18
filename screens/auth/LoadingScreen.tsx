@@ -9,7 +9,7 @@ import { Text } from 'react-native-paper';
 export default function LoadingScreen() {
   return (
     <View style={styles.container}>
-      <ActivityIndicator size='large' />
+      <ActivityIndicator size="large" />
     </View>
   );
 }

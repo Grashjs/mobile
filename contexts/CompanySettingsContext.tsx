@@ -35,10 +35,11 @@ export const CompanySettingsContext = createContext<CompanySettingsContext>(
 export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
   const { companySettings, getFilteredFields, isAuthenticated } = useAuth();
   const dispatch = useDispatch();
-  const { generalPreferences, workOrderRequestConfiguration } = companySettings ?? {
-    dateFormat: 'DDMMYY',
-    currency: { code: '$' }
-  };
+  const { generalPreferences, workOrderRequestConfiguration } =
+    companySettings ?? {
+      dateFormat: 'DDMMYY',
+      currency: { code: '$' }
+    };
   const { usersMini } = useSelector((state) => state.users);
   const { workOrderConfiguration } = companySettings ?? {
     workOrderFieldConfigurations: []
@@ -55,8 +56,8 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
     const time = hideTime
       ? ''
       : (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) +
-      ':' +
-      (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+        ':' +
+        (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
     if (generalPreferences.dateFormat === 'MMDDYY') {
       return month + '/' + day + '/' + year + ' ' + time;
     } else return day + '/' + month + '/' + year + ' ' + time;
@@ -75,25 +76,29 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
   ): Promise<{ id: number; type: FileType }[]> => {
     let result: { id: number; type: FileType }[] = [];
     if (files?.length) {
-      await dispatch(addFiles(files, 'OTHER', undefined, `${hidden}`)).then((fileIds) => {
-        if (Array.isArray(fileIds))
-          result = [
-            ...fileIds.map((id) => {
-              return { id, type: 'OTHER' as const };
-            })
-          ];
-      });
+      await dispatch(addFiles(files, 'OTHER', undefined, `${hidden}`)).then(
+        (fileIds) => {
+          if (Array.isArray(fileIds))
+            result = [
+              ...fileIds.map((id) => {
+                return { id, type: 'OTHER' as const };
+              })
+            ];
+        }
+      );
     }
     if (images?.length) {
-      await dispatch(addFiles(images, 'IMAGE', undefined, `${hidden}`)).then((images) => {
-        if (Array.isArray(images))
-          result = [
-            ...result,
-            ...images.map((imageId) => {
-              return { id: imageId, type: 'IMAGE' as const };
-            })
-          ];
-      });
+      await dispatch(addFiles(images, 'IMAGE', undefined, `${hidden}`)).then(
+        (images) => {
+          if (Array.isArray(images))
+            result = [
+              ...result,
+              ...images.map((imageId) => {
+                return { id: imageId, type: 'IMAGE' as const };
+              })
+            ];
+        }
+      );
     }
     return result;
   };
@@ -172,7 +177,10 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
     return [fields, shape];
   };
 
-  const getRequestFieldsAndShapes = (): [Array<IField>, { [key: string]: any }] => {
+  const getRequestFieldsAndShapes = (): [
+    Array<IField>,
+    { [key: string]: any }
+  ] => {
     const defaultFields: Array<IField> = [...getWOBaseFields(t)];
     const defaultShape = {
       title: Yup.string().required(t('required_request_name'))
@@ -225,8 +233,7 @@ export const CompanySettingsProvider: FC<{ children: ReactNode }> = (props) => {
     return [fields, shape];
   };
   useEffect(() => {
-    if (isAuthenticated)
-      dispatch(getUsersMini());
+    if (isAuthenticated) dispatch(getUsersMini());
   }, []);
   return (
     <CompanySettingsContext.Provider

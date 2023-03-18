@@ -10,9 +10,12 @@ import { View } from '../../components/Themed';
 import { getUserDetails } from '../../slices/user';
 import { getUserInitials } from '../../utils/displayers';
 
-export default function UserDetails({ navigation, route }: RootStackScreenProps<'UserDetails'>) {
+export default function UserDetails({
+  navigation,
+  route
+}: RootStackScreenProps<'UserDetails'>) {
   const { id } = route.params;
-  const { loadingGet, userInfos } = useSelector(state => state.users);
+  const { loadingGet, userInfos } = useSelector((state) => state.users);
   const user = userInfos[id]?.user;
   const theme = useTheme();
   const { t } = useTranslation();
@@ -64,16 +67,23 @@ export default function UserDetails({ navigation, route }: RootStackScreenProps<
   }, [user]);
 
   function BasicField({
-                        label,
-                        value
-                      }: {
+    label,
+    value
+  }: {
     label: string;
     value: string | number;
   }) {
     if (value)
       return (
         <View>
-          <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              padding: 20
+            }}
+          >
             <Text>{label}</Text>
             <Text style={{ fontWeight: 'bold' }}>{value}</Text>
           </View>
@@ -83,17 +93,24 @@ export default function UserDetails({ navigation, route }: RootStackScreenProps<
     else return null;
   }
 
-  if (user) return (
-    <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      <View style={{ alignItems: 'center', paddingTop: 20 }}>
-        {user.image ? <Avatar.Image source={{ uri: user.image.url }} /> :
-          <Avatar.Text size={50} label={getUserInitials(user)} />}
-      </View>
-      {fieldsToRender.map(field => <BasicField key={field.label} label={field.label} value={field.value} />
-      )}
-    </ScrollView>
-  );
-  else return (
-    <LoadingDialog visible={loadingGet} />
-  );
+  if (user)
+    return (
+      <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+        <View style={{ alignItems: 'center', paddingTop: 20 }}>
+          {user.image ? (
+            <Avatar.Image source={{ uri: user.image.url }} />
+          ) : (
+            <Avatar.Text size={50} label={getUserInitials(user)} />
+          )}
+        </View>
+        {fieldsToRender.map((field) => (
+          <BasicField
+            key={field.label}
+            label={field.label}
+            value={field.value}
+          />
+        ))}
+      </ScrollView>
+    );
+  else return <LoadingDialog visible={loadingGet} />;
 }

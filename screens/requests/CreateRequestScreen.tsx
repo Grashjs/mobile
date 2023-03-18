@@ -18,16 +18,14 @@ import { getWOBaseFields } from '../../utils/woBase';
 import { addRequest } from '../../slices/request';
 
 export default function CreateRequestScreen({
-                                              navigation,
-                                              route
-                                            }: RootStackScreenProps<'AddRequest'>) {
+  navigation,
+  route
+}: RootStackScreenProps<'AddRequest'>) {
   const { t } = useTranslation();
   const { uploadFiles, getRequestFieldsAndShapes } = useContext(
     CompanySettingsContext
   );
-  const {
-    companySettings
-  } = useAuth();
+  const { companySettings } = useAuth();
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const dispatch = useDispatch();
   const onCreationSuccess = () => {
@@ -37,38 +35,40 @@ export default function CreateRequestScreen({
   const onCreationFailure = (err) =>
     showSnackBar(t('request_create_failure'), 'error');
 
-
-  return (<View style={styles.container}>
-    <Form
-      fields={getRequestFieldsAndShapes()[0]}
-      validation={Yup.object().shape(getRequestFieldsAndShapes()[1])}
-      navigation={navigation}
-      submitText={t('save')}
-      values={{ dueDate: null }}
-      onChange={({ field, e }) => {
-      }}
-      onSubmit={async (values) => {
-        let formattedValues = formatRequestValues(values);
-        return new Promise<void>((resolve, rej) => {
-          uploadFiles(formattedValues.files, formattedValues.image)
-            .then((files) => {
-              const imageAndFiles = getImageAndFiles(files);
-              formattedValues = {
-                ...formattedValues,
-                image: imageAndFiles.image,
-                files: imageAndFiles.files
-              };
-              dispatch(addRequest(formattedValues))
-                .then(onCreationSuccess)
-                .catch(onCreationFailure)
-                .finally(resolve);
-            })
-            .catch((err) => {
-              onCreationFailure(err);
-              rej(err);
-            });
-        });
-      }} /></View>);
+  return (
+    <View style={styles.container}>
+      <Form
+        fields={getRequestFieldsAndShapes()[0]}
+        validation={Yup.object().shape(getRequestFieldsAndShapes()[1])}
+        navigation={navigation}
+        submitText={t('save')}
+        values={{ dueDate: null }}
+        onChange={({ field, e }) => {}}
+        onSubmit={async (values) => {
+          let formattedValues = formatRequestValues(values);
+          return new Promise<void>((resolve, rej) => {
+            uploadFiles(formattedValues.files, formattedValues.image)
+              .then((files) => {
+                const imageAndFiles = getImageAndFiles(files);
+                formattedValues = {
+                  ...formattedValues,
+                  image: imageAndFiles.image,
+                  files: imageAndFiles.files
+                };
+                dispatch(addRequest(formattedValues))
+                  .then(onCreationSuccess)
+                  .catch(onCreationFailure)
+                  .finally(resolve);
+              })
+              .catch((err) => {
+                onCreationFailure(err);
+                rej(err);
+              });
+          });
+        }}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

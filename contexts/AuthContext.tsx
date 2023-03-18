@@ -13,10 +13,7 @@ import UserSettings from '../models/userSettings';
 import CompanySettings from '../models/companySettings';
 import { GeneralPreferences } from '../models/generalPreferences';
 import internationalization from '../i18n/i18n';
-import {
-  FieldConfiguration,
-  FieldType
-} from '../models/fieldConfiguration';
+import { FieldConfiguration, FieldType } from '../models/fieldConfiguration';
 import { Company } from '../models/company';
 import { PermissionEntity } from '../models/role';
 import { Audit } from '../models/audit';
@@ -228,8 +225,10 @@ const setCompanyId = (companyId: number) => {
   AsyncStorage.setItem('companyId', companyId.toString());
 };
 
-const handlers: Record<string,
-  (state: AuthState, action: Action) => AuthState> = {
+const handlers: Record<
+  string,
+  (state: AuthState, action: Action) => AuthState
+> = {
   INITIALIZE: (state: AuthState, action: InitializeAction): AuthState => {
     const { isAuthenticated, user, companySettings, company } = action.payload;
 

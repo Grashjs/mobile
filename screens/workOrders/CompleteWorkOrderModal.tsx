@@ -9,7 +9,10 @@ import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import { IField } from '../../models/form';
 import Form from '../../components/form';
 
-export default function CompleteWorkOrderModal({ navigation, route }: RootStackScreenProps<'CompleteWorkOrder'>) {
+export default function CompleteWorkOrderModal({
+  navigation,
+  route
+}: RootStackScreenProps<'CompleteWorkOrder'>) {
   const { onComplete, fieldsConfig } = route.params;
   const { t }: { t: any } = useTranslation();
   const { uploadFiles } = useContext(CompanySettingsContext);
@@ -49,14 +52,12 @@ export default function CompleteWorkOrderModal({ navigation, route }: RootStackS
         submitText={t('complete_work_order')}
         values={{}}
         navigation={navigation}
-        onChange={({ field, e }) => {
-        }}
+        onChange={({ field, e }) => {}}
         onSubmit={async (values) => {
           return new Promise<void>((resolve, rej) => {
             uploadFiles([], values.signature ?? [])
               .then((files) => {
-                onComplete(files[0]?.id, values?.feedback)
-                  .then(resolve);
+                onComplete(files[0]?.id, values?.feedback).then(resolve);
               })
               .catch((err) => {
                 rej(err);

@@ -1,4 +1,10 @@
-import { Pressable, RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 import { View } from '../../components/Themed';
 import { RootStackScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
@@ -9,13 +15,18 @@ import { CustomerMiniDTO } from '../../models/customer';
 import { getCustomersMini } from '../../slices/customer';
 import { Checkbox, Divider, Text, useTheme } from 'react-native-paper';
 
-export default function SelectCustomersModal({ navigation, route }: RootStackScreenProps<'SelectCustomers'>) {
+export default function SelectCustomersModal({
+  navigation,
+  route
+}: RootStackScreenProps<'SelectCustomers'>) {
   const { onChange, selected, multiple } = route.params;
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
   const dispatch = useDispatch();
   const { customersMini, loadingGet } = useSelector((state) => state.customers);
-  const [selectedCustomers, setSelectedCustomers] = useState<CustomerMiniDTO[]>([]);
+  const [selectedCustomers, setSelectedCustomers] = useState<CustomerMiniDTO[]>(
+    []
+  );
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   useEffect(() => {
@@ -34,14 +45,20 @@ export default function SelectCustomersModal({ navigation, route }: RootStackScr
   }, [selected]);
 
   useEffect(() => {
-    if (multiple) navigation.setOptions({
-      headerRight: () => <Pressable disabled={!selectedCustomers.length} onPress={() => {
-        onChange(selectedCustomers);
-        navigation.goBack();
-      }}><Text
-        variant='titleMedium'>{t('add')}
-      </Text></Pressable>
-    });
+    if (multiple)
+      navigation.setOptions({
+        headerRight: () => (
+          <Pressable
+            disabled={!selectedCustomers.length}
+            onPress={() => {
+              onChange(selectedCustomers);
+              navigation.goBack();
+            }}
+          >
+            <Text variant="titleMedium">{t('add')}</Text>
+          </Pressable>
+        )
+      });
   }, [selectedCustomers]);
 
   useEffect(() => {
@@ -51,7 +68,7 @@ export default function SelectCustomersModal({ navigation, route }: RootStackScr
   const onSelect = (ids: number[]) => {
     setSelectedIds(Array.from(new Set([...selectedIds, ...ids])));
     if (!multiple) {
-      onChange([customersMini.find(customer => customer.id === ids[0])]);
+      onChange([customersMini.find((customer) => customer.id === ids[0])]);
       navigation.goBack();
     }
   };
@@ -71,33 +88,51 @@ export default function SelectCustomersModal({ navigation, route }: RootStackScr
     <View style={styles.container}>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={loadingGet} onRefresh={() => dispatch(getCustomersMini())} />}
-        style={{ flex: 1, paddingHorizontal: 20, backgroundColor: theme.colors.background }}>{
-        customersMini.map(customer => (
-          <TouchableOpacity onPress={() => {
-            toggle(customer.id);
-          }} key={customer.id} style={{
-            marginTop: 5,
-            borderRadius: 5,
-            padding: 10,
-            backgroundColor: 'white',
-            display: 'flex',
-            flexDirection: 'row',
-            elevation: 2,
-            alignItems: 'center'
-          }}>
-            {multiple && <Checkbox
-              status={selectedIds.includes(customer.id) ? 'checked' : 'unchecked'}
-              onPress={() => {
-                toggle(customer.id);
-              }}
-            />}
+          <RefreshControl
+            refreshing={loadingGet}
+            onRefresh={() => dispatch(getCustomersMini())}
+          />
+        }
+        style={{
+          flex: 1,
+          paddingHorizontal: 20,
+          backgroundColor: theme.colors.background
+        }}
+      >
+        {customersMini.map((customer) => (
+          <TouchableOpacity
+            onPress={() => {
+              toggle(customer.id);
+            }}
+            key={customer.id}
+            style={{
+              marginTop: 5,
+              borderRadius: 5,
+              padding: 10,
+              backgroundColor: 'white',
+              display: 'flex',
+              flexDirection: 'row',
+              elevation: 2,
+              alignItems: 'center'
+            }}
+          >
+            {multiple && (
+              <Checkbox
+                status={
+                  selectedIds.includes(customer.id) ? 'checked' : 'unchecked'
+                }
+                onPress={() => {
+                  toggle(customer.id);
+                }}
+              />
+            )}
             <View style={{ display: 'flex', flexDirection: 'column' }}>
               <Text variant={'titleMedium'}>{customer.name}</Text>
             </View>
             <Divider />
-          </TouchableOpacity>))
-      }</ScrollView>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 }

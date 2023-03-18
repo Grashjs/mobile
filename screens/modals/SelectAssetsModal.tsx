@@ -1,4 +1,10 @@
-import { Pressable, RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 import { View } from '../../components/Themed';
 import { RootStackScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +15,10 @@ import { AssetMiniDTO } from '../../models/asset';
 import { getAssetsMini } from '../../slices/asset';
 import { Checkbox, Divider, Text, useTheme } from 'react-native-paper';
 
-export default function SelectAssetsModal({ navigation, route }: RootStackScreenProps<'SelectAssets'>) {
+export default function SelectAssetsModal({
+  navigation,
+  route
+}: RootStackScreenProps<'SelectAssets'>) {
   const { onChange, selected, multiple } = route.params;
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
@@ -34,14 +43,20 @@ export default function SelectAssetsModal({ navigation, route }: RootStackScreen
   }, [selected]);
 
   useEffect(() => {
-    if (multiple) navigation.setOptions({
-      headerRight: () => <Pressable disabled={!selectedAssets.length} onPress={() => {
-        onChange(selectedAssets);
-        navigation.goBack();
-      }}><Text
-        variant='titleMedium'>{t('add')}
-      </Text></Pressable>
-    });
+    if (multiple)
+      navigation.setOptions({
+        headerRight: () => (
+          <Pressable
+            disabled={!selectedAssets.length}
+            onPress={() => {
+              onChange(selectedAssets);
+              navigation.goBack();
+            }}
+          >
+            <Text variant="titleMedium">{t('add')}</Text>
+          </Pressable>
+        )
+      });
   }, [selectedAssets]);
 
   useEffect(() => {
@@ -51,7 +66,7 @@ export default function SelectAssetsModal({ navigation, route }: RootStackScreen
   const onSelect = (ids: number[]) => {
     setSelectedIds(Array.from(new Set([...selectedIds, ...ids])));
     if (!multiple) {
-      onChange([assetsMini.find(asset => asset.id === ids[0])]);
+      onChange([assetsMini.find((asset) => asset.id === ids[0])]);
       navigation.goBack();
     }
   };
@@ -71,33 +86,51 @@ export default function SelectAssetsModal({ navigation, route }: RootStackScreen
     <View style={styles.container}>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={loadingGet} onRefresh={() => dispatch(getAssetsMini())} />}
-        style={{ flex: 1, paddingHorizontal: 20, backgroundColor: theme.colors.background }}>{
-        assetsMini.map(asset => (
-          <TouchableOpacity onPress={() => {
-            toggle(asset.id);
-          }} key={asset.id} style={{
-            marginTop: 5,
-            borderRadius: 5,
-            padding: 10,
-            backgroundColor: 'white',
-            display: 'flex',
-            flexDirection: 'row',
-            elevation: 2,
-            alignItems: 'center'
-          }}>
-            {multiple && <Checkbox
-              status={selectedIds.includes(asset.id) ? 'checked' : 'unchecked'}
-              onPress={() => {
-                toggle(asset.id);
-              }}
-            />}
+          <RefreshControl
+            refreshing={loadingGet}
+            onRefresh={() => dispatch(getAssetsMini())}
+          />
+        }
+        style={{
+          flex: 1,
+          paddingHorizontal: 20,
+          backgroundColor: theme.colors.background
+        }}
+      >
+        {assetsMini.map((asset) => (
+          <TouchableOpacity
+            onPress={() => {
+              toggle(asset.id);
+            }}
+            key={asset.id}
+            style={{
+              marginTop: 5,
+              borderRadius: 5,
+              padding: 10,
+              backgroundColor: 'white',
+              display: 'flex',
+              flexDirection: 'row',
+              elevation: 2,
+              alignItems: 'center'
+            }}
+          >
+            {multiple && (
+              <Checkbox
+                status={
+                  selectedIds.includes(asset.id) ? 'checked' : 'unchecked'
+                }
+                onPress={() => {
+                  toggle(asset.id);
+                }}
+              />
+            )}
             <View style={{ display: 'flex', flexDirection: 'column' }}>
               <Text variant={'titleMedium'}>{asset.name}</Text>
             </View>
             <Divider />
-          </TouchableOpacity>))
-      }</ScrollView>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 }

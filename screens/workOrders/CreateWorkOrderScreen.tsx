@@ -15,9 +15,9 @@ import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { formatWorkOrderValues, getWorkOrderFields } from '../../utils/fields';
 
 export default function CreateWorkOrderScreen({
-                                                navigation,
-                                                route
-                                              }: RootStackScreenProps<'AddWorkOrder'>) {
+  navigation,
+  route
+}: RootStackScreenProps<'AddWorkOrder'>) {
   const { t } = useTranslation();
   const [initialDueDate, setInitialDueDate] = useState<Date>(null);
   const { uploadFiles, getWOFieldsAndShapes } = useContext(
@@ -38,53 +38,60 @@ export default function CreateWorkOrderScreen({
   const getFieldsAndShapes = (): [Array<IField>, { [key: string]: any }] => {
     return getWOFieldsAndShapes(getWorkOrderFields(t), defaultShape);
   };
-  return (<View style={styles.container}>
-    <Form
-      fields={getFieldsAndShapes()[0]}
-      validation={Yup.object().shape(getFieldsAndShapes()[1])}
-      navigation={navigation}
-      submitText={t('save')}
-      values={{
-        requiredSignature: false,
-        dueDate: initialDueDate,
-        location: route.params?.location ? {
-          label: route.params.location.name,
-          value: route.params.location.id.toString()
-        } : null,
-        asset: route.params?.asset ? {
-          label: route.params.asset.name,
-          value: route.params.asset.id.toString()
-        } : null
-      }}
-      onChange={({ field, e }) => {
-      }}
-      onSubmit={async (values) => {
-        let formattedValues = formatWorkOrderValues(values);
-        return new Promise<void>((resolve, rej) => {
-          uploadFiles(formattedValues.files, formattedValues.image)
-            .then((files) => {
-              const imageAndFiles = getImageAndFiles(files);
-              formattedValues = {
-                ...formattedValues,
-                image: imageAndFiles.image,
-                files: imageAndFiles.files
-              };
-              dispatch(addWorkOrder(formattedValues))
-                .then(() => {
-                  onCreationSuccess();
-                  resolve();
-                })
-                .catch((err) => {
-                  onCreationFailure(err);
-                  rej();
-                });
-            })
-            .catch((err) => {
-              onCreationFailure(err);
-              rej();
-            });
-        });
-      }} /></View>);
+  return (
+    <View style={styles.container}>
+      <Form
+        fields={getFieldsAndShapes()[0]}
+        validation={Yup.object().shape(getFieldsAndShapes()[1])}
+        navigation={navigation}
+        submitText={t('save')}
+        values={{
+          requiredSignature: false,
+          dueDate: initialDueDate,
+          location: route.params?.location
+            ? {
+                label: route.params.location.name,
+                value: route.params.location.id.toString()
+              }
+            : null,
+          asset: route.params?.asset
+            ? {
+                label: route.params.asset.name,
+                value: route.params.asset.id.toString()
+              }
+            : null
+        }}
+        onChange={({ field, e }) => {}}
+        onSubmit={async (values) => {
+          let formattedValues = formatWorkOrderValues(values);
+          return new Promise<void>((resolve, rej) => {
+            uploadFiles(formattedValues.files, formattedValues.image)
+              .then((files) => {
+                const imageAndFiles = getImageAndFiles(files);
+                formattedValues = {
+                  ...formattedValues,
+                  image: imageAndFiles.image,
+                  files: imageAndFiles.files
+                };
+                dispatch(addWorkOrder(formattedValues))
+                  .then(() => {
+                    onCreationSuccess();
+                    resolve();
+                  })
+                  .catch((err) => {
+                    onCreationFailure(err);
+                    rej();
+                  });
+              })
+              .catch((err) => {
+                onCreationFailure(err);
+                rej();
+              });
+          });
+        }}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

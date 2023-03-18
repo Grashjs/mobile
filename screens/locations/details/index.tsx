@@ -6,7 +6,14 @@ import { useDispatch, useSelector } from '../../../store';
 import { useTranslation } from 'react-i18next';
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
-import { Button, Dialog, IconButton, Portal, Text, useTheme } from 'react-native-paper';
+import {
+  Button,
+  Dialog,
+  IconButton,
+  Portal,
+  Text,
+  useTheme
+} from 'react-native-paper';
 import { SheetManager } from 'react-native-actions-sheet';
 import { deleteLocation, getLocationDetails } from '../../../slices/location';
 import LoadingDialog from '../../../components/LoadingDialog';
@@ -18,13 +25,13 @@ import LocationAssets from './LocationAssets';
 import LocationFiles from './LocationFiles';
 
 export default function LocationDetailsHome({
-                                              navigation,
-                                              route
-                                            }: RootStackScreenProps<'LocationDetails'>) {
+  navigation,
+  route
+}: RootStackScreenProps<'LocationDetails'>) {
   const { id } = route.params;
 
   const { t } = useTranslation();
-  const { locationInfos, loadingGet } = useSelector(state => state.locations);
+  const { locationInfos, loadingGet } = useSelector((state) => state.locations);
   const location = locationInfos[id]?.location;
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -43,14 +50,16 @@ export default function LocationDetailsHome({
       case 'details':
         return <LocationDetails location={location} />;
       case 'work-orders':
-        return <LocationWorkOrders location={location} navigation={navigation} />;
+        return (
+          <LocationWorkOrders location={location} navigation={navigation} />
+        );
       case 'assets':
         return <LocationAssets location={location} navigation={navigation} />;
       case 'files':
         return <LocationFiles location={location} />;
     }
   };
-  const renderTabBar = props => (
+  const renderTabBar = (props) => (
     <TabBar
       {...props}
       scrollEnabled
@@ -66,18 +75,21 @@ export default function LocationDetailsHome({
     navigation.setOptions({
       title: location?.name ?? t('loading'),
       headerRight: () => (
-        <Pressable onPress={() => {
-          SheetManager.show('location-details-sheet', {
-            payload: {
-              onEdit: () => navigation.navigate('EditLocation', { location }),
-              onDelete: () => setOpenDelete(true),
-              onCreateWorkOrder: () => navigation.push('AddWorkOrder', { location }),
-              onCreateAsset: () => navigation.push('AddAsset', { location }),
-              location
-            }
-          });
-        }}>
-          <IconButton icon='dots-vertical' />
+        <Pressable
+          onPress={() => {
+            SheetManager.show('location-details-sheet', {
+              payload: {
+                onEdit: () => navigation.navigate('EditLocation', { location }),
+                onDelete: () => setOpenDelete(true),
+                onCreateWorkOrder: () =>
+                  navigation.push('AddWorkOrder', { location }),
+                onCreateAsset: () => navigation.push('AddAsset', { location }),
+                location
+              }
+            });
+          }}
+        >
+          <IconButton icon="dots-vertical" />
         </Pressable>
       )
     });
@@ -91,22 +103,26 @@ export default function LocationDetailsHome({
     showSnackBar(t('location_delete_failure'), 'error');
 
   const handleDelete = () => {
-    dispatch(deleteLocation(location?.id)).then(onDeleteSuccess).catch(onDeleteFailure);
+    dispatch(deleteLocation(location?.id))
+      .then(onDeleteSuccess)
+      .catch(onDeleteFailure);
     setOpenDelete(false);
   };
   const renderConfirmDelete = () => {
-    return <Portal>
-      <Dialog visible={openDelete} onDismiss={() => setOpenDelete(false)}>
-        <Dialog.Title>{t('confirmation')}</Dialog.Title>
-        <Dialog.Content>
-          <Text variant='bodyMedium'>{t('confirm_delete_location')}</Text>
-        </Dialog.Content>
-        <Dialog.Actions>
-          <Button onPress={() => setOpenDelete(false)}>{t('cancel')}</Button>
-          <Button onPress={handleDelete}>{t('to_delete')}</Button>
-        </Dialog.Actions>
-      </Dialog>
-    </Portal>;
+    return (
+      <Portal>
+        <Dialog visible={openDelete} onDismiss={() => setOpenDelete(false)}>
+          <Dialog.Title>{t('confirmation')}</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">{t('confirm_delete_location')}</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setOpenDelete(false)}>{t('cancel')}</Button>
+            <Button onPress={handleDelete}>{t('to_delete')}</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+    );
   };
   if (location)
     return (
@@ -121,15 +137,11 @@ export default function LocationDetailsHome({
         />
       </View>
     );
-  else return (
-    <LoadingDialog visible={loadingGet} />
-  );
+  else return <LoadingDialog visible={loadingGet} />;
 }
 
-const styles = StyleSheet.create(
-  {
-    container: {
-      flex: 1
-    }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
   }
-);
+});

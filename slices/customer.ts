@@ -19,7 +19,8 @@ interface CustomerState {
 
 const initialState: CustomerState = {
   customers: getInitialPage<Customer>(),
-  customerInfos: {}, customersMini: [],
+  customerInfos: {},
+  customersMini: [],
   currentPageNum: 0,
   lastPage: true,
   loadingGet: false
@@ -43,7 +44,9 @@ const slice = createSlice({
       action: PayloadAction<{ customers: Page<Customer> }>
     ) {
       const { customers } = action.payload;
-      state.customers.content = state.customers.content.concat(customers.content);
+      state.customers.content = state.customers.content.concat(
+        customers.content
+      );
       state.currentPageNum = state.currentPageNum + 1;
       state.lastPage = customers.last;
     },
@@ -103,57 +106,57 @@ export const reducer = slice.reducer;
 
 export const getCustomers =
   (criteria: SearchCriteria): AppThunk =>
-    async (dispatch) => {
-      try {
-        dispatch(slice.actions.setLoadingGet({ loading: true }));
-        const customers = await api.post<Page<Customer>>(
-          `${basePath}/search`,
-          criteria
-        );
-        dispatch(slice.actions.getCustomers({ customers }));
-      } finally {
-        dispatch(slice.actions.setLoadingGet({ loading: false }));
-      }
-    };
+  async (dispatch) => {
+    try {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
+      const customers = await api.post<Page<Customer>>(
+        `${basePath}/search`,
+        criteria
+      );
+      dispatch(slice.actions.getCustomers({ customers }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
+  };
 export const getMoreCustomers =
   (criteria: SearchCriteria, pageNum: number): AppThunk =>
-    async (dispatch) => {
-      criteria = { ...criteria, pageNum };
-      try {
-        dispatch(slice.actions.setLoadingGet({ loading: true }));
-        const customers = await api.post<Page<Customer>>(
-          `${basePath}/search`,
-          criteria
-        );
-        dispatch(slice.actions.getMoreCustomers({ customers }));
-      } finally {
-        dispatch(slice.actions.setLoadingGet({ loading: false }));
-      }
-    };
+  async (dispatch) => {
+    criteria = { ...criteria, pageNum };
+    try {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
+      const customers = await api.post<Page<Customer>>(
+        `${basePath}/search`,
+        criteria
+      );
+      dispatch(slice.actions.getMoreCustomers({ customers }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
+  };
 
 export const getCustomerDetails =
   (id: number): AppThunk =>
-    async (dispatch) => {
-      dispatch(slice.actions.setLoadingGet({ loading: true }));
-      const customer = await api.get<Customer>(`${basePath}/${id}`);
-      dispatch(
-        slice.actions.getCustomerDetails({
-          id,
-          customer
-        })
-      );
-      dispatch(slice.actions.setLoadingGet({ loading: false }));
-    };
+  async (dispatch) => {
+    dispatch(slice.actions.setLoadingGet({ loading: true }));
+    const customer = await api.get<Customer>(`${basePath}/${id}`);
+    dispatch(
+      slice.actions.getCustomerDetails({
+        id,
+        customer
+      })
+    );
+    dispatch(slice.actions.setLoadingGet({ loading: false }));
+  };
 
 export const editCustomer =
   (id: number, customer): AppThunk =>
-    async (dispatch) => {
-      const customerResponse = await api.patch<Customer>(
-        `${basePath}/${id}`,
-        customer
-      );
-      dispatch(slice.actions.editCustomer({ customer: customerResponse }));
-    };
+  async (dispatch) => {
+    const customerResponse = await api.patch<Customer>(
+      `${basePath}/${id}`,
+      customer
+    );
+    dispatch(slice.actions.editCustomer({ customer: customerResponse }));
+  };
 export const getCustomersMini = (): AppThunk => async (dispatch) => {
   dispatch(slice.actions.setLoadingGet({ loading: true }));
   const customers = await api.get<CustomerMiniDTO[]>('customers/mini');
@@ -162,19 +165,19 @@ export const getCustomersMini = (): AppThunk => async (dispatch) => {
 };
 export const addCustomer =
   (customer): AppThunk =>
-    async (dispatch) => {
-      const customerResponse = await api.post<Customer>('customers', customer);
-      dispatch(slice.actions.addCustomer({ customer: customerResponse }));
-    };
+  async (dispatch) => {
+    const customerResponse = await api.post<Customer>('customers', customer);
+    dispatch(slice.actions.addCustomer({ customer: customerResponse }));
+  };
 export const deleteCustomer =
   (id: number): AppThunk =>
-    async (dispatch) => {
-      const customerResponse = await api.deletes<{ success: boolean }>(
-        `customers/${id}`
-      );
-      const { success } = customerResponse;
-      if (success) {
-        dispatch(slice.actions.deleteCustomer({ id }));
-      }
-    };
+  async (dispatch) => {
+    const customerResponse = await api.deletes<{ success: boolean }>(
+      `customers/${id}`
+    );
+    const { success } = customerResponse;
+    if (success) {
+      dispatch(slice.actions.deleteCustomer({ id }));
+    }
+  };
 export default slice;

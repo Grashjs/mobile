@@ -1,4 +1,10 @@
-import { Pressable, RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 import { View } from '../../components/Themed';
 import { RootStackScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +15,10 @@ import Category, { CategoryMiniDTO } from '../../models/category';
 import { getCategories } from '../../slices/category';
 import { Checkbox, Divider, Text, useTheme } from 'react-native-paper';
 
-export default function SelectCategoriesModal({ navigation, route }: RootStackScreenProps<'SelectCategories'>) {
+export default function SelectCategoriesModal({
+  navigation,
+  route
+}: RootStackScreenProps<'SelectCategories'>) {
   const { onChange, selected, multiple, type } = route.params;
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
@@ -34,14 +43,20 @@ export default function SelectCategoriesModal({ navigation, route }: RootStackSc
   }, [selected]);
 
   useEffect(() => {
-    if (multiple) navigation.setOptions({
-      headerRight: () => <Pressable disabled={!selectedCategories.length} onPress={() => {
-        onChange(selectedCategories);
-        navigation.goBack();
-      }}><Text
-        variant='titleMedium'>{t('add')}
-      </Text></Pressable>
-    });
+    if (multiple)
+      navigation.setOptions({
+        headerRight: () => (
+          <Pressable
+            disabled={!selectedCategories.length}
+            onPress={() => {
+              onChange(selectedCategories);
+              navigation.goBack();
+            }}
+          >
+            <Text variant="titleMedium">{t('add')}</Text>
+          </Pressable>
+        )
+      });
   }, [selectedCategories]);
 
   useEffect(() => {
@@ -51,7 +66,7 @@ export default function SelectCategoriesModal({ navigation, route }: RootStackSc
   const onSelect = (ids: number[]) => {
     setSelectedIds(Array.from(new Set([...selectedIds, ...ids])));
     if (!multiple) {
-      onChange([currentCategories.find(category => category.id === ids[0])]);
+      onChange([currentCategories.find((category) => category.id === ids[0])]);
       navigation.goBack();
     }
   };
@@ -72,32 +87,46 @@ export default function SelectCategoriesModal({ navigation, route }: RootStackSc
       <ScrollView
         // refreshControl={
         //   <RefreshControl refreshing={loadingGet} onRefresh={() => dispatch(getCategories())} />}
-        style={{ flex: 1, paddingHorizontal: 20, backgroundColor: theme.colors.background }}>{
-        currentCategories.map(category => (
-          <TouchableOpacity onPress={() => {
-            toggle(category.id);
-          }} key={category.id} style={{
-            marginTop: 5,
-            borderRadius: 5,
-            padding: 10,
-            backgroundColor: 'white',
-            display: 'flex',
-            flexDirection: 'row',
-            elevation: 2,
-            alignItems: 'center'
-          }}>
-            {multiple && <Checkbox
-              status={selectedIds.includes(category.id) ? 'checked' : 'unchecked'}
-              onPress={() => {
-                toggle(category.id);
-              }}
-            />}
+        style={{
+          flex: 1,
+          paddingHorizontal: 20,
+          backgroundColor: theme.colors.background
+        }}
+      >
+        {currentCategories.map((category) => (
+          <TouchableOpacity
+            onPress={() => {
+              toggle(category.id);
+            }}
+            key={category.id}
+            style={{
+              marginTop: 5,
+              borderRadius: 5,
+              padding: 10,
+              backgroundColor: 'white',
+              display: 'flex',
+              flexDirection: 'row',
+              elevation: 2,
+              alignItems: 'center'
+            }}
+          >
+            {multiple && (
+              <Checkbox
+                status={
+                  selectedIds.includes(category.id) ? 'checked' : 'unchecked'
+                }
+                onPress={() => {
+                  toggle(category.id);
+                }}
+              />
+            )}
             <View style={{ display: 'flex', flexDirection: 'column' }}>
               <Text variant={'titleMedium'}>{category.name}</Text>
             </View>
             <Divider />
-          </TouchableOpacity>))
-      }</ScrollView>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 }

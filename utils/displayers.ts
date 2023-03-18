@@ -20,5 +20,7 @@ export const getTaskTypes = (t) => {
 };
 
 export const getUserInitials = (user: UserMiniDTO) => {
-  return `${user.firstName.charAt(0).toUpperCase()}${user.lastName.charAt(0).toUpperCase()}`;
+  return `${user.firstName.charAt(0).toUpperCase()}${user.lastName
+    .charAt(0)
+    .toUpperCase()}`;
 };

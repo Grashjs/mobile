@@ -6,8 +6,8 @@ export const formatSelectMultiple = (
 ) => {
   return array
     ? array.map(({ value }) => {
-      return { id: Number(value) };
-    })
+        return { id: Number(value) };
+      })
     : [];
 };
 

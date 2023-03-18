@@ -73,43 +73,43 @@ export const reducer = slice.reducer;
 
 export const getNotifications =
   (criteria: SearchCriteria): AppThunk =>
-    async (dispatch) => {
-      try {
-        dispatch(slice.actions.setLoadingGet({ loading: true }));
-        const notifications = await api.post<Page<Notification>>(
-          `${basePath}/search`,
-          criteria
-        );
-        dispatch(slice.actions.getNotifications({ notifications }));
-      } finally {
-        dispatch(slice.actions.setLoadingGet({ loading: false }));
-      }
-    };
+  async (dispatch) => {
+    try {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
+      const notifications = await api.post<Page<Notification>>(
+        `${basePath}/search`,
+        criteria
+      );
+      dispatch(slice.actions.getNotifications({ notifications }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
+  };
 
 export const getMoreNotifications =
   (criteria: SearchCriteria, pageNum: number): AppThunk =>
-    async (dispatch) => {
-      criteria = { ...criteria, pageNum };
-      try {
-        dispatch(slice.actions.setLoadingGet({ loading: true }));
-        const notifications = await api.post<Page<Notification>>(
-          `${basePath}/search`,
-          criteria
-        );
-        dispatch(slice.actions.getMoreNotifications({ notifications }));
-      } finally {
-        dispatch(slice.actions.setLoadingGet({ loading: false }));
-      }
-    };
+  async (dispatch) => {
+    criteria = { ...criteria, pageNum };
+    try {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
+      const notifications = await api.post<Page<Notification>>(
+        `${basePath}/search`,
+        criteria
+      );
+      dispatch(slice.actions.getMoreNotifications({ notifications }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
+  };
 export const editNotification =
   (id: number, notification): AppThunk =>
-    async (dispatch) => {
-      const notificationResponse = await api.patch<Notification>(
-        `${basePath}/${id}`,
-        notification
-      );
-      dispatch(
-        slice.actions.editNotification({ notification: notificationResponse })
-      );
-    };
+  async (dispatch) => {
+    const notificationResponse = await api.patch<Notification>(
+      `${basePath}/${id}`,
+      notification
+    );
+    dispatch(
+      slice.actions.editNotification({ notification: notificationResponse })
+    );
+  };
 export default slice;

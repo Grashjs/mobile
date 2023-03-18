@@ -18,9 +18,9 @@ import { patchTasks } from '../../slices/task';
 import useAuth from '../../hooks/useAuth';
 
 export default function EditAssetScreen({
-                                          navigation,
-                                          route
-                                        }: RootStackScreenProps<'EditAsset'>) {
+  navigation,
+  route
+}: RootStackScreenProps<'EditAsset'>) {
   const { t } = useTranslation();
   const { asset } = route.params;
   const { getFilteredFields } = useAuth();
@@ -40,97 +40,100 @@ export default function EditAssetScreen({
   const onEditFailure = (err) =>
     showSnackBar(t('asset_update_failure'), 'error');
 
-  return (<View style={styles.container}>
-    <Form
-      fields={getFilteredFields(getAssetFields(t))}
-      validation={Yup.object().shape(shape)}
-      navigation={navigation}
-      submitText={t('save')}
-      values={{
-        ...asset,
-        location: asset?.location
-          ? {
-            label: asset?.location.name,
-            value: asset?.location.id
-          }
-          : null,
-        category: asset?.category
-          ? {
-            label: asset.category.name,
-            value: asset.category.id
-          }
-          : null,
-        primaryUser: asset?.primaryUser
-          ? {
-            label: `${asset?.primaryUser.firstName} ${asset?.primaryUser.lastName}`,
-            value: asset?.primaryUser.id
-          }
-          : null,
-        assignedTo: asset?.assignedTo?.map((user) => {
-          return {
-            label: `${user.firstName} ${user.lastName}`,
-            value: user.id
-          };
-        }),
-        customers: asset?.customers?.map((customer) => {
-          return {
-            label: customer.name,
-            value: customer.id
-          };
-        }),
-        vendors: asset?.vendors?.map((vendor) => {
-          return {
-            label: vendor.companyName,
-            value: vendor.id
-          };
-        }),
-        teams: asset?.teams?.map((team) => {
-          return {
-            label: team.name,
-            value: team.id
-          };
-        }),
-        parts:
-          asset?.parts?.map((part) => {
+  return (
+    <View style={styles.container}>
+      <Form
+        fields={getFilteredFields(getAssetFields(t))}
+        validation={Yup.object().shape(shape)}
+        navigation={navigation}
+        submitText={t('save')}
+        values={{
+          ...asset,
+          location: asset?.location
+            ? {
+                label: asset?.location.name,
+                value: asset?.location.id
+              }
+            : null,
+          category: asset?.category
+            ? {
+                label: asset.category.name,
+                value: asset.category.id
+              }
+            : null,
+          primaryUser: asset?.primaryUser
+            ? {
+                label: `${asset?.primaryUser.firstName} ${asset?.primaryUser.lastName}`,
+                value: asset?.primaryUser.id
+              }
+            : null,
+          assignedTo: asset?.assignedTo?.map((user) => {
             return {
-              label: part.name,
-              value: part.id
+              label: `${user.firstName} ${user.lastName}`,
+              value: user.id
             };
-          }) ?? [],
-        parentAsset: asset?.parentAsset
-          ? {
-            label: asset.parentAsset.name,
-            value: asset.parentAsset.id
-          }
-          : null
-      }}
-      onChange={({ field, e }) => {
-      }}
-      onSubmit={async (values) => {
-        let formattedValues = formatAssetValues(values);
-        const files = formattedValues.files.find((file) => file.id)
-          ? []
-          : formattedValues.files;
-        return new Promise<void>((resolve, rej) => {
-          uploadFiles(files, formattedValues.image)
-            .then((files) => {
-              const imageAndFiles = getImageAndFiles(files, asset.image);
-              formattedValues = {
-                ...formattedValues,
-                image: imageAndFiles.image,
-                files: [...asset.files, ...imageAndFiles.files]
+          }),
+          customers: asset?.customers?.map((customer) => {
+            return {
+              label: customer.name,
+              value: customer.id
+            };
+          }),
+          vendors: asset?.vendors?.map((vendor) => {
+            return {
+              label: vendor.companyName,
+              value: vendor.id
+            };
+          }),
+          teams: asset?.teams?.map((team) => {
+            return {
+              label: team.name,
+              value: team.id
+            };
+          }),
+          parts:
+            asset?.parts?.map((part) => {
+              return {
+                label: part.name,
+                value: part.id
               };
-              dispatch(editAsset(asset.id, formattedValues))
-                .then(onEditSuccess)
-                .catch(onEditFailure)
-                .finally(resolve);
-            })
-            .catch((err) => {
-              onEditFailure(err);
-              rej(err);
-            });
-        });
-      }} /></View>);
+            }) ?? [],
+          parentAsset: asset?.parentAsset
+            ? {
+                label: asset.parentAsset.name,
+                value: asset.parentAsset.id
+              }
+            : null
+        }}
+        onChange={({ field, e }) => {}}
+        onSubmit={async (values) => {
+          let formattedValues = formatAssetValues(values);
+          const files = formattedValues.files.find((file) => file.id)
+            ? []
+            : formattedValues.files;
+          return new Promise<void>((resolve, rej) => {
+            uploadFiles(files, formattedValues.image)
+              .then((files) => {
+                const imageAndFiles = getImageAndFiles(files, asset.image);
+                formattedValues = {
+                  ...formattedValues,
+                  image: imageAndFiles.image,
+                  files: [...asset.files, ...imageAndFiles.files]
+                };
+                dispatch(editAsset(asset.id, formattedValues))
+                  .then(onEditSuccess)
+                  .catch(onEditFailure)
+                  .finally(resolve);
+              })
+              .catch((err) => {
+                onEditFailure(err);
+                rej(err);
+              });
+          });
+        }}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

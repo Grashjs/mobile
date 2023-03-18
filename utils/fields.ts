@@ -120,13 +120,14 @@ export const formatWorkOrderValues = (values) => {
   newValues.assignedTo = formatSelectMultiple(newValues.assignedTo);
   newValues.customers = formatSelectMultiple(newValues.customers);
   newValues.category = formatSelect(newValues.category);
-  newValues.tasks = newValues.tasks?.map(object => {
-    if (isTask(object)) {
-      return object;
-    } else {
-      return object.value;
-    }
-  }) ?? [];
+  newValues.tasks =
+    newValues.tasks?.map((object) => {
+      if (isTask(object)) {
+        return object;
+      } else {
+        return object.value;
+      }
+    }) ?? [];
   return newValues;
 };
 export const formatRequestValues = (values) => {
@@ -292,7 +293,13 @@ export const getAssetFields = (t): Array<IField> => {
       type: 'titleGroupField',
       label: t('structure')
     },
-    { name: 'parts', type: 'select', type2: 'part', label: t('parts'), multiple: true },
+    {
+      name: 'parts',
+      type: 'select',
+      type2: 'part',
+      label: t('parts'),
+      multiple: true
+    },
     {
       name: 'parentAsset',
       type: 'select',
@@ -780,5 +787,4 @@ export const getTeamFields = (t): IField[] => {
       placeholder: t('people_in_team')
     }
   ];
-  ;
 };

@@ -6,13 +6,20 @@ import { AuthStackScreenProps, RootTabScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
 import { Text } from 'react-native-paper';
 
-export default function VerifyScreen({ navigation }: AuthStackScreenProps<'Welcome'>) {
+export default function VerifyScreen({
+  navigation
+}: AuthStackScreenProps<'Welcome'>) {
   const { t } = useTranslation();
   return (
     <View style={styles.container}>
-      <Text variant='labelLarge'>{t('verify_email_description')}</Text>
-      <Button style={{ marginTop: 20 }} mode='contained' onPress={() => navigation.navigate('Login')}
-      >{t('login')}</Button>
+      <Text variant="labelLarge">{t('verify_email_description')}</Text>
+      <Button
+        style={{ marginTop: 20 }}
+        mode="contained"
+        onPress={() => navigation.navigate('Login')}
+      >
+        {t('login')}
+      </Button>
     </View>
   );
 }

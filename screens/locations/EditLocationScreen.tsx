@@ -18,9 +18,9 @@ import { patchTasks } from '../../slices/task';
 import useAuth from '../../hooks/useAuth';
 
 export default function EditLocationScreen({
-                                             navigation,
-                                             route
-                                           }: RootStackScreenProps<'EditLocation'>) {
+  navigation,
+  route
+}: RootStackScreenProps<'EditLocation'>) {
   const { t } = useTranslation();
   const { location } = route.params;
   const { getFilteredFields } = useAuth();
@@ -48,82 +48,82 @@ export default function EditLocationScreen({
   const onEditFailure = (err) =>
     showSnackBar(t('location_update_failure'), 'error');
 
-  return (<View style={styles.container}>
-    <Form
-      fields={getEditFields()}
-      validation={Yup.object().shape(shape)}
-      navigation={navigation}
-      submitText={t('save')}
-      values={{
-        ...location,
-        title: location?.name,
-        workers: location?.workers.map((worker) => {
-          return {
-            label: `${worker.firstName} ${worker.lastName}`,
-            value: worker.id
-          };
-        }),
-        teams: location?.teams.map((team) => {
-          return {
-            label: team.name,
-            value: team.id
-          };
-        }),
-        vendors: location?.vendors.map((vendor) => {
-          return {
-            label: vendor.companyName,
-            value: vendor.id
-          };
-        }),
-        customers: location?.customers.map((customer) => {
-          return {
-            label: customer.name,
-            value: customer.id
-          };
-        }),
-        coordinates: location?.longitude
-          ? {
-            lng: location.longitude,
-            lat: location.latitude
-          }
-          : null
-      }}
-      onChange={({ field, e }) => {
-      }}
-      onSubmit={async (values) => {
-        let formattedValues = formatLocationValues(values);
-        //differentiate files from api and formattedValues
-        const files = formattedValues.files.find((file) => file.id)
-          ? []
-          : formattedValues.files;
-        return new Promise<void>((resolve, rej) => {
-          uploadFiles(files, formattedValues.image)
-            .then((files) => {
-              const imageAndFiles = getImageAndFiles(
-                files,
-                location.image
-              );
-              formattedValues = {
-                ...formattedValues,
-                image: imageAndFiles.image,
-                files: [...location.files, ...imageAndFiles.files]
-              };
-              dispatch(editLocation(location.id, formattedValues))
-                .then(() => {
-                  resolve();
-                  onEditSuccess();
-                })
-                .catch((err) => {
-                  onEditFailure(err);
-                  rej(err);
-                });
-            })
-            .catch((err) => {
-              onEditFailure(err);
-              rej(err);
-            });
-        });
-      }} /></View>);
+  return (
+    <View style={styles.container}>
+      <Form
+        fields={getEditFields()}
+        validation={Yup.object().shape(shape)}
+        navigation={navigation}
+        submitText={t('save')}
+        values={{
+          ...location,
+          title: location?.name,
+          workers: location?.workers.map((worker) => {
+            return {
+              label: `${worker.firstName} ${worker.lastName}`,
+              value: worker.id
+            };
+          }),
+          teams: location?.teams.map((team) => {
+            return {
+              label: team.name,
+              value: team.id
+            };
+          }),
+          vendors: location?.vendors.map((vendor) => {
+            return {
+              label: vendor.companyName,
+              value: vendor.id
+            };
+          }),
+          customers: location?.customers.map((customer) => {
+            return {
+              label: customer.name,
+              value: customer.id
+            };
+          }),
+          coordinates: location?.longitude
+            ? {
+                lng: location.longitude,
+                lat: location.latitude
+              }
+            : null
+        }}
+        onChange={({ field, e }) => {}}
+        onSubmit={async (values) => {
+          let formattedValues = formatLocationValues(values);
+          //differentiate files from api and formattedValues
+          const files = formattedValues.files.find((file) => file.id)
+            ? []
+            : formattedValues.files;
+          return new Promise<void>((resolve, rej) => {
+            uploadFiles(files, formattedValues.image)
+              .then((files) => {
+                const imageAndFiles = getImageAndFiles(files, location.image);
+                formattedValues = {
+                  ...formattedValues,
+                  image: imageAndFiles.image,
+                  files: [...location.files, ...imageAndFiles.files]
+                };
+                dispatch(editLocation(location.id, formattedValues))
+                  .then(() => {
+                    resolve();
+                    onEditSuccess();
+                  })
+                  .catch((err) => {
+                    onEditFailure(err);
+                    rej(err);
+                  });
+              })
+              .catch((err) => {
+                onEditFailure(err);
+                rej(err);
+              });
+          });
+        }}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

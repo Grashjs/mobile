@@ -8,10 +8,20 @@ import { phoneRegExp } from '../../utils/validators';
 import useAuth from '../../hooks/useAuth';
 import { IS_LOCALHOST } from '../../config';
 import { useContext, useState } from 'react';
-import { Button, Checkbox, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
+import {
+  Button,
+  Checkbox,
+  HelperText,
+  Snackbar,
+  Text,
+  TextInput,
+  useTheme
+} from 'react-native-paper';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 
-export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Register'>) {
+export default function RegisterScreen({
+  navigation
+}: AuthStackScreenProps<'Register'>) {
   const { t } = useTranslation();
   const { register } = useAuth();
   const { showSnackBar } = useContext(CustomSnackBarContext);
@@ -80,15 +90,15 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
           }}
         >
           {({
-              errors,
-              handleBlur,
-              handleChange,
-              handleSubmit,
-              isSubmitting,
-              touched,
-              values,
-              setFieldValue
-            }) => (
+            errors,
+            handleBlur,
+            handleChange,
+            handleSubmit,
+            isSubmitting,
+            touched,
+            values,
+            setFieldValue
+          }) => (
             <View>
               <TextInput
                 error={Boolean(touched.firstName && errors.firstName)}
@@ -96,40 +106,56 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
                 onBlur={handleBlur('firstName')}
                 onChangeText={handleChange('firstName')}
                 value={values.firstName}
-                mode='outlined'
+                mode="outlined"
               />
-              <HelperText type='error'
-                          visible={Boolean(touched.firstName && errors.firstName)}>{errors.firstName?.toString()}</HelperText>
+              <HelperText
+                type="error"
+                visible={Boolean(touched.firstName && errors.firstName)}
+              >
+                {errors.firstName?.toString()}
+              </HelperText>
               <TextInput
                 error={Boolean(touched.lastName && errors.lastName)}
                 label={t('last_name')}
                 onBlur={handleBlur('lastName')}
                 onChangeText={handleChange('lastName')}
                 value={values.lastName}
-                mode='outlined'
+                mode="outlined"
               />
-              <HelperText type='error'
-                          visible={Boolean(touched.lastName && errors.lastName)}>{errors.lastName?.toString()}</HelperText>
+              <HelperText
+                type="error"
+                visible={Boolean(touched.lastName && errors.lastName)}
+              >
+                {errors.lastName?.toString()}
+              </HelperText>
               <TextInput
                 error={Boolean(touched.email && errors.email)}
                 label={t('email')}
                 onBlur={handleBlur('email')}
                 onChangeText={handleChange('email')}
                 value={values.email}
-                mode='outlined'
+                mode="outlined"
               />
-              <HelperText type='error'
-                          visible={Boolean(touched.email && errors.email)}>{errors.email?.toString()}</HelperText>
+              <HelperText
+                type="error"
+                visible={Boolean(touched.email && errors.email)}
+              >
+                {errors.email?.toString()}
+              </HelperText>
               <TextInput
                 error={Boolean(touched.phone && errors.phone)}
                 label={t('phone')}
                 onBlur={handleBlur('phone')}
                 onChangeText={handleChange('phone')}
                 value={values.phone}
-                mode='outlined'
+                mode="outlined"
               />
-              <HelperText type='error'
-                          visible={Boolean(touched.phone && errors.phone)}>{errors.phone?.toString()}</HelperText>
+              <HelperText
+                type="error"
+                visible={Boolean(touched.phone && errors.phone)}
+              >
+                {errors.phone?.toString()}
+              </HelperText>
               <TextInput
                 error={Boolean(touched.password && errors.password)}
                 label={t('password')}
@@ -137,48 +163,66 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
                 onChangeText={handleChange('password')}
                 value={values.password}
                 secureTextEntry={true}
-                mode='outlined'
+                mode="outlined"
               />
-              <HelperText type='error'
-                          visible={Boolean(touched.password && errors.password)}>{errors.password?.toString()}</HelperText>
+              <HelperText
+                type="error"
+                visible={Boolean(touched.password && errors.password)}
+              >
+                {errors.password?.toString()}
+              </HelperText>
               <TextInput
                 error={Boolean(touched.companyName && errors.companyName)}
                 label={t('companyName')}
                 onBlur={handleBlur('companyName')}
                 onChangeText={handleChange('companyName')}
                 value={values.companyName}
-                mode='outlined'
+                mode="outlined"
               />
-              <HelperText type='error'
-                          visible={Boolean(touched.companyName && errors.companyName)}>{errors.companyName?.toString()}</HelperText>
+              <HelperText
+                type="error"
+                visible={Boolean(touched.companyName && errors.companyName)}
+              >
+                {errors.companyName?.toString()}
+              </HelperText>
               <TextInput
-                error={Boolean(
-                  touched.employeesCount && errors.employeesCount
-                )}
+                error={Boolean(touched.employeesCount && errors.employeesCount)}
                 label={t('employeesCount')}
                 onBlur={handleBlur('employeesCount')}
                 onChangeText={handleChange('employeesCount')}
                 value={values.employeesCount}
-                mode='outlined'
+                mode="outlined"
               />
-              <HelperText type='error'
-                          visible={Boolean(touched.employeesCount && errors.employeesCount)}>{errors.employeesCount?.toString()}</HelperText>
+              <HelperText
+                type="error"
+                visible={Boolean(
+                  touched.employeesCount && errors.employeesCount
+                )}
+              >
+                {errors.employeesCount?.toString()}
+              </HelperText>
               <View style={styles.checkboxContainer}>
                 <Checkbox
                   status={values.terms ? 'checked' : 'unchecked'}
                   color={theme.colors.primary}
                   onPress={(event) => setFieldValue('terms', !values.terms)}
                 />
-                <View style={styles.row}><Text>{t('i_accept')}</Text>
-                  <Text style={{ color: theme.colors.primary }}>{` ${t('terms_conditions')}`}</Text></View>
+                <View style={styles.row}>
+                  <Text>{t('i_accept')}</Text>
+                  <Text style={{ color: theme.colors.primary }}>{` ${t(
+                    'terms_conditions'
+                  )}`}</Text>
+                </View>
               </View>
-              <HelperText type='error' visible={!!errors.terms}>{errors.terms?.toString()}</HelperText>
+              <HelperText type="error" visible={!!errors.terms}>
+                {errors.terms?.toString()}
+              </HelperText>
               <Button
                 color={theme.colors.primary}
                 onPress={() => handleSubmit()}
                 loading={isSubmitting}
                 disabled={isSubmitting}
-                mode='contained'
+                mode="contained"
               >
                 {t('create_your_account')}
               </Button>
@@ -187,8 +231,7 @@ export default function RegisterScreen({ navigation }: AuthStackScreenProps<'Reg
         </Formik>
       </ScrollView>
     </View>
-  )
-    ;
+  );
 }
 
 const styles = StyleSheet.create({
@@ -216,7 +259,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center'
-  }, row: {
+  },
+  row: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center'

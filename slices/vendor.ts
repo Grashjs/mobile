@@ -96,53 +96,53 @@ export const reducer = slice.reducer;
 
 export const getVendors =
   (criteria: SearchCriteria): AppThunk =>
-    async (dispatch) => {
-      try {
-        dispatch(slice.actions.setLoadingGet({ loading: true }));
-        const vendors = await api.post<Page<Vendor>>(
-          `${basePath}/search`,
-          criteria
-        );
-        dispatch(slice.actions.getVendors({ vendors }));
-      } finally {
-        dispatch(slice.actions.setLoadingGet({ loading: false }));
-      }
-    };
+  async (dispatch) => {
+    try {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
+      const vendors = await api.post<Page<Vendor>>(
+        `${basePath}/search`,
+        criteria
+      );
+      dispatch(slice.actions.getVendors({ vendors }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
+  };
 export const getMoreVendors =
   (criteria: SearchCriteria, pageNum: number): AppThunk =>
-    async (dispatch) => {
-      criteria = { ...criteria, pageNum };
-      try {
-        dispatch(slice.actions.setLoadingGet({ loading: true }));
-        const vendors = await api.post<Page<Vendor>>(
-          `${basePath}/search`,
-          criteria
-        );
-        dispatch(slice.actions.getMoreVendors({ vendors }));
-      } finally {
-        dispatch(slice.actions.setLoadingGet({ loading: false }));
-      }
-    };
+  async (dispatch) => {
+    criteria = { ...criteria, pageNum };
+    try {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
+      const vendors = await api.post<Page<Vendor>>(
+        `${basePath}/search`,
+        criteria
+      );
+      dispatch(slice.actions.getMoreVendors({ vendors }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
+  };
 export const getVendorDetails =
   (id: number): AppThunk =>
-    async (dispatch) => {
-      dispatch(slice.actions.setLoadingGet({ loading: true }));
-      const vendor = await api.get<Vendor>(`${basePath}/${id}`);
-      dispatch(
-        slice.actions.getVendorDetails({
-          id,
-          vendor
-        })
-      );
-      dispatch(slice.actions.setLoadingGet({ loading: false }));
-    };
+  async (dispatch) => {
+    dispatch(slice.actions.setLoadingGet({ loading: true }));
+    const vendor = await api.get<Vendor>(`${basePath}/${id}`);
+    dispatch(
+      slice.actions.getVendorDetails({
+        id,
+        vendor
+      })
+    );
+    dispatch(slice.actions.setLoadingGet({ loading: false }));
+  };
 
 export const editVendor =
   (id: number, vendor): AppThunk =>
-    async (dispatch) => {
-      const vendorResponse = await api.patch<Vendor>(`${basePath}/${id}`, vendor);
-      dispatch(slice.actions.editVendor({ vendor: vendorResponse }));
-    };
+  async (dispatch) => {
+    const vendorResponse = await api.patch<Vendor>(`${basePath}/${id}`, vendor);
+    dispatch(slice.actions.editVendor({ vendor: vendorResponse }));
+  };
 export const getVendorsMini = (): AppThunk => async (dispatch) => {
   dispatch(slice.actions.setLoadingGet({ loading: true }));
   const vendors = await api.get<Vendor[]>('vendors/mini');
@@ -151,20 +151,20 @@ export const getVendorsMini = (): AppThunk => async (dispatch) => {
 };
 export const addVendor =
   (vendor): AppThunk =>
-    async (dispatch) => {
-      const vendorResponse = await api.post<Vendor>('vendors', vendor);
-      dispatch(slice.actions.addVendor({ vendor: vendorResponse }));
-    };
+  async (dispatch) => {
+    const vendorResponse = await api.post<Vendor>('vendors', vendor);
+    dispatch(slice.actions.addVendor({ vendor: vendorResponse }));
+  };
 export const deleteVendor =
   (id: number): AppThunk =>
-    async (dispatch) => {
-      const vendorResponse = await api.deletes<{ success: boolean }>(
-        `vendors/${id}`
-      );
-      const { success } = vendorResponse;
-      if (success) {
-        dispatch(slice.actions.deleteVendor({ id }));
-      }
-    };
+  async (dispatch) => {
+    const vendorResponse = await api.deletes<{ success: boolean }>(
+      `vendors/${id}`
+    );
+    const { success } = vendorResponse;
+    if (success) {
+      dispatch(slice.actions.deleteVendor({ id }));
+    }
+  };
 
 export default slice;

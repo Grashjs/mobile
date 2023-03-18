@@ -1,38 +1,61 @@
 import { RootStackParamList } from '../types';
 import { NotificationType } from '../models/notification';
 
-export const getAssetUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+export const getAssetUrl = (
+  id
+): { route: keyof RootStackParamList; params: {} } => {
   return { route: 'AssetDetails', params: { id } };
 };
-export const getLocationUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+export const getLocationUrl = (
+  id
+): { route: keyof RootStackParamList; params: {} } => {
   return { route: 'LocationDetails', params: { id } };
 };
-export const getTeamUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+export const getTeamUrl = (
+  id
+): { route: keyof RootStackParamList; params: {} } => {
   return { route: 'TeamDetails', params: { id } };
 };
-export const getRequestUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+export const getRequestUrl = (
+  id
+): { route: keyof RootStackParamList; params: {} } => {
   return { route: 'RequestDetails', params: { id } };
 };
-export const getWorkOrderUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+export const getWorkOrderUrl = (
+  id
+): { route: keyof RootStackParamList; params: {} } => {
   return { route: 'WODetails', params: { id } };
 };
-export const getPartUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+export const getPartUrl = (
+  id
+): { route: keyof RootStackParamList; params: {} } => {
   return { route: 'PartDetails', params: { id } };
 };
-export const getMeterUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+export const getMeterUrl = (
+  id
+): { route: keyof RootStackParamList; params: {} } => {
   return { route: 'MeterDetails', params: { id } };
 };
-export const getUserUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+export const getUserUrl = (
+  id
+): { route: keyof RootStackParamList; params: {} } => {
   return { route: 'UserDetails', params: { id } };
 };
-export const getCustomerUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+export const getCustomerUrl = (
+  id
+): { route: keyof RootStackParamList; params: {} } => {
   return { route: 'CustomerDetails', params: { id } };
 };
-export const getVendorUrl = (id): { route: keyof RootStackParamList, params: {} } => {
+export const getVendorUrl = (
+  id
+): { route: keyof RootStackParamList; params: {} } => {
   return { route: 'VendorDetails', params: { id } };
 };
 
-export const getNotificationUrl = (type: NotificationType, id: number): { route: keyof RootStackParamList, params: {} } => {
+export const getNotificationUrl = (
+  type: NotificationType,
+  id: number
+): { route: keyof RootStackParamList; params: {} } => {
   let url;
   switch (type) {
     case 'INFO':

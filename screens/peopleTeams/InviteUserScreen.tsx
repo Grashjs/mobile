@@ -1,7 +1,14 @@
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import { View } from '../../components/Themed';
-import { Button, HelperText, List, RadioButton, TextInput, useTheme } from 'react-native-paper';
+import {
+  Button,
+  HelperText,
+  List,
+  RadioButton,
+  TextInput,
+  useTheme
+} from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
@@ -13,7 +20,9 @@ import { inviteUsers } from '../../slices/user';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { RootStackScreenProps } from '../../types';
 
-export default function InviteUserScreen({ navigation }: RootStackScreenProps<'AddUser'>) {
+export default function InviteUserScreen({
+  navigation
+}: RootStackScreenProps<'AddUser'>) {
   const theme = useTheme();
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -25,7 +34,9 @@ export default function InviteUserScreen({ navigation }: RootStackScreenProps<'A
   useEffect(() => {
     dispatch(getRoles());
   }, []);
-  const defaultRoles: Partial<Record<RoleCode, { name: string; description: string }>> = {
+  const defaultRoles: Partial<
+    Record<RoleCode, { name: string; description: string }>
+  > = {
     ADMIN: {
       name: 'ADMIN_name',
       description: 'ADMIN_description'
@@ -68,48 +79,71 @@ export default function InviteUserScreen({ navigation }: RootStackScreenProps<'A
           navigation.goBack();
           showSnackBar(t('user_invite_success'), 'success');
         })
-        .catch((err) =>
-          showSnackBar(t('user_invite_failure'), 'error')
-        )
+        .catch((err) => showSnackBar(t('user_invite_failure'), 'error'))
         .finally(() => setIsInviteSubmitting(false));
     };
     if (selectedRole) {
       if (emailRegExp.test(email)) {
         invite([email]);
       } else showSnackBar(t('invalid_email'), 'error');
-    } else
-      showSnackBar(t('please_select_role'), 'error');
-
+    } else showSnackBar(t('please_select_role'), 'error');
   };
   return (
-    <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background }}
-                refreshControl={
-                  <RefreshControl refreshing={loadingGet} onRefresh={() => dispatch(getRoles())}
-                                  colors={[theme.colors.primary]} />}>
+    <ScrollView
+      style={{ ...styles.container, backgroundColor: theme.colors.background }}
+      refreshControl={
+        <RefreshControl
+          refreshing={loadingGet}
+          onRefresh={() => dispatch(getRoles())}
+          colors={[theme.colors.primary]}
+        />
+      }
+    >
       <View style={{ padding: 20 }}>
         <TextInput
           error={!emailRegExp.test(email)}
           label={t('email')}
-          onChangeText={(text) => (setEmail(text))}
+          onChangeText={(text) => setEmail(text)}
           value={email}
-          mode='outlined' />
-        {!emailRegExp.test(email) && <HelperText type='error'>{t('invalid_email')}</HelperText>}
-        {getOrderedRoles().map((role, index) => (<View>
-          <List.Item title={role.code === 'USER_CREATED'
-            ? role.name
-            : t(defaultRoles[role.code].name)} description={role.code === 'USER_CREATED'
-            ? role.description
-            : t(defaultRoles[role.code].description)}
-                     descriptionNumberOfLines={10}
-                     onPress={() => setSelectedRole(role.id)}
-                     left={props => <RadioButton
-                       value='first'
-                       status={selectedRole === role.id ? 'checked' : 'unchecked'}
-                       onPress={() => setSelectedRole(role.id)}
-                     />} />
-        </View>))}
-        <Button disabled={isInviteSubmitting} loading={isInviteSubmitting} onPress={onInvite} style={{ marginTop: 20 }}
-                mode='contained'>{t('invite')}</Button>
+          mode="outlined"
+        />
+        {!emailRegExp.test(email) && (
+          <HelperText type="error">{t('invalid_email')}</HelperText>
+        )}
+        {getOrderedRoles().map((role, index) => (
+          <View>
+            <List.Item
+              title={
+                role.code === 'USER_CREATED'
+                  ? role.name
+                  : t(defaultRoles[role.code].name)
+              }
+              description={
+                role.code === 'USER_CREATED'
+                  ? role.description
+                  : t(defaultRoles[role.code].description)
+              }
+              descriptionNumberOfLines={10}
+              onPress={() => setSelectedRole(role.id)}
+              left={(props) => (
+                <RadioButton
+                  value="first"
+                  status={selectedRole === role.id ? 'checked' : 'unchecked'}
+                  onPress={() => setSelectedRole(role.id)}
+                />
+              )}
+            />
+          </View>
+        ))}
+        <Button
+          disabled={isInviteSubmitting}
+          loading={isInviteSubmitting}
+          onPress={onInvite}
+          style={{ marginTop: 20 }}
+          mode="contained"
+        >
+          {t('invite')}
+        </Button>
       </View>
     </ScrollView>
   );

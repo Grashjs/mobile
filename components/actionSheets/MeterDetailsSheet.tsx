@@ -1,4 +1,7 @@
-import ActionSheet, { ActionSheetRef, SheetProps } from 'react-native-actions-sheet';
+import ActionSheet, {
+  ActionSheetRef,
+  SheetProps
+} from 'react-native-actions-sheet';
 import { View } from 'react-native';
 import { Divider, List, Text, useTheme } from 'react-native-paper';
 import * as React from 'react';
@@ -10,7 +13,9 @@ import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
 import Meter from '../../models/meter';
 
-export default function MeterDetailsSheet(props: SheetProps<{ onEdit: () => void; onDelete: () => void; meter: Meter; }>) {
+export default function MeterDetailsSheet(
+  props: SheetProps<{ onEdit: () => void; onDelete: () => void; meter: Meter }>
+) {
   const { t } = useTranslation();
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const theme = useTheme();
@@ -27,7 +32,6 @@ export default function MeterDetailsSheet(props: SheetProps<{ onEdit: () => void
       icon: 'pencil',
       onPress: props.payload.onEdit,
       visible: hasEditPermission(PermissionEntity.METERS, props.payload.meter)
-
     },
     {
       title: t('to_delete'),
@@ -43,23 +47,24 @@ export default function MeterDetailsSheet(props: SheetProps<{ onEdit: () => void
       <View style={{ padding: 15 }}>
         <Divider />
         <List.Section>
-          {options.filter(option => option.visible).map((entity, index) => (
-            <List.Item
-              key={index}
-              titleStyle={{ color: entity.color }}
-              title={entity.title}
-              left={() => (
-                <List.Icon icon={entity.icon} color={entity.color} />
-              )}
-              onPress={() => {
-                actionSheetRef.current.hide();
-                entity.onPress();
-              }}
-            />
-          ))}
+          {options
+            .filter((option) => option.visible)
+            .map((entity, index) => (
+              <List.Item
+                key={index}
+                titleStyle={{ color: entity.color }}
+                title={entity.title}
+                left={() => (
+                  <List.Icon icon={entity.icon} color={entity.color} />
+                )}
+                onPress={() => {
+                  actionSheetRef.current.hide();
+                  entity.onPress();
+                }}
+              />
+            ))}
         </List.Section>
       </View>
     </ActionSheet>
   );
-  ;
 }

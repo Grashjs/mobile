@@ -1,4 +1,9 @@
-import { Pressable, ScrollView, StyleSheet, useWindowDimensions } from 'react-native';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions
+} from 'react-native';
 import { View } from '../../components/Themed';
 import { RootStackScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
@@ -7,89 +12,140 @@ import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import { useDispatch, useSelector } from '../../store';
 import { PartMiniDTO } from '../../models/part';
 import { getPartsMini } from '../../slices/part';
-import { ActivityIndicator, Button, Checkbox, Text, useTheme } from 'react-native-paper';
+import {
+  ActivityIndicator,
+  Button,
+  Checkbox,
+  Text,
+  useTheme
+} from 'react-native-paper';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import * as React from 'react';
 import { getMultiParts } from '../../slices/multipart';
 import SetType from '../../models/setType';
 
 const PartsRoute = ({
-                      toggle,
-                      partsMini,
-                      selectedIds
-                    }: { toggle: (id: number) => void; partsMini: PartMiniDTO[]; selectedIds: number[] }) => {
+  toggle,
+  partsMini,
+  selectedIds
+}: {
+  toggle: (id: number) => void;
+  partsMini: PartMiniDTO[];
+  selectedIds: number[];
+}) => {
   const { getFormattedCurrency } = useContext(CompanySettingsContext);
   const { t } = useTranslation();
   return (
-
-    <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>{
-      partsMini.map(part => (
-        <View key={part.id} style={{
-          marginTop: 5,
-          padding: 10,
-          display: 'flex',
-          borderRadius: 5,
-          flexDirection: 'row',
-          elevation: 2,
-          justifyContent: 'space-between'
-        }}>
+    <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
+      {partsMini.map((part) => (
+        <View
+          key={part.id}
+          style={{
+            marginTop: 5,
+            padding: 10,
+            display: 'flex',
+            borderRadius: 5,
+            flexDirection: 'row',
+            elevation: 2,
+            justifyContent: 'space-between'
+          }}
+        >
           <Checkbox
             status={selectedIds.includes(part.id) ? 'checked' : 'unchecked'}
             onPress={() => {
               toggle(part.id);
             }}
           />
-          <View style={{ display: 'flex', flexDirection: 'column', width: '50%' }}>
+          <View
+            style={{ display: 'flex', flexDirection: 'column', width: '50%' }}
+          >
             <Text variant={'labelMedium'}>{part.name}</Text>
-            <Text variant={'bodyMedium'}>{getFormattedCurrency(part.cost)}</Text>
+            <Text variant={'bodyMedium'}>
+              {getFormattedCurrency(part.cost)}
+            </Text>
           </View>
-          <Button style={{ width: '40%' }} mode='outlined' buttonColor={'white'}>{t('details')}</Button>
-        </View>))
-    }</ScrollView>
+          <Button
+            style={{ width: '40%' }}
+            mode="outlined"
+            buttonColor={'white'}
+          >
+            {t('details')}
+          </Button>
+        </View>
+      ))}
+    </ScrollView>
   );
 };
 
 const SetsRoute = ({
-                     toggle,
-                     multiParts,
-                     selectedIds
-                   }: { toggle: (multiPart: SetType, checked: boolean) => void; multiParts: SetType[]; selectedIds: number[] }) => {
+  toggle,
+  multiParts,
+  selectedIds
+}: {
+  toggle: (multiPart: SetType, checked: boolean) => void;
+  multiParts: SetType[];
+  selectedIds: number[];
+}) => {
   const { getFormattedCurrency } = useContext(CompanySettingsContext);
   const { t } = useTranslation();
-  const selectedMultiParts = multiParts.filter(multiPart => multiPart.parts.every(part => selectedIds.includes(part.id))).map(multiPart => multiPart.id);
+  const selectedMultiParts = multiParts
+    .filter((multiPart) =>
+      multiPart.parts.every((part) => selectedIds.includes(part.id))
+    )
+    .map((multiPart) => multiPart.id);
   return (
-
-    <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>{
-      multiParts.map(multiPart => (
-        <View key={multiPart.id} style={{
-          marginTop: 5,
-          padding: 10,
-          display: 'flex',
-          flexDirection: 'row',
-          elevation: 2,
-          justifyContent: 'space-between'
-        }}>
+    <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
+      {multiParts.map((multiPart) => (
+        <View
+          key={multiPart.id}
+          style={{
+            marginTop: 5,
+            padding: 10,
+            display: 'flex',
+            flexDirection: 'row',
+            elevation: 2,
+            justifyContent: 'space-between'
+          }}
+        >
           <Checkbox
-            status={selectedMultiParts.includes(multiPart.id) ? 'checked' : 'unchecked'}
+            status={
+              selectedMultiParts.includes(multiPart.id)
+                ? 'checked'
+                : 'unchecked'
+            }
             onPress={() => {
               toggle(multiPart, selectedMultiParts.includes(multiPart.id));
             }}
           />
-          <View style={{ display: 'flex', flexDirection: 'column', width: '50%' }}>
+          <View
+            style={{ display: 'flex', flexDirection: 'column', width: '50%' }}
+          >
             <Text variant={'labelMedium'}>{multiPart.name}</Text>
           </View>
-          <Button style={{ width: '40%' }} mode='outlined' buttonColor={'white'}>{t('details')}</Button>
-        </View>))
-    }</ScrollView>
+          <Button
+            style={{ width: '40%' }}
+            mode="outlined"
+            buttonColor={'white'}
+          >
+            {t('details')}
+          </Button>
+        </View>
+      ))}
+    </ScrollView>
   );
 };
-export default function SelectParts({ navigation, route }: RootStackScreenProps<'SelectParts'>) {
+export default function SelectParts({
+  navigation,
+  route
+}: RootStackScreenProps<'SelectParts'>) {
   const { onChange, selected } = route.params;
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
   const dispatch = useDispatch();
   const { partsMini, loadingGet } = useSelector((state) => state.parts);
-  const { multiParts, loadingMultiparts } = useSelector((state) => state.multiParts);
+  const { multiParts, loadingMultiparts } = useSelector(
+    (state) => state.multiParts
+  );
   const [tabIndex, setTabIndex] = useState(0);
   const [selectedParts, setSelectedParts] = useState<PartMiniDTO[]>([]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -116,12 +172,17 @@ export default function SelectParts({ navigation, route }: RootStackScreenProps<
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => <Pressable disabled={!selectedParts.length} onPress={() => {
-        onChange(selectedParts);
-        navigation.goBack();
-      }}><Text
-        variant='titleMedium'>{t('add')}
-      </Text></Pressable>
+      headerRight: () => (
+        <Pressable
+          disabled={!selectedParts.length}
+          onPress={() => {
+            onChange(selectedParts);
+            navigation.goBack();
+          }}
+        >
+          <Text variant="titleMedium">{t('add')}</Text>
+        </Pressable>
+      )
     });
   }, [selectedParts]);
 
@@ -146,18 +207,30 @@ export default function SelectParts({ navigation, route }: RootStackScreenProps<
   };
   const toggleMultipart = (multiPart: SetType, checked: boolean) => {
     if (checked) {
-      onSelect(multiPart.parts.map(part => part.id));
-    } else onUnSelect(multiPart.parts.map(part => part.id));
+      onSelect(multiPart.parts.map((part) => part.id));
+    } else onUnSelect(multiPart.parts.map((part) => part.id));
   };
   const renderScene = ({ route, jumpTo }) => {
     switch (route.key) {
       case 'parts':
-        return <PartsRoute toggle={toggle} partsMini={partsMini} selectedIds={selectedIds} />;
+        return (
+          <PartsRoute
+            toggle={toggle}
+            partsMini={partsMini}
+            selectedIds={selectedIds}
+          />
+        );
       case 'sets':
-        return <SetsRoute toggle={toggleMultipart} multiParts={multiParts} selectedIds={selectedIds} />;
+        return (
+          <SetsRoute
+            toggle={toggleMultipart}
+            multiParts={multiParts}
+            selectedIds={selectedIds}
+          />
+        );
     }
   };
-  const renderTabBar = props => (
+  const renderTabBar = (props) => (
     <TabBar
       {...props}
       indicatorStyle={{ backgroundColor: 'white' }}
@@ -165,9 +238,16 @@ export default function SelectParts({ navigation, route }: RootStackScreenProps<
     />
   );
   return (
-    <View style={{ ...styles.container, backgroundColor: theme.colors.background }}>
-      {((loadingGet && tabIndex === 0) || (loadingMultiparts && tabIndex === 1)) &&
-      <ActivityIndicator style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 10 }} size='large' />}
+    <View
+      style={{ ...styles.container, backgroundColor: theme.colors.background }}
+    >
+      {((loadingGet && tabIndex === 0) ||
+        (loadingMultiparts && tabIndex === 1)) && (
+        <ActivityIndicator
+          style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 10 }}
+          size="large"
+        />
+      )}
       <TabView
         renderTabBar={renderTabBar}
         navigationState={{ index: tabIndex, routes: tabs }}

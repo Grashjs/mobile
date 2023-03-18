@@ -9,7 +9,9 @@ import People from './People';
 import Teams from './Teams';
 import { useTheme } from 'react-native-paper';
 
-export default function PeopleTeams(props: RootStackScreenProps<'PeopleTeams'>) {
+export default function PeopleTeams(
+  props: RootStackScreenProps<'PeopleTeams'>
+) {
   const [tabIndex, setTabIndex] = useState(0);
   const { t } = useTranslation();
   const theme = useTheme();
@@ -26,7 +28,7 @@ export default function PeopleTeams(props: RootStackScreenProps<'PeopleTeams'>) 
         return <Teams {...props} />;
     }
   };
-  const renderTabBar = props => (
+  const renderTabBar = (props) => (
     <TabBar
       {...props}
       indicatorStyle={{ backgroundColor: 'white' }}

@@ -9,12 +9,16 @@ import { useDispatch } from '../../store';
 import { editVendor } from '../../slices/vendor';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { getVendorFields } from '../../utils/fields';
-import { emailRegExp, phoneRegExp, websiteRegExp } from '../../utils/validators';
+import {
+  emailRegExp,
+  phoneRegExp,
+  websiteRegExp
+} from '../../utils/validators';
 
 export default function EditVendorScreen({
-                                           navigation,
-                                           route
-                                         }: RootStackScreenProps<'EditVendor'>) {
+  navigation,
+  route
+}: RootStackScreenProps<'EditVendor'>) {
   const { t } = useTranslation();
   const { vendor } = route.params;
   const { showSnackBar } = useContext(CustomSnackBarContext);
@@ -37,28 +41,31 @@ export default function EditVendorScreen({
   const onEditFailure = (err) =>
     showSnackBar(t('vendor_edit_failure'), 'error');
 
-  return (<View style={styles.container}>
-    <Form
-      fields={getVendorFields(t)}
-      validation={Yup.object().shape(shape)}
-      navigation={navigation}
-      submitText={t('save')}
-      values={{
-        ...vendor
-      }}
-      onChange={({ field, e }) => {
-      }}
-      onSubmit={async (values) => {
-        const formattedValues = values.rate
-          ? {
-            ...values,
-            rate: Number(values.rate)
-          }
-          : values;
-        return dispatch(editVendor(vendor.id, formattedValues))
-          .then(onEditSuccess)
-          .catch(onEditFailure);
-      }} /></View>);
+  return (
+    <View style={styles.container}>
+      <Form
+        fields={getVendorFields(t)}
+        validation={Yup.object().shape(shape)}
+        navigation={navigation}
+        submitText={t('save')}
+        values={{
+          ...vendor
+        }}
+        onChange={({ field, e }) => {}}
+        onSubmit={async (values) => {
+          const formattedValues = values.rate
+            ? {
+                ...values,
+                rate: Number(values.rate)
+              }
+            : values;
+          return dispatch(editVendor(vendor.id, formattedValues))
+            .then(onEditSuccess)
+            .catch(onEditFailure);
+        }}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

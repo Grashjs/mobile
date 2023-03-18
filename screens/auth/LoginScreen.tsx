@@ -8,10 +8,20 @@ import { phoneRegExp } from '../../utils/validators';
 import useAuth from '../../hooks/useAuth';
 import { IS_LOCALHOST } from '../../config';
 import { useContext, useState } from 'react';
-import { Button, Checkbox, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
+import {
+  Button,
+  Checkbox,
+  HelperText,
+  Snackbar,
+  Text,
+  TextInput,
+  useTheme
+} from 'react-native-paper';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 
-export default function LoginScreen({ navigation }: AuthStackScreenProps<'Login'>) {
+export default function LoginScreen({
+  navigation
+}: AuthStackScreenProps<'Login'>) {
   const { t } = useTranslation();
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const { login } = useAuth();
@@ -49,15 +59,15 @@ export default function LoginScreen({ navigation }: AuthStackScreenProps<'Login'
           }}
         >
           {({
-              errors,
-              handleBlur,
-              handleChange,
-              handleSubmit,
-              isSubmitting,
-              touched,
-              values,
-              setFieldValue
-            }) => (
+            errors,
+            handleBlur,
+            handleChange,
+            handleSubmit,
+            isSubmitting,
+            touched,
+            values,
+            setFieldValue
+          }) => (
             <View>
               <TextInput
                 error={Boolean(touched.email && errors.email)}
@@ -65,10 +75,11 @@ export default function LoginScreen({ navigation }: AuthStackScreenProps<'Login'
                 onBlur={handleBlur('email')}
                 onChangeText={handleChange('email')}
                 value={values.email}
-                mode='outlined'
+                mode="outlined"
               />
-              {Boolean(touched.email && errors.email) &&
-              <HelperText type='error'>{errors.email?.toString()}</HelperText>}
+              {Boolean(touched.email && errors.email) && (
+                <HelperText type="error">{errors.email?.toString()}</HelperText>
+              )}
               <TextInput
                 error={Boolean(touched.password && errors.password)}
                 label={t('password')}
@@ -76,30 +87,36 @@ export default function LoginScreen({ navigation }: AuthStackScreenProps<'Login'
                 onChangeText={handleChange('password')}
                 value={values.password}
                 secureTextEntry={true}
-                mode='outlined'
+                mode="outlined"
               />
-              {Boolean(touched.password && errors.password) &&
-              <HelperText type='error'>{errors.password?.toString()}</HelperText>}
+              {Boolean(touched.password && errors.password) && (
+                <HelperText type="error">
+                  {errors.password?.toString()}
+                </HelperText>
+              )}
               <Button
                 color={theme.colors.primary}
                 onPress={() => handleSubmit()}
                 loading={isSubmitting}
                 style={{ marginTop: 20 }}
                 disabled={isSubmitting}
-                mode='contained'
+                mode="contained"
               >
                 {t('login')}
               </Button>
               <Text>{t('no_account_yet')}</Text>
-              <Text onPress={() => navigation.navigate('Register')}
-                    style={{ color: theme.colors.primary }}>{t('register_here')}</Text>
+              <Text
+                onPress={() => navigation.navigate('Register')}
+                style={{ color: theme.colors.primary }}
+              >
+                {t('register_here')}
+              </Text>
             </View>
           )}
         </Formik>
       </ScrollView>
     </View>
-  )
-    ;
+  );
 }
 
 const styles = StyleSheet.create({
@@ -127,7 +144,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center'
-  }, row: {
+  },
+  row: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center'

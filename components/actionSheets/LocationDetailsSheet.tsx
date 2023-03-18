@@ -1,4 +1,7 @@
-import ActionSheet, { ActionSheetRef, SheetProps } from 'react-native-actions-sheet';
+import ActionSheet, {
+  ActionSheetRef,
+  SheetProps
+} from 'react-native-actions-sheet';
 import { View } from 'react-native';
 import { Divider, List, Text, useTheme } from 'react-native-paper';
 import * as React from 'react';
@@ -10,10 +13,20 @@ import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
 import Location from '../../models/location';
 
-export default function LocationDetailsSheet(props: SheetProps<{ onEdit: () => void; onAddFile: () => void; onDelete: () => void, onCreateWorkOrder: () => void, onCreateAsset: () => void, location: Location }>) {
+export default function LocationDetailsSheet(
+  props: SheetProps<{
+    onEdit: () => void;
+    onAddFile: () => void;
+    onDelete: () => void;
+    onCreateWorkOrder: () => void;
+    onCreateAsset: () => void;
+    location: Location;
+  }>
+) {
   const { t } = useTranslation();
   const actionSheetRef = useRef<ActionSheetRef>(null);
-  const { hasEditPermission, hasDeletePermission, hasCreatePermission } = useAuth();
+  const { hasEditPermission, hasDeletePermission, hasCreatePermission } =
+    useAuth();
   const theme = useTheme();
   const options: {
     title: string;
@@ -26,7 +39,10 @@ export default function LocationDetailsSheet(props: SheetProps<{ onEdit: () => v
       title: t('edit'),
       icon: 'pencil',
       onPress: props.payload.onEdit,
-      visible: hasEditPermission(PermissionEntity.LOCATIONS, props.payload.location)
+      visible: hasEditPermission(
+        PermissionEntity.LOCATIONS,
+        props.payload.location
+      )
     },
     {
       title: t('create_work_order'),
@@ -45,7 +61,10 @@ export default function LocationDetailsSheet(props: SheetProps<{ onEdit: () => v
       icon: 'delete-outline',
       onPress: props.payload.onDelete,
       color: theme.colors.error,
-      visible: hasDeletePermission(PermissionEntity.LOCATIONS, props.payload.location)
+      visible: hasDeletePermission(
+        PermissionEntity.LOCATIONS,
+        props.payload.location
+      )
     }
   ];
 
@@ -54,23 +73,24 @@ export default function LocationDetailsSheet(props: SheetProps<{ onEdit: () => v
       <View style={{ padding: 15 }}>
         <Divider />
         <List.Section>
-          {options.filter(option => option.visible).map((entity, index) => (
-            <List.Item
-              key={index}
-              titleStyle={{ color: entity.color }}
-              title={entity.title}
-              left={() => (
-                <List.Icon icon={entity.icon} color={entity.color} />
-              )}
-              onPress={() => {
-                actionSheetRef.current.hide();
-                entity.onPress();
-              }}
-            />
-          ))}
+          {options
+            .filter((option) => option.visible)
+            .map((entity, index) => (
+              <List.Item
+                key={index}
+                titleStyle={{ color: entity.color }}
+                title={entity.title}
+                left={() => (
+                  <List.Icon icon={entity.icon} color={entity.color} />
+                )}
+                onPress={() => {
+                  actionSheetRef.current.hide();
+                  entity.onPress();
+                }}
+              />
+            ))}
         </List.Section>
       </View>
     </ActionSheet>
   );
-  ;
 }

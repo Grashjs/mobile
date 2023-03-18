@@ -1,4 +1,10 @@
-import { Pressable, RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 import { View } from '../../components/Themed';
 import { RootStackScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +15,10 @@ import { TeamMiniDTO } from '../../models/team';
 import { getTeamsMini } from '../../slices/team';
 import { Checkbox, Divider, Text, useTheme } from 'react-native-paper';
 
-export default function SelectTeamsModal({ navigation, route }: RootStackScreenProps<'SelectTeams'>) {
+export default function SelectTeamsModal({
+  navigation,
+  route
+}: RootStackScreenProps<'SelectTeams'>) {
   const { onChange, selected, multiple } = route.params;
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
@@ -34,14 +43,20 @@ export default function SelectTeamsModal({ navigation, route }: RootStackScreenP
   }, [selected]);
 
   useEffect(() => {
-    if (multiple) navigation.setOptions({
-      headerRight: () => <Pressable disabled={!selectedTeams.length} onPress={() => {
-        onChange(selectedTeams);
-        navigation.goBack();
-      }}><Text
-        variant='titleMedium'>{t('add')}
-      </Text></Pressable>
-    });
+    if (multiple)
+      navigation.setOptions({
+        headerRight: () => (
+          <Pressable
+            disabled={!selectedTeams.length}
+            onPress={() => {
+              onChange(selectedTeams);
+              navigation.goBack();
+            }}
+          >
+            <Text variant="titleMedium">{t('add')}</Text>
+          </Pressable>
+        )
+      });
   }, [selectedTeams]);
 
   useEffect(() => {
@@ -51,7 +66,7 @@ export default function SelectTeamsModal({ navigation, route }: RootStackScreenP
   const onSelect = (ids: number[]) => {
     setSelectedIds(Array.from(new Set([...selectedIds, ...ids])));
     if (!multiple) {
-      onChange([teamsMini.find(team => team.id === ids[0])]);
+      onChange([teamsMini.find((team) => team.id === ids[0])]);
       navigation.goBack();
     }
   };
@@ -71,33 +86,49 @@ export default function SelectTeamsModal({ navigation, route }: RootStackScreenP
     <View style={styles.container}>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={loadingGet} onRefresh={() => dispatch(getTeamsMini())} />}
-        style={{ flex: 1, paddingHorizontal: 20, backgroundColor: theme.colors.background }}>{
-        teamsMini.map(team => (
-          <TouchableOpacity onPress={() => {
-            toggle(team.id);
-          }} key={team.id} style={{
-            marginTop: 5,
-            borderRadius: 5,
-            padding: 10,
-            backgroundColor: 'white',
-            display: 'flex',
-            flexDirection: 'row',
-            elevation: 2,
-            alignItems: 'center'
-          }}>
-            {multiple && <Checkbox
-              status={selectedIds.includes(team.id) ? 'checked' : 'unchecked'}
-              onPress={() => {
-                toggle(team.id);
-              }}
-            />}
+          <RefreshControl
+            refreshing={loadingGet}
+            onRefresh={() => dispatch(getTeamsMini())}
+          />
+        }
+        style={{
+          flex: 1,
+          paddingHorizontal: 20,
+          backgroundColor: theme.colors.background
+        }}
+      >
+        {teamsMini.map((team) => (
+          <TouchableOpacity
+            onPress={() => {
+              toggle(team.id);
+            }}
+            key={team.id}
+            style={{
+              marginTop: 5,
+              borderRadius: 5,
+              padding: 10,
+              backgroundColor: 'white',
+              display: 'flex',
+              flexDirection: 'row',
+              elevation: 2,
+              alignItems: 'center'
+            }}
+          >
+            {multiple && (
+              <Checkbox
+                status={selectedIds.includes(team.id) ? 'checked' : 'unchecked'}
+                onPress={() => {
+                  toggle(team.id);
+                }}
+              />
+            )}
             <View style={{ display: 'flex', flexDirection: 'column' }}>
               <Text variant={'titleMedium'}>{team.name}</Text>
             </View>
             <Divider />
-          </TouchableOpacity>))
-      }</ScrollView>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 }

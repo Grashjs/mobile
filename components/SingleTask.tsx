@@ -1,6 +1,13 @@
 import { Task, TaskOption, TaskType } from '../models/tasks';
 import { View } from './Themed';
-import { useTheme, Text, TextInput, IconButton, Divider, Button } from 'react-native-paper';
+import {
+  useTheme,
+  Text,
+  TextInput,
+  IconButton,
+  Divider,
+  Button
+} from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useState } from 'react';
 import useAuth from '../hooks/useAuth';
@@ -23,16 +30,16 @@ interface SingleTaskProps {
 }
 
 export default function SingleTask({
-                                     task,
-                                     handleChange,
-                                     handleNoteChange,
-                                     handleSaveNotes,
-                                     preview,
-                                     toggleNotes,
-                                     notes,
-                                     handleSelectImages,
-                                     handleZoomImage
-                                   }: SingleTaskProps) {
+  task,
+  handleChange,
+  handleNoteChange,
+  handleSaveNotes,
+  preview,
+  toggleNotes,
+  notes,
+  handleSelectImages,
+  handleZoomImage
+}: SingleTaskProps) {
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
   const [openDropDown, setOpenDropDown] = useState<boolean>(false);
@@ -43,7 +50,10 @@ export default function SingleTask({
   const changeHandler = (newValue: string) => {
     if (!preview) {
       let formattedValue = newValue;
-      if (task.taskBase.taskType === 'METER' || task.taskBase.taskType === 'NUMBER') {
+      if (
+        task.taskBase.taskType === 'METER' ||
+        task.taskBase.taskType === 'NUMBER'
+      ) {
         formattedValue = newValue?.replace(/[^0-9]/g, '') ?? '';
         setInputValue(formattedValue);
       } else setInputValue(formattedValue);
@@ -56,31 +66,33 @@ export default function SingleTask({
     []
   );
   const onDropdownValueChange = (value) => {
-    !preview && !(task.taskBase.user && task.taskBase.user.id !== user.id) && handleChange(value, task.id);
+    !preview &&
+      !(task.taskBase.user && task.taskBase.user.id !== user.id) &&
+      handleChange(value, task.id);
   };
   useEffect(() => {
     const oldValue = preview
-      ? getOptions(task.taskBase.taskType, task.taskBase.options)[0]
-        .value
+      ? getOptions(task.taskBase.taskType, task.taskBase.options)[0].value
       : task.value;
     if (dropDownValue && dropDownValue !== oldValue)
       onDropdownValueChange(dropDownValue);
   }, [dropDownValue]);
 
   const subtaskOptions = ['OPEN', 'IN_PROGRESS', 'ON_HOLD', 'COMPLETE'];
-  const inspectionOptions = ['PASS', 'FLAG', 'FAIL'
-  ];
+  const inspectionOptions = ['PASS', 'FLAG', 'FAIL'];
 
   const getOptions = (type: TaskType, options: TaskOption[]) => {
     switch (type) {
       case 'SUBTASK':
-        return subtaskOptions.map(
-          (status) => ({ value: status, label: t(status) })
-        );
+        return subtaskOptions.map((status) => ({
+          value: status,
+          label: t(status)
+        }));
       case 'INSPECTION':
-        return inspectionOptions.map(
-          (option) => ({ value: option, label: t(option) })
-        );
+        return inspectionOptions.map((option) => ({
+          value: option,
+          label: t(option)
+        }));
       case 'MULTIPLE':
         return options
           .map((option) => option.label)
@@ -96,18 +108,35 @@ export default function SingleTask({
   };
   return (
     <View style={{ marginBottom: 10 }}>
-      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Text variant='titleMedium'>
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
+      >
+        <Text variant="titleMedium">
           {task.taskBase.label || `<${t('enter_task_name')}>`}
         </Text>
         <View style={{ display: 'flex', flexDirection: 'row' }}>
-          <IconButton iconColor={theme.colors.primary} icon={'image'} onPress={() => handleSelectImages(task.id)}
-                      disabled={
-                        preview ||
-                        !(hasCreatePermission(PermissionEntity.FILES) &&
-                          hasFeature(PlanFeature.FILE))} />
-          <IconButton iconColor={theme.colors.primary} icon={'note-outline'}
-                      onPress={() => !preview && toggleNotes(task.id)} />
+          <IconButton
+            iconColor={theme.colors.primary}
+            icon={'image'}
+            onPress={() => handleSelectImages(task.id)}
+            disabled={
+              preview ||
+              !(
+                hasCreatePermission(PermissionEntity.FILES) &&
+                hasFeature(PlanFeature.FILE)
+              )
+            }
+          />
+          <IconButton
+            iconColor={theme.colors.primary}
+            icon={'note-outline'}
+            onPress={() => !preview && toggleNotes(task.id)}
+          />
         </View>
       </View>
       {['SUBTASK', 'INSPECTION', 'MULTIPLE'].includes(
@@ -118,7 +147,7 @@ export default function SingleTask({
             value={
               preview
                 ? getOptions(task.taskBase.taskType, task.taskBase.options)[0]
-                  .value
+                    .value
                 : task.value
             }
             zIndex={3000}
@@ -126,59 +155,76 @@ export default function SingleTask({
             items={getOptions(task.taskBase.taskType, task.taskBase.options)}
             setValue={setDropdownValue}
             open={openDropDown}
-            setOpen={setOpenDropDown} />
+            setOpen={setOpenDropDown}
+          />
         </View>
-      ) : (task.taskBase.taskType === 'METER' || task.taskBase.taskType === 'NUMBER') ? <TextInput
-        defaultValue={task.value?.toString()}
-        onChangeText={changeHandler}
-        label={t('value')}
-        value={inputValue}
-        mode={'outlined'}
-        disabled={
-          task.taskBase.user && task.taskBase.user.id !== user.id
-        }
-      /> : <TextInput
-        defaultValue={task.value?.toString()}
-        onChangeText={debouncedChangeHandler}
-        label={t('value')}
-        mode={'outlined'}
-        disabled={
-          task.taskBase.user && task.taskBase.user.id !== user.id
-        }
-      />}
+      ) : task.taskBase.taskType === 'METER' ||
+        task.taskBase.taskType === 'NUMBER' ? (
+        <TextInput
+          defaultValue={task.value?.toString()}
+          onChangeText={changeHandler}
+          label={t('value')}
+          value={inputValue}
+          mode={'outlined'}
+          disabled={task.taskBase.user && task.taskBase.user.id !== user.id}
+        />
+      ) : (
+        <TextInput
+          defaultValue={task.value?.toString()}
+          onChangeText={debouncedChangeHandler}
+          label={t('value')}
+          mode={'outlined'}
+          disabled={task.taskBase.user && task.taskBase.user.id !== user.id}
+        />
+      )}
       {task.taskBase.asset && (
-        <View style={{ marginVertical: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
+        <View
+          style={{
+            marginVertical: 10,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between'
+          }}
         >
-          <Text style={{ fontWeight: 'bold' }}>
-            {t('concerned_asset')}
-          </Text>
+          <Text style={{ fontWeight: 'bold' }}>{t('concerned_asset')}</Text>
           <TouchableOpacity>
-            <Text style={{ color: theme.colors.primary }}>{task.taskBase.asset.name}</Text>
+            <Text style={{ color: theme.colors.primary }}>
+              {task.taskBase.asset.name}
+            </Text>
           </TouchableOpacity>
         </View>
       )}
       {task.taskBase.user && (
-        <View style={{ marginVertical: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
+        <View
+          style={{
+            marginVertical: 10,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between'
+          }}
         >
-          <Text style={{ fontWeight: 'bold' }}>
-            {t('assigned_to')}
-          </Text>
+          <Text style={{ fontWeight: 'bold' }}>{t('assigned_to')}</Text>
           <TouchableOpacity>
             <Text
-              style={{ color: theme.colors.primary }}>{`${task.taskBase.user.firstName} ${task.taskBase.user.lastName}`}</Text>
+              style={{ color: theme.colors.primary }}
+            >{`${task.taskBase.user.firstName} ${task.taskBase.user.lastName}`}</Text>
           </TouchableOpacity>
         </View>
       )}
       {notes.get(task.id) && (
         <View>
-          <TextInput mode={'outlined'} multiline value={task.notes} label={t('notes')}
-                     onChangeText={(value) =>
-                       !preview && handleNoteChange(value, task.id)
-                     }
+          <TextInput
+            mode={'outlined'}
+            multiline
+            value={task.notes}
+            label={t('notes')}
+            onChangeText={(value) =>
+              !preview && handleNoteChange(value, task.id)
+            }
           />
           <Button
             style={{ marginTop: 10 }}
-            mode='contained'
+            mode="contained"
             loading={savingNotes}
             disabled={savingNotes}
             onPress={() => {

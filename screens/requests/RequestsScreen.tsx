@@ -7,7 +7,13 @@ import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
 import { getMoreRequests, getRequests } from '../../slices/request';
 import { FilterField, SearchCriteria } from '../../models/page';
-import { Card, IconButton, Searchbar, Text, useTheme } from 'react-native-paper';
+import {
+  Card,
+  IconButton,
+  Searchbar,
+  Text,
+  useTheme
+} from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import Request from '../../models/request';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
@@ -16,7 +22,7 @@ import { RootTabScreenProps } from '../../types';
 import Tag from '../../components/Tag';
 import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
 
-function IconWithLabel({ icon, label }: { icon: IconSource, label: string }) {
+function IconWithLabel({ icon, label }: { icon: IconSource; label: string }) {
   return (
     <View style={{ ...styles.row, justifyContent: 'flex-start' }}>
       <IconButton icon={icon} size={20} />
@@ -25,7 +31,10 @@ function IconWithLabel({ icon, label }: { icon: IconSource, label: string }) {
   );
 }
 
-export default function RequestsScreen({ navigation, route }: RootTabScreenProps<'Requests'>) {
+export default function RequestsScreen({
+  navigation,
+  route
+}: RootTabScreenProps<'Requests'>) {
   const { t } = useTranslation();
   const [startedSearch, setStartedSearch] = useState<boolean>(false);
   const { requests, loadingGet, currentPageNum, lastPage } = useSelector(
@@ -37,9 +46,7 @@ export default function RequestsScreen({ navigation, route }: RootTabScreenProps
   const { getFormattedDate, getUserNameById } = useContext(
     CompanySettingsContext
   );
-  const {
-    hasViewPermission
-  } = useAuth();
+  const { hasViewPermission } = useAuth();
   const defaultFilterFields: FilterField[] = [];
   const getCriteriaFromFilterFields = (filterFields: FilterField[]) => {
     const initialCriteria: SearchCriteria = {
@@ -49,16 +56,32 @@ export default function RequestsScreen({ navigation, route }: RootTabScreenProps
       direction: 'DESC'
     };
     let newFilterFields = [...initialCriteria.filterFields];
-    filterFields.forEach(filterField => (newFilterFields = newFilterFields.filter(ff => ff.field != filterField.field)));
-    return { ...initialCriteria, filterFields: [...newFilterFields, ...filterFields] };
+    filterFields.forEach(
+      (filterField) =>
+        (newFilterFields = newFilterFields.filter(
+          (ff) => ff.field != filterField.field
+        ))
+    );
+    return {
+      ...initialCriteria,
+      filterFields: [...newFilterFields, ...filterFields]
+    };
   };
-  const [criteria, setCriteria] = useState<SearchCriteria>(getCriteriaFromFilterFields([]));
+  const [criteria, setCriteria] = useState<SearchCriteria>(
+    getCriteriaFromFilterFields([])
+  );
   useEffect(() => {
     if (hasViewPermission(PermissionEntity.REQUESTS)) {
-      dispatch(getRequests({ ...criteria, pageSize: 10, pageNum: 0, direction: 'DESC' }));
+      dispatch(
+        getRequests({
+          ...criteria,
+          pageSize: 10,
+          pageNum: 0,
+          direction: 'DESC'
+        })
+      );
     }
   }, [criteria]);
-
 
   const onRefresh = () => {
     setCriteria(getCriteriaFromFilterFields([]));
@@ -72,10 +95,16 @@ export default function RequestsScreen({ navigation, route }: RootTabScreenProps
       return [t('rejected'), theme.colors.error];
     } else return [t('pending'), theme.colors.primary];
   };
-  const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+  const isCloseToBottom = ({
+    layoutMeasurement,
+    contentOffset,
+    contentSize
+  }) => {
     const paddingToBottom = 20;
-    return layoutMeasurement.height + contentOffset.y >=
-      contentSize.height - paddingToBottom;
+    return (
+      layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom
+    );
   };
   const onQueryChange = (query) => {
     onSearchQueryChange<Request>(query, criteria, setCriteria, setSearchQuery, [
@@ -83,62 +112,138 @@ export default function RequestsScreen({ navigation, route }: RootTabScreenProps
       'description'
     ]);
   };
-  useDebouncedEffect(() => {
-    if (startedSearch)
-      onQueryChange(searchQuery);
-  }, [searchQuery], 1000);
+  useDebouncedEffect(
+    () => {
+      if (startedSearch) onQueryChange(searchQuery);
+    },
+    [searchQuery],
+    1000
+  );
   return (
-    <View style={{ ...styles.container, backgroundColor: theme.colors.background }}>
-      {hasViewPermission(PermissionEntity.REQUESTS) ? <Fragment><Searchbar
-        placeholder={t('search')}
-        onFocus={() => setStartedSearch(true)}
-        onChangeText={setSearchQuery}
-        value={searchQuery}
-      />
-        <ScrollView style={styles.scrollView}
-                    onScroll={({ nativeEvent }) => {
-                      if (isCloseToBottom(nativeEvent)) {
-                        if (!loadingGet && !lastPage)
-                          dispatch(getMoreRequests(criteria, currentPageNum + 1));
-                      }
-                    }}
-                    refreshControl={
-                      <RefreshControl refreshing={loadingGet} onRefresh={onRefresh} colors={[theme.colors.primary]} />}
-                    scrollEventThrottle={400}>
-          {!!requests.content.length ? requests.content.map(request => (
-            <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={request.id}
+    <View
+      style={{ ...styles.container, backgroundColor: theme.colors.background }}
+    >
+      {hasViewPermission(PermissionEntity.REQUESTS) ? (
+        <Fragment>
+          <Searchbar
+            placeholder={t('search')}
+            onFocus={() => setStartedSearch(true)}
+            onChangeText={setSearchQuery}
+            value={searchQuery}
+          />
+          <ScrollView
+            style={styles.scrollView}
+            onScroll={({ nativeEvent }) => {
+              if (isCloseToBottom(nativeEvent)) {
+                if (!loadingGet && !lastPage)
+                  dispatch(getMoreRequests(criteria, currentPageNum + 1));
+              }
+            }}
+            refreshControl={
+              <RefreshControl
+                refreshing={loadingGet}
+                onRefresh={onRefresh}
+                colors={[theme.colors.primary]}
+              />
+            }
+            scrollEventThrottle={400}
+          >
+            {!!requests.content.length ? (
+              requests.content.map((request) => (
+                <Card
+                  style={{
+                    padding: 5,
+                    marginVertical: 5,
+                    backgroundColor: 'white'
+                  }}
+                  key={request.id}
                   onPress={() => {
                     if (request.workOrder) {
-                      navigation.push('WODetails', { id: request.workOrder.id });
-                    } else navigation.push('RequestDetails', { id: request.id });
-                  }}>
-              <Card.Content>
-                <View style={{ ...styles.row, justifyContent: 'space-between' }}>
-                  <View style={{ ...styles.row, justifyContent: 'space-between' }}>
-                    <View style={{ marginRight: 10 }}>
-                      <Tag text={`#${request.id}`} color='white' backgroundColor='#545454' />
+                      navigation.push('WODetails', {
+                        id: request.workOrder.id
+                      });
+                    } else
+                      navigation.push('RequestDetails', { id: request.id });
+                  }}
+                >
+                  <Card.Content>
+                    <View
+                      style={{ ...styles.row, justifyContent: 'space-between' }}
+                    >
+                      <View
+                        style={{
+                          ...styles.row,
+                          justifyContent: 'space-between'
+                        }}
+                      >
+                        <View style={{ marginRight: 10 }}>
+                          <Tag
+                            text={`#${request.id}`}
+                            color="white"
+                            backgroundColor="#545454"
+                          />
+                        </View>
+                        <View style={{ marginRight: 10 }}>
+                          <Tag
+                            text={t(request.priority)}
+                            color="white"
+                            backgroundColor={getPriorityColor(
+                              request.priority,
+                              theme
+                            )}
+                          />
+                        </View>
+                        <Tag
+                          text={getStatusMeta(request)[0]}
+                          color="white"
+                          backgroundColor={getStatusMeta(request)[1]}
+                        />
+                      </View>
                     </View>
-                    <View style={{ marginRight: 10 }}>
-                      <Tag text={t(request.priority)} color='white'
-                           backgroundColor={getPriorityColor(request.priority, theme)} />
-                    </View>
-                    <Tag text={getStatusMeta(request)[0]} color='white'
-                         backgroundColor={getStatusMeta(request)[1]} />
-                  </View>
-                </View>
-                <Text variant='titleMedium'>{request.title}</Text>
-                {request.dueDate &&
-                <IconWithLabel label={getFormattedDate(request.dueDate)} icon='clock-alert-outline' />}
-                {request.asset && <IconWithLabel label={request.asset.name} icon='package-variant-closed' />}
-                {request.location && <IconWithLabel label={request.location.name} icon='map-marker-outline' />}
-              </Card.Content>
-            </Card>
-          )) : loadingGet ? null : <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
-            < Text variant={'titleLarge'}>{t('no_element_match_criteria')}</Text>
-          </View>}
-        </ScrollView></Fragment> : <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
-        < Text variant={'titleLarge'}>{t('no_access_requests')}</Text>
-      </View>}
+                    <Text variant="titleMedium">{request.title}</Text>
+                    {request.dueDate && (
+                      <IconWithLabel
+                        label={getFormattedDate(request.dueDate)}
+                        icon="clock-alert-outline"
+                      />
+                    )}
+                    {request.asset && (
+                      <IconWithLabel
+                        label={request.asset.name}
+                        icon="package-variant-closed"
+                      />
+                    )}
+                    {request.location && (
+                      <IconWithLabel
+                        label={request.location.name}
+                        icon="map-marker-outline"
+                      />
+                    )}
+                  </Card.Content>
+                </Card>
+              ))
+            ) : loadingGet ? null : (
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  padding: 20,
+                  borderRadius: 10
+                }}
+              >
+                <Text variant={'titleLarge'}>
+                  {t('no_element_match_criteria')}
+                </Text>
+              </View>
+            )}
+          </ScrollView>
+        </Fragment>
+      ) : (
+        <View
+          style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}
+        >
+          <Text variant={'titleLarge'}>{t('no_access_requests')}</Text>
+        </View>
+      )}
     </View>
   );
 }

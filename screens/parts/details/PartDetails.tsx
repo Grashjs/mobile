@@ -9,7 +9,12 @@ import { UserMiniDTO } from '../../../models/user';
 import { Customer } from '../../../models/customer';
 import { Vendor } from '../../../models/vendor';
 import Team from '../../../models/team';
-import { getCustomerUrl, getTeamUrl, getUserUrl, getVendorUrl } from '../../../utils/urlPaths';
+import {
+  getCustomerUrl,
+  getTeamUrl,
+  getUserUrl,
+  getVendorUrl
+} from '../../../utils/urlPaths';
 import ListField from '../../../components/ListField';
 import * as React from 'react';
 
@@ -59,23 +64,32 @@ export default function PartDetails({ part }: { part: Part }) {
     }
   ];
   return (
-    <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background }}>
+    <ScrollView
+      style={{ ...styles.container, backgroundColor: theme.colors.background }}
+    >
       {part.image && (
         <View style={{ marginVertical: 20 }}>
-          <Image
-            style={{ height: 200 }}
-            source={{ uri: part.image.url }}
-          />
+          <Image style={{ height: 200 }} source={{ uri: part.image.url }} />
         </View>
       )}
-      {fieldsToRender.map(field => field.value ? (
-        <View key={field.label}>
-          <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
-            <Text>{field.label}</Text>
-            <Text style={{ fontWeight: 'bold' }}>{field.value}</Text>
+      {fieldsToRender.map((field) =>
+        field.value ? (
+          <View key={field.label}>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                padding: 20
+              }}
+            >
+              <Text>{field.label}</Text>
+              <Text style={{ fontWeight: 'bold' }}>{field.value}</Text>
+            </View>
+            <Divider />
           </View>
-          <Divider />
-        </View>) : null)}
+        ) : null
+      )}
       <ListField
         values={part?.assignedTo}
         label={t('assigned_to')}
@@ -105,10 +119,8 @@ export default function PartDetails({ part }: { part: Part }) {
     </ScrollView>
   );
 }
-const styles = StyleSheet.create(
-  {
-    container: {
-      flex: 1
-    }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
   }
-);
+});

@@ -110,56 +110,53 @@ export const reducer = slice.reducer;
 
 export const getUsers =
   (criteria: SearchCriteria): AppThunk =>
-    async (dispatch) => {
-      try {
-        dispatch(slice.actions.setLoadingGet({ loading: true }));
-        const users = await api.post<Page<User>>(`${basePath}/search`, criteria);
-        dispatch(slice.actions.getUsers({ users }));
-      } finally {
-        dispatch(slice.actions.setLoadingGet({ loading: false }));
-      }
-    };
+  async (dispatch) => {
+    try {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
+      const users = await api.post<Page<User>>(`${basePath}/search`, criteria);
+      dispatch(slice.actions.getUsers({ users }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
+  };
 export const getMoreUsers =
   (criteria: SearchCriteria, pageNum: number): AppThunk =>
-    async (dispatch) => {
-      criteria = { ...criteria, pageNum };
-      try {
-        dispatch(slice.actions.setLoadingGet({ loading: true }));
-        const users = await api.post<Page<User>>(
-          `${basePath}/search`,
-          criteria
-        );
-        dispatch(slice.actions.getMoreUsers({ users }));
-      } finally {
-        dispatch(slice.actions.setLoadingGet({ loading: false }));
-      }
-    };
+  async (dispatch) => {
+    criteria = { ...criteria, pageNum };
+    try {
+      dispatch(slice.actions.setLoadingGet({ loading: true }));
+      const users = await api.post<Page<User>>(`${basePath}/search`, criteria);
+      dispatch(slice.actions.getMoreUsers({ users }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
+  };
 
 export const getUserDetails =
   (id: number): AppThunk =>
-    async (dispatch) => {
-      dispatch(slice.actions.setLoadingGet({ loading: true }));
-      const user = await api.get<User>(`${basePath}/${id}`);
-      dispatch(
-        slice.actions.getUserDetails({
-          id,
-          user
-        })
-      );
-      dispatch(slice.actions.setLoadingGet({ loading: false }));
-    };
+  async (dispatch) => {
+    dispatch(slice.actions.setLoadingGet({ loading: true }));
+    const user = await api.get<User>(`${basePath}/${id}`);
+    dispatch(
+      slice.actions.getUserDetails({
+        id,
+        user
+      })
+    );
+    dispatch(slice.actions.setLoadingGet({ loading: false }));
+  };
 export const editUser =
   (id: number, user): AppThunk =>
-    async (dispatch) => {
-      const userResponse = await api.patch<User>(`${basePath}/${id}`, user);
-      dispatch(slice.actions.editUser({ user: userResponse }));
-    };
+  async (dispatch) => {
+    const userResponse = await api.patch<User>(`${basePath}/${id}`, user);
+    dispatch(slice.actions.editUser({ user: userResponse }));
+  };
 export const getSingleUserMini =
   (id: number): AppThunk =>
-    async (dispatch) => {
-      const user = await api.get<User>(`users/${id}`);
-      dispatch(slice.actions.getSingleUserMini({ user, id }));
-    };
+  async (dispatch) => {
+    const user = await api.get<User>(`users/${id}`);
+    dispatch(slice.actions.getSingleUserMini({ user, id }));
+  };
 export const getUsersMini = (): AppThunk => async (dispatch) => {
   dispatch(slice.actions.setLoadingGet({ loading: true }));
   const users = await api.get<UserMiniDTO[]>('users/mini');
@@ -172,30 +169,30 @@ export const getDisabledUsersMini = (): AppThunk => async (dispatch) => {
 };
 export const addUser =
   (user): AppThunk =>
-    async (dispatch) => {
-      const userResponse = await api.post<User>('users', user);
-      dispatch(slice.actions.addUser({ user: userResponse }));
-    };
+  async (dispatch) => {
+    const userResponse = await api.post<User>('users', user);
+    dispatch(slice.actions.addUser({ user: userResponse }));
+  };
 export const deleteUser =
   (id: number): AppThunk =>
-    async (dispatch) => {
-      const userResponse = await api.deletes<{ success: boolean }>(`users/${id}`);
-      const { success } = userResponse;
-      if (success) {
-        dispatch(slice.actions.deleteUser({ id }));
-      }
-    };
+  async (dispatch) => {
+    const userResponse = await api.deletes<{ success: boolean }>(`users/${id}`);
+    const { success } = userResponse;
+    if (success) {
+      dispatch(slice.actions.deleteUser({ id }));
+    }
+  };
 
 export const inviteUsers =
   (roleId: number, emails: string[]): AppThunk =>
-    async (dispatch) => {
-      const successResponse = await api.post<{ success: boolean }>(
-        'users/invite',
-        {
-          role: { id: roleId },
-          emails
-        }
-      );
-    };
+  async (dispatch) => {
+    const successResponse = await api.post<{ success: boolean }>(
+      'users/invite',
+      {
+        role: { id: roleId },
+        emails
+      }
+    );
+  };
 
 export default slice;

@@ -10,9 +10,9 @@ import SingleTask from '../../components/SingleTask';
 import { RootStackScreenProps } from '../../types';
 
 export default function TasksScreen({
-                                      navigation,
-                                      route
-                                    }: RootStackScreenProps<'Tasks'>) {
+  navigation,
+  route
+}: RootStackScreenProps<'Tasks'>) {
   const { t }: { t: any } = useTranslation();
   const { tasksProps, workOrderId } = route.params;
   const [openSelectImages, setOpenSelectImages] = useState<boolean>(false);
@@ -82,29 +82,30 @@ export default function TasksScreen({
   };
   const onImageUploadFailure = (err) =>
     showSnackBar(t('images_add_task_failure'), 'error');
-  const handleZoomImage = () => {
-  };
+  const handleZoomImage = () => {};
 
-  return (<ScrollView style={styles.container}>
-    {tasks.map((task) => (
-      <SingleTask
-        key={task.id}
-        task={task}
-        handleChange={handleChange}
-        handleNoteChange={handleNoteChange}
-        handleSaveNotes={handleSaveNotes}
-        toggleNotes={toggleNotes}
-        handleSelectImages={handleSelectImages}
-        handleZoomImage={handleZoomImage}
-        notes={notes}
-      />
-    ))}
-  </ScrollView>);
-
+  return (
+    <ScrollView style={styles.container}>
+      {tasks.map((task) => (
+        <SingleTask
+          key={task.id}
+          task={task}
+          handleChange={handleChange}
+          handleNoteChange={handleNoteChange}
+          handleSaveNotes={handleSaveNotes}
+          toggleNotes={toggleNotes}
+          handleSelectImages={handleSelectImages}
+          handleZoomImage={handleZoomImage}
+          notes={notes}
+        />
+      ))}
+    </ScrollView>
+  );
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 1, paddingHorizontal: 20,
+    flex: 1,
+    paddingHorizontal: 20,
     backgroundColor: 'white'
   }
 });

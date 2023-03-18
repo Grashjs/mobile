@@ -1,4 +1,10 @@
-import { Pressable, RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 import { View } from '../../components/Themed';
 import { RootStackScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +15,10 @@ import { VendorMiniDTO } from '../../models/vendor';
 import { getVendorsMini } from '../../slices/vendor';
 import { Checkbox, Divider, Text, useTheme } from 'react-native-paper';
 
-export default function SelectVendorsModal({ navigation, route }: RootStackScreenProps<'SelectVendors'>) {
+export default function SelectVendorsModal({
+  navigation,
+  route
+}: RootStackScreenProps<'SelectVendors'>) {
   const { onChange, selected, multiple } = route.params;
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
@@ -34,14 +43,20 @@ export default function SelectVendorsModal({ navigation, route }: RootStackScree
   }, [selected]);
 
   useEffect(() => {
-    if (multiple) navigation.setOptions({
-      headerRight: () => <Pressable disabled={!selectedVendors.length} onPress={() => {
-        onChange(selectedVendors);
-        navigation.goBack();
-      }}><Text
-        variant='titleMedium'>{t('add')}
-      </Text></Pressable>
-    });
+    if (multiple)
+      navigation.setOptions({
+        headerRight: () => (
+          <Pressable
+            disabled={!selectedVendors.length}
+            onPress={() => {
+              onChange(selectedVendors);
+              navigation.goBack();
+            }}
+          >
+            <Text variant="titleMedium">{t('add')}</Text>
+          </Pressable>
+        )
+      });
   }, [selectedVendors]);
 
   useEffect(() => {
@@ -51,7 +66,7 @@ export default function SelectVendorsModal({ navigation, route }: RootStackScree
   const onSelect = (ids: number[]) => {
     setSelectedIds(Array.from(new Set([...selectedIds, ...ids])));
     if (!multiple) {
-      onChange([vendorsMini.find(vendor => vendor.id === ids[0])]);
+      onChange([vendorsMini.find((vendor) => vendor.id === ids[0])]);
       navigation.goBack();
     }
   };
@@ -71,33 +86,51 @@ export default function SelectVendorsModal({ navigation, route }: RootStackScree
     <View style={styles.container}>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={loadingGet} onRefresh={() => dispatch(getVendorsMini())} />}
-        style={{ flex: 1, paddingHorizontal: 20, backgroundColor: theme.colors.background }}>{
-        vendorsMini.map(vendor => (
-          <TouchableOpacity onPress={() => {
-            toggle(vendor.id);
-          }} key={vendor.id} style={{
-            marginTop: 5,
-            borderRadius: 5,
-            padding: 10,
-            backgroundColor: 'white',
-            display: 'flex',
-            flexDirection: 'row',
-            elevation: 2,
-            alignItems: 'center'
-          }}>
-            {multiple && <Checkbox
-              status={selectedIds.includes(vendor.id) ? 'checked' : 'unchecked'}
-              onPress={() => {
-                toggle(vendor.id);
-              }}
-            />}
+          <RefreshControl
+            refreshing={loadingGet}
+            onRefresh={() => dispatch(getVendorsMini())}
+          />
+        }
+        style={{
+          flex: 1,
+          paddingHorizontal: 20,
+          backgroundColor: theme.colors.background
+        }}
+      >
+        {vendorsMini.map((vendor) => (
+          <TouchableOpacity
+            onPress={() => {
+              toggle(vendor.id);
+            }}
+            key={vendor.id}
+            style={{
+              marginTop: 5,
+              borderRadius: 5,
+              padding: 10,
+              backgroundColor: 'white',
+              display: 'flex',
+              flexDirection: 'row',
+              elevation: 2,
+              alignItems: 'center'
+            }}
+          >
+            {multiple && (
+              <Checkbox
+                status={
+                  selectedIds.includes(vendor.id) ? 'checked' : 'unchecked'
+                }
+                onPress={() => {
+                  toggle(vendor.id);
+                }}
+              />
+            )}
             <View style={{ display: 'flex', flexDirection: 'column' }}>
               <Text variant={'titleMedium'}>{vendor.companyName}</Text>
             </View>
             <Divider />
-          </TouchableOpacity>))
-      }</ScrollView>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 }

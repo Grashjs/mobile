@@ -6,7 +6,14 @@ import { useDispatch, useSelector } from '../../../store';
 import { useTranslation } from 'react-i18next';
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
-import { Button, Dialog, IconButton, Portal, Text, useTheme } from 'react-native-paper';
+import {
+  Button,
+  Dialog,
+  IconButton,
+  Portal,
+  Text,
+  useTheme
+} from 'react-native-paper';
 import { SheetManager } from 'react-native-actions-sheet';
 import { deletePart, getPartDetails } from '../../../slices/part';
 import LoadingDialog from '../../../components/LoadingDialog';
@@ -18,13 +25,13 @@ import PartAssets from './PartAssets';
 import PartFiles from './PartFiles';
 
 export default function PartDetailsHome({
-                                          navigation,
-                                          route
-                                        }: RootStackScreenProps<'PartDetails'>) {
+  navigation,
+  route
+}: RootStackScreenProps<'PartDetails'>) {
   const { id } = route.params;
 
   const { t } = useTranslation();
-  const { partInfos, loadingGet } = useSelector(state => state.parts);
+  const { partInfos, loadingGet } = useSelector((state) => state.parts);
   const part = partInfos[id]?.part;
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -50,7 +57,7 @@ export default function PartDetailsHome({
         return <PartFiles part={part} />;
     }
   };
-  const renderTabBar = props => (
+  const renderTabBar = (props) => (
     <TabBar
       {...props}
       scrollEnabled
@@ -66,16 +73,18 @@ export default function PartDetailsHome({
     navigation.setOptions({
       title: part?.name ?? t('loading'),
       headerRight: () => (
-        <Pressable onPress={() => {
-          SheetManager.show('part-details-sheet', {
-            payload: {
-              onEdit: () => navigation.navigate('EditPart', { part: part }),
-              onDelete: () => setOpenDelete(true),
-              part
-            }
-          });
-        }}>
-          <IconButton icon='dots-vertical' />
+        <Pressable
+          onPress={() => {
+            SheetManager.show('part-details-sheet', {
+              payload: {
+                onEdit: () => navigation.navigate('EditPart', { part: part }),
+                onDelete: () => setOpenDelete(true),
+                part
+              }
+            });
+          }}
+        >
+          <IconButton icon="dots-vertical" />
         </Pressable>
       )
     });
@@ -93,18 +102,20 @@ export default function PartDetailsHome({
     setOpenDelete(false);
   };
   const renderConfirmDelete = () => {
-    return (<Portal>
-      <Dialog visible={openDelete} onDismiss={() => setOpenDelete(false)}>
-        <Dialog.Title>{t('confirmation')}</Dialog.Title>
-        <Dialog.Content>
-          <Text variant='bodyMedium'>{t('confirm_delete_part')}</Text>
-        </Dialog.Content>
-        <Dialog.Actions>
-          <Button onPress={() => setOpenDelete(false)}>{t('cancel')}</Button>
-          <Button onPress={handleDelete}>{t('to_delete')}</Button>
-        </Dialog.Actions>
-      </Dialog>
-    </Portal>);
+    return (
+      <Portal>
+        <Dialog visible={openDelete} onDismiss={() => setOpenDelete(false)}>
+          <Dialog.Title>{t('confirmation')}</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">{t('confirm_delete_part')}</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setOpenDelete(false)}>{t('cancel')}</Button>
+            <Button onPress={handleDelete}>{t('to_delete')}</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+    );
   };
   if (part)
     return (
@@ -119,15 +130,11 @@ export default function PartDetailsHome({
         />
       </View>
     );
-  else return (
-    <LoadingDialog visible={loadingGet} />
-  );
+  else return <LoadingDialog visible={loadingGet} />;
 }
 
-const styles = StyleSheet.create(
-  {
-    container: {
-      flex: 1
-    }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
   }
-);
+});

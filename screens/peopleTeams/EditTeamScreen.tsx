@@ -15,9 +15,9 @@ import useAuth from '../../hooks/useAuth';
 import { formatSelectMultiple } from '../../utils/formatters';
 
 export default function EditTeamScreen({
-                                         navigation,
-                                         route
-                                       }: RootStackScreenProps<'EditTeam'>) {
+  navigation,
+  route
+}: RootStackScreenProps<'EditTeam'>) {
   const { t } = useTranslation();
   const { team } = route.params;
   const { showSnackBar } = useContext(CustomSnackBarContext);
@@ -29,33 +29,37 @@ export default function EditTeamScreen({
     showSnackBar(t('changes_saved_success'), 'success');
     navigation.goBack();
   };
-  const onEditFailure = (err) =>
-    showSnackBar(t('team_edit_failure'), 'error');
+  const onEditFailure = (err) => showSnackBar(t('team_edit_failure'), 'error');
 
-  return (<View style={styles.container}>
-    <Form
-      fields={getTeamFields(t)}
-      validation={Yup.object().shape(shape)}
-      navigation={navigation}
-      submitText={t('save')}
-      values={{
-        ...team,
-        users: team.users.map((user) => {
-          return {
-            label: `${user.firstName} ${user.lastName}`,
-            value: user.id
-          };
-        })
-      } || {}}
-      onChange={({ field, e }) => {
-      }}
-      onSubmit={async (values) => {
-        const newValues = { ...values };
-        newValues.users = formatSelectMultiple(newValues.users);
-        return dispatch(editTeam(team.id, newValues))
-          .then(onEditSuccess)
-          .catch(onEditFailure);
-      }} /></View>);
+  return (
+    <View style={styles.container}>
+      <Form
+        fields={getTeamFields(t)}
+        validation={Yup.object().shape(shape)}
+        navigation={navigation}
+        submitText={t('save')}
+        values={
+          {
+            ...team,
+            users: team.users.map((user) => {
+              return {
+                label: `${user.firstName} ${user.lastName}`,
+                value: user.id
+              };
+            })
+          } || {}
+        }
+        onChange={({ field, e }) => {}}
+        onSubmit={async (values) => {
+          const newValues = { ...values };
+          newValues.users = formatSelectMultiple(newValues.users);
+          return dispatch(editTeam(team.id, newValues))
+            .then(onEditSuccess)
+            .catch(onEditFailure);
+        }}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

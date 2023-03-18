@@ -15,7 +15,9 @@ import { RootStackScreenProps } from '../../types';
 import Tag from '../../components/Tag';
 import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
 
-export default function Teams({ navigation }: RootStackScreenProps<'PeopleTeams'>) {
+export default function Teams({
+  navigation
+}: RootStackScreenProps<'PeopleTeams'>) {
   const { t } = useTranslation();
   const [startedSearch, setStartedSearch] = useState<boolean>(false);
   const { teams, loadingGet, currentPageNum, lastPage } = useSelector(
@@ -27,9 +29,7 @@ export default function Teams({ navigation }: RootStackScreenProps<'PeopleTeams'
   const { getFormattedDate, getUserNameById } = useContext(
     CompanySettingsContext
   );
-  const {
-    hasViewPermission
-  } = useAuth();
+  const { hasViewPermission } = useAuth();
   const defaultFilterFields: FilterField[] = [];
   const getCriteriaFromFilterFields = (filterFields: FilterField[]) => {
     const initialCriteria: SearchCriteria = {
@@ -39,25 +39,42 @@ export default function Teams({ navigation }: RootStackScreenProps<'PeopleTeams'
       direction: 'DESC'
     };
     let newFilterFields = [...initialCriteria.filterFields];
-    filterFields.forEach(filterField => (newFilterFields = newFilterFields.filter(ff => ff.field != filterField.field)));
-    return { ...initialCriteria, filterFields: [...newFilterFields, ...filterFields] };
+    filterFields.forEach(
+      (filterField) =>
+        (newFilterFields = newFilterFields.filter(
+          (ff) => ff.field != filterField.field
+        ))
+    );
+    return {
+      ...initialCriteria,
+      filterFields: [...newFilterFields, ...filterFields]
+    };
   };
-  const [criteria, setCriteria] = useState<SearchCriteria>(getCriteriaFromFilterFields([]));
+  const [criteria, setCriteria] = useState<SearchCriteria>(
+    getCriteriaFromFilterFields([])
+  );
   useEffect(() => {
     if (hasViewPermission(PermissionEntity.PEOPLE_AND_TEAMS)) {
-      dispatch(getTeams({ ...criteria, pageSize: 10, pageNum: 0, direction: 'DESC' }));
+      dispatch(
+        getTeams({ ...criteria, pageSize: 10, pageNum: 0, direction: 'DESC' })
+      );
     }
   }, [criteria]);
-
 
   const onRefresh = () => {
     setCriteria(getCriteriaFromFilterFields([]));
   };
 
-  const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+  const isCloseToBottom = ({
+    layoutMeasurement,
+    contentOffset,
+    contentSize
+  }) => {
     const paddingToBottom = 20;
-    return layoutMeasurement.height + contentOffset.y >=
-      contentSize.height - paddingToBottom;
+    return (
+      layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom
+    );
   };
   const onQueryChange = (query) => {
     onSearchQueryChange<Team>(query, criteria, setCriteria, setSearchQuery, [
@@ -65,45 +82,78 @@ export default function Teams({ navigation }: RootStackScreenProps<'PeopleTeams'
       'description'
     ]);
   };
-  useDebouncedEffect(() => {
-    if (startedSearch)
-      onQueryChange(searchQuery);
-  }, [searchQuery], 1000);
+  useDebouncedEffect(
+    () => {
+      if (startedSearch) onQueryChange(searchQuery);
+    },
+    [searchQuery],
+    1000
+  );
   return (
-    <View style={{ ...styles.container, backgroundColor: theme.colors.background }}>
+    <View
+      style={{ ...styles.container, backgroundColor: theme.colors.background }}
+    >
       <Searchbar
         placeholder={t('search')}
         onFocus={() => setStartedSearch(true)}
         onChangeText={setSearchQuery}
         value={searchQuery}
       />
-      <ScrollView style={styles.scrollView}
-                  onScroll={({ nativeEvent }) => {
-                    if (isCloseToBottom(nativeEvent)) {
-                      if (!loadingGet && !lastPage)
-                        dispatch(getMoreTeams(criteria, currentPageNum + 1));
-                    }
-                  }}
-                  refreshControl={
-                    <RefreshControl refreshing={loadingGet} onRefresh={onRefresh} colors={[theme.colors.primary]} />}
-                  scrollEventThrottle={400}>
-        {!!teams.content.length ? teams.content.map(team => (
-          <Card style={{ padding: 5, marginVertical: 5, backgroundColor: 'white' }} key={team.id}
-                onPress={() => navigation.push('TeamDetails', { id: team.id })}>
-            <Card.Content>
-              <View style={{ ...styles.row, justifyContent: 'space-between' }}>
-                <View style={{ ...styles.row, justifyContent: 'space-between' }}>
-                  <View style={{ marginRight: 10 }}>
-                    <Tag text={`#${team.id}`} color='white' backgroundColor='#545454' />
+      <ScrollView
+        style={styles.scrollView}
+        onScroll={({ nativeEvent }) => {
+          if (isCloseToBottom(nativeEvent)) {
+            if (!loadingGet && !lastPage)
+              dispatch(getMoreTeams(criteria, currentPageNum + 1));
+          }
+        }}
+        refreshControl={
+          <RefreshControl
+            refreshing={loadingGet}
+            onRefresh={onRefresh}
+            colors={[theme.colors.primary]}
+          />
+        }
+        scrollEventThrottle={400}
+      >
+        {!!teams.content.length ? (
+          teams.content.map((team) => (
+            <Card
+              style={{
+                padding: 5,
+                marginVertical: 5,
+                backgroundColor: 'white'
+              }}
+              key={team.id}
+              onPress={() => navigation.push('TeamDetails', { id: team.id })}
+            >
+              <Card.Content>
+                <View
+                  style={{ ...styles.row, justifyContent: 'space-between' }}
+                >
+                  <View
+                    style={{ ...styles.row, justifyContent: 'space-between' }}
+                  >
+                    <View style={{ marginRight: 10 }}>
+                      <Tag
+                        text={`#${team.id}`}
+                        color="white"
+                        backgroundColor="#545454"
+                      />
+                    </View>
                   </View>
                 </View>
-              </View>
-              <Text variant='titleMedium'>{team.name}</Text>
-            </Card.Content>
-          </Card>
-        )) : loadingGet ? null : <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
-          < Text variant={'titleLarge'}>{t('no_element_match_criteria')}</Text>
-        </View>}
+                <Text variant="titleMedium">{team.name}</Text>
+              </Card.Content>
+            </Card>
+          ))
+        ) : loadingGet ? null : (
+          <View
+            style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}
+          >
+            <Text variant={'titleLarge'}>{t('no_element_match_criteria')}</Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );

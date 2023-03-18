@@ -80,29 +80,29 @@ export const getMultiParts = (): AppThunk => async (dispatch) => {
 
 export const addMultiParts =
   (multiPart): AppThunk =>
-    async (dispatch) => {
-      const multiPartResponse = await api.post<SetType>(basePath, multiPart);
-      dispatch(slice.actions.addMultiParts({ multiPart: multiPartResponse }));
-    };
+  async (dispatch) => {
+    const multiPartResponse = await api.post<SetType>(basePath, multiPart);
+    dispatch(slice.actions.addMultiParts({ multiPart: multiPartResponse }));
+  };
 export const editMultiParts =
   (id: number, multiPart): AppThunk =>
-    async (dispatch) => {
-      const multiPartResponse = await api.patch<SetType>(
-        `${basePath}/${id}`,
-        multiPart
-      );
-      dispatch(slice.actions.editMultiParts({ multiPart: multiPartResponse }));
-    };
+  async (dispatch) => {
+    const multiPartResponse = await api.patch<SetType>(
+      `${basePath}/${id}`,
+      multiPart
+    );
+    dispatch(slice.actions.editMultiParts({ multiPart: multiPartResponse }));
+  };
 export const deleteMultiParts =
   (id: number): AppThunk =>
-    async (dispatch) => {
-      const multiPartResponse = await api.deletes<{ success: boolean }>(
-        `${basePath}/${id}`
-      );
-      const { success } = multiPartResponse;
-      if (success) {
-        dispatch(slice.actions.deleteMultiParts({ id }));
-      }
-    };
+  async (dispatch) => {
+    const multiPartResponse = await api.deletes<{ success: boolean }>(
+      `${basePath}/${id}`
+    );
+    const { success } = multiPartResponse;
+    if (success) {
+      dispatch(slice.actions.deleteMultiParts({ id }));
+    }
+  };
 
 export default slice;

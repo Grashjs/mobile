@@ -9,12 +9,16 @@ import { useDispatch } from '../../store';
 import { editCustomer } from '../../slices/customer';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { formatCustomerValues, getCustomerFields } from '../../utils/fields';
-import { emailRegExp, phoneRegExp, websiteRegExp } from '../../utils/validators';
+import {
+  emailRegExp,
+  phoneRegExp,
+  websiteRegExp
+} from '../../utils/validators';
 
 export default function EditCustomerScreen({
-                                             navigation,
-                                             route
-                                           }: RootStackScreenProps<'EditCustomer'>) {
+  navigation,
+  route
+}: RootStackScreenProps<'EditCustomer'>) {
   const { t } = useTranslation();
   const { customer } = route.params;
   const { showSnackBar } = useContext(CustomSnackBarContext);
@@ -37,31 +41,32 @@ export default function EditCustomerScreen({
   const onEditFailure = (err) =>
     showSnackBar(t('customer_edit_failure'), 'error');
 
-  return (<View style={styles.container}>
-    <Form
-      fields={getCustomerFields(t)}
-      validation={Yup.object().shape(shape)}
-      navigation={navigation}
-      submitText={t('save')}
-      values={{
-        ...customer,
-        billingCurrency: customer?.billingCurrency
-          ? {
-            label: customer.billingCurrency.name,
-            value: customer.billingCurrency.id
-          }
-          : null
-      }}
-      onChange={({ field, e }) => {
-      }}
-      onSubmit={async (values) => {
-        const formattedValues = formatCustomerValues(values);
-        return dispatch(
-          editCustomer(customer.id, formattedValues)
-        )
-          .then(onEditSuccess)
-          .catch(onEditFailure);
-      }} /></View>);
+  return (
+    <View style={styles.container}>
+      <Form
+        fields={getCustomerFields(t)}
+        validation={Yup.object().shape(shape)}
+        navigation={navigation}
+        submitText={t('save')}
+        values={{
+          ...customer,
+          billingCurrency: customer?.billingCurrency
+            ? {
+                label: customer.billingCurrency.name,
+                value: customer.billingCurrency.id
+              }
+            : null
+        }}
+        onChange={({ field, e }) => {}}
+        onSubmit={async (values) => {
+          const formattedValues = formatCustomerValues(values);
+          return dispatch(editCustomer(customer.id, formattedValues))
+            .then(onEditSuccess)
+            .catch(onEditFailure);
+        }}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

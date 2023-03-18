@@ -242,11 +242,17 @@ const slice = createSlice({
       const { stats } = action.payload;
       state.completeByCategory = stats;
     },
-    getMobileOverview(state: WOStatstate, action: PayloadAction<{ stats: MobileWOStats }>) {
+    getMobileOverview(
+      state: WOStatstate,
+      action: PayloadAction<{ stats: MobileWOStats }>
+    ) {
       const { stats } = action.payload;
       state.mobileOverview = stats;
     },
-    getMobileExtendedOverview(state: WOStatstate, action: PayloadAction<{ stats: MobileWOStatsExtended }>) {
+    getMobileExtendedOverview(
+      state: WOStatstate,
+      action: PayloadAction<{ stats: MobileWOStatsExtended }>
+    ) {
       const { stats } = action.payload;
       state.mobileExtended = stats;
     },
@@ -270,21 +276,31 @@ export const getOverviewStats = (): AppThunk => async (dispatch) => {
   dispatch(slice.actions.getStats({ overviewStats }));
   dispatch(slice.actions.setLoading({ operation: 'overview', loading: false }));
 };
-export const getMobileOverviewStats = (assignedToMe: boolean): AppThunk => async (dispatch) => {
-  dispatch(slice.actions.setLoading({ operation: 'mobileOverview', loading: true }));
-  const overviewStats = await api.get<MobileWOStats>(
-    `${basePath}/mobile/overview?assignedToMe=${assignedToMe}`
-  );
-  dispatch(slice.actions.getMobileOverview({ stats: overviewStats }));
-  dispatch(slice.actions.setLoading({ operation: 'mobileOverview', loading: false }));
-};
+export const getMobileOverviewStats =
+  (assignedToMe: boolean): AppThunk =>
+  async (dispatch) => {
+    dispatch(
+      slice.actions.setLoading({ operation: 'mobileOverview', loading: true })
+    );
+    const overviewStats = await api.get<MobileWOStats>(
+      `${basePath}/mobile/overview?assignedToMe=${assignedToMe}`
+    );
+    dispatch(slice.actions.getMobileOverview({ stats: overviewStats }));
+    dispatch(
+      slice.actions.setLoading({ operation: 'mobileOverview', loading: false })
+    );
+  };
 export const getMobileExtendedStats = (): AppThunk => async (dispatch) => {
-  dispatch(slice.actions.setLoading({ operation: 'mobileExtended', loading: true }));
+  dispatch(
+    slice.actions.setLoading({ operation: 'mobileExtended', loading: true })
+  );
   const stats = await api.get<MobileWOStatsExtended>(
     `${basePath}/mobile/complete-compliant`
   );
   dispatch(slice.actions.getMobileExtendedOverview({ stats }));
-  dispatch(slice.actions.setLoading({ operation: 'mobileExtended', loading: false }));
+  dispatch(
+    slice.actions.setLoading({ operation: 'mobileExtended', loading: false })
+  );
 };
 export const getIncompleteStats = (): AppThunk => async (dispatch) => {
   dispatch(slice.actions.setLoading({ operation: 'overview', loading: true }));

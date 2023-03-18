@@ -7,18 +7,28 @@ import { RootStackParamList, RootTabScreenProps } from '../types';
 import useAuth from '../hooks/useAuth';
 import { PermissionEntity } from '../models/role';
 
-export default function MoreEntitiesScreen({ navigation }: RootTabScreenProps<'MoreEntities'>) {
+export default function MoreEntitiesScreen({
+  navigation
+}: RootTabScreenProps<'MoreEntities'>) {
   const theme = useTheme();
   const { t } = useTranslation();
   const { hasViewPermission } = useAuth();
-  const entities: { label: string; icon: IconSource; color: string; backgroundColor: string; link: keyof RootStackParamList; visible: boolean }[] = [{
-    label: 'locations',
-    icon: 'map-marker',
-    color: '#2491d1',
-    backgroundColor: '#c8cfd3',
-    link: 'Locations',
-    visible: hasViewPermission(PermissionEntity.LOCATIONS)
-  },
+  const entities: {
+    label: string;
+    icon: IconSource;
+    color: string;
+    backgroundColor: string;
+    link: keyof RootStackParamList;
+    visible: boolean;
+  }[] = [
+    {
+      label: 'locations',
+      icon: 'map-marker',
+      color: '#2491d1',
+      backgroundColor: '#c8cfd3',
+      link: 'Locations',
+      visible: hasViewPermission(PermissionEntity.LOCATIONS)
+    },
     {
       label: 'assets',
       icon: 'package-variant-closed',
@@ -63,26 +73,39 @@ export default function MoreEntitiesScreen({ navigation }: RootTabScreenProps<'M
     }
   ];
   return (
-    <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background, paddingHorizontal: 10 }}>
-      {entities.filter(entity => entity.visible).map(({ label, icon, color, backgroundColor, link }) => (
-        //@ts-ignore
-        <TouchableOpacity key={label} onPress={() => navigation.navigate(link)}>
-          <View style={{
-            backgroundColor,
-            display: 'flex',
-            flexDirection: 'row',
-            marginVertical: 5,
-            borderRadius: 10,
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: '100%',
-            padding: 20
-          }}>
-            <Text variant={'titleMedium'}>{t(label)}</Text>
-            <IconButton icon={icon} iconColor={color} />
-          </View>
-        </TouchableOpacity>
-      ))}
+    <ScrollView
+      style={{
+        ...styles.container,
+        backgroundColor: theme.colors.background,
+        paddingHorizontal: 10
+      }}
+    >
+      {entities
+        .filter((entity) => entity.visible)
+        .map(({ label, icon, color, backgroundColor, link }) => (
+          //@ts-ignore
+          <TouchableOpacity
+            key={label}
+            onPress={() => navigation.navigate(link)}
+          >
+            <View
+              style={{
+                backgroundColor,
+                display: 'flex',
+                flexDirection: 'row',
+                marginVertical: 5,
+                borderRadius: 10,
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: '100%',
+                padding: 20
+              }}
+            >
+              <Text variant={'titleMedium'}>{t(label)}</Text>
+              <IconButton icon={icon} iconColor={color} />
+            </View>
+          </TouchableOpacity>
+        ))}
     </ScrollView>
   );
 }

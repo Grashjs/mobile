@@ -14,16 +14,12 @@ import { addPart } from '../../slices/part';
 import { getImageAndFiles } from '../../utils/overall';
 
 export default function CreatePartScreen({
-                                           navigation,
-                                           route
-                                         }: RootStackScreenProps<'AddPart'>) {
+  navigation,
+  route
+}: RootStackScreenProps<'AddPart'>) {
   const { t } = useTranslation();
-  const { uploadFiles } = useContext(
-    CompanySettingsContext
-  );
-  const {
-    getFilteredFields
-  } = useAuth();
+  const { uploadFiles } = useContext(CompanySettingsContext);
+  const { getFilteredFields } = useAuth();
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const dispatch = useDispatch();
   const onCreationSuccess = () => {
@@ -37,37 +33,40 @@ export default function CreatePartScreen({
     name: Yup.string().required(t('required_part_name'))
   };
 
-  return (<View style={styles.container}>
-    <Form
-      fields={getFilteredFields(getPartFields(t))}
-      validation={Yup.object().shape(shape)}
-      navigation={navigation}
-      submitText={t('create_part')}
-      values={{}}
-      onChange={({ field, e }) => {
-      }}
-      onSubmit={async (values) => {
-        let formattedValues = formatPartValues(values);
-        return new Promise<void>((resolve, rej) => {
-          uploadFiles(formattedValues.files, formattedValues.image)
-            .then((files) => {
-              const imageAndFiles = getImageAndFiles(files);
-              formattedValues = {
-                ...formattedValues,
-                image: imageAndFiles.image,
-                files: imageAndFiles.files
-              };
-              dispatch(addPart(formattedValues))
-                .then(onCreationSuccess)
-                .catch(onCreationFailure)
-                .finally(resolve);
-            })
-            .catch((err) => {
-              onCreationFailure(err);
-              rej(err);
-            });
-        });
-      }} /></View>);
+  return (
+    <View style={styles.container}>
+      <Form
+        fields={getFilteredFields(getPartFields(t))}
+        validation={Yup.object().shape(shape)}
+        navigation={navigation}
+        submitText={t('create_part')}
+        values={{}}
+        onChange={({ field, e }) => {}}
+        onSubmit={async (values) => {
+          let formattedValues = formatPartValues(values);
+          return new Promise<void>((resolve, rej) => {
+            uploadFiles(formattedValues.files, formattedValues.image)
+              .then((files) => {
+                const imageAndFiles = getImageAndFiles(files);
+                formattedValues = {
+                  ...formattedValues,
+                  image: imageAndFiles.image,
+                  files: imageAndFiles.files
+                };
+                dispatch(addPart(formattedValues))
+                  .then(onCreationSuccess)
+                  .catch(onCreationFailure)
+                  .finally(resolve);
+              })
+              .catch((err) => {
+                onCreationFailure(err);
+                rej(err);
+              });
+          });
+        }}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

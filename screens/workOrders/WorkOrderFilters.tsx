@@ -4,13 +4,21 @@ import { RootStackScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from '../../store';
 import { SearchOperator } from '../../models/page';
-import { FilterFieldType, filterSingleField, getDateValue, getLabelAndValue } from '../../utils/filter';
+import {
+  FilterFieldType,
+  filterSingleField,
+  getDateValue,
+  getLabelAndValue
+} from '../../utils/filter';
 import { IField } from '../../models/form';
 import { UserMiniDTO } from '../../models/user';
 import Form from '../../components/form';
 import * as Yup from 'yup';
 
-export default function WorkOrderFilters({ navigation, route }: RootStackScreenProps<'WorkOrderFilters'>) {
+export default function WorkOrderFilters({
+  navigation,
+  route
+}: RootStackScreenProps<'WorkOrderFilters'>) {
   const { t }: { t: any } = useTranslation();
   const { filterFields, onFilterChange } = route.params;
   const { customersMini } = useSelector((state) => state.customers);
@@ -186,9 +194,9 @@ export default function WorkOrderFilters({ navigation, route }: RootStackScreenP
     return {
       type: typeValue
         ? {
-          label: getTypeLabelAndValue(typeValue.operation).label,
-          value: getTypeLabelAndValue(typeValue.operation).value
-        }
+            label: getTypeLabelAndValue(typeValue.operation).label,
+            value: getTypeLabelAndValue(typeValue.operation).value
+          }
         : { label: t('ALL'), value: 'ALL' },
       archived: filterFields.find(
         (filterField) => filterField.field === 'archived'
@@ -255,8 +263,7 @@ export default function WorkOrderFilters({ navigation, route }: RootStackScreenP
         validation={Yup.object().shape(shape)}
         submitText={t('save')}
         values={getValuesFromFilterFields()}
-        onChange={({ field, e }) => {
-        }}
+        onChange={({ field, e }) => {}}
         onSubmit={async (values) => {
           let newFilters = [...filterFields];
           filtersConfig.forEach((filterConfig) => {
