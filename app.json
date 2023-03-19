@@ -7,6 +7,9 @@
     "icon": "./assets/images/icon.png",
     "scheme": "grashcmms",
     "userInterfaceStyle": "automatic",
+    "notification": {
+      "icon": "./assets/images/notification.png"
+    },
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -15,7 +18,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
