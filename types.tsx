@@ -125,6 +125,8 @@ export type RootStackParamList = {
     filterFields: FilterField[];
     onFilterChange: (filterFields: FilterField[]) => void;
   };
+  AddAdditionalCost: { workOrderId: number };
+  AddAdditionalTime: { workOrderId: number };
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

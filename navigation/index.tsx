@@ -84,6 +84,8 @@ import { navigationRef } from './RootNavigation';
 import SettingsScreen from '../screens/SettingsScreen';
 import PdfViewer from '../screens/PdfViewer';
 import WorkOrderFilters from '../screens/workOrders/WorkOrderFilters';
+import CreateAdditionalCost from '../screens/workOrders/CreateAdditionalCost';
+import CreateAdditionalTime from '../screens/workOrders/CreateAdditionalTime';
 
 export default function Navigation({
   colorScheme
@@ -376,6 +378,16 @@ function RootNavigator() {
           name="SelectTasks"
           component={SelectTasksModal}
           options={{ title: t('add_task') }}
+        />
+        <Stack.Screen
+          name="AddAdditionalCost"
+          component={CreateAdditionalCost}
+          options={{ title: t('add_cost') }}
+        />
+        <Stack.Screen
+          name="AddAdditionalTime"
+          component={CreateAdditionalTime}
+          options={{ title: t('add_time') }}
         />
       </Stack.Group>
     </Stack.Navigator>

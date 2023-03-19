@@ -770,27 +770,23 @@ export default function WODetailsScreen({
                   </View>
                 )}
                 <Divider style={{ marginTop: 5 }} />
-                {/*<Button*/}
-                {/*TODO*/}
-                {/*  disabled={!hasEditPermission(PermissionEntity.WORK_ORDERS, workOrder)}*/}
-                {/*  onPress={() =>*/}
-                {/*    navigation.navigate('SelectParts', {*/}
-                {/*      onChange: (selectedParts) => {*/}
-                {/*        dispatch(*/}
-                {/*          editWOPartQuantities(*/}
-                {/*            workOrder?.id,*/}
-                {/*            selectedParts.map((part) => part.id)*/}
-                {/*          )*/}
-                {/*        );*/}
-                {/*      },*/}
-                {/*      selected: partQuantities.map(*/}
-                {/*        (partQuantity) => partQuantity.part.id*/}
-                {/*      )*/}
-                {/*    })*/}
-                {/*  }*/}
-                {/*>*/}
-                {/*  {t('add_additional_cost')}*/}
-                {/*</Button>*/}
+                <Button
+                  disabled={
+                    !(
+                      hasEditPermission(
+                        PermissionEntity.WORK_ORDERS,
+                        workOrder
+                      ) && hasFeature(PlanFeature.ADDITIONAL_COST)
+                    )
+                  }
+                  onPress={() =>
+                    navigation.push('AddAdditionalCost', {
+                      workOrderId: workOrder.id
+                    })
+                  }
+                >
+                  {t('add_additional_cost')}
+                </Button>
               </View>
               {!!tasks.length && (
                 <View style={styles.shadowedCard}>
@@ -871,26 +867,42 @@ export default function WODetailsScreen({
                   )}
                 </View>
               )}
-              {!!labors.filter((labor) => !labor.logged).length && (
-                <View style={styles.shadowedCard}>
-                  <Text style={{ marginBottom: 10 }}>{t('labors')}</Text>
-                  {labors
-                    .filter((labor) => !labor.logged)
-                    .map((labor) => (
-                      <List.Item
-                        key={labor.id}
-                        title={
-                          labor.assignedTo
-                            ? `${labor.assignedTo.firstName} ${labor.assignedTo.lastName}`
-                            : t('not_assigned')
-                        }
-                        description={`${
-                          getHoursAndMinutesAndSeconds(labor.duration)[0]
-                        }h ${getHoursAndMinutesAndSeconds(labor.duration)[1]}m`}
-                      />
-                    ))}
-                </View>
-              )}
+              <View style={styles.shadowedCard}>
+                <Text style={{ marginBottom: 10 }}>{t('labors')}</Text>
+                {labors
+                  .filter((labor) => !labor.logged)
+                  .map((labor) => (
+                    <List.Item
+                      key={labor.id}
+                      title={
+                        labor.assignedTo
+                          ? `${labor.assignedTo.firstName} ${labor.assignedTo.lastName}`
+                          : t('not_assigned')
+                      }
+                      description={`${
+                        getHoursAndMinutesAndSeconds(labor.duration)[0]
+                      }h ${getHoursAndMinutesAndSeconds(labor.duration)[1]}m`}
+                    />
+                  ))}
+                <Divider style={{ marginTop: 5 }} />
+                <Button
+                  disabled={
+                    !(
+                      hasEditPermission(
+                        PermissionEntity.WORK_ORDERS,
+                        workOrder
+                      ) && hasFeature(PlanFeature.ADDITIONAL_TIME)
+                    )
+                  }
+                  onPress={() =>
+                    navigation.push('AddAdditionalTime', {
+                      workOrderId: workOrder.id
+                    })
+                  }
+                >
+                  {t('add_time')}
+                </Button>
+              </View>
               {!!currentWorkOrderHistories.length && (
                 <View style={styles.shadowedCard}>
                   <Text style={{ marginBottom: 10 }}>{t('history')}</Text>
