@@ -29,6 +29,7 @@ export default function InviteUserScreen({
   const [email, setEmail] = useState<string>('');
   const { roles, loadingGet } = useSelector((state) => state.roles);
   const [selectedRole, setSelectedRole] = useState<number>();
+  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
   const [isInviteSubmitting, setIsInviteSubmitting] = useState<boolean>(false);
   const { showSnackBar } = useContext(CustomSnackBarContext);
   useEffect(() => {
@@ -72,6 +73,7 @@ export default function InviteUserScreen({
     } else return [];
   };
   const onInvite = () => {
+    setHasSubmitted(true);
     const invite = (emails: string[]) => {
       setIsInviteSubmitting(true);
       dispatch(inviteUsers(selectedRole, emails))
@@ -101,13 +103,13 @@ export default function InviteUserScreen({
     >
       <View style={{ padding: 20 }}>
         <TextInput
-          error={!emailRegExp.test(email)}
+          error={hasSubmitted && !emailRegExp.test(email)}
           label={t('email')}
           onChangeText={(text) => setEmail(text)}
           value={email}
           mode="outlined"
         />
-        {!emailRegExp.test(email) && (
+        {!emailRegExp.test(email) && hasSubmitted && (
           <HelperText type="error">{t('invalid_email')}</HelperText>
         )}
         {getOrderedRoles().map((role, index) => (
