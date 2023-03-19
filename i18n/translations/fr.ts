@@ -1538,7 +1538,10 @@ const frJSON = {
   report: 'Rapport',
   end_cannot_be_ulterior_to_start:
     'La date de fin ne peut pas être antérieure à la date de début',
-  create_child_asset: 'Créer un équipement enfant'
+  create_child_asset: 'Créer un équipement enfant',
+  storage_permission_needed_description:
+    'Vous devez activer la permission de stockage pour télécharger ce fichier',
+  permission_denied: 'Accès refusé!'
 };
 
 export default frJSON;

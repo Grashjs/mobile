@@ -1389,7 +1389,10 @@ const enJSON = {
   update_profile: 'Update profile',
   confirm_logout: 'Are you sure you want to logout ?',
   report: 'Report',
-  end_cannot_be_ulterior_to_start: 'End date cannot be ulterior to start date'
+  end_cannot_be_ulterior_to_start: 'End date cannot be ulterior to start date',
+  storage_permission_needed_description:
+    'You need to give storage permission to download the file',
+  permission_denied: 'Permission Denied!'
 };
 
 export default enJSON;

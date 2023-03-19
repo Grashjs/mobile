@@ -62,6 +62,7 @@ import LoadingDialog from '../../components/LoadingDialog';
 import WorkOrder from '../../models/workOrder';
 import {
   DocumentDirectoryPath,
+  DownloadDirectoryPath,
   downloadFile,
   DownloadFileOptions
 } from 'react-native-fs';
@@ -227,9 +228,9 @@ export default function WODetailsScreen({
   }, []);
 
   const actualDownload = (uri: string): Promise<any> => {
-    const fileName = `Report of #${workOrder.title}`;
+    const fileName = workOrder.title;
     //Define path to store file along with the extension
-    const path = `${DocumentDirectoryPath}/${fileName}.pdf`;
+    const path = `${DownloadDirectoryPath}/${fileName}.pdf`;
     //Define options
     const options: DownloadFileOptions = {
       fromUrl: uri,
@@ -240,10 +241,7 @@ export default function WODetailsScreen({
     return response.promise.then(async (res) => {
       //Transform response
       if (res && res.statusCode === 200 && res.bytesWritten > 0) {
-        navigation.navigate('PDFViewer', {
-          uri,
-          title: workOrder.title
-        });
+        Linking.openURL(uri);
       } else {
         console.log(res);
       }
@@ -289,8 +287,8 @@ export default function WODetailsScreen({
             } else {
               Alert.alert(
                 //TODO translate
-                'Permission Denied!',
-                'You need to give storage permission to download the file'
+                'permission_denied',
+                t('storage_permission_needed_description')
               );
             }
           } catch (err) {

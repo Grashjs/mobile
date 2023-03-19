@@ -120,7 +120,6 @@ export type RootStackParamList = {
   VendorsCustomers: undefined;
   Notifications: undefined;
   Settings: undefined;
-  PDFViewer: { uri: string; title: string };
   WorkOrderFilters: {
     filterFields: FilterField[];
     onFilterChange: (filterFields: FilterField[]) => void;

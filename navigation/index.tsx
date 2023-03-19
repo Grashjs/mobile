@@ -82,7 +82,6 @@ import UserProfile from '../screens/peopleTeams/Profile';
 import InviteUserScreen from '../screens/peopleTeams/InviteUserScreen';
 import { navigationRef } from './RootNavigation';
 import SettingsScreen from '../screens/SettingsScreen';
-import PdfViewer from '../screens/PdfViewer';
 import WorkOrderFilters from '../screens/workOrders/WorkOrderFilters';
 import CreateAdditionalCost from '../screens/workOrders/CreateAdditionalCost';
 import CreateAdditionalTime from '../screens/workOrders/CreateAdditionalTime';
@@ -316,11 +315,6 @@ function RootNavigator() {
         name="Settings"
         component={SettingsScreen}
         options={{ title: t('settings') }}
-      />
-      <Stack.Screen
-        name="PDFViewer"
-        component={PdfViewer}
-        options={{ title: t('document') }}
       />
       <Stack.Screen
         name="WorkOrderFilters"
