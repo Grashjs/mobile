@@ -130,7 +130,7 @@ export default function PartDetailsHome({
         />
       </View>
     );
-  else return <LoadingDialog visible={loadingGet} />;
+  else return <LoadingDialog visible={true} />;
 }
 
 const styles = StyleSheet.create({

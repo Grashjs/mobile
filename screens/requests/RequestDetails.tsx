@@ -274,5 +274,5 @@ export default function RequestDetails({
           )}
       </ScrollView>
     );
-  else return <LoadingDialog visible={loadingGet} />;
+  else return <LoadingDialog visible={true} />;
 }

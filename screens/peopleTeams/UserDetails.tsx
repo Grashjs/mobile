@@ -112,5 +112,5 @@ export default function UserDetails({
         ))}
       </ScrollView>
     );
-  else return <LoadingDialog visible={loadingGet} />;
+  else return <LoadingDialog visible={true} />;
 }

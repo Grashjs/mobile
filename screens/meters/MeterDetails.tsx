@@ -265,5 +265,5 @@ export default function MeterDetails({
         ))}
       </ScrollView>
     );
-  else return <LoadingDialog visible={loadingGet} />;
+  else return <LoadingDialog visible={true} />;
 }

@@ -133,5 +133,5 @@ export default function TeamDetails({
         ))}
       </ScrollView>
     );
-  else return <LoadingDialog visible={loadingGet} />;
+  else return <LoadingDialog visible={true} />;
 }

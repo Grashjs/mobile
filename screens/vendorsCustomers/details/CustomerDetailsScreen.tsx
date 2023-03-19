@@ -181,5 +181,5 @@ export default function CustomerDetailsScreen({
         )}
       </ScrollView>
     );
-  else return <LoadingDialog visible={loadingGet} />;
+  else return <LoadingDialog visible={true} />;
 }

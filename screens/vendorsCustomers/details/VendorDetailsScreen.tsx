@@ -177,5 +177,5 @@ export default function VendorDetailsScreen({
         )}
       </ScrollView>
     );
-  else return <LoadingDialog visible={loadingGet} />;
+  else return <LoadingDialog visible={true} />;
 }
