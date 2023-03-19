@@ -1537,7 +1537,8 @@ const frJSON = {
   confirm_logout: 'Etes-vous sur de vouloir vous déconnecter ?',
   report: 'Rapport',
   end_cannot_be_ulterior_to_start:
-    'La date de fin ne peut pas être antérieure à la date de début'
+    'La date de fin ne peut pas être antérieure à la date de début',
+  create_child_asset: 'Créer un équipement enfant'
 };
 
 export default frJSON;

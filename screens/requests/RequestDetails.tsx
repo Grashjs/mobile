@@ -189,8 +189,8 @@ export default function RequestDetails({
   }) {
     if (value) {
       return (
-        // @ts-ignore
         <TouchableOpacity
+          // @ts-ignore
           onPress={() => navigation.navigate(link.route, { id: link.id })}
           style={{ marginTop: 20, padding: 20, backgroundColor: 'white' }}
         >

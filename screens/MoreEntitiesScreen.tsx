@@ -83,9 +83,9 @@ export default function MoreEntitiesScreen({
       {entities
         .filter((entity) => entity.visible)
         .map(({ label, icon, color, backgroundColor, link }) => (
-          //@ts-ignore
           <TouchableOpacity
             key={label}
+            //@ts-ignore
             onPress={() => navigation.navigate(link)}
           >
             <View

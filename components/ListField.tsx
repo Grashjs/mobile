@@ -34,8 +34,8 @@ export default function ListField<T>({
               <TouchableOpacity
                 style={{ marginTop: 5 }}
                 key={index}
-                // @ts-ignore
                 onPress={() =>
+                  // @ts-ignore
                   navigation.push(getHref(value).route, getHref(value).params)
                 }
               >
