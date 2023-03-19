@@ -55,77 +55,18 @@ Notifications.setNotificationHandler({
   })
 });
 
-async function registerForPushNotificationsAsync() {
-  let token;
-  if (Device.isDevice) {
-    const { status: existingStatus } =
-      await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    if (finalStatus !== 'granted') {
-      Alert.alert('Failed to get push token for push notification!');
-      return;
-    }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
-  } else {
-    Alert.alert('Must use physical device for Push Notifications');
-  }
-
-  if (Platform.OS === 'android') {
-    Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#5569ff'
-    });
-  }
-
-  return token;
-}
-
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
   const [notification, setNotification] =
     useState<Notifications.Notification>(null);
   const notificationListener = useRef<Subscription>();
-  const { t } = useTranslation();
-  const savePushToken = (token: string) =>
-    api.post<{ success: boolean }>(`notifications/push-token`, { token });
   const responseListener = useRef<Subscription>();
-  const checkPushNotificationState = async () => {
-    let { status: existingStatus } = await Permissions.getAsync(
-      Permissions.NOTIFICATIONS
-    );
 
-    if (existingStatus !== 'granted') {
-      const status = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-      existingStatus = status.status;
-    }
-    if (existingStatus !== 'granted') {
-      Alert.alert(
-        'No Notification Permission',
-        'Please goto setting and activate notification permission manually',
-        [
-          { text: t('cancel'), onPress: () => console.log('cancel') },
-          { text: t('allow'), onPress: () => Linking.openURL('app-settings:') }
-        ],
-        { cancelable: false }
-      );
-      return;
-    }
-  };
   useEffect(() => {
     LogBox.ignoreLogs([
       'Warning: Async Storage has been extracted from react-native core'
     ]);
-    checkPushNotificationState().then(() =>
-      registerForPushNotificationsAsync().then((token) => savePushToken(token))
-    );
 
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {

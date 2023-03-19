@@ -2,7 +2,7 @@ import { createContext, FC, ReactNode, useEffect, useReducer } from 'react';
 import { OwnUser, UserResponseDTO } from '../models/user';
 import api, { authHeader } from '../utils/api';
 import { JWT_SECRET, verify } from '../utils/jwt';
-import { AsyncStorage } from 'react-native';
+import { Alert, AsyncStorage, Linking, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import {
   getCompanySettings,
@@ -21,6 +21,10 @@ import OwnSubscription from '../models/ownSubscription';
 import { PlanFeature } from '../models/subscriptionPlan';
 import { IField } from '../models/form';
 import WorkOrder from '../models/workOrder';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
+import { useTranslation } from 'react-i18next';
 
 interface AuthState {
   isInitialized: boolean;
@@ -451,6 +455,7 @@ const AuthContext = createContext<AuthContextValue>({
 
 export const AuthProvider: FC<AuthProviderProps> = (props) => {
   const { children } = props;
+  const { t } = useTranslation();
   const [state, dispatch] = useReducer(reducer, initialAuthState);
   const switchLanguage = ({ lng }: { lng: any }) => {
     internationalization.changeLanguage(lng);
@@ -460,10 +465,71 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     setCompanyId(user.companyId);
     return user;
   };
+
+  async function registerForPushNotificationsAsync() {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        Alert.alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      Alert.alert('Must use physical device for Push Notifications');
+    }
+
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#5569ff'
+      });
+    }
+
+    return token;
+  }
+
+  const checkPushNotificationState = async () => {
+    let { status: existingStatus } = await Permissions.getAsync(
+      Permissions.NOTIFICATIONS
+    );
+
+    if (existingStatus !== 'granted') {
+      const status = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      existingStatus = status.status;
+    }
+    if (existingStatus !== 'granted') {
+      Alert.alert(
+        'No Notification Permission',
+        'Please goto setting and activate notification permission manually',
+        [
+          { text: t('cancel'), onPress: () => console.log('cancel') },
+          { text: t('allow'), onPress: () => Linking.openURL('app-settings:') }
+        ],
+        { cancelable: false }
+      );
+      return;
+    }
+  };
+  const savePushToken = (token: string) =>
+    api.post<{ success: boolean }>(`notifications/push-token`, { token });
+
   const setupUser = async (companySettings: CompanySettings) => {
     switchLanguage({
       lng: companySettings.generalPreferences.language.toLowerCase()
     });
+    checkPushNotificationState().then(() =>
+      registerForPushNotificationsAsync().then((token) => savePushToken(token))
+    );
   };
   const getInfos = async (): Promise<void> => {
     try {
