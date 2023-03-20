@@ -10,6 +10,7 @@
     "notification": {
       "icon": "./assets/images/notification.png"
     },
+    "sdkVersion": "47.0.12",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
