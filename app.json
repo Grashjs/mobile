@@ -7,9 +7,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "grashcmms",
     "userInterfaceStyle": "automatic",
-    "runtimeVersion": {
-      "policy": "sdkVersion"
-    },
     "notification": {
       "icon": "./assets/images/notification.png"
     },
@@ -27,7 +24,10 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "runtimeVersion": {
+        "policy": "sdkVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -36,7 +36,8 @@
       },
       "versionCode": 4,
       "package": "com.grash.cmms",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
