@@ -248,6 +248,14 @@ export const getAssetDetails =
     );
     dispatch(slice.actions.setLoadingGet({ loading: false }));
   };
+export const getAssetByNfc =
+  (nfcId: string): AppThunk =>
+  async (dispatch) => {
+    dispatch(slice.actions.setLoadingGet({ loading: true }));
+    const asset = await api.get<AssetDTO>(`${basePath}/nfc/${nfcId}`);
+    dispatch(slice.actions.setLoadingGet({ loading: false }));
+    return asset.id;
+  };
 export const getAssetWorkOrders =
   (id: number): AppThunk =>
   async (dispatch) => {

@@ -1392,7 +1392,13 @@ const enJSON = {
   end_cannot_be_ulterior_to_start: 'End date cannot be ulterior to start date',
   storage_permission_needed_description:
     'You need to give storage permission to download the file',
-  permission_denied: 'Permission Denied!'
+  permission_denied: 'Permission Denied!',
+  to_scan: 'Scan',
+  nfc_tag: 'NFC Tag',
+  scanning: 'Scanning',
+  error: 'Error',
+  tag_not_found: 'Tag not found',
+  'no nfc support': 'No NFC Support'
 };
 
 export default enJSON;

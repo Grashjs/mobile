@@ -21,7 +21,8 @@ export interface IField {
     | 'switch'
     | 'partQuantity'
     | 'coordinates'
-    | 'dateRange';
+    | 'dateRange'
+    | 'nfc';
   type2?:
     | 'customer'
     | 'vendor'

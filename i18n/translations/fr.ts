@@ -1541,7 +1541,13 @@ const frJSON = {
   create_child_asset: 'Créer un équipement enfant',
   storage_permission_needed_description:
     'Vous devez activer la permission de stockage pour télécharger ce fichier',
-  permission_denied: 'Accès refusé!'
+  permission_denied: 'Accès refusé!',
+  to_scan: 'Scanner',
+  nfc_tag: 'Tag NFC',
+  scanning: 'En train de scanner',
+  error: 'Erreur',
+  tag_not_found: 'Tag non trouvé',
+  'no nfc support': "L'appareil ne supporte pas la technologie NFC"
 };
 
 export default frJSON;

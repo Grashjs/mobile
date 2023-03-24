@@ -263,6 +263,11 @@ export const getAssetFields = (t): Array<IField> => {
       placeholder: t('vendors_description')
     },
     {
+      name: 'nfcId',
+      type: 'nfc',
+      label: t('nfc_tag')
+    },
+    {
       name: 'inServiceDate',
       type: 'date',
       midWidth: true,

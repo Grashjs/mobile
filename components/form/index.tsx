@@ -512,6 +512,24 @@ export default function Form(props: OwnProps) {
                       }}
                     />
                   </View>
+                ) : field.type === 'nfc' ? (
+                  <View>
+                    <TouchableOpacity
+                      onPress={() =>
+                        props.navigation.navigate('SelectNfc', {
+                          onChange: (value) => {
+                            handleChange(formik, field.name, value);
+                            props.navigation.goBack();
+                          }
+                        })
+                      }
+                    >
+                      <Text>{field.label}</Text>
+                    </TouchableOpacity>
+                    <Text style={{ color: theme.colors.primary }}>
+                      {formik.values[field.name]}
+                    </Text>
+                  </View>
                 ) : (
                   renderSelect(formik, field)
                 )}

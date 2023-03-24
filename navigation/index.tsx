@@ -85,6 +85,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import WorkOrderFilters from '../screens/workOrders/WorkOrderFilters';
 import CreateAdditionalCost from '../screens/workOrders/CreateAdditionalCost';
 import CreateAdditionalTime from '../screens/workOrders/CreateAdditionalTime';
+import SelectNfcModal from '../screens/modals/SelectNfcModal';
 
 export default function Navigation({
   colorScheme
@@ -332,6 +333,11 @@ function RootNavigator() {
           name="SelectParts"
           component={SelectPartsModal}
           options={{ title: t('select_parts') }}
+        />
+        <Stack.Screen
+          name="SelectNfc"
+          component={SelectNfcModal}
+          options={{ title: t('to_scan') }}
         />
         <Stack.Screen
           name="SelectCustomers"

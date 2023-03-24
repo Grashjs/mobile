@@ -18,6 +18,7 @@ import { getMobileOverviewStats } from '../slices/analytics/workOrder';
 import { useDispatch, useSelector } from '../store';
 import * as React from 'react';
 import notification, { getNotifications } from '../slices/notification';
+import { getAssetByNfc } from '../slices/asset';
 
 export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
   const theme = useTheme();
@@ -174,6 +175,18 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
           justifyContent: 'space-between'
         }}
       >
+        <IconButton
+          style={iconButtonStyle}
+          icon={'magnify-scan'}
+          onPress={() =>
+            navigation.navigate('SelectNfc', {
+              onChange: (nfcId) =>
+                dispatch(getAssetByNfc(nfcId)).then((assetId: number) =>
+                  navigation.replace('AssetDetails', { id: assetId })
+                )
+            })
+          }
+        />
         <IconButton
           style={iconButtonStyle}
           icon={'poll'}

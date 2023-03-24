@@ -104,6 +104,7 @@ export type RootStackParamList = {
     multiple: boolean;
     type: string;
   };
+  SelectNfc: { onChange: (value: string) => void };
   CompleteWorkOrder: {
     onComplete: (
       signatureId: number | undefined,
