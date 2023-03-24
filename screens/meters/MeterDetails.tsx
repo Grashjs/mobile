@@ -204,9 +204,7 @@ export default function MeterDetails({
         {renderConfirmDelete()}
         {renderAddReading()}
         {meter.image && (
-          <View style={{ marginVertical: 20 }}>
-            <Image style={{ height: 200 }} source={{ uri: meter.image.url }} />
-          </View>
+          <Image style={{ height: 200 }} source={{ uri: meter.image.url }} />
         )}
         {fieldsToRender.map((field) => (
           <BasicField

@@ -68,9 +68,7 @@ export default function PartDetails({ part }: { part: Part }) {
       style={{ ...styles.container, backgroundColor: theme.colors.background }}
     >
       {part.image && (
-        <View style={{ marginVertical: 20 }}>
-          <Image style={{ height: 200 }} source={{ uri: part.image.url }} />
-        </View>
+        <Image style={{ height: 200 }} source={{ uri: part.image.url }} />
       )}
       {fieldsToRender.map((field) =>
         field.value ? (

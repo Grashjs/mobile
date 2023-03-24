@@ -211,12 +211,7 @@ export default function RequestDetails({
           <BasicField label={t('status')} value={t('cancelled')} />
         )}
         {request.image && (
-          <View style={{ marginVertical: 20 }}>
-            <Image
-              style={{ height: 200 }}
-              source={{ uri: request.image.url }}
-            />
-          </View>
+          <Image style={{ height: 200 }} source={{ uri: request.image.url }} />
         )}
         {fieldsToRender.map((field) => (
           <BasicField

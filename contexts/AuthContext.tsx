@@ -481,7 +481,6 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
     } else {
       Alert.alert('Must use physical device for Push Notifications');
     }

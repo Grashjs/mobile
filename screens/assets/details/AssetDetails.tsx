@@ -66,9 +66,7 @@ export default function AssetDetails({
       style={{ ...styles.container, backgroundColor: theme.colors.background }}
     >
       {asset.image && (
-        <View style={{ marginVertical: 20 }}>
-          <Image style={{ height: 200 }} source={{ uri: asset.image.url }} />
-        </View>
+        <Image style={{ height: 200 }} source={{ uri: asset.image.url }} />
       )}
       {fieldsToRender.map(
         (field) =>

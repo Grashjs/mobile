@@ -36,9 +36,7 @@ export default function LocationDetails({ location }: { location: Location }) {
       style={{ ...styles.container, backgroundColor: theme.colors.background }}
     >
       {location.image && (
-        <View style={{ marginVertical: 20 }}>
-          <Image style={{ height: 200 }} source={{ uri: location.image.url }} />
-        </View>
+        <Image style={{ height: 200 }} source={{ uri: location.image.url }} />
       )}
       {fieldsToRender.map(
         (field) =>

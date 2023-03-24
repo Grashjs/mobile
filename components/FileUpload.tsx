@@ -84,11 +84,15 @@ export default function FileUpload({
       if (!result.canceled) {
         setImages(result.assets.map((asset) => asset.uri));
         onChange(
-          result.assets.map((asset) => ({
-            uri: asset.uri,
-            name: asset.fileName,
-            type: mime.getType(asset.fileName)
-          }))
+          result.assets.map((asset) => {
+            const fileName =
+              asset.uri.split('/')[asset.uri.split('/').length - 1];
+            return {
+              uri: asset.uri,
+              name: fileName,
+              type: mime.getType(fileName)
+            };
+          })
         );
       }
     }

@@ -576,12 +576,10 @@ export default function WODetailsScreen({
               />
             </View>
             {workOrder.image && (
-              <View style={{ marginTop: 20 }}>
-                <Image
-                  style={{ height: 200 }}
-                  source={{ uri: workOrder.image.url }}
-                />
-              </View>
+              <Image
+                style={{ height: 200 }}
+                source={{ uri: workOrder.image.url }}
+              />
             )}
             <View style={{ marginTop: 20 }}>
               <View style={styles.dropdown}>
