@@ -1547,7 +1547,9 @@ const frJSON = {
   scanning: 'En train de scanner',
   error: 'Erreur',
   tag_not_found: 'Tag non trouvé',
-  'no nfc support': "L'appareil ne supporte pas la technologie NFC"
+  'no nfc support': "L'appareil ne supporte pas la technologie NFC",
+  remaining_parts: '{{quantity}} restants',
+  team_members_count: '{{count}} membres'
 };
 
 export default frJSON;

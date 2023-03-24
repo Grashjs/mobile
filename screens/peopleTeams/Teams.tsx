@@ -128,22 +128,10 @@ export default function Teams({
               onPress={() => navigation.push('TeamDetails', { id: team.id })}
             >
               <Card.Content>
-                <View
-                  style={{ ...styles.row, justifyContent: 'space-between' }}
-                >
-                  <View
-                    style={{ ...styles.row, justifyContent: 'space-between' }}
-                  >
-                    <View style={{ marginRight: 10 }}>
-                      <Tag
-                        text={`#${team.id}`}
-                        color="white"
-                        backgroundColor="#545454"
-                      />
-                    </View>
-                  </View>
-                </View>
                 <Text variant="titleMedium">{team.name}</Text>
+                <Text>
+                  {t('team_members_count', { count: team.users.length })}
+                </Text>
               </Card.Content>
             </Card>
           ))

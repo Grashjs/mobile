@@ -20,7 +20,9 @@ export default function Tag({
         borderRadius: 5
       }}
     >
-      <Text style={{ color }}>{text}</Text>
+      <Text variant={'bodySmall'} style={{ color }}>
+        {text}
+      </Text>
     </View>
   );
 }

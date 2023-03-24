@@ -1,4 +1,10 @@
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Image,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View
+} from 'react-native';
 import { useDispatch, useSelector } from '../../store';
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
@@ -7,13 +13,13 @@ import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
 import { getMoreParts, getParts } from '../../slices/part';
 import { FilterField, SearchCriteria } from '../../models/page';
-import { Card, Searchbar, Text, useTheme } from 'react-native-paper';
+import { Card, List, Searchbar, Text, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import Part from '../../models/part';
 import { onSearchQueryChange } from '../../utils/overall';
 import { RootStackScreenProps } from '../../types';
-import Tag from '../../components/Tag';
 import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
+import noPictureImage from '../../assets/images/no-image.png';
 
 export default function PartsScreen({
   navigation,
@@ -125,7 +131,6 @@ export default function PartsScreen({
           parts.content.map((part) => (
             <Card
               style={{
-                padding: 5,
                 marginVertical: 5,
                 backgroundColor: 'white'
               }}
@@ -133,22 +138,30 @@ export default function PartsScreen({
               onPress={() => navigation.push('PartDetails', { id: part.id })}
             >
               <Card.Content>
-                <View
-                  style={{ ...styles.row, justifyContent: 'space-between' }}
-                >
-                  <View
-                    style={{ ...styles.row, justifyContent: 'space-between' }}
-                  >
-                    <View style={{ marginRight: 10 }}>
-                      <Tag
-                        text={`#${part.id}`}
-                        color="white"
-                        backgroundColor="#545454"
-                      />
-                    </View>
-                  </View>
-                </View>
-                <Text variant="titleMedium">{part.name}</Text>
+                <List.Item
+                  left={(props) => (
+                    <Image
+                      style={{ height: 40, width: 40, borderRadius: 20 }}
+                      source={
+                        part.image
+                          ? {
+                              uri: part.image.url
+                            }
+                          : noPictureImage
+                      }
+                    />
+                  )}
+                  title={part.name}
+                  descriptionStyle={{
+                    color:
+                      part.quantity < part.minQuantity
+                        ? theme.colors.error
+                        : 'black'
+                  }}
+                  description={t('remaining_parts', {
+                    quantity: part.quantity
+                  })}
+                />
               </Card.Content>
             </Card>
           ))

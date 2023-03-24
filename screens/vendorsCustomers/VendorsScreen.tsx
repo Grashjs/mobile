@@ -134,22 +134,8 @@ export default function VendorsScreen({
               }
             >
               <Card.Content>
-                <View
-                  style={{ ...styles.row, justifyContent: 'space-between' }}
-                >
-                  <View
-                    style={{ ...styles.row, justifyContent: 'space-between' }}
-                  >
-                    <View style={{ marginRight: 10 }}>
-                      <Tag
-                        text={`#${vendor.id}`}
-                        color="white"
-                        backgroundColor="#545454"
-                      />
-                    </View>
-                  </View>
-                </View>
                 <Text variant="titleMedium">{vendor.name}</Text>
+                <Text>{vendor.vendorType}</Text>
               </Card.Content>
             </Card>
           ))

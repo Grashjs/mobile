@@ -193,6 +193,20 @@ export default function AssetsScreen({
                           backgroundColor="#545454"
                         />
                       </View>
+                      <Tag
+                        text={
+                          asset?.status === 'OPERATIONAL'
+                            ? t('operational')
+                            : t('down')
+                        }
+                        backgroundColor={
+                          asset.status === 'OPERATIONAL'
+                            ? //@ts-ignore
+                              theme.colors.success
+                            : theme.colors.error
+                        }
+                        color="white"
+                      />
                     </View>
                   </View>
                   <Text variant="titleMedium">{asset.name}</Text>
@@ -256,6 +270,20 @@ export default function AssetsScreen({
                           backgroundColor="#545454"
                         />
                       </View>
+                      <Tag
+                        text={
+                          asset?.status === 'OPERATIONAL'
+                            ? t('operational')
+                            : t('down')
+                        }
+                        backgroundColor={
+                          asset.status === 'OPERATIONAL'
+                            ? //@ts-ignore
+                              theme.colors.success
+                            : theme.colors.error
+                        }
+                        color="white"
+                      />
                     </View>
                   </View>
                   <Text variant="titleMedium">{asset.name}</Text>

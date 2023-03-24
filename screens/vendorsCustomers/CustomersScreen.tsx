@@ -147,22 +147,8 @@ export default function CustomersScreen({
               }
             >
               <Card.Content>
-                <View
-                  style={{ ...styles.row, justifyContent: 'space-between' }}
-                >
-                  <View
-                    style={{ ...styles.row, justifyContent: 'space-between' }}
-                  >
-                    <View style={{ marginRight: 10 }}>
-                      <Tag
-                        text={`#${customer.id}`}
-                        color="white"
-                        backgroundColor="#545454"
-                      />
-                    </View>
-                  </View>
-                </View>
                 <Text variant="titleMedium">{customer.name}</Text>
+                <Text>{customer.customerType}</Text>
               </Card.Content>
             </Card>
           ))

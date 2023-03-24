@@ -15,6 +15,7 @@ import {
   Button,
   Card,
   IconButton,
+  List,
   Searchbar,
   Text,
   useTheme
@@ -184,7 +185,6 @@ export default function LocationsScreen({
             locations.content.map((location) => (
               <Card
                 style={{
-                  padding: 5,
                   marginVertical: 5,
                   backgroundColor: 'white'
                 }}
@@ -194,22 +194,11 @@ export default function LocationsScreen({
                 }
               >
                 <Card.Content>
-                  <View
-                    style={{ ...styles.row, justifyContent: 'space-between' }}
-                  >
-                    <View
-                      style={{ ...styles.row, justifyContent: 'space-between' }}
-                    >
-                      <View style={{ marginRight: 10 }}>
-                        <Tag
-                          text={`#${location.id}`}
-                          color="white"
-                          backgroundColor="#545454"
-                        />
-                      </View>
-                    </View>
-                  </View>
-                  <Text variant="titleMedium">{location.name}</Text>
+                  <List.Item
+                    titleStyle={{ fontWeight: 'bold' }}
+                    title={location.name}
+                    description={location.address}
+                  />
                 </Card.Content>
               </Card>
             ))
@@ -241,7 +230,6 @@ export default function LocationsScreen({
             currentLocations.map((location) => (
               <Card
                 style={{
-                  padding: 5,
                   marginVertical: 5,
                   backgroundColor: 'white'
                 }}
@@ -251,28 +239,11 @@ export default function LocationsScreen({
                 }
               >
                 <Card.Content>
-                  <View
-                    style={{ ...styles.row, justifyContent: 'space-between' }}
-                  >
-                    <View
-                      style={{ ...styles.row, justifyContent: 'space-between' }}
-                    >
-                      <View style={{ marginRight: 10 }}>
-                        <Tag
-                          text={`#${location.id}`}
-                          color="white"
-                          backgroundColor="#545454"
-                        />
-                      </View>
-                    </View>
-                  </View>
-                  <Text variant="titleMedium">{location.name}</Text>
-                  {location.location && (
-                    <IconWithLabel
-                      label={location.location.name}
-                      icon="map-marker-outline"
-                    />
-                  )}
+                  <List.Item
+                    titleStyle={{ fontWeight: 'bold' }}
+                    title={location.name}
+                    description={location.address}
+                  />
                 </Card.Content>
                 <Card.Actions>
                   {location.hasChildren && (

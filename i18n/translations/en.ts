@@ -1398,7 +1398,9 @@ const enJSON = {
   scanning: 'Scanning',
   error: 'Error',
   tag_not_found: 'Tag not found',
-  'no nfc support': 'No NFC Support'
+  'no nfc support': 'No NFC Support',
+  remaining_parts: '{{quantity}} remaining',
+  team_members_count: '{{count}} members'
 };
 
 export default enJSON;

@@ -146,21 +146,6 @@ export default function MetersScreen({
               onPress={() => navigation.push('MeterDetails', { id: meter.id })}
             >
               <Card.Content>
-                <View
-                  style={{ ...styles.row, justifyContent: 'space-between' }}
-                >
-                  <View
-                    style={{ ...styles.row, justifyContent: 'space-between' }}
-                  >
-                    <View style={{ marginRight: 10 }}>
-                      <Tag
-                        text={`#${meter.id}`}
-                        color="white"
-                        backgroundColor="#545454"
-                      />
-                    </View>
-                  </View>
-                </View>
                 <Text variant="titleMedium">{meter.name}</Text>
                 {meter.asset && (
                   <IconWithLabel
