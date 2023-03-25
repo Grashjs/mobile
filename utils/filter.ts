@@ -12,7 +12,7 @@ export const getLabelAndValue = <T extends { id: number }>(
   return (
     filterFields
       .find((filterField) => filterField.field === fieldName)
-      ?.values.map((id) => ({
+      ?.values?.map((id) => ({
         label: formatter
           ? formatter(minis.find((mini) => mini.id === id))
           : minis.find((mini) => mini.id === id)[labelAccessor].toString(),
