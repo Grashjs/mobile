@@ -45,7 +45,7 @@ export type RootStackParamList = {
   EditVendor: { vendor: Vendor };
   EditTeam: { team: Team };
   AddRequest: undefined;
-  AddAsset: { location?: Location; parentAsset?: AssetDTO };
+  AddAsset: { location?: Location; parentAsset?: AssetDTO; nfcId?: string };
   AddLocation: undefined;
   AddPart: undefined;
   AddMeter: undefined;

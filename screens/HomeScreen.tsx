@@ -1,4 +1,5 @@
 import {
+  Alert,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -181,9 +182,20 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
           onPress={() =>
             navigation.navigate('SelectNfc', {
               onChange: (nfcId) =>
-                dispatch(getAssetByNfc(nfcId)).then((assetId: number) =>
-                  navigation.replace('AssetDetails', { id: assetId })
-                )
+                dispatch(getAssetByNfc(nfcId))
+                  .then((assetId: number) =>
+                    navigation.replace('AssetDetails', { id: assetId })
+                  )
+                  .catch((err) =>
+                    Alert.alert(t('error'), t('no_asset_found_nfc'), [
+                      { text: t('no'), onPress: () => navigation.goBack() },
+                      {
+                        text: t('yes'),
+                        onPress: () =>
+                          navigation.navigate('AddAsset', { nfcId })
+                      }
+                    ])
+                  )
             })
           }
         />

@@ -1549,7 +1549,9 @@ const frJSON = {
   tag_not_found: 'Tag non trouvé',
   'no nfc support': "L'appareil ne supporte pas la technologie NFC",
   remaining_parts: '{{quantity}} restants',
-  team_members_count: '{{count}} membres'
+  team_members_count: '{{count}} membres',
+  no_asset_found_nfc:
+    'Aucun équipement trouvé avec ce Tag NFC. Voulez-vous le créer?'
 };
 
 export default frJSON;

@@ -1400,7 +1400,9 @@ const enJSON = {
   tag_not_found: 'Tag not found',
   'no nfc support': 'No NFC Support',
   remaining_parts: '{{quantity}} remaining',
-  team_members_count: '{{count}} members'
+  team_members_count: '{{count}} members',
+  no_asset_found_nfc:
+    'No Asset found with this NFC Tag. Do you want to create it?'
 };
 
 export default enJSON;
