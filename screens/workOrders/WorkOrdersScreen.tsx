@@ -27,12 +27,23 @@ import Tag from '../../components/Tag';
 import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
 import _ from 'lodash';
 import EnumFilter from './EnumFilter';
+import { dayDiff } from '../../utils/dates';
 
-function IconWithLabel({ icon, label }: { icon: IconSource; label: string }) {
+function IconWithLabel({
+  icon,
+  label,
+  color
+}: {
+  icon: IconSource;
+  label: string;
+  color?: string;
+}) {
   return (
     <View style={{ ...styles.row, justifyContent: 'flex-start' }}>
-      <IconButton icon={icon} size={20} />
-      <Text variant={'bodyMedium'}>{label}</Text>
+      <IconButton icon={icon} size={20} iconColor={color} />
+      <Text style={{ color }} variant={'bodyMedium'}>
+        {label}
+      </Text>
     </View>
   );
 }
@@ -287,6 +298,12 @@ export default function WorkOrdersScreen({
                     <Text variant="titleMedium">{workOrder.title}</Text>
                     {workOrder.dueDate && (
                       <IconWithLabel
+                        color={
+                          dayDiff(new Date(workOrder.dueDate), new Date()) <=
+                            2 && new Date(workOrder.dueDate) > new Date()
+                            ? theme.colors.error
+                            : 'black'
+                        }
                         label={getFormattedDate(workOrder.dueDate)}
                         icon="clock-alert-outline"
                       />
