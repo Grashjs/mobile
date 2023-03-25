@@ -77,8 +77,7 @@ export default function FileUpload({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsMultipleSelection: multiple,
         selectionLimit: 10,
-        quality: 1,
-        base64: true
+        quality: 1
       });
 
       if (!result.canceled) {

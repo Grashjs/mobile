@@ -117,7 +117,6 @@ export const addFiles =
     const companyId = await AsyncStorage.getItem('companyId');
     const headers = await authHeader(false);
     delete headers['Content-Type'];
-    console.log(files);
     files.forEach((file) => {
       //@ts-ignore
       formData.append('files', file);

@@ -1,4 +1,4 @@
-import { ScrollView } from 'react-native';
+import { ScrollView, TouchableOpacity } from 'react-native';
 import LoadingDialog from '../../components/LoadingDialog';
 import * as React from 'react';
 import { Fragment, useContext, useEffect, useState } from 'react';
@@ -14,7 +14,8 @@ import {
   Portal,
   Dialog,
   TextInput,
-  HelperText
+  HelperText,
+  ActivityIndicator
 } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { View } from '../../components/Themed';
@@ -24,6 +25,11 @@ import UserSettings from '../../models/userSettings';
 import { getUserInitials } from '../../utils/displayers';
 import * as Yup from 'yup';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
+import * as Permissions from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker';
+import mime from 'mime';
+import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
+import { OwnUser } from '../../models/user';
 
 export default function UserProfile({
   navigation,
@@ -34,12 +40,15 @@ export default function UserProfile({
     fetchUserSettings,
     patchUserSettings,
     userSettings,
-    updatePassword
+    updatePassword,
+    patchUser
   } = useAuth();
   const theme = useTheme();
   const { t } = useTranslation();
   const { showSnackBar } = useContext(CustomSnackBarContext);
+  const [changingPicture, setChangingPicture] = useState<boolean>(false);
   const [openChangePassword, setOpenChangePassword] = useState<boolean>();
+  const { uploadFiles } = useContext(CompanySettingsContext);
   const fieldsToRender = [
     {
       label: t('id'),
@@ -101,10 +110,41 @@ export default function UserProfile({
     }
   ];
 
-  const onChangePassword = () => {};
   useEffect(() => {
     fetchUserSettings();
   }, []);
+  const onPictureChange = async () => {
+    // No permissions request is necessary for launching the image library
+    const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+    if (status === 'granted') {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsMultipleSelection: false,
+        quality: 1
+      });
+
+      if (!result.canceled) {
+        setChangingPicture(true);
+        uploadFiles(
+          [],
+          result.assets.map((asset) => {
+            const fileName =
+              asset.uri.split('/')[asset.uri.split('/').length - 1];
+            return {
+              uri: asset.uri,
+              name: fileName,
+              type: mime.getType(fileName)
+            };
+          }),
+          true
+        )
+          .then((files) =>
+            patchUser({ image: { id: files[0].id } } as Partial<OwnUser>)
+          )
+          .finally(() => setChangingPicture(false));
+      }
+    }
+  };
 
   function BasicField({
     label,
@@ -257,10 +297,16 @@ export default function UserProfile({
     >
       {renderChangePassword()}
       <View style={{ alignItems: 'center', paddingTop: 20 }}>
-        {user.image ? (
-          <Avatar.Image source={{ uri: user.image.url }} />
+        {changingPicture ? (
+          <ActivityIndicator size="large" />
         ) : (
-          <Avatar.Text size={50} label={getUserInitials(user)} />
+          <TouchableOpacity onPress={onPictureChange}>
+            {user.image ? (
+              <Avatar.Image source={{ uri: user.image.url }} />
+            ) : (
+              <Avatar.Text size={50} label={getUserInitials(user)} />
+            )}
+          </TouchableOpacity>
         )}
       </View>
       {fieldsToRender.map((field) => (
