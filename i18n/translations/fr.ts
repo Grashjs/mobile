@@ -1551,7 +1551,10 @@ const frJSON = {
   remaining_parts: '{{quantity}} restants',
   team_members_count: '{{count}} membres',
   no_asset_found_nfc:
-    'Aucun équipement trouvé avec ce Tag NFC. Voulez-vous le créer?'
+    'Aucun équipement trouvé avec ce Tag NFC. Voulez-vous le créer?',
+  no_access_to_camera: "L'application n'a pas accès à la caméra",
+  no_asset_found_barcode:
+    'Aucun équipement trouvé avec ce code barres. Voulez-vous le créer?'
 };
 
 export default frJSON;

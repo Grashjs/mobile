@@ -48,7 +48,13 @@
       }
     },
     "plugins": [
-      "react-native-nfc-manager"
+      "react-native-nfc-manager",
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Allow Grash to access camera."
+        }
+      ]
     ]
   }
 }

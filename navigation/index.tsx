@@ -86,6 +86,8 @@ import WorkOrderFilters from '../screens/workOrders/WorkOrderFilters';
 import CreateAdditionalCost from '../screens/workOrders/CreateAdditionalCost';
 import CreateAdditionalTime from '../screens/workOrders/CreateAdditionalTime';
 import SelectNfcModal from '../screens/modals/SelectNfcModal';
+import SelectBarcodeModal from '../screens/modals/SelectBarcodeModal';
+import ScanAssetScreen from '../screens/ScanAssetScreen';
 
 export default function Navigation({
   colorScheme
@@ -322,6 +324,11 @@ function RootNavigator() {
         component={WorkOrderFilters}
         options={{ title: t('filters') }}
       />
+      <Stack.Screen
+        name="ScanAsset"
+        component={ScanAssetScreen}
+        options={{ title: t('to_scan') }}
+      />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
         <Stack.Screen
@@ -337,6 +344,11 @@ function RootNavigator() {
         <Stack.Screen
           name="SelectNfc"
           component={SelectNfcModal}
+          options={{ title: t('to_scan') }}
+        />
+        <Stack.Screen
+          name="SelectBarcode"
+          component={SelectBarcodeModal}
           options={{ title: t('to_scan') }}
         />
         <Stack.Screen

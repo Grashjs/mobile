@@ -1402,7 +1402,10 @@ const enJSON = {
   remaining_parts: '{{quantity}} remaining',
   team_members_count: '{{count}} members',
   no_asset_found_nfc:
-    'No Asset found with this NFC Tag. Do you want to create it?'
+    'No Asset found with this NFC Tag. Do you want to create it?',
+  no_access_to_camera: 'No access to camera',
+  no_asset_found_barcode:
+    'No Asset found with this barcode. Do you want to create it?'
 };
 
 export default enJSON;

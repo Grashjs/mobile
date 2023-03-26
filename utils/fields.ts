@@ -192,6 +192,11 @@ export const getAssetFields = (t): Array<IField> => {
       midWidth: true
     },
     {
+      name: 'barCode',
+      type: 'barcode',
+      label: t('barcode')
+    },
+    {
       name: 'category',
       midWidth: true,
       label: t('category'),
@@ -543,9 +548,8 @@ export const getPartFields = (t): IField[] => {
     },
     {
       name: 'barcode',
-      type: 'text',
-      label: t('barcode'),
-      placeholder: t('enter_part_barcode')
+      type: 'barcode',
+      label: t('barcode')
     },
     {
       name: 'area',

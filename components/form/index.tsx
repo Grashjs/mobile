@@ -530,6 +530,24 @@ export default function Form(props: OwnProps) {
                       {formik.values[field.name]}
                     </Text>
                   </View>
+                ) : field.type === 'barcode' ? (
+                  <View>
+                    <TouchableOpacity
+                      onPress={() =>
+                        props.navigation.navigate('SelectBarcode', {
+                          onChange: (value) => {
+                            handleChange(formik, field.name, value);
+                            props.navigation.goBack();
+                          }
+                        })
+                      }
+                    >
+                      <Text>{field.label}</Text>
+                    </TouchableOpacity>
+                    <Text style={{ color: theme.colors.primary }}>
+                      {formik.values[field.name]}
+                    </Text>
+                  </View>
                 ) : (
                   renderSelect(formik, field)
                 )}

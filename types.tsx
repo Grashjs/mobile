@@ -45,7 +45,12 @@ export type RootStackParamList = {
   EditVendor: { vendor: Vendor };
   EditTeam: { team: Team };
   AddRequest: undefined;
-  AddAsset: { location?: Location; parentAsset?: AssetDTO; nfcId?: string };
+  AddAsset: {
+    location?: Location;
+    parentAsset?: AssetDTO;
+    nfcId?: string;
+    barCode?: string;
+  };
   AddLocation: undefined;
   AddPart: undefined;
   AddMeter: undefined;
@@ -105,6 +110,7 @@ export type RootStackParamList = {
     type: string;
   };
   SelectNfc: { onChange: (value: string) => void };
+  SelectBarcode: { onChange: (value: string) => void };
   CompleteWorkOrder: {
     onComplete: (
       signatureId: number | undefined,
@@ -127,6 +133,7 @@ export type RootStackParamList = {
   };
   AddAdditionalCost: { workOrderId: number };
   AddAdditionalTime: { workOrderId: number };
+  ScanAsset: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
