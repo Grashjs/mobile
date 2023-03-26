@@ -25,8 +25,8 @@ i18n
     compatibilityJSON: 'v3',
     resources,
     keySeparator: false,
-    lng: 'en',
-    fallbackLng: 'en',
+    lng: 'fr',
+    fallbackLng: 'fr',
     react: {
       useSuspense: true
     },
