@@ -97,7 +97,7 @@ export default function Navigation({
     <NavigationContainer
       ref={navigationRef}
       linking={LinkingConfiguration}
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+      theme={DefaultTheme}
     >
       {isInitialized ? (
         isAuthenticated ? (
