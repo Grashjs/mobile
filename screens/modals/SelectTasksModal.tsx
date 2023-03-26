@@ -26,6 +26,7 @@ import { randomInt } from '../../utils/generators';
 import { getTaskFromTaskBase } from '../../utils/formatters';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { getTaskTypes } from '../../utils/displayers';
+import { MeterMiniDTO } from '../../models/meter';
 
 export default function SelectTasksModal({
   navigation,
@@ -38,6 +39,7 @@ export default function SelectTasksModal({
   const [options, setOptions] = useState<string[]>(['', '']);
   const [user, setUser] = useState<UserMiniDTO>();
   const [asset, setAsset] = useState<AssetMiniDTO>();
+  const [meter, setMeter] = useState<MeterMiniDTO>();
   const { t }: { t: any } = useTranslation();
   const { showSnackBar } = useContext(CustomSnackBarContext);
 
@@ -70,6 +72,9 @@ export default function SelectTasksModal({
             ) {
               showSnackBar(t('remove_blank_options'), 'error');
               return;
+            } else if (type === 'METER' && !meter) {
+              showSnackBar(t('remove_blank_meter_tasks'), 'error');
+              return;
             }
             onChange([
               ...selected,
@@ -93,7 +98,7 @@ export default function SelectTasksModal({
         </Pressable>
       )
     });
-  }, [label, type, user, asset, options]);
+  }, [label, type, user, asset, options, meter]);
   return (
     <ScrollView
       style={{ ...styles.container, backgroundColor: theme.colors.background }}
@@ -142,7 +147,7 @@ export default function SelectTasksModal({
           value={label}
         />
       </View>
-      {type === 'MULTIPLE' && (
+      {type === 'MULTIPLE' ? (
         <Fragment>
           <Text
             style={{
@@ -185,7 +190,23 @@ export default function SelectTasksModal({
             </Button>
           </View>
         </Fragment>
-      )}
+      ) : type === 'METER' ? (
+        <View style={{ paddingVertical: 10, paddingHorizontal: 15 }}>
+          <List.Item
+            title={t('select_meter')}
+            descriptionStyle={{ color: theme.colors.primary }}
+            description={meter ? meter.name : null}
+            left={() => <List.Icon icon={'gauge'} />}
+            onPress={() =>
+              navigation.navigate('SelectMeters', {
+                onChange: (meters) => setMeter(meters[0]),
+                selected: [],
+                multiple: false
+              })
+            }
+          />
+        </View>
+      ) : null}
       <Text
         style={{
           paddingHorizontal: 15,

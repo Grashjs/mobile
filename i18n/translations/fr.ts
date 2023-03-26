@@ -1554,7 +1554,8 @@ const frJSON = {
     'Aucun équipement trouvé avec ce Tag NFC. Voulez-vous le créer?',
   no_access_to_camera: "L'application n'a pas accès à la caméra",
   no_asset_found_barcode:
-    'Aucun équipement trouvé avec ce code barres. Voulez-vous le créer?'
+    'Aucun équipement trouvé avec ce code barres. Voulez-vous le créer?',
+  remove_blank_meter_tasks: 'Veuillez sélectionner un compteur'
 };
 
 export default frJSON;

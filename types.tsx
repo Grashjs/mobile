@@ -21,7 +21,7 @@ import { AssetDTO, AssetMiniDTO } from './models/asset';
 import Category from './models/category';
 import { FilterField } from './models/page';
 import Request from './models/request';
-import Meter from './models/meter';
+import Meter, { MeterMiniDTO } from './models/meter';
 
 declare global {
   namespace ReactNavigation {
@@ -88,6 +88,11 @@ export type RootStackParamList = {
   };
   SelectTeams: {
     onChange: (teams: TeamMiniDTO[]) => void;
+    selected: number[];
+    multiple: boolean;
+  };
+  SelectMeters: {
+    onChange: (meters: MeterMiniDTO[]) => void;
     selected: number[];
     multiple: boolean;
   };

@@ -84,6 +84,7 @@ import CreateAdditionalTime from '../screens/workOrders/CreateAdditionalTime';
 import SelectNfcModal from '../screens/modals/SelectNfcModal';
 import SelectBarcodeModal from '../screens/modals/SelectBarcodeModal';
 import ScanAssetScreen from '../screens/ScanAssetScreen';
+import SelectMetersModal from '../screens/modals/SelectMetersModal';
 
 export default function Navigation({
   colorScheme
@@ -336,6 +337,11 @@ function RootNavigator() {
           name="SelectParts"
           component={SelectPartsModal}
           options={{ title: t('select_parts') }}
+        />
+        <Stack.Screen
+          name="SelectMeters"
+          component={SelectMetersModal}
+          options={{ title: t('select_meter') }}
         />
         <Stack.Screen
           name="SelectNfc"
