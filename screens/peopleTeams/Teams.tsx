@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next';
 import Team from '../../models/team';
 import { onSearchQueryChange } from '../../utils/overall';
 import { RootStackScreenProps } from '../../types';
-import Tag from '../../components/Tag';
 import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
 
 export default function Teams({

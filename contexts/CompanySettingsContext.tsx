@@ -8,7 +8,6 @@ import { IField } from '../models/form';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import { AuthProvider } from './AuthContext';
 import { getWOBaseFields } from '../utils/woBase';
 
 type CompanySettingsContext = {

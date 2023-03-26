@@ -1,6 +1,5 @@
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { SegmentedButtons, useTheme } from 'react-native-paper';
-import { useState } from 'react';
 import { getPriorityLabel } from '../../utils/formatters';
 import { useTranslation } from 'react-i18next';
 

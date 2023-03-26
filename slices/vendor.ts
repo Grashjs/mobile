@@ -4,8 +4,6 @@ import type { AppThunk } from '../store';
 import { Vendor, VendorMiniDTO } from '../models/vendor';
 import api from '../utils/api';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
-import Part from '../models/part';
-import { Customer } from '../models/customer';
 
 const basePath = 'vendors';
 

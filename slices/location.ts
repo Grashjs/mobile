@@ -4,8 +4,6 @@ import type { AppThunk } from '../store';
 import Location, { LocationMiniDTO, LocationRow } from '../models/location';
 import api from '../utils/api';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
-import { AssetDTO } from '../models/asset';
-import Part from '../models/part';
 
 interface LocationState {
   locations: Page<Location>;

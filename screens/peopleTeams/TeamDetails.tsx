@@ -16,9 +16,6 @@ import {
 } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { View } from '../../components/Themed';
-import ListField from '../../components/ListField';
-import { UserMiniDTO } from '../../models/user';
-import { getUserUrl } from '../../utils/urlPaths';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { deleteTeam, getTeamDetails } from '../../slices/team';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';

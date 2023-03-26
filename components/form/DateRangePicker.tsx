@@ -1,8 +1,7 @@
 import { View } from '../Themed';
-import { date } from 'yup';
 import CustomDateTimePicker from '../CustomDateTimePicker';
 import { useTranslation } from 'react-i18next';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 
 interface OwnProps {

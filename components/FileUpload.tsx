@@ -1,6 +1,7 @@
 import { View } from './Themed';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
+import { DocumentResult } from 'expo-document-picker';
 import { useState } from 'react';
 import * as Permissions from 'expo-permissions';
 import {
@@ -11,7 +12,6 @@ import {
   Text,
   TouchableOpacity
 } from 'react-native';
-import { DocumentResult } from 'expo-document-picker';
 import { useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import mime from 'mime';

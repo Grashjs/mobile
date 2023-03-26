@@ -1,30 +1,16 @@
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
-
-import EditScreenInfo from '../components/EditScreenInfo';
 import { View } from '../components/Themed';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
-import { NotificationType } from '../models/notification';
+import Notification, { NotificationType } from '../models/notification';
 import { editNotification, getMoreNotifications } from '../slices/notification';
-import Notification from '../models/notification';
 import { RootStackParamList, RootStackScreenProps } from '../types';
 import { useDispatch, useSelector } from '../store';
-import {
-  getAssetUrl,
-  getLocationUrl,
-  getMeterUrl,
-  getNotificationUrl,
-  getPartUrl,
-  getRequestUrl,
-  getTeamUrl,
-  getWorkOrderUrl
-} from '../utils/urlPaths';
-import { List, useTheme, Text } from 'react-native-paper';
+import { getNotificationUrl } from '../utils/urlPaths';
+import { List, Text, useTheme } from 'react-native-paper';
+import * as React from 'react';
 import { useContext } from 'react';
 import { CompanySettingsContext } from '../contexts/CompanySettingsContext';
-import { useNavigation } from '@react-navigation/native';
-import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { getMoreAssets } from '../slices/asset';
 import { SearchCriteria } from '../models/page';
 
 export default function NotificationsScreen({

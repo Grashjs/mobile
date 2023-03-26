@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { useContext, useEffect, useState } from 'react';
 import { useDispatch } from '../../store';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
-import { View } from '../../components/Themed';
 import { ScrollView, StyleSheet } from 'react-native';
 import SingleTask from '../../components/SingleTask';
 import { RootStackScreenProps } from '../../types';

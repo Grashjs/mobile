@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import { Text, View } from '../components/Themed';
-import { AuthStackScreenProps, RootTabScreenProps } from '../types';
+import { AuthStackScreenProps } from '../types';
 import { useTranslation } from 'react-i18next';
 
 export default function WelcomeScreen({

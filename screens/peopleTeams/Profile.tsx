@@ -1,21 +1,19 @@
 import { ScrollView, TouchableOpacity } from 'react-native';
-import LoadingDialog from '../../components/LoadingDialog';
 import * as React from 'react';
 import { Fragment, useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from '../../store';
 import { RootStackScreenProps } from '../../types';
 import {
+  ActivityIndicator,
   Avatar,
+  Button,
+  Dialog,
   Divider,
+  HelperText,
+  Portal,
   Switch,
   Text,
-  useTheme,
-  Button,
-  Portal,
-  Dialog,
   TextInput,
-  HelperText,
-  ActivityIndicator
+  useTheme
 } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { View } from '../../components/Themed';

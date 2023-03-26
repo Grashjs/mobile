@@ -1,13 +1,11 @@
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
-
-import EditScreenInfo from '../components/EditScreenInfo';
 import { View } from '../components/Themed';
 import { useDispatch, useSelector } from '../store';
 import { useEffect } from 'react';
 import { getMobileExtendedStats } from '../slices/analytics/workOrder';
-import { RootStackScreenProps, RootTabScreenProps } from '../types';
+import { RootStackScreenProps } from '../types';
 import { useTranslation } from 'react-i18next';
-import { useTheme, Text } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 
 export default function WorkOrderStatsScreen({
   navigation,

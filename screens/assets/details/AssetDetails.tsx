@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { AssetDTO as Asset } from '../../../models/asset';
+import * as React from 'react';
 import { useContext } from 'react';
 import { CompanySettingsContext } from '../../../contexts/CompanySettingsContext';
 import { Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { View } from '../../../components/Themed';
 import { Divider, Text, useTheme } from 'react-native-paper';
-import { RootStackParamList } from '../../../types';
 import { UserMiniDTO } from '../../../models/user';
 import { Customer } from '../../../models/customer';
 import { Vendor } from '../../../models/vendor';
@@ -17,7 +17,6 @@ import {
   getVendorUrl
 } from '../../../utils/urlPaths';
 import ListField from '../../../components/ListField';
-import * as React from 'react';
 
 export default function AssetDetails({
   asset,

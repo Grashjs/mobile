@@ -1,10 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { ActivityIndicator, Button } from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
 
 import { View } from '../../components/Themed';
-import { AuthStackScreenProps, RootTabScreenProps } from '../../types';
-import { useTranslation } from 'react-i18next';
-import { Text } from 'react-native-paper';
 
 export default function LoadingScreen() {
   return (

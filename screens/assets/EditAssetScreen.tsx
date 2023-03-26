@@ -4,17 +4,13 @@ import Form from '../../components/form';
 import * as Yup from 'yup';
 import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { IField } from '../../models/form';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
-import { formatSelect, formatSelectMultiple } from '../../utils/formatters';
 import { getImageAndFiles } from '../../utils/overall';
 import { useDispatch } from '../../store';
-import { addAsset, editAsset } from '../../slices/asset';
+import { editAsset } from '../../slices/asset';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { formatAssetValues, getAssetFields } from '../../utils/fields';
-import { getWOBaseValues } from '../../utils/woBase';
-import { patchTasks } from '../../slices/task';
 import useAuth from '../../hooks/useAuth';
 
 export default function EditAssetScreen({

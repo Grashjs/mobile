@@ -1,12 +1,6 @@
-import ActionSheet, {
-  ActionSheetRef,
-  SheetProps
-} from 'react-native-actions-sheet';
-import { View } from 'react-native';
-import { Divider, List, useTheme } from 'react-native-paper';
+import { SheetProps } from 'react-native-actions-sheet';
+import { useTheme } from 'react-native-paper';
 import * as React from 'react';
-import { useRef } from 'react';
-import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { useTranslation } from 'react-i18next';
 import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';

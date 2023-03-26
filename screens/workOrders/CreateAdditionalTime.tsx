@@ -1,13 +1,11 @@
 import { StyleSheet } from 'react-native';
 
-import { Text, View } from '../../components/Themed';
+import { View } from '../../components/Themed';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from 'react-native-paper';
 import { IField } from '../../models/form';
 import * as Yup from 'yup';
 import Form from '../../components/form';
 import { formatSelect } from '../../utils/formatters';
-import { createAdditionalCost } from '../../slices/additionalCost';
 import { RootStackScreenProps } from '../../types';
 import { useDispatch } from '../../store';
 import { createLabor } from '../../slices/labor';

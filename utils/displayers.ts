@@ -1,5 +1,5 @@
 import { TaskType } from '../models/tasks';
-import User, { UserMiniDTO } from '../models/user';
+import { UserMiniDTO } from '../models/user';
 
 export const enumerate = (array: string[]) =>
   array.reduce(

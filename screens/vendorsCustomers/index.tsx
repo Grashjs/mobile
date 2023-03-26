@@ -1,10 +1,10 @@
 import { View } from '../../components/Themed';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { RootStackScreenProps } from '../../types';
+import * as React from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TabBar, TabView } from 'react-native-tab-view';
-import * as React from 'react';
 import CustomersScreen from './CustomersScreen';
 import VendorsScreen from './VendorsScreen';
 import { useTheme } from 'react-native-paper';

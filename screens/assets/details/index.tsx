@@ -22,7 +22,6 @@ import { TabBar, TabView } from 'react-native-tab-view';
 import AssetWorkOrders from './AssetWorkOrders';
 import AssetFiles from './AssetFiles';
 import AssetParts from './AssetParts';
-import { deleteWorkOrder } from '../../../slices/workOrder';
 import { CustomSnackBarContext } from '../../../contexts/CustomSnackBarContext';
 
 export default function AssetDetailsHome({

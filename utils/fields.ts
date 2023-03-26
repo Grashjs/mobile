@@ -1,7 +1,6 @@
 import { IField } from '../models/form';
 import { formatSelect, formatSelectMultiple } from './formatters';
 import { isTask } from '../models/tasks';
-import * as Yup from 'yup';
 
 export const getWorkOrderFields = (t): IField[] => {
   return [

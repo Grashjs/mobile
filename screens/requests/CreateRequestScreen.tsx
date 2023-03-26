@@ -4,17 +4,13 @@ import Form from '../../components/form';
 import * as Yup from 'yup';
 import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { IField } from '../../models/form';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
-import { formatSelect, formatSelectMultiple } from '../../utils/formatters';
 import { getImageAndFiles } from '../../utils/overall';
 import { useDispatch } from '../../store';
-import { addWorkOrder } from '../../slices/workOrder';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
-import { formatRequestValues, getWorkOrderFields } from '../../utils/fields';
+import { formatRequestValues } from '../../utils/fields';
 import useAuth from '../../hooks/useAuth';
-import { getWOBaseFields } from '../../utils/woBase';
 import { addRequest } from '../../slices/request';
 
 export default function CreateRequestScreen({

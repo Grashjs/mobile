@@ -1,8 +1,7 @@
 import { StyleSheet } from 'react-native';
 import * as Yup from 'yup';
-import { Text, View } from '../../components/Themed';
+import { View } from '../../components/Themed';
 import { RootStackScreenProps } from '../../types';
-import { TextInput } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { useContext } from 'react';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';

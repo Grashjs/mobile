@@ -5,13 +5,10 @@ import * as Yup from 'yup';
 import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useContext } from 'react';
-import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
-import { getImageAndFiles } from '../../utils/overall';
 import { useDispatch } from '../../store';
 import { editTeam } from '../../slices/team';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { getTeamFields } from '../../utils/fields';
-import useAuth from '../../hooks/useAuth';
 import { formatSelectMultiple } from '../../utils/formatters';
 
 export default function EditTeamScreen({

@@ -4,25 +4,23 @@ import {
   Divider,
   IconButton,
   List,
+  Modal,
   Portal,
-  Provider,
   Text,
   TextInput,
-  useTheme,
-  Modal
+  useTheme
 } from 'react-native-paper';
 import * as React from 'react';
-import PartQuantity from '../models/partQuantity';
 import { useContext, useEffect, useRef, useState } from 'react';
+import PartQuantity from '../models/partQuantity';
 import { CompanySettingsContext } from '../contexts/CompanySettingsContext';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
-import partQuantity, { editPartQuantity } from '../slices/partQuantity';
+import { editPartQuantity } from '../slices/partQuantity';
 import { useDispatch } from '../store';
 import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
-import { useNavigation } from '@react-navigation/native';
 
 export default function PartQuantities({
   partQuantities,

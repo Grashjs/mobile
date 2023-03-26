@@ -1,6 +1,5 @@
 import {
   Pressable,
-  RefreshControl,
   ScrollView,
   StyleSheet,
   TouchableOpacity
@@ -10,12 +9,9 @@ import { RootStackScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
 import * as React from 'react';
 import { Fragment, useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from '../../store';
 import { AssetMiniDTO } from '../../models/asset';
-import { getAssetsMini } from '../../slices/asset';
 import {
   Button,
-  Checkbox,
   Divider,
   IconButton,
   List,
@@ -24,9 +20,8 @@ import {
   TextInput,
   useTheme
 } from 'react-native-paper';
-import { TaskBase, TaskOption, TaskType } from '../../models/tasks';
+import { TaskType } from '../../models/tasks';
 import { UserMiniDTO } from '../../models/user';
-import File from '../../models/file';
 import { randomInt } from '../../utils/generators';
 import { getTaskFromTaskBase } from '../../utils/formatters';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';

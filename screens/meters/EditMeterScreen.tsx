@@ -6,7 +6,6 @@ import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useContext } from 'react';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
-import { getImageAndFiles } from '../../utils/overall';
 import { useDispatch } from '../../store';
 import { editMeter } from '../../slices/meter';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';

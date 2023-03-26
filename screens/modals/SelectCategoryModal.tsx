@@ -1,6 +1,5 @@
 import {
   Pressable,
-  RefreshControl,
   ScrollView,
   StyleSheet,
   TouchableOpacity
@@ -11,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from '../../store';
-import Category, { CategoryMiniDTO } from '../../models/category';
+import Category from '../../models/category';
 import { getCategories } from '../../slices/category';
 import { Checkbox, Divider, Text, useTheme } from 'react-native-paper';
 

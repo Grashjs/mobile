@@ -1,4 +1,5 @@
-import { useContext, useEffect } from 'react';
+import * as React from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from '../../../store';
 import { useTranslation } from 'react-i18next';
 import { AssetDTO } from '../../../models/asset';
@@ -9,9 +10,8 @@ import {
   StyleSheet,
   TouchableOpacity
 } from 'react-native';
-import { useTheme, Text, Divider } from 'react-native-paper';
+import { Divider, Text, useTheme } from 'react-native-paper';
 import { View } from '../../../components/Themed';
-import * as React from 'react';
 import Tag from '../../../components/Tag';
 import { getStatusColor } from '../../../utils/overall';
 

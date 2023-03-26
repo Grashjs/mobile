@@ -5,7 +5,6 @@ import WorkOrder from '../models/workOrder';
 import api from '../utils/api';
 import { Task } from '../models/tasks';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
-import { AssetDTO } from '../models/asset';
 
 const basePath = 'work-orders';
 

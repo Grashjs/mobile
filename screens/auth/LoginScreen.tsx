@@ -4,15 +4,11 @@ import { View } from '../../components/Themed';
 import { AuthStackScreenProps } from '../../types';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
-import { phoneRegExp } from '../../utils/validators';
 import useAuth from '../../hooks/useAuth';
-import { IS_LOCALHOST } from '../../config';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import {
   Button,
-  Checkbox,
   HelperText,
-  Snackbar,
   Text,
   TextInput,
   useTheme

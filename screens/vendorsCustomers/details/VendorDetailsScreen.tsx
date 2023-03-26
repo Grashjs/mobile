@@ -1,5 +1,6 @@
 import { Linking, Pressable, ScrollView, TouchableOpacity } from 'react-native';
 import * as React from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RootStackScreenProps } from '../../../types';
 import { useDispatch, useSelector } from '../../../store';
@@ -14,10 +15,8 @@ import {
   useTheme
 } from 'react-native-paper';
 import LoadingDialog from '../../../components/LoadingDialog';
-import { useContext, useEffect, useState } from 'react';
 import { deleteVendor, getVendorDetails } from '../../../slices/vendor';
 import { SheetManager } from 'react-native-actions-sheet';
-import { deletePart } from '../../../slices/part';
 import { CustomSnackBarContext } from '../../../contexts/CustomSnackBarContext';
 import { CompanySettingsContext } from '../../../contexts/CompanySettingsContext';
 

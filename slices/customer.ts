@@ -4,7 +4,6 @@ import type { AppThunk } from '../store';
 import { Customer, CustomerMiniDTO } from '../models/customer';
 import api from '../utils/api';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
-import Part from '../models/part';
 
 const basePath = 'customers';
 

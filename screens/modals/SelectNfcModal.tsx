@@ -1,8 +1,8 @@
-import { Alert, Pressable, StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 
 import { View } from '../../components/Themed';
-import { useEffect, useState } from 'react';
 import * as React from 'react';
+import { useEffect } from 'react';
 import { RootStackScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
 import NfcManager, { NfcEvents } from 'react-native-nfc-manager';

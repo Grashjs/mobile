@@ -1,4 +1,4 @@
-import api, { authHeader } from './api';
+import api from './api';
 import { UserResponseDTO } from '../models/user';
 import UserSettings from '../models/userSettings';
 import CompanySettings from '../models/companySettings';

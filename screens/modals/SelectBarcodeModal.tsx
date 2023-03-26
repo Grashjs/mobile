@@ -1,17 +1,11 @@
-import {
-  Alert,
-  Pressable,
-  StyleSheet,
-  useWindowDimensions
-} from 'react-native';
+import { StyleSheet, useWindowDimensions } from 'react-native';
 
 import { View } from '../../components/Themed';
-import { useEffect, useState } from 'react';
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { RootStackScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
-import NfcManager, { NfcEvents } from 'react-native-nfc-manager';
-import { ActivityIndicator, Button, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
 export default function SelectBarcodeModal({

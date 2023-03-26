@@ -21,7 +21,6 @@ import {
   useTheme
 } from 'react-native-paper';
 import { View } from '../../../components/Themed';
-import * as FileSystem from 'expo-file-system';
 
 export default function PartFiles({ part }: { part: Part }) {
   const { t }: { t: any } = useTranslation();

@@ -19,7 +19,6 @@ import Meter from '../../models/meter';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { onSearchQueryChange } from '../../utils/overall';
 import { RootStackScreenProps } from '../../types';
-import Tag from '../../components/Tag';
 import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
 
 function IconWithLabel({ icon, label }: { icon: IconSource; label: string }) {

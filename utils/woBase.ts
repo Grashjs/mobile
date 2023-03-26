@@ -1,5 +1,4 @@
 import { WorkOrderBase } from '../models/workOrderBase';
-import { getPriorityLabel } from './formatters';
 import { IField } from '../models/form';
 
 export const getWOBaseFields = (

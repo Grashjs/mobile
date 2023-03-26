@@ -5,14 +5,13 @@ import { useContext, useEffect, useState } from 'react';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
-import { getMoreCustomers, getCustomers } from '../../slices/customer';
+import { getCustomers, getMoreCustomers } from '../../slices/customer';
 import { FilterField, SearchCriteria } from '../../models/page';
 import { Card, Searchbar, Text, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { Customer } from '../../models/customer';
 import { onSearchQueryChange } from '../../utils/overall';
 import { RootStackScreenProps } from '../../types';
-import Tag from '../../components/Tag';
 import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
 
 export default function CustomersScreen({

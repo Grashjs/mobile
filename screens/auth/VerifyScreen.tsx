@@ -1,10 +1,9 @@
 import { StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, Text } from 'react-native-paper';
 
 import { View } from '../../components/Themed';
-import { AuthStackScreenProps, RootTabScreenProps } from '../../types';
+import { AuthStackScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
-import { Text } from 'react-native-paper';
 
 export default function VerifyScreen({
   navigation

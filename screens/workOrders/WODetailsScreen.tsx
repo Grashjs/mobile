@@ -61,7 +61,6 @@ import { SheetManager } from 'react-native-actions-sheet';
 import LoadingDialog from '../../components/LoadingDialog';
 import WorkOrder from '../../models/workOrder';
 import {
-  DocumentDirectoryPath,
   DownloadDirectoryPath,
   downloadFile,
   DownloadFileOptions

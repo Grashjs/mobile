@@ -15,17 +15,13 @@ import {
   Provider as PaperProvider
 } from 'react-native-paper';
 import { useEffect, useRef, useState } from 'react';
-import { Alert, Linking, LogBox, Platform } from 'react-native';
+import { LogBox } from 'react-native';
 import { SheetProvider } from 'react-native-actions-sheet';
 import './components/actionSheets/sheets';
-import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import api from './utils/api';
 import { getNotificationUrl } from './utils/urlPaths';
 import { NotificationType } from './models/notification';
 import { navigate } from './navigation/RootNavigation';
-import * as Permissions from 'expo-permissions';
-import { useTranslation } from 'react-i18next';
 
 const theme = {
   ...DefaultTheme,

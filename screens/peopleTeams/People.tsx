@@ -16,7 +16,6 @@ import { getMoreUsers, getUsers } from '../../slices/user';
 import { FilterField, SearchCriteria } from '../../models/page';
 import {
   Avatar,
-  Card,
   Divider,
   IconButton,
   Searchbar,
@@ -27,7 +26,6 @@ import { useTranslation } from 'react-i18next';
 import User from '../../models/user';
 import { onSearchQueryChange } from '../../utils/overall';
 import { RootStackScreenProps } from '../../types';
-import Tag from '../../components/Tag';
 import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
 import { getUserInitials } from '../../utils/displayers';
 

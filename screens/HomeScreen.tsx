@@ -1,25 +1,21 @@
 import {
-  Alert,
   RefreshControl,
   ScrollView,
   StyleSheet,
   TouchableOpacity
 } from 'react-native';
-
-import EditScreenInfo from '../components/EditScreenInfo';
 import { View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
-import { IconButton, useTheme, Text, Switch, Badge } from 'react-native-paper';
+import { Badge, IconButton, Switch, Text, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { ExtendedWorkOrderStatus, getStatusColor } from '../utils/overall';
 import { FilterField, SearchCriteria } from '../models/page';
 import useAuth from '../hooks/useAuth';
+import * as React from 'react';
 import { useEffect } from 'react';
 import { getMobileOverviewStats } from '../slices/analytics/workOrder';
 import { useDispatch, useSelector } from '../store';
-import * as React from 'react';
-import notification, { getNotifications } from '../slices/notification';
-import { getAssetByNfc } from '../slices/asset';
+import { getNotifications } from '../slices/notification';
 
 export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
   const theme = useTheme();

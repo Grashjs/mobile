@@ -1,6 +1,4 @@
 import { StyleSheet } from 'react-native';
-
-import EditScreenInfo from '../components/EditScreenInfo';
 import { View } from '../components/Themed';
 import {
   Avatar,
@@ -9,15 +7,15 @@ import {
   IconButton,
   List,
   Portal,
-  useTheme,
-  Text
+  Text,
+  useTheme
 } from 'react-native-paper';
 import useAuth from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { getUserInitials } from '../utils/displayers';
 import * as React from 'react';
-import { RootStackScreenProps } from '../types';
 import { useState } from 'react';
+import { RootStackScreenProps } from '../types';
 import appJson from '../app.json';
 
 export default function SettingsScreen({

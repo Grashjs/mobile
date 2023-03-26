@@ -7,8 +7,9 @@ import {
 import { View } from '../../components/Themed';
 import { RootStackScreenProps } from '../../types';
 import { useTranslation } from 'react-i18next';
+import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
-import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import { TabBar, TabView } from 'react-native-tab-view';
 import { useDispatch, useSelector } from '../../store';
 import { PartMiniDTO } from '../../models/part';
 import { getPartsMini } from '../../slices/part';
@@ -20,7 +21,6 @@ import {
   useTheme
 } from 'react-native-paper';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
-import * as React from 'react';
 import { getMultiParts } from '../../slices/multipart';
 import SetType from '../../models/setType';
 

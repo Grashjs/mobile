@@ -5,7 +5,6 @@ import { AssetDTO, AssetMiniDTO, AssetRow } from '../models/asset';
 import api from '../utils/api';
 import WorkOrder from '../models/workOrder';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
-import Part from '../models/part';
 
 const basePath = 'assets';
 

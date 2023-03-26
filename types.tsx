@@ -17,12 +17,11 @@ import { Vendor, VendorMiniDTO } from './models/vendor';
 import User, { UserMiniDTO } from './models/user';
 import Team, { TeamMiniDTO } from './models/team';
 import Location, { LocationMiniDTO } from './models/location';
-import Asset, { AssetDTO, AssetMiniDTO } from './models/asset';
+import { AssetDTO, AssetMiniDTO } from './models/asset';
 import Category from './models/category';
 import { FilterField } from './models/page';
 import Request from './models/request';
 import Meter from './models/meter';
-import Notification from './models/notification';
 
 declare global {
   namespace ReactNavigation {

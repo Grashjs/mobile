@@ -1,8 +1,7 @@
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from '../../store';
 import * as React from 'react';
-import { useContext, useEffect, useState } from 'react';
-import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
+import { useEffect, useState } from 'react';
 import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
 import { getAssetChildren, getAssets, getMoreAssets } from '../../slices/asset';
@@ -16,7 +15,7 @@ import {
   useTheme
 } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
-import Asset, { AssetDTO } from '../../models/asset';
+import { AssetDTO } from '../../models/asset';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { onSearchQueryChange } from '../../utils/overall';
 import { RootStackScreenProps } from '../../types';

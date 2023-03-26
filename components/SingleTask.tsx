@@ -1,12 +1,11 @@
 import { Task, TaskOption, TaskType } from '../models/tasks';
 import { View } from './Themed';
 import {
-  useTheme,
+  Button,
+  IconButton,
   Text,
   TextInput,
-  IconButton,
-  Divider,
-  Button
+  useTheme
 } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useState } from 'react';

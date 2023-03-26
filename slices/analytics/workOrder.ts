@@ -6,6 +6,8 @@ import {
   IncompleteWOByAsset,
   IncompleteWOByUser,
   IncompleteWoStats,
+  MobileWOStats,
+  MobileWOStatsExtended,
   WOCostByDate,
   WOCostsAndTime,
   WOCountsByCategory,
@@ -15,9 +17,7 @@ import {
   WoOverviewStats,
   WOStatsByPriority,
   WOStatsByStatus,
-  WOTimeByWeek,
-  MobileWOStats,
-  MobileWOStatsExtended
+  WOTimeByWeek
 } from '../../models/analytics/workOrder';
 
 const basePath = 'analytics/work-orders';

@@ -1,8 +1,7 @@
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from '../../store';
 import * as React from 'react';
-import { useContext, useEffect, useState } from 'react';
-import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
+import { useEffect, useState } from 'react';
 import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
 import {
@@ -25,7 +24,6 @@ import Location from '../../models/location';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { onSearchQueryChange } from '../../utils/overall';
 import { RootStackScreenProps } from '../../types';
-import Tag from '../../components/Tag';
 import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
 
 function IconWithLabel({ icon, label }: { icon: IconSource; label: string }) {

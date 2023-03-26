@@ -4,7 +4,6 @@ import { getInitialPage, Page, SearchCriteria } from '../models/page';
 import type { AppThunk } from '../store';
 import { OwnUser as User, UserMiniDTO } from '../models/user';
 import api from '../utils/api';
-import Part from '../models/part';
 
 const basePath = 'users';
 

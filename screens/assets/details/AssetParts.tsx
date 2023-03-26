@@ -1,27 +1,20 @@
-import { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from '../../../store';
+import * as React from 'react';
+import { useState } from 'react';
+import { useDispatch } from '../../../store';
 import { useTranslation } from 'react-i18next';
-import { CompanySettingsContext } from '../../../contexts/CompanySettingsContext';
 import { AssetDTO } from '../../../models/asset';
-import { useNavigation } from '@react-navigation/native';
-import { editAsset, getAssetWorkOrders } from '../../../slices/asset';
+import { editAsset } from '../../../slices/asset';
+import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import {
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity
-} from 'react-native';
-import {
-  useTheme,
-  Text,
-  Divider,
-  Portal,
-  Dialog,
   Button,
-  IconButton
+  Dialog,
+  Divider,
+  IconButton,
+  Portal,
+  Text,
+  useTheme
 } from 'react-native-paper';
 import { View } from '../../../components/Themed';
-import * as React from 'react';
 
 export default function AssetParts({
   asset,

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import Part from '../../../models/part';
+import * as React from 'react';
 import { useContext } from 'react';
 import { CompanySettingsContext } from '../../../contexts/CompanySettingsContext';
 import { Image, ScrollView, StyleSheet } from 'react-native';
@@ -16,7 +17,6 @@ import {
   getVendorUrl
 } from '../../../utils/urlPaths';
 import ListField from '../../../components/ListField';
-import * as React from 'react';
 
 export default function PartDetails({ part }: { part: Part }) {
   const { t } = useTranslation();

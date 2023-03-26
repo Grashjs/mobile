@@ -4,7 +4,6 @@ import { getInitialPage, Page, SearchCriteria } from '../models/page';
 import type { AppThunk } from '../store';
 import Meter from '../models/meter';
 import api from '../utils/api';
-import Request from '../models/request';
 
 const basePath = 'meters';
 
