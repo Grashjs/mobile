@@ -25,6 +25,7 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import { useTranslation } from 'react-i18next';
+import analytics from '@react-native-firebase/analytics';
 
 interface AuthState {
   isInitialized: boolean;
@@ -616,6 +617,12 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
       const user = await updateUserInfos();
       const company = await api.get<Company>(`companies/${user.companyId}`);
       await setupUser(company.companySettings);
+      await analytics().logEvent('sign_up', {
+        email: values.email,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        employeesCount: values.employeesCount
+      });
       dispatch({
         type: 'REGISTER',
         payload: {

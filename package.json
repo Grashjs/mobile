@@ -15,6 +15,8 @@
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
     "@react-native-community/datetimepicker": "6.5.2",
+    "@react-native-firebase/analytics": "^17.4.0",
+    "@react-native-firebase/app": "^17.4.0",
     "@react-navigation/bottom-tabs": "^6.0.5",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.1.0",
@@ -23,6 +25,7 @@
     "deprecated-react-native-prop-types": "^4.0.0",
     "expo": "~47.0.12",
     "expo-asset": "~8.7.0",
+    "expo-barcode-scanner": "~12.1.0",
     "expo-constants": "~14.0.2",
     "expo-device": "~5.0.0",
     "expo-document-picker": "~11.0.1",
@@ -62,8 +65,7 @@
     "react-native-webview": "11.23.1",
     "react-redux": "^8.0.5",
     "redux-thunk": "^2.4.2",
-    "yup": "^1.0.0",
-    "expo-barcode-scanner": "~12.1.0"
+    "yup": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
