@@ -56,7 +56,7 @@ export default function FileUpload({
           console.log('You can use the camera');
           return true;
         } else {
-          Alert.alert('Error', t('PERMISSION_ACCESS_FILE'));
+          Alert.alert(t('error'), t('PERMISSION_ACCESS_FILE'));
 
           console.log('Camera permission denied');
           return false;
