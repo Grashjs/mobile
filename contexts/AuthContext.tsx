@@ -1,8 +1,16 @@
-import { createContext, FC, ReactNode, useEffect, useReducer } from 'react';
+import {
+  createContext,
+  FC,
+  ReactNode,
+  useEffect,
+  useReducer,
+  useRef,
+  useState
+} from 'react';
 import { OwnUser, UserResponseDTO } from '../models/user';
 import api, { authHeader } from '../utils/api';
 import { JWT_SECRET, verify } from '../utils/jwt';
-import { Alert, AsyncStorage, Linking, Platform } from 'react-native';
+import { Alert, AppState, AsyncStorage, Linking, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import {
   getCompanySettings,
@@ -458,6 +466,32 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   const { children } = props;
   const { t } = useTranslation();
   const [state, dispatch] = useReducer(reducer, initialAuthState);
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+  const [openedSettings, setOpenedSettings] = useState<boolean>(false);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        if (openedSettings) {
+          registerForPushNotificationsAsync().then((token) =>
+            savePushToken(token)
+          );
+          setOpenedSettings(false);
+        }
+      }
+
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [openedSettings]);
   const switchLanguage = ({ lng }: { lng: any }) => {
     internationalization.changeLanguage(lng);
   };
@@ -478,7 +512,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         finalStatus = status;
       }
       if (finalStatus !== 'granted') {
-        Alert.alert('Failed to get push token for push notification!');
+        Alert.alert(t('error'), t('failed_push_notification'));
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
@@ -507,13 +541,21 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
       const status = await Permissions.askAsync(Permissions.NOTIFICATIONS);
       existingStatus = status.status;
     }
-    if (existingStatus !== 'granted') {
+    if (existingStatus === 'granted') {
+      registerForPushNotificationsAsync().then((token) => savePushToken(token));
+    } else {
       Alert.alert(
-        'No Notification Permission',
-        'Please goto setting and activate notification permission manually',
+        t('no_notification_permission'),
+        t('no_notification_permission_description'),
         [
           { text: t('cancel'), onPress: () => console.log('cancel') },
-          { text: t('allow'), onPress: () => Linking.openURL('app-settings:') }
+          {
+            text: t('allow'),
+            onPress: () => {
+              Linking.openSettings();
+              setOpenedSettings(true);
+            }
+          }
         ],
         { cancelable: false }
       );
@@ -527,9 +569,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     switchLanguage({
       lng: companySettings.generalPreferences.language.toLowerCase()
     });
-    checkPushNotificationState().then(() =>
-      registerForPushNotificationsAsync().then((token) => savePushToken(token))
-    );
+    checkPushNotificationState();
   };
   const getInfos = async (): Promise<void> => {
     try {

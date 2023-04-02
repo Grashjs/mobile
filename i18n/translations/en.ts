@@ -1406,7 +1406,12 @@ const enJSON = {
   no_access_to_camera: 'No access to camera',
   no_asset_found_barcode:
     'No Asset found with this barcode. Do you want to create it?',
-  remove_blank_meter_tasks: 'Please select a meter'
+  remove_blank_meter_tasks: 'Please select a meter',
+  no_notification_permission: 'No Notification Permission',
+  no_notification_permission_description:
+    'Please go to settings and activate notification permission manually',
+  allow: 'Allow',
+  failed_push_notification: 'Failed to get push token for push notification!'
 };
 
 export default enJSON;

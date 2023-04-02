@@ -1555,7 +1555,13 @@ const frJSON = {
   no_access_to_camera: "L'application n'a pas accès à la caméra",
   no_asset_found_barcode:
     'Aucun équipement trouvé avec ce code barres. Voulez-vous le créer?',
-  remove_blank_meter_tasks: 'Veuillez sélectionner un compteur'
+  remove_blank_meter_tasks: 'Veuillez sélectionner un compteur',
+  no_notification_permission: 'Notifications non autorisées',
+  no_notification_permission_description:
+    'Veuillez activer les permissions de notification dans les paramètres',
+  allow: 'Autoriser',
+  failed_push_notification:
+    "Impossible d'obtenir le jeton push pour la notification push!"
 };
 
 export default frJSON;

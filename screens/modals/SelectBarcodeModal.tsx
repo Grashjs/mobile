@@ -39,27 +39,22 @@ export default function SelectBarcodeModal({
       onChange(data);
     }
   };
-
-  if (hasPermission === false) {
-    return (
-      <View
-        style={{
-          backgroundColor: 'white',
-          padding: 20,
-          borderRadius: 10
-        }}
-      >
-        <Text variant={'titleLarge'}>{t('no_access_to_camera')}</Text>
-      </View>
-    );
-  }
-
-  return (
+  return hasPermission ? (
     <View style={styles.container}>
       <BarCodeScanner
         onBarCodeScanned={handleBarCodeScanned}
         style={{ width: layout.width, height: layout.height }}
       />
+    </View>
+  ) : (
+    <View
+      style={{
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10
+      }}
+    >
+      <Text variant={'titleLarge'}>{t('no_access_to_camera')}</Text>
     </View>
   );
 }
