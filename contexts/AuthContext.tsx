@@ -467,7 +467,6 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   const { t } = useTranslation();
   const [state, dispatch] = useReducer(reducer, initialAuthState);
   const appState = useRef(AppState.currentState);
-  const [appStateVisible, setAppStateVisible] = useState(appState.current);
   const [openedSettings, setOpenedSettings] = useState<boolean>(false);
 
   useEffect(() => {
@@ -485,7 +484,6 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
       }
 
       appState.current = nextAppState;
-      setAppStateVisible(appState.current);
     });
 
     return () => {

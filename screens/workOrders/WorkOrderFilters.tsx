@@ -205,7 +205,7 @@ export default function WorkOrderFilters({
       teams: getLabelAndValue(filterFields, teamsMini, 'team', 'name'),
       categories: getLabelAndValue(
         filterFields,
-        categories['work-orders'],
+        categories['work-order-categories'],
         'category',
         'name'
       ),
