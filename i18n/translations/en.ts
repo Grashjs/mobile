@@ -1411,7 +1411,10 @@ const enJSON = {
   no_notification_permission_description:
     'Please go to settings and activate notification permission manually',
   allow: 'Allow',
-  failed_push_notification: 'Failed to get push token for push notification!'
+  failed_push_notification: 'Failed to get push token for push notification!',
+  no_internet_connection: 'No internet connection',
+  success: 'Success',
+  info: 'Info'
 };
 
 export default enJSON;

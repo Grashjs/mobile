@@ -5,18 +5,22 @@ import ActionSheet, {
 import { View } from 'react-native';
 import { Divider, List, Text } from 'react-native-paper';
 import * as React from 'react';
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { RootStackParamList } from '../../types';
 import { useTranslation } from 'react-i18next';
 import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 
 export default function CreateEntitiesSheet(
   props: SheetProps<{ navigation: any }>
 ) {
   const { t } = useTranslation();
   const { hasCreatePermission } = useAuth();
+  const netInfo = useNetInfo();
+  const { showSnackBar } = useContext(CustomSnackBarContext);
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const entities: {
     title: string;
@@ -74,22 +78,28 @@ export default function CreateEntitiesSheet(
           {t('create')}
         </Text>
         <Divider />
-        <List.Section>
-          {entities
-            .filter((entity) => hasCreatePermission(entity.entity))
-            .map((entity, index) => (
-              <List.Item
-                key={index}
-                style={{ paddingHorizontal: 15 }}
-                title={entity.title}
-                left={() => <List.Icon icon={entity.icon} />}
-                onPress={() => {
-                  props.payload.navigation.navigate(entity.goTo);
-                  actionSheetRef.current.hide();
-                }}
-              />
-            ))}
-        </List.Section>
+        {netInfo.isInternetReachable ? (
+          <List.Section>
+            {entities
+              .filter((entity) => hasCreatePermission(entity.entity))
+              .map((entity, index) => (
+                <List.Item
+                  key={index}
+                  style={{ paddingHorizontal: 15 }}
+                  title={entity.title}
+                  left={() => <List.Icon icon={entity.icon} />}
+                  onPress={() => {
+                    props.payload.navigation.navigate(entity.goTo);
+                    actionSheetRef.current.hide();
+                  }}
+                />
+              ))}
+          </List.Section>
+        ) : (
+          <Text style={{ padding: 20 }} variant={'bodyLarge'}>
+            {t('no_internet_connection')}
+          </Text>
+        )}
       </View>
     </ActionSheet>
   );

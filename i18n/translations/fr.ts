@@ -1561,7 +1561,10 @@ const frJSON = {
     'Veuillez activer les permissions de notification dans les paramètres',
   allow: 'Autoriser',
   failed_push_notification:
-    "Impossible d'obtenir le jeton push pour la notification push!"
+    "Impossible d'obtenir le jeton push pour la notification push!",
+  no_internet_connection: 'Pas de connexion internet',
+  success: 'Succès',
+  info: 'Info'
 };
 
 export default frJSON;

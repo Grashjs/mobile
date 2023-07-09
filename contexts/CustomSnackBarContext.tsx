@@ -1,6 +1,7 @@
 import { createContext, FC, ReactNode, useState } from 'react';
 import { Snackbar, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
+import { showMessage } from 'react-native-flash-message';
 
 type CustomSnackBarContext = {
   showSnackBar: (
@@ -18,30 +19,26 @@ export const CustomSnackBarContext = createContext<CustomSnackBarContext>(
 export const CustomSnackbarProvider: FC<{ children: ReactNode }> = ({
   children
 }) => {
-  const [message, setMessage] = useState<string>('');
   const theme = useTheme();
-  const [snackBarType, setSnackBarType] = useState<
-    'error' | 'success' | 'info'
-  >('info');
-  const [visible, setVisible] = useState(false);
-  const [actionInternal, setActionInternal] = useState<{
-    label: string;
-    onPress: () => void;
-  }>();
   const { t } = useTranslation();
   const showSnackBar = (
     text: string,
     type?: 'error' | 'success' | 'info',
     action?: { label: string; onPress: () => void }
   ) => {
-    setMessage(text);
-    setActionInternal(action);
-    setVisible(true);
-    setSnackBarType(type);
+    showMessage({
+      message: t(type),
+      description: text,
+      color: getColor(type),
+      textStyle: { color: 'white' },
+      titleStyle: { color: 'white' },
+      type: type === 'error' ? 'danger' : type,
+      onPress: action?.onPress
+    });
   };
 
-  const getColor = () => {
-    switch (snackBarType) {
+  const getColor = (type: 'error' | 'success' | 'info') => {
+    switch (type) {
       case 'info':
         return 'black';
       case 'error':
@@ -51,17 +48,8 @@ export const CustomSnackbarProvider: FC<{ children: ReactNode }> = ({
         return theme.colors.success;
     }
   };
-  const onDismissSnackBar = () => setVisible(false);
   return (
     <CustomSnackBarContext.Provider value={{ showSnackBar }}>
-      <Snackbar
-        style={{ zIndex: 100, backgroundColor: getColor() }}
-        visible={visible}
-        onDismiss={onDismissSnackBar}
-        action={actionInternal}
-      >
-        {message}
-      </Snackbar>
       {children}
     </CustomSnackBarContext.Provider>
   );

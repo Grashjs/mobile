@@ -12,17 +12,21 @@ import { ExtendedWorkOrderStatus, getStatusColor } from '../utils/overall';
 import { FilterField, SearchCriteria } from '../models/page';
 import useAuth from '../hooks/useAuth';
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { getMobileOverviewStats } from '../slices/analytics/workOrder';
 import { useDispatch, useSelector } from '../store';
 import { getNotifications } from '../slices/notification';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
 
 export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
   const theme = useTheme();
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const netInfo = useNetInfo();
   const { userSettings, fetchUserSettings, patchUserSettings, user } =
     useAuth();
+  const { showSnackBar } = useContext(CustomSnackBarContext);
   const { notifications } = useSelector((state) => state.notifications);
   const { mobileOverview, loading } = useSelector((state) => state.woAnalytics);
   const iconButtonStyle = {
@@ -175,7 +179,13 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
         <IconButton
           style={iconButtonStyle}
           icon={'magnify-scan'}
-          onPress={() => navigation.navigate('ScanAsset')}
+          onPress={() => {
+            if (netInfo.isInternetReachable) {
+              navigation.navigate('ScanAsset');
+            } else {
+              showSnackBar(t('no_internet_connection'), 'error');
+            }
+          }}
         />
         <IconButton
           style={iconButtonStyle}

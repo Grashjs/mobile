@@ -10,6 +10,9 @@ import store, { persistor } from './store';
 import { CompanySettingsProvider } from './contexts/CompanySettingsContext';
 import { CustomSnackbarProvider } from './contexts/CustomSnackBarContext';
 import { AuthProvider } from './contexts/AuthContext';
+import FlashMessage from 'react-native-flash-message';
+import Constants from 'expo-constants';
+
 import {
   MD3LightTheme as DefaultTheme,
   Provider as PaperProvider
@@ -108,6 +111,10 @@ export default function App() {
                     <SheetProvider>
                       <Navigation colorScheme={colorScheme} />
                       <StatusBar />
+                      <FlashMessage
+                        position="top"
+                        statusBarHeight={Constants.statusBarHeight}
+                      />
                     </SheetProvider>
                   </CustomSnackbarProvider>
                 </PaperProvider>
