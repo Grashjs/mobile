@@ -8,10 +8,23 @@ import type { Action } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './rootReducer';
 import { ImportResponse } from '../models/imports';
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import { AsyncStorage } from 'react-native';
+
+const persistConfig = {
+  key: 'root',
+  storage: AsyncStorage
+};
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-  reducer: rootReducer,
-  devTools: true
+  reducer: persistedReducer,
+  devTools: true,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false
+    })
 });
 
 export type RootState = ReturnType<typeof store.getState>;
@@ -34,5 +47,7 @@ export type AppThunk = ThunkAction<
 export const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector;
 
 export const useDispatch = () => useReduxDispatch<AppDispatch>();
+
+export const persistor = persistStore(store);
 
 export default store;

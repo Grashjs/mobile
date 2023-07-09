@@ -1,12 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
+import { PersistGate } from 'redux-persist/integration/react';
 import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import { Provider } from 'react-redux';
 import { Subscription } from 'expo-modules-core';
-import store from './store';
+import store, { persistor } from './store';
 import { CompanySettingsProvider } from './contexts/CompanySettingsContext';
 import { CustomSnackbarProvider } from './contexts/CustomSnackBarContext';
 import { AuthProvider } from './contexts/AuthContext';
@@ -100,18 +100,20 @@ export default function App() {
     return (
       <SafeAreaProvider>
         <Provider store={store}>
-          <AuthProvider>
-            <CompanySettingsProvider>
-              <PaperProvider theme={theme}>
-                <CustomSnackbarProvider>
-                  <SheetProvider>
-                    <Navigation colorScheme={colorScheme} />
-                    <StatusBar />
-                  </SheetProvider>
-                </CustomSnackbarProvider>
-              </PaperProvider>
-            </CompanySettingsProvider>
-          </AuthProvider>
+          <PersistGate loading={null} persistor={persistor}>
+            <AuthProvider>
+              <CompanySettingsProvider>
+                <PaperProvider theme={theme}>
+                  <CustomSnackbarProvider>
+                    <SheetProvider>
+                      <Navigation colorScheme={colorScheme} />
+                      <StatusBar />
+                    </SheetProvider>
+                  </CustomSnackbarProvider>
+                </PaperProvider>
+              </CompanySettingsProvider>
+            </AuthProvider>
+          </PersistGate>
         </Provider>
       </SafeAreaProvider>
     );
