@@ -89,7 +89,7 @@ export default function WODetailsScreen({
   const { partQuantitiesByWorkOrder, loadingPartQuantities } = useSelector(
     (state) => state.partQuantities
   );
-  const partQuantities = partQuantitiesByWorkOrder[workOrder?.id] ?? [];
+  const partQuantities = partQuantitiesByWorkOrder[id] ?? [];
   const { workOrderHistories } = useSelector(
     (state) => state.workOrderHistories
   );
@@ -99,20 +99,20 @@ export default function WODetailsScreen({
   const { tasksByWorkOrder, loadingTasks } = useSelector(
     (state) => state.tasks
   );
-  const tasks = tasksByWorkOrder[workOrder?.id] ?? [];
-  const currentWorkOrderHistories = workOrderHistories[workOrder?.id] ?? [];
-  const currentWorkOrderRelations = relationsByWorkOrder[workOrder?.id] ?? [];
+  const tasks = tasksByWorkOrder[id] ?? [];
+  const currentWorkOrderHistories = workOrderHistories[id] ?? [];
+  const currentWorkOrderRelations = relationsByWorkOrder[id] ?? [];
   const { costsByWorkOrder, loadingCosts } = useSelector(
     (state) => state.additionalCosts
   );
   const { timesByWorkOrder, loadingLabors } = useSelector(
     (state) => state.labors
   );
-  const labors = timesByWorkOrder[workOrder?.id] ?? [];
+  const labors = timesByWorkOrder[id] ?? [];
   const primaryTime = labors.find(
     (labor) => labor.logged && labor.assignedTo.id === user.id
   );
-  const additionalCosts = costsByWorkOrder[workOrder?.id] ?? [];
+  const additionalCosts = costsByWorkOrder[id] ?? [];
   const runningTimer = primaryTime?.status === 'RUNNING';
   const [controllingTime, setControllingTime] = useState<boolean>(false);
   const { getFormattedDate, getUserNameById, getFormattedCurrency } =
@@ -124,11 +124,11 @@ export default function WODetailsScreen({
   const [openDelete, setOpenDelete] = React.useState(false);
   const [openArchive, setOpenArchive] = React.useState(false);
   const loadingDetails =
-    loadingPartQuantities[workOrder?.id] ||
-    loadingTasks[workOrder?.id] ||
-    loadingCosts[workOrder?.id] ||
-    loadingLabors[workOrder?.id] ||
-    loadingRelations[workOrder?.id];
+    loadingPartQuantities[id] ||
+    loadingTasks[id] ||
+    loadingCosts[id] ||
+    loadingLabors[id] ||
+    loadingRelations[id];
   const fieldsToRender: {
     label: string;
     value: string | number;
@@ -196,7 +196,7 @@ export default function WODetailsScreen({
     navigation.setOptions({
       headerRight: () =>
         workOrder &&
-        !loadingTasks[workOrder?.id] && (
+        !loadingTasks[id] && (
           <Pressable
             onPress={() => {
               SheetManager.show('work-order-details-sheet', {
@@ -260,19 +260,17 @@ export default function WODetailsScreen({
     showSnackBar(t('wo_delete_failure'), 'error');
 
   const handleDelete = () => {
-    dispatch(deleteWorkOrder(workOrder?.id))
-      .then(onDeleteSuccess)
-      .catch(onDeleteFailure);
+    dispatch(deleteWorkOrder(id)).then(onDeleteSuccess).catch(onDeleteFailure);
     setOpenDelete(false);
   };
   const onArchive = () => {
-    dispatch(editWorkOrder(workOrder?.id, { ...workOrder, archived: true }))
+    dispatch(editWorkOrder(id, { ...workOrder, archived: true }))
       .then(onArchiveSuccess)
       .catch(onArchiveFailure);
   };
   const onGenerateReport = () => {
     setLoading(true);
-    dispatch(getPDFReport(workOrder?.id))
+    dispatch(getPDFReport(id))
       .then(async (uri: string) => {
         if (Platform.OS === 'ios') {
           actualDownload(uri);
@@ -355,7 +353,7 @@ export default function WODetailsScreen({
     feedback: string | undefined
   ): Promise<any> => {
     return dispatch(
-      editWorkOrder(workOrder?.id, {
+      editWorkOrder(id, {
         ...workOrder,
         status: 'COMPLETE',
         feedback: feedback ?? null,
@@ -394,7 +392,7 @@ export default function WODetailsScreen({
     }
     setLoading(true);
     dispatch(
-      editWorkOrder(workOrder?.id, {
+      editWorkOrder(id, {
         ...workOrder,
         status
       })
@@ -567,7 +565,7 @@ export default function WODetailsScreen({
               <Text
                 variant="titleMedium"
                 style={{ marginRight: 10 }}
-              >{`#${workOrder?.id}`}</Text>
+              >{`#${id}`}</Text>
               <Tag
                 text={t('priority_label', { priority: t(workOrder.priority) })}
                 color="white"
@@ -696,7 +694,7 @@ export default function WODetailsScreen({
                   partQuantities={partQuantities}
                   isPO={false}
                   navigation={navigation}
-                  rootId={workOrder?.id}
+                  rootId={id}
                 />
                 <Divider style={{ marginTop: 5 }} />
                 <Button
@@ -708,7 +706,7 @@ export default function WODetailsScreen({
                       onChange: (selectedParts) => {
                         dispatch(
                           editWOPartQuantities(
-                            workOrder?.id,
+                            id,
                             selectedParts.map((part) => part.id)
                           )
                         ).catch((error) =>
@@ -789,7 +787,7 @@ export default function WODetailsScreen({
                   <TouchableOpacity
                     onPress={() =>
                       navigation.navigate('Tasks', {
-                        workOrderId: workOrder?.id,
+                        workOrderId: id,
                         tasksProps: tasks
                       })
                     }
@@ -931,7 +929,7 @@ export default function WODetailsScreen({
             extended={isExtended}
             onPress={() => {
               setControllingTime(true);
-              dispatch(controlTimer(!runningTimer, workOrder?.id)).finally(() =>
+              dispatch(controlTimer(!runningTimer, id)).finally(() =>
                 setControllingTime(false)
               );
             }}
