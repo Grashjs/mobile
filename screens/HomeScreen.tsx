@@ -18,14 +18,20 @@ import { useDispatch, useSelector } from '../store';
 import { getNotifications } from '../slices/notification';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
+import { PermissionEntity } from '../models/role';
 
 export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
   const theme = useTheme();
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const netInfo = useNetInfo();
-  const { userSettings, fetchUserSettings, patchUserSettings, user } =
-    useAuth();
+  const {
+    userSettings,
+    fetchUserSettings,
+    hasViewPermission,
+    patchUserSettings,
+    user
+  } = useAuth();
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const { notifications } = useSelector((state) => state.notifications);
   const { mobileOverview, loading } = useSelector((state) => state.woAnalytics);
@@ -176,17 +182,19 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
           justifyContent: 'space-between'
         }}
       >
-        <IconButton
-          style={iconButtonStyle}
-          icon={'magnify-scan'}
-          onPress={() => {
-            if (netInfo.isInternetReachable) {
-              navigation.navigate('ScanAsset');
-            } else {
-              showSnackBar(t('no_internet_connection'), 'error');
-            }
-          }}
-        />
+        {hasViewPermission(PermissionEntity.ASSETS) && (
+          <IconButton
+            style={iconButtonStyle}
+            icon={'magnify-scan'}
+            onPress={() => {
+              if (netInfo.isInternetReachable) {
+                navigation.navigate('ScanAsset');
+              } else {
+                showSnackBar(t('no_internet_connection'), 'error');
+              }
+            }}
+          />
+        )}
         <IconButton
           style={iconButtonStyle}
           icon={'poll'}
@@ -207,9 +215,8 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
               backgroundColor: theme.colors.error
             }}
             visible={
-              !!notifications.content.filter(
-                (notification) => !notification.seen
-              ).length
+              notifications.content.filter((notification) => !notification.seen)
+                .length > 0
             }
           >
             {
@@ -218,11 +225,13 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
             }
           </Badge>
         </View>
-        <IconButton
-          style={iconButtonStyle}
-          icon={'package-variant-closed'}
-          onPress={() => navigation.navigate('Assets')}
-        />
+        {hasViewPermission(PermissionEntity.ASSETS) && (
+          <IconButton
+            style={iconButtonStyle}
+            icon={'package-variant-closed'}
+            onPress={() => navigation.navigate('Assets')}
+          />
+        )}
       </View>
       <View
         style={{

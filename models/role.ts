@@ -32,6 +32,24 @@ export enum PermissionEntity {
   REQUESTS = 'REQUESTS',
   ANALYTICS = 'ANALYTICS'
 }
+
+export const createEntities: PermissionEntity[] = [
+  PermissionEntity.PEOPLE_AND_TEAMS,
+  PermissionEntity.WORK_ORDERS,
+  PermissionEntity.ASSETS,
+  PermissionEntity.PARTS_AND_MULTIPARTS,
+  PermissionEntity.METERS,
+  PermissionEntity.LOCATIONS,
+  PermissionEntity.REQUESTS
+];
+export const viewMoreEntities: PermissionEntity[] = [
+  PermissionEntity.PEOPLE_AND_TEAMS,
+  PermissionEntity.ASSETS,
+  PermissionEntity.PARTS_AND_MULTIPARTS,
+  PermissionEntity.METERS,
+  PermissionEntity.LOCATIONS,
+  PermissionEntity.VENDORS_AND_CUSTOMERS
+];
 export type PermissionRoot =
   | 'createPermissions'
   | 'viewPermissions'
@@ -46,6 +64,7 @@ export type RoleCode =
   | 'VIEW_ONLY'
   | 'REQUESTER'
   | 'USER_CREATED';
+
 export interface Role {
   id: number;
   name: string;

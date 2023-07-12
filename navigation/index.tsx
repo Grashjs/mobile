@@ -36,7 +36,6 @@ import { useTranslation } from 'react-i18next';
 import { IconButton, useTheme } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import MoreEntitiesScreen from '../screens/MoreEntitiesScreen';
-import RequestsScreen from '../screens/requests/RequestsScreen';
 import MetersScreen from '../screens/meters/MetersScreen';
 import WorkOrdersScreen from '../screens/workOrders/WorkOrdersScreen';
 import { SheetManager } from 'react-native-actions-sheet';
@@ -85,6 +84,12 @@ import SelectNfcModal from '../screens/modals/SelectNfcModal';
 import SelectBarcodeModal from '../screens/modals/SelectBarcodeModal';
 import ScanAssetScreen from '../screens/ScanAssetScreen';
 import SelectMetersModal from '../screens/modals/SelectMetersModal';
+import {
+  createEntities,
+  PermissionEntity,
+  viewMoreEntities
+} from '../models/role';
+import RequestsScreen from '../screens/requests/RequestsScreen';
 
 export default function Navigation({
   colorScheme
@@ -442,6 +447,7 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
   const theme = useTheme();
   const { t } = useTranslation();
+  const { hasViewPermission, hasCreatePermission } = useAuth();
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
@@ -478,42 +484,48 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
           )
         }}
       />
-      <BottomTab.Screen
-        name="AddEntities"
-        component={View}
-        listeners={{
-          tabPress: (e) => {
-            e.preventDefault();
-            SheetManager.show('create-entities-sheet', {
-              payload: { navigation }
-            });
-          }
-        }}
-        options={{
-          title: t('create'),
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="plus-circle" color={theme.colors.primary} />
-          )
-        }}
-      />
-      <BottomTab.Screen
-        name="Requests"
-        component={RequestsScreen}
-        options={{
-          title: t('requests'),
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="inbox-arrow-down-outline" color={color} />
-          )
-        }}
-      />
-      <BottomTab.Screen
-        name="MoreEntities"
-        component={MoreEntitiesScreen}
-        options={{
-          title: t('more'),
-          tabBarIcon: ({ color }) => <TabBarIcon name="menu" color={color} />
-        }}
-      />
+      {createEntities.some((entity) => hasCreatePermission(entity)) && (
+        <BottomTab.Screen
+          name="AddEntities"
+          component={View}
+          listeners={{
+            tabPress: (e) => {
+              e.preventDefault();
+              SheetManager.show('create-entities-sheet', {
+                payload: { navigation }
+              });
+            }
+          }}
+          options={{
+            title: t('create'),
+            tabBarIcon: ({ color }) => (
+              <TabBarIcon name="plus-circle" color={theme.colors.primary} />
+            )
+          }}
+        />
+      )}
+      {hasViewPermission(PermissionEntity.REQUESTS) && (
+        <BottomTab.Screen
+          name="Requests"
+          component={RequestsScreen}
+          options={{
+            title: t('requests'),
+            tabBarIcon: ({ color }) => (
+              <TabBarIcon name="inbox-arrow-down-outline" color={color} />
+            )
+          }}
+        />
+      )}
+      {viewMoreEntities.some((entity) => hasViewPermission(entity)) && (
+        <BottomTab.Screen
+          name="MoreEntities"
+          component={MoreEntitiesScreen}
+          options={{
+            title: t('more'),
+            tabBarIcon: ({ color }) => <TabBarIcon name="menu" color={color} />
+          }}
+        />
+      )}
     </BottomTab.Navigator>
   );
 }
