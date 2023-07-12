@@ -34,7 +34,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "versionCode": 8,
+      "versionCode": 10,
       "package": "com.grash.cmms",
       "googleServicesFile": "./google-services.json",
       "runtimeVersion": "1.0.0"
