@@ -693,7 +693,11 @@ export default function WODetailsScreen({
               {!generalPreferences.simplifiedWorkOrder && (
                 <View>
                   <View style={styles.shadowedCard}>
-                    <Text style={{ marginBottom: 10 }}>{t('parts')}</Text>
+                    <Text
+                      style={{ marginBottom: 10, color: theme.colors.grey }}
+                    >
+                      {t('parts')}
+                    </Text>
                     <PartQuantities
                       partQuantities={partQuantities}
                       isPO={false}
@@ -730,7 +734,9 @@ export default function WODetailsScreen({
                     </Button>
                   </View>
                   <View style={styles.shadowedCard}>
-                    <Text style={{ marginBottom: 10 }}>
+                    <Text
+                      style={{ marginBottom: 10, color: theme.colors.grey }}
+                    >
                       {t('additional_costs')}
                     </Text>
                     {!additionalCosts.length ? (
@@ -795,7 +801,9 @@ export default function WODetailsScreen({
               )}
               {!!tasks.length && (
                 <View style={styles.shadowedCard}>
-                  <Text style={{ marginBottom: 10 }}>{t('tasks')}</Text>
+                  <Text style={{ marginBottom: 10, color: theme.colors.grey }}>
+                    {t('tasks')}
+                  </Text>
                   <TouchableOpacity
                     onPress={() =>
                       navigation.navigate('Tasks', {
@@ -831,7 +839,14 @@ export default function WODetailsScreen({
                 <View>
                   {!!workOrder.files.length && (
                     <View style={styles.shadowedCard}>
-                      <Text style={{ marginBottom: 10 }}>{t('files')}</Text>
+                      <Text
+                        style={{
+                          marginBottom: 10,
+                          color: theme.colors.grey
+                        }}
+                      >
+                        {t('files')}
+                      </Text>
                       {workOrder.files.map((file) => (
                         <List.Item
                           key={file.id}
@@ -846,7 +861,14 @@ export default function WODetailsScreen({
                   )}
                   {!!currentWorkOrderRelations.length && (
                     <View style={styles.shadowedCard}>
-                      <Text style={{ marginBottom: 10 }}>{t('links')}</Text>
+                      <Text
+                        style={{
+                          marginBottom: 10,
+                          color: theme.colors.grey
+                        }}
+                      >
+                        {t('links')}
+                      </Text>
                       {Object.entries(
                         groupRelations(currentWorkOrderRelations)
                       ).map(
@@ -875,7 +897,11 @@ export default function WODetailsScreen({
                     </View>
                   )}
                   <View style={styles.shadowedCard}>
-                    <Text style={{ marginBottom: 10 }}>{t('labors')}</Text>
+                    <Text
+                      style={{ marginBottom: 10, color: theme.colors.grey }}
+                    >
+                      {t('labors')}
+                    </Text>
                     {labors
                       .filter((labor) => !labor.logged)
                       .map((labor) => (
@@ -914,7 +940,14 @@ export default function WODetailsScreen({
                   </View>
                   {!!currentWorkOrderHistories.length && (
                     <View style={styles.shadowedCard}>
-                      <Text style={{ marginBottom: 10 }}>{t('history')}</Text>
+                      <Text
+                        style={{
+                          marginBottom: 10,
+                          color: theme.colors.grey
+                        }}
+                      >
+                        {t('history')}
+                      </Text>
                       {currentWorkOrderHistories.map((workOrderHistory) => (
                         <List.Item
                           key={workOrderHistory.id}
@@ -989,7 +1022,8 @@ const styles = StyleSheet.create({
   },
   fabStyle: {
     bottom: 16,
-    right: 16
+    right: 16,
+    position: 'absolute'
   },
   dropdown: { zIndex: 10 }
 });

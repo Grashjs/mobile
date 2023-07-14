@@ -218,7 +218,7 @@ export default function RequestsScreen({
                           dayDiff(new Date(request.dueDate), new Date()) <= 2 &&
                           new Date(request.dueDate) > new Date()
                             ? theme.colors.error
-                            : 'black'
+                            : theme.colors.grey
                         }
                         label={getFormattedDate(request.dueDate)}
                         icon="clock-alert-outline"
@@ -228,12 +228,14 @@ export default function RequestsScreen({
                       <IconWithLabel
                         label={request.asset.name}
                         icon="package-variant-closed"
+                        color={theme.colors.grey}
                       />
                     )}
                     {request.location && (
                       <IconWithLabel
                         label={request.location.name}
                         icon="map-marker-outline"
+                        color={theme.colors.grey}
                       />
                     )}
                   </Card.Content>

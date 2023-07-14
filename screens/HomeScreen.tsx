@@ -245,7 +245,9 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
           alignItems: 'center'
         }}
       >
-        <Text>{t('only_assigned_to_me')}</Text>
+        <Text style={{ color: theme.colors.grey }}>
+          {t('only_assigned_to_me')}
+        </Text>
         <Switch
           value={userSettings?.statsForAssignedWorkOrders}
           onValueChange={(value) => {
@@ -321,8 +323,11 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
                 justifyContent: 'flex-start'
               }}
             >
-              <Text>{stat.value}</Text>
-              <IconButton icon={'arrow-right-bold-circle-outline'} />
+              <Text style={{ color: theme.colors.grey }}>{stat.value}</Text>
+              <IconButton
+                icon={'arrow-right-bold-circle-outline'}
+                iconColor={theme.colors.grey}
+              />
             </View>
           </TouchableOpacity>
         </View>

@@ -302,7 +302,7 @@ export default function WorkOrdersScreen({
                           dayDiff(new Date(workOrder.dueDate), new Date()) <=
                             2 && new Date(workOrder.dueDate) > new Date()
                             ? theme.colors.error
-                            : 'black'
+                            : theme.colors.grey
                         }
                         label={getFormattedDate(workOrder.dueDate)}
                         icon="clock-alert-outline"
@@ -312,12 +312,14 @@ export default function WorkOrdersScreen({
                       <IconWithLabel
                         label={workOrder.asset.name}
                         icon="package-variant-closed"
+                        color={theme.colors.grey}
                       />
                     )}
                     {workOrder.location && (
                       <IconWithLabel
                         label={workOrder.location.name}
                         icon="map-marker-outline"
+                        color={theme.colors.grey}
                       />
                     )}
                   </Card.Content>

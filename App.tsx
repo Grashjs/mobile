@@ -43,7 +43,8 @@ const theme = {
     white: '#ffffff',
     primaryAlt: '#000C57',
     primaryContainer: '#333586',
-    tertiaryContainer: 'black'
+    tertiaryContainer: 'black',
+    grey: '#676b6b'
   }
 };
 Notifications.setNotificationHandler({
