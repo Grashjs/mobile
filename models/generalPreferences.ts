@@ -19,4 +19,6 @@ export interface GeneralPreferences {
   laborCostInTotalCost: boolean;
 
   woUpdateForRequesters: boolean;
+
+  simplifiedWorkOrder: boolean;
 }

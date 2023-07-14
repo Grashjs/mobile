@@ -34,7 +34,7 @@ import LinkingConfiguration from './LinkingConfiguration';
 import useAuth from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { IconButton, useTheme } from 'react-native-paper';
-import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
+import { IconSource } from 'react-native-paper/src/components/Icon';
 import MoreEntitiesScreen from '../screens/MoreEntitiesScreen';
 import MetersScreen from '../screens/meters/MetersScreen';
 import WorkOrdersScreen from '../screens/workOrders/WorkOrdersScreen';

@@ -16,7 +16,7 @@ import {
 } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { AssetDTO } from '../../models/asset';
-import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
+import { IconSource } from 'react-native-paper/src/components/Icon';
 import { onSearchQueryChange } from '../../utils/overall';
 import { RootStackScreenProps } from '../../types';
 import Tag from '../../components/Tag';

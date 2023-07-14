@@ -1,6 +1,6 @@
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { View } from '../components/Themed';
-import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
+import { IconSource } from 'react-native-paper/src/components/Icon';
 import Notification, { NotificationType } from '../models/notification';
 import { editNotification, getMoreNotifications } from '../slices/notification';
 import { RootStackParamList, RootStackScreenProps } from '../types';

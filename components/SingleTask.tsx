@@ -61,7 +61,7 @@ export default function SingleTask({
   };
 
   const debouncedChangeHandler = useMemo(
-    () => debounce(changeHandler, 1500),
+    () => debounce(changeHandler, 1000),
     []
   );
   const onDropdownValueChange = (value) => {

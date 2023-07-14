@@ -17,10 +17,10 @@ import { CompanySettingsContext } from '../contexts/CompanySettingsContext';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
-import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { editPartQuantity } from '../slices/partQuantity';
 import { useDispatch } from '../store';
 import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
+import { IconSource } from 'react-native-paper/src/components/Icon';
 
 export default function PartQuantities({
   partQuantities,

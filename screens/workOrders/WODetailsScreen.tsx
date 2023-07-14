@@ -186,11 +186,13 @@ export default function WODetailsScreen({
   ];
   const getInfos = () => {
     dispatch(getWorkOrderDetails(id));
-    dispatch(getPartQuantitiesByWorkOrder(id));
-    dispatch(getLabors(id));
-    dispatch(getAdditionalCosts(id));
+    if (!generalPreferences.simplifiedWorkOrder) {
+      dispatch(getPartQuantitiesByWorkOrder(id));
+      dispatch(getLabors(id));
+      dispatch(getAdditionalCosts(id));
+      dispatch(getRelations(id));
+    }
     dispatch(getTasks(id));
-    dispatch(getRelations(id));
   };
   useEffect(() => {
     navigation.setOptions({
@@ -688,99 +690,109 @@ export default function WODetailsScreen({
                   ))}
                 </View>
               )}
-              <View style={styles.shadowedCard}>
-                <Text style={{ marginBottom: 10 }}>{t('parts')}</Text>
-                <PartQuantities
-                  partQuantities={partQuantities}
-                  isPO={false}
-                  navigation={navigation}
-                  rootId={id}
-                />
-                <Divider style={{ marginTop: 5 }} />
-                <Button
-                  disabled={
-                    !hasEditPermission(PermissionEntity.WORK_ORDERS, workOrder)
-                  }
-                  onPress={() =>
-                    navigation.navigate('SelectParts', {
-                      onChange: (selectedParts) => {
-                        dispatch(
-                          editWOPartQuantities(
-                            id,
-                            selectedParts.map((part) => part.id)
+              {!generalPreferences.simplifiedWorkOrder && (
+                <View>
+                  <View style={styles.shadowedCard}>
+                    <Text style={{ marginBottom: 10 }}>{t('parts')}</Text>
+                    <PartQuantities
+                      partQuantities={partQuantities}
+                      isPO={false}
+                      navigation={navigation}
+                      rootId={id}
+                    />
+                    <Divider style={{ marginTop: 5 }} />
+                    <Button
+                      disabled={
+                        !hasEditPermission(
+                          PermissionEntity.WORK_ORDERS,
+                          workOrder
+                        )
+                      }
+                      onPress={() =>
+                        navigation.navigate('SelectParts', {
+                          onChange: (selectedParts) => {
+                            dispatch(
+                              editWOPartQuantities(
+                                id,
+                                selectedParts.map((part) => part.id)
+                              )
+                            ).catch((error) =>
+                              showSnackBar(t('not_enough_part'), 'error')
+                            );
+                          },
+                          selected: partQuantities.map(
+                            (partQuantity) => partQuantity.part.id
                           )
-                        ).catch((error) =>
-                          showSnackBar(t('not_enough_part'), 'error')
-                        );
-                      },
-                      selected: partQuantities.map(
-                        (partQuantity) => partQuantity.part.id
-                      )
-                    })
-                  }
-                >
-                  {t('add_parts')}
-                </Button>
-              </View>
-              <View style={styles.shadowedCard}>
-                <Text style={{ marginBottom: 10 }}>
-                  {t('additional_costs')}
-                </Text>
-                {!additionalCosts.length ? (
-                  <Text style={{ fontWeight: 'bold' }}>
-                    {t('no_additional_cost')}
-                  </Text>
-                ) : (
-                  <View>
-                    {additionalCosts.map((cost) => (
-                      <View
-                        key={cost.id}
-                        style={{ display: 'flex', flexDirection: 'column' }}
-                      >
+                        })
+                      }
+                    >
+                      {t('add_parts')}
+                    </Button>
+                  </View>
+                  <View style={styles.shadowedCard}>
+                    <Text style={{ marginBottom: 10 }}>
+                      {t('additional_costs')}
+                    </Text>
+                    {!additionalCosts.length ? (
+                      <Text style={{ fontWeight: 'bold' }}>
+                        {t('no_additional_cost')}
+                      </Text>
+                    ) : (
+                      <View>
+                        {additionalCosts.map((cost) => (
+                          <View
+                            key={cost.id}
+                            style={{ display: 'flex', flexDirection: 'column' }}
+                          >
+                            <Text
+                              style={{ fontWeight: 'bold' }}
+                              variant="bodyLarge"
+                            >
+                              {cost.description}
+                            </Text>
+                            <Text>{getFormattedCurrency(cost.cost)}</Text>
+                          </View>
+                        ))}
                         <Text
                           style={{ fontWeight: 'bold' }}
                           variant="bodyLarge"
                         >
-                          {cost.description}
+                          {t('total')}
                         </Text>
-                        <Text>{getFormattedCurrency(cost.cost)}</Text>
+                        <Text>
+                          {getFormattedCurrency(
+                            additionalCosts.reduce(
+                              (acc, additionalCost) =>
+                                additionalCost.includeToTotalCost
+                                  ? acc + additionalCost.cost
+                                  : acc,
+                              0
+                            )
+                          )}
+                        </Text>
                       </View>
-                    ))}
-                    <Text style={{ fontWeight: 'bold' }} variant="bodyLarge">
-                      {t('total')}
-                    </Text>
-                    <Text>
-                      {getFormattedCurrency(
-                        additionalCosts.reduce(
-                          (acc, additionalCost) =>
-                            additionalCost.includeToTotalCost
-                              ? acc + additionalCost.cost
-                              : acc,
-                          0
+                    )}
+                    <Divider style={{ marginTop: 5 }} />
+                    <Button
+                      disabled={
+                        !(
+                          hasEditPermission(
+                            PermissionEntity.WORK_ORDERS,
+                            workOrder
+                          ) && hasFeature(PlanFeature.ADDITIONAL_COST)
                         )
-                      )}
-                    </Text>
+                      }
+                      onPress={() =>
+                        navigation.push('AddAdditionalCost', {
+                          workOrderId: workOrder.id
+                        })
+                      }
+                    >
+                      {t('add_additional_cost')}
+                    </Button>
                   </View>
-                )}
-                <Divider style={{ marginTop: 5 }} />
-                <Button
-                  disabled={
-                    !(
-                      hasEditPermission(
-                        PermissionEntity.WORK_ORDERS,
-                        workOrder
-                      ) && hasFeature(PlanFeature.ADDITIONAL_COST)
-                    )
-                  }
-                  onPress={() =>
-                    navigation.push('AddAdditionalCost', {
-                      workOrderId: workOrder.id
-                    })
-                  }
-                >
-                  {t('add_additional_cost')}
-                </Button>
-              </View>
+                </View>
+              )}
               {!!tasks.length && (
                 <View style={styles.shadowedCard}>
                   <Text style={{ marginBottom: 10 }}>{t('tasks')}</Text>
@@ -815,128 +827,138 @@ export default function WODetailsScreen({
                   </TouchableOpacity>
                 </View>
               )}
-              {!!workOrder.files.length && (
-                <View style={styles.shadowedCard}>
-                  <Text style={{ marginBottom: 10 }}>{t('files')}</Text>
-                  {workOrder.files.map((file) => (
-                    <List.Item
-                      key={file.id}
-                      titleStyle={{ color: theme.colors.primary }}
-                      title={file.name}
-                      onPress={() => {
-                        Linking.openURL(file.url);
-                      }}
-                    />
-                  ))}
-                </View>
-              )}
-              {!!currentWorkOrderRelations.length && (
-                <View style={styles.shadowedCard}>
-                  <Text style={{ marginBottom: 10 }}>{t('links')}</Text>
-                  {Object.entries(
-                    groupRelations(currentWorkOrderRelations)
-                  ).map(
-                    ([relationType, relations]) =>
-                      !!relations.length && (
-                        <View>
-                          <Text style={{ fontWeight: 'bold' }}>
-                            {t(relationType)}
-                          </Text>
-                          {relations.map((relation) => (
-                            <List.Item
-                              title={relation.workOrder.title}
-                              onPress={() =>
-                                navigation.push('WODetails', {
-                                  id: relation.workOrder.id
-                                })
-                              }
-                              description={getFormattedDate(
-                                relation.workOrder.createdAt
-                              )}
-                            />
-                          ))}
-                        </View>
-                      )
+              {!generalPreferences.simplifiedWorkOrder && (
+                <View>
+                  {!!workOrder.files.length && (
+                    <View style={styles.shadowedCard}>
+                      <Text style={{ marginBottom: 10 }}>{t('files')}</Text>
+                      {workOrder.files.map((file) => (
+                        <List.Item
+                          key={file.id}
+                          titleStyle={{ color: theme.colors.primary }}
+                          title={file.name}
+                          onPress={() => {
+                            Linking.openURL(file.url);
+                          }}
+                        />
+                      ))}
+                    </View>
                   )}
-                </View>
-              )}
-              <View style={styles.shadowedCard}>
-                <Text style={{ marginBottom: 10 }}>{t('labors')}</Text>
-                {labors
-                  .filter((labor) => !labor.logged)
-                  .map((labor) => (
-                    <List.Item
-                      key={labor.id}
-                      title={
-                        labor.assignedTo
-                          ? `${labor.assignedTo.firstName} ${labor.assignedTo.lastName}`
-                          : t('not_assigned')
+                  {!!currentWorkOrderRelations.length && (
+                    <View style={styles.shadowedCard}>
+                      <Text style={{ marginBottom: 10 }}>{t('links')}</Text>
+                      {Object.entries(
+                        groupRelations(currentWorkOrderRelations)
+                      ).map(
+                        ([relationType, relations]) =>
+                          !!relations.length && (
+                            <View>
+                              <Text style={{ fontWeight: 'bold' }}>
+                                {t(relationType)}
+                              </Text>
+                              {relations.map((relation) => (
+                                <List.Item
+                                  title={relation.workOrder.title}
+                                  onPress={() =>
+                                    navigation.push('WODetails', {
+                                      id: relation.workOrder.id
+                                    })
+                                  }
+                                  description={getFormattedDate(
+                                    relation.workOrder.createdAt
+                                  )}
+                                />
+                              ))}
+                            </View>
+                          )
+                      )}
+                    </View>
+                  )}
+                  <View style={styles.shadowedCard}>
+                    <Text style={{ marginBottom: 10 }}>{t('labors')}</Text>
+                    {labors
+                      .filter((labor) => !labor.logged)
+                      .map((labor) => (
+                        <List.Item
+                          key={labor.id}
+                          title={
+                            labor.assignedTo
+                              ? `${labor.assignedTo.firstName} ${labor.assignedTo.lastName}`
+                              : t('not_assigned')
+                          }
+                          description={`${
+                            getHoursAndMinutesAndSeconds(labor.duration)[0]
+                          }h ${
+                            getHoursAndMinutesAndSeconds(labor.duration)[1]
+                          }m`}
+                        />
+                      ))}
+                    <Divider style={{ marginTop: 5 }} />
+                    <Button
+                      disabled={
+                        !(
+                          hasEditPermission(
+                            PermissionEntity.WORK_ORDERS,
+                            workOrder
+                          ) && hasFeature(PlanFeature.ADDITIONAL_TIME)
+                        )
                       }
-                      description={`${
-                        getHoursAndMinutesAndSeconds(labor.duration)[0]
-                      }h ${getHoursAndMinutesAndSeconds(labor.duration)[1]}m`}
-                    />
-                  ))}
-                <Divider style={{ marginTop: 5 }} />
-                <Button
-                  disabled={
-                    !(
-                      hasEditPermission(
-                        PermissionEntity.WORK_ORDERS,
-                        workOrder
-                      ) && hasFeature(PlanFeature.ADDITIONAL_TIME)
-                    )
-                  }
-                  onPress={() =>
-                    navigation.push('AddAdditionalTime', {
-                      workOrderId: workOrder.id
-                    })
-                  }
-                >
-                  {t('add_time')}
-                </Button>
-              </View>
-              {!!currentWorkOrderHistories.length && (
-                <View style={styles.shadowedCard}>
-                  <Text style={{ marginBottom: 10 }}>{t('history')}</Text>
-                  {currentWorkOrderHistories.map((workOrderHistory) => (
-                    <List.Item
-                      key={workOrderHistory.id}
-                      title={`${workOrderHistory.user.firstName} ${workOrderHistory.user.lastName}`}
-                      description={getFormattedDate(workOrderHistory.createdAt)}
-                    />
-                  ))}
+                      onPress={() =>
+                        navigation.push('AddAdditionalTime', {
+                          workOrderId: workOrder.id
+                        })
+                      }
+                    >
+                      {t('add_time')}
+                    </Button>
+                  </View>
+                  {!!currentWorkOrderHistories.length && (
+                    <View style={styles.shadowedCard}>
+                      <Text style={{ marginBottom: 10 }}>{t('history')}</Text>
+                      {currentWorkOrderHistories.map((workOrderHistory) => (
+                        <List.Item
+                          key={workOrderHistory.id}
+                          title={`${workOrderHistory.user.firstName} ${workOrderHistory.user.lastName}`}
+                          description={getFormattedDate(
+                            workOrderHistory.createdAt
+                          )}
+                        />
+                      ))}
+                    </View>
+                  )}
                 </View>
               )}
             </View>
           </ScrollView>
-          <AnimatedFAB
-            icon={runningTimer ? 'stop' : 'play'}
-            label={
-              runningTimer
-                ? t('stop_work_order')
-                : t('start_work_order') +
-                  ' - ' +
-                  durationToHours(primaryTime?.duration)
-            }
-            disabled={
-              controllingTime ||
-              !hasEditPermission(PermissionEntity.WORK_ORDERS, workOrder)
-            }
-            theme={theme}
-            variant={runningTimer ? 'primary' : 'secondary'}
-            color="white"
-            extended={isExtended}
-            onPress={() => {
-              setControllingTime(true);
-              dispatch(controlTimer(!runningTimer, id)).finally(() =>
-                setControllingTime(false)
-              );
-            }}
-            visible={true}
-            animateFrom={'right'}
-            style={[styles.fabStyle]}
-          />
+          {!generalPreferences.simplifiedWorkOrder && (
+            <AnimatedFAB
+              icon={runningTimer ? 'stop' : 'play'}
+              label={
+                runningTimer
+                  ? t('stop_work_order')
+                  : t('start_work_order') +
+                    ' - ' +
+                    durationToHours(primaryTime?.duration)
+              }
+              disabled={
+                controllingTime ||
+                !hasEditPermission(PermissionEntity.WORK_ORDERS, workOrder)
+              }
+              theme={theme}
+              variant={runningTimer ? 'primary' : 'secondary'}
+              color="white"
+              extended={isExtended}
+              onPress={() => {
+                setControllingTime(true);
+                dispatch(controlTimer(!runningTimer, id)).finally(() =>
+                  setControllingTime(false)
+                );
+              }}
+              visible={true}
+              animateFrom={'right'}
+              style={[styles.fabStyle]}
+            />
+          )}
         </Provider>
       </View>
     );
@@ -967,8 +989,7 @@ const styles = StyleSheet.create({
   },
   fabStyle: {
     bottom: 16,
-    right: 16,
-    position: 'absolute'
+    right: 16
   },
   dropdown: { zIndex: 10 }
 });
