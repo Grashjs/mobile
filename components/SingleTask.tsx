@@ -115,7 +115,7 @@ export default function SingleTask({
           alignItems: 'center'
         }}
       >
-        <Text variant="titleMedium">
+        <Text variant="titleMedium" style={{ width: '70%' }}>
           {task.taskBase.label || `<${t('enter_task_name')}>`}
         </Text>
         <View style={{ display: 'flex', flexDirection: 'row' }}>
