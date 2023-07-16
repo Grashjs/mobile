@@ -1,5 +1,5 @@
 import { Task } from '../../models/tasks';
-import { patchTask } from '../../slices/task';
+import { getTasks, patchTask } from '../../slices/task';
 import { useTranslation } from 'react-i18next';
 import { useContext, useEffect, useState } from 'react';
 import { useDispatch } from '../../store';
@@ -7,6 +7,11 @@ import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { ScrollView, StyleSheet } from 'react-native';
 import SingleTask from '../../components/SingleTask';
 import { RootStackScreenProps } from '../../types';
+import { addFiles } from '../../slices/file';
+import * as Permissions from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker';
+import { formatImages } from '../../utils/overall';
+import ImageView from 'react-native-image-viewing';
 
 export default function TasksScreen({
   navigation,
@@ -14,7 +19,9 @@ export default function TasksScreen({
 }: RootStackScreenProps<'Tasks'>) {
   const { t }: { t: any } = useTranslation();
   const { tasksProps, workOrderId } = route.params;
-  const [openSelectImages, setOpenSelectImages] = useState<boolean>(false);
+  const [isImageViewerOpen, setIsImageViewerOpen] = useState<boolean>(false);
+  const [currentImage, setCurrentImage] = useState<string>();
+  const [currentImages, setCurrentImages] = useState<string[]>([]);
   const initialNotes = new Map();
   tasksProps.forEach((task) => {
     if (task.notes || task.images.length) {
@@ -23,7 +30,6 @@ export default function TasksScreen({
   });
   const [notes, setNotes] = useState<Map<number, boolean>>(initialNotes);
   const [tasks, setTasks] = useState<Task[]>(tasksProps);
-  const [currentTask, setCurrentTask] = useState<Task>();
   const dispatch = useDispatch();
   const { showSnackBar } = useContext(CustomSnackBarContext);
 
@@ -70,19 +76,34 @@ export default function TasksScreen({
     );
   }
 
-  function handleSelectImages(id: number) {
-    setCurrentTask(tasks.find((task) => task.id === id));
-    setOpenSelectImages(true);
-  }
-
   const onImageUploadSuccess = () => {
-    setOpenSelectImages(false);
     showSnackBar(t('images_add_task_success'), 'success');
   };
   const onImageUploadFailure = (err) =>
     showSnackBar(t('images_add_task_failure'), 'error');
-  const handleZoomImage = () => {};
+  const handleZoomImage = (images: string[], image: string) => {
+    setCurrentImage(image);
+    setCurrentImages(images);
+    setIsImageViewerOpen(true);
+  };
 
+  const uploadImage = async (taskId: number) => {
+    const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+    if (status === 'granted') {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsMultipleSelection: true,
+        quality: 1
+      });
+
+      if (!result.canceled) {
+        return dispatch(addFiles(formatImages(result), 'IMAGE', taskId))
+          .then(onImageUploadSuccess)
+          .then(() => dispatch(getTasks(workOrderId)))
+          .catch(onImageUploadFailure);
+      }
+    }
+  };
   return (
     <ScrollView style={styles.container}>
       {tasks.map((task) => (
@@ -93,11 +114,17 @@ export default function TasksScreen({
           handleNoteChange={handleNoteChange}
           handleSaveNotes={handleSaveNotes}
           toggleNotes={toggleNotes}
-          handleSelectImages={handleSelectImages}
+          handleSelectImages={uploadImage}
           handleZoomImage={handleZoomImage}
           notes={notes}
         />
       ))}
+      <ImageView
+        images={currentImages.map((uri) => ({ uri }))}
+        imageIndex={currentImages.findIndex((img) => img === currentImage)}
+        visible={isImageViewerOpen}
+        onRequestClose={() => setIsImageViewerOpen(false)}
+      />
     </ScrollView>
   );
 }

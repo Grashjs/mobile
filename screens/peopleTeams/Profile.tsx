@@ -28,6 +28,7 @@ import * as ImagePicker from 'expo-image-picker';
 import mime from 'mime';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import { OwnUser } from '../../models/user';
+import { formatImages } from '../../utils/overall';
 
 export default function UserProfile({
   navigation,
@@ -123,19 +124,7 @@ export default function UserProfile({
 
       if (!result.canceled) {
         setChangingPicture(true);
-        uploadFiles(
-          [],
-          result.assets.map((asset) => {
-            const fileName =
-              asset.uri.split('/')[asset.uri.split('/').length - 1];
-            return {
-              uri: asset.uri,
-              name: fileName,
-              type: mime.getType(fileName)
-            };
-          }),
-          true
-        )
+        uploadFiles([], formatImages(result), true)
           .then((files) =>
             patchUser({ image: { id: files[0].id } } as Partial<OwnUser>)
           )

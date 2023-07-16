@@ -55,6 +55,7 @@
     "react-native-dropdown-select-list": "^2.0.4",
     "react-native-flash-message": "^0.4.1",
     "react-native-fs": "^2.20.0",
+    "react-native-image-viewing": "^0.2.2",
     "react-native-modal-datetime-picker": "^14.0.1",
     "react-native-nfc-manager": "^3.14.2",
     "react-native-pager-view": "6.0.1",

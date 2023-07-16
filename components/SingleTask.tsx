@@ -14,7 +14,7 @@ import debounce from 'lodash.debounce';
 import Dropdown from 'react-native-dropdown-picker';
 import { PermissionEntity } from '../models/role';
 import { PlanFeature } from '../models/subscriptionPlan';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 interface SingleTaskProps {
   task: Task;
@@ -237,6 +237,23 @@ export default function SingleTask({
           </Button>
         </View>
       )}
+      {task.images.map((image) => (
+        <TouchableOpacity
+          key={image.id}
+          onPress={() =>
+            handleZoomImage(
+              task.images.map((img) => img.url),
+              image.url
+            )
+          }
+          style={{ marginTop: 10 }}
+        >
+          <Image
+            source={{ uri: image.url }}
+            style={{ borderRadius: 5, height: 150 }}
+          />
+        </TouchableOpacity>
+      ))}
     </View>
   );
 }
