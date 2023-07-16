@@ -24,7 +24,7 @@ export default function TasksScreen({
   const [currentImages, setCurrentImages] = useState<string[]>([]);
   const initialNotes = new Map();
   tasksProps.forEach((task) => {
-    if (task.notes || task.images.length) {
+    if (task.notes) {
       initialNotes.set(task.id, true);
     }
   });
