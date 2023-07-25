@@ -29,6 +29,7 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
     userSettings,
     fetchUserSettings,
     hasViewPermission,
+    hasViewOtherPermission,
     patchUserSettings,
     user
   } = useAuth();
@@ -233,31 +234,33 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
           />
         )}
       </View>
-      <View
-        style={{
-          marginHorizontal: 10,
-          marginTop: 20,
-          paddingHorizontal: 10,
-          paddingVertical: 5,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          borderRadius: 10,
-          alignItems: 'center'
-        }}
-      >
-        <Text style={{ color: theme.colors.grey }}>
-          {t('only_assigned_to_me')}
-        </Text>
-        <Switch
-          value={userSettings?.statsForAssignedWorkOrders}
-          onValueChange={(value) => {
-            patchUserSettings({
-              ...userSettings,
-              statsForAssignedWorkOrders: value
-            });
+      {hasViewOtherPermission(PermissionEntity.WORK_ORDERS) && (
+        <View
+          style={{
+            marginHorizontal: 10,
+            marginTop: 20,
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            borderRadius: 10,
+            alignItems: 'center'
           }}
-        />
-      </View>
+        >
+          <Text style={{ color: theme.colors.grey }}>
+            {t('only_assigned_to_me')}
+          </Text>
+          <Switch
+            value={userSettings?.statsForAssignedWorkOrders}
+            onValueChange={(value) => {
+              patchUserSettings({
+                ...userSettings,
+                statsForAssignedWorkOrders: value
+              });
+            }}
+          />
+        </View>
+      )}
       {stats.map((stat) => (
         <View
           key={stat.label}
