@@ -2,7 +2,7 @@
   "expo": {
     "name": "Grash CMMS",
     "slug": "grash",
-    "version": "1.0.12",
+    "version": "1.0.13",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "grashcmms",
@@ -34,7 +34,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "versionCode": 12,
+      "versionCode": 14,
       "package": "com.grash.cmms",
       "googleServicesFile": "./google-services.json",
       "runtimeVersion": "1.0.0"
