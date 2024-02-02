@@ -11,7 +11,7 @@ export default function WelcomeScreen({
   const { t } = useTranslation();
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Grash</Text>
+      <Text style={styles.title}>Atlas</Text>
       <View
         style={styles.separator}
         lightColor="#eee"

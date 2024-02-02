@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Grash CMMS",
+    "name": "Atlas CMMS",
     "slug": "grash",
     "version": "1.0.13",
     "orientation": "portrait",
@@ -52,7 +52,7 @@
       [
         "expo-barcode-scanner",
         {
-          "cameraPermission": "Allow Grash to access camera."
+          "cameraPermission": "Allow Atlas to access camera."
         }
       ]
     ]

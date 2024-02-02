@@ -1,4 +1,4 @@
-# Grash CMMS Mobile App
+# Atlas CMMS Mobile App
 
 This project aims to help manage assets, schedule maintenance and track work orders. This is the mobile app developed
 with React Native. The web application developed with React can be found [here](https://github.com/Grashjs/frontend).
