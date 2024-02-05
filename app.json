@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "Atlas CMMS",
-    "slug": "grash",
+    "slug": "atlas",
     "version": "1.0.13",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "grashcmms",
+    "scheme": "atlascmms",
     "userInterfaceStyle": "automatic",
     "notification": {
       "icon": "./assets/images/notification.png"
@@ -35,7 +35,7 @@
         "backgroundColor": "#ffffff"
       },
       "versionCode": 14,
-      "package": "com.grash.cmms",
+      "package": "com.atlas.cmms",
       "googleServicesFile": "./google-services.json",
       "runtimeVersion": "1.0.0"
     },

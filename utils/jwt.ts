@@ -1,7 +1,7 @@
 /* eslint-disable no-bitwise */
 import { decode as decodeLib, encode as encodeLib } from 'base-64';
 
-export const JWT_SECRET = 'Grash4785@jk';
+export const JWT_SECRET = 'Atlas4785@jk';
 export const JWT_EXPIRES_IN = 3600 * 24 * 2;
 
 export const sign = (

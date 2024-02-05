@@ -3,7 +3,7 @@
 This project aims to help manage assets, schedule maintenance and track work orders. This is the mobile app developed
 with React Native. The web application developed with React can be found [here](https://github.com/Grashjs/frontend).
 The [Api](https://github.com/Grashjs/api) is developed with SpringBoot. The link to the live website can be
-found [here](https://grash-cmms.com).  
+found [here](https://atlascmms.com).  
 You can see more explanations in [Purpose.pdf](Purpose.pdf). We would be very happy to have new contributors join us.
 **And please star the repo**.
 
