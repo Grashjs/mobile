@@ -15,3 +15,5 @@ android/.gradle
 
 # macOS
 .DS_Store
+google-services.json
+android/app/google-services.json
