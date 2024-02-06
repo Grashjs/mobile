@@ -1,5 +1,5 @@
 {
-  "name": "grash",
+  "name": "atlas",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start --dev-client",
@@ -7,8 +7,8 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "format": "prettier --write \"./**/*.{ts,tsx,js,jsx,json}\" --config ./.prettierrc"
-  },
+    "format": "prettier --write \"./**/*.{ts,tsx,js,jsx,json}\" --config ./.prettierrc",
+    "eas-build-pre-install": "echo $GOOGLE_SERVICES_BASE64 | base64 --decode > ./google-services.json && echo $GOOGLE_SERVICES_BASE64 | base64 --decode > ./android/app/google-services.json"},
   "jest": {
     "preset": "jest-expo"
   },
