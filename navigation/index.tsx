@@ -28,7 +28,7 @@ import {
   AuthStackParamList,
   RootStackParamList,
   RootTabParamList,
-  RootTabScreenProps
+  RootTabScreenProps, SuperUserStackParamList
 } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import useAuth from '../hooks/useAuth';
@@ -90,13 +90,14 @@ import {
   viewMoreEntities
 } from '../models/role';
 import RequestsScreen from '../screens/requests/RequestsScreen';
+import SwitchAccountScreen from '../screens/superUser/SwitchAccountScreen';
 
 export default function Navigation({
-  colorScheme
-}: {
+                                     colorScheme
+                                   }: {
   colorScheme: ColorSchemeName;
 }) {
-  const { isAuthenticated, isInitialized } = useAuth();
+  const { isAuthenticated, isInitialized, user } = useAuth();
   return (
     <NavigationContainer
       ref={navigationRef}
@@ -105,7 +106,7 @@ export default function Navigation({
     >
       {isInitialized ? (
         isAuthenticated ? (
-          <RootNavigator />
+          user.superAccountRelations.length ? <SuperUserNavigator /> : <RootNavigator />
         ) : (
           <AuthNavigator />
         )
@@ -127,284 +128,284 @@ function RootNavigator() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Root"
+        name='Root'
         component={BottomTabNavigator}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="WODetails"
+        name='WODetails'
         component={WODetailsScreen}
         options={{ title: t('wo_details') }}
       />
       <Stack.Screen
-        name="Tasks"
+        name='Tasks'
         component={TasksScreen}
         options={{ title: t('tasks') }}
       />
       <Stack.Screen
-        name="NotFound"
+        name='NotFound'
         component={NotFoundScreen}
         options={{ title: 'Oops!' }}
       />
       <Stack.Screen
-        name="AddWorkOrder"
+        name='AddWorkOrder'
         component={CreateWorkOrder}
         options={{ title: t('create_work_order') }}
       />
       <Stack.Screen
-        name="EditWorkOrder"
+        name='EditWorkOrder'
         component={EditWorkOrder}
         options={{ title: t('edit_work_order') }}
       />
       <Stack.Screen
-        name="AddRequest"
+        name='AddRequest'
         component={CreateRequestScreen}
         options={{ title: t('create_request') }}
       />
       <Stack.Screen
-        name="AddAsset"
+        name='AddAsset'
         component={CreateAssetScreen}
         options={{ title: t('create_asset') }}
       />
       <Stack.Screen
-        name="AddLocation"
+        name='AddLocation'
         component={CreateLocationScreen}
         options={{ title: t('create_location') }}
       />
       <Stack.Screen
-        name="AddPart"
+        name='AddPart'
         component={CreatePartScreen}
         options={{ title: t('create_part') }}
       />
       <Stack.Screen
-        name="AddMeter"
+        name='AddMeter'
         component={CreateMeterScreen}
         options={{ title: t('create_meter') }}
       />
       <Stack.Screen
-        name="AddUser"
+        name='AddUser'
         component={InviteUserScreen}
         options={{ title: t('invite_users') }}
       />
       <Stack.Screen
-        name="WorkOrderStats"
+        name='WorkOrderStats'
         component={WorkOrderStatsScreen}
         options={{ title: t('stats') }}
       />
       <Stack.Screen
-        name="Meters"
+        name='Meters'
         component={MetersScreen}
         options={{ title: t('meters') }}
       />
       <Stack.Screen
-        name="MeterDetails"
+        name='MeterDetails'
         component={MeterDetails}
         options={{ title: t('meter_details') }}
       />
       <Stack.Screen
-        name="EditMeter"
+        name='EditMeter'
         component={EditMeterScreen}
         options={{ title: t('edit_meter') }}
       />
       <Stack.Screen
-        name="Parts"
+        name='Parts'
         component={PartsScreen}
         options={{ title: t('parts') }}
       />
       <Stack.Screen
-        name="PartDetails"
+        name='PartDetails'
         component={PartDetails}
         options={{ title: t('part') }}
       />
       <Stack.Screen
-        name="RequestDetails"
+        name='RequestDetails'
         component={RequestDetails}
         options={{ title: t('request_details') }}
       />
       <Stack.Screen
-        name="EditRequest"
+        name='EditRequest'
         component={EditRequestScreen}
         options={{ title: t('edit_request') }}
       />
       <Stack.Screen
-        name="EditPart"
+        name='EditPart'
         component={EditPartScreen}
         options={{ title: t('update_part') }}
       />
       <Stack.Screen
-        name="VendorsCustomers"
+        name='VendorsCustomers'
         component={VendorsAndCustomersScreen}
         options={{ title: t('vendors_and_customers') }}
       />
       <Stack.Screen
-        name="CustomerDetails"
+        name='CustomerDetails'
         component={CustomerDetailsScreen}
         options={{ title: t('customer') }}
       />
       <Stack.Screen
-        name="EditCustomer"
+        name='EditCustomer'
         component={EditCustomerScreen}
         options={{ title: t('edit_customer') }}
       />
       <Stack.Screen
-        name="VendorDetails"
+        name='VendorDetails'
         component={VendorDetailsScreen}
         options={{ title: t('vendor') }}
       />
       <Stack.Screen
-        name="EditVendor"
+        name='EditVendor'
         component={EditVendorScreen}
         options={{ title: t('edit_vendor') }}
       />
       <Stack.Screen
-        name="Assets"
+        name='Assets'
         component={AssetsScreen}
         options={{ title: t('assets') }}
       />
       <Stack.Screen
-        name="AssetDetails"
+        name='AssetDetails'
         component={AssetDetails}
         options={{ title: t('asset') }}
       />
       <Stack.Screen
-        name="EditAsset"
+        name='EditAsset'
         component={EditAssetScreen}
         options={{ title: t('edit_asset') }}
       />
       <Stack.Screen
-        name="Locations"
+        name='Locations'
         component={LocationsScreen}
         options={{ title: t('locations') }}
       />
       <Stack.Screen
-        name="LocationDetails"
+        name='LocationDetails'
         component={LocationDetails}
         options={{ title: t('location') }}
       />
       <Stack.Screen
-        name="EditLocation"
+        name='EditLocation'
         component={EditLocationScreen}
         options={{ title: t('edit_location') }}
       />
       <Stack.Screen
-        name="PeopleTeams"
+        name='PeopleTeams'
         component={PeopleAndTeamsScreen}
         options={{ title: t('people_teams') }}
       />
       <Stack.Screen
-        name="TeamDetails"
+        name='TeamDetails'
         component={TeamDetails}
         options={{ title: t('team') }}
       />
       <Stack.Screen
-        name="UserDetails"
+        name='UserDetails'
         component={UserDetails}
         options={{ title: t('user_details') }}
       />
       <Stack.Screen
-        name="UserProfile"
+        name='UserProfile'
         component={UserProfile}
         options={{ title: t('profile') }}
       />
       <Stack.Screen
-        name="EditTeam"
+        name='EditTeam'
         component={EditTeamScreen}
         options={{ title: t('edit') }}
       />
       <Stack.Screen
-        name="Notifications"
+        name='Notifications'
         component={NotificationsScreen}
         options={{ title: t('Notifications') }}
       />
       <Stack.Screen
-        name="Settings"
+        name='Settings'
         component={SettingsScreen}
         options={{ title: t('settings') }}
       />
       <Stack.Screen
-        name="WorkOrderFilters"
+        name='WorkOrderFilters'
         component={WorkOrderFilters}
         options={{ title: t('filters') }}
       />
       <Stack.Screen
-        name="ScanAsset"
+        name='ScanAsset'
         component={ScanAssetScreen}
         options={{ title: t('to_scan') }}
       />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
+        <Stack.Screen name='Modal' component={ModalScreen} />
         <Stack.Screen
-          name="CompleteWorkOrder"
+          name='CompleteWorkOrder'
           component={CompleteWorkOrderModal}
           options={{ title: t('complete_work_order') }}
         />
         <Stack.Screen
-          name="SelectParts"
+          name='SelectParts'
           component={SelectPartsModal}
           options={{ title: t('select_parts') }}
         />
         <Stack.Screen
-          name="SelectMeters"
+          name='SelectMeters'
           component={SelectMetersModal}
           options={{ title: t('select_meter') }}
         />
         <Stack.Screen
-          name="SelectNfc"
+          name='SelectNfc'
           component={SelectNfcModal}
           options={{ title: t('to_scan') }}
         />
         <Stack.Screen
-          name="SelectBarcode"
+          name='SelectBarcode'
           component={SelectBarcodeModal}
           options={{ title: t('to_scan') }}
         />
         <Stack.Screen
-          name="SelectCustomers"
+          name='SelectCustomers'
           component={SelectCustomersModal}
           options={{ title: t('select_customers') }}
         />
         <Stack.Screen
-          name="SelectVendors"
+          name='SelectVendors'
           component={SelectVendorsModal}
           options={{ title: t('select_vendors') }}
         />
         <Stack.Screen
-          name="SelectUsers"
+          name='SelectUsers'
           component={SelectUsersModal}
           options={{ title: t('select_users') }}
         />
         <Stack.Screen
-          name="SelectTeams"
+          name='SelectTeams'
           component={SelectTeamsModal}
           options={{ title: t('select_teams') }}
         />
         <Stack.Screen
-          name="SelectLocations"
+          name='SelectLocations'
           component={SelectLocationsModal}
           options={{ title: t('select_locations') }}
         />
         <Stack.Screen
-          name="SelectAssets"
+          name='SelectAssets'
           component={SelectAssetsModal}
           options={{ title: t('select_assets') }}
         />
         <Stack.Screen
-          name="SelectCategories"
+          name='SelectCategories'
           component={SelectCategoriesModal}
           options={{ title: t('select_categories') }}
         />
         <Stack.Screen
-          name="SelectTasks"
+          name='SelectTasks'
           component={SelectTasksModal}
           options={{ title: t('add_task') }}
         />
         <Stack.Screen
-          name="AddAdditionalCost"
+          name='AddAdditionalCost'
           component={CreateAdditionalCost}
           options={{ title: t('add_cost') }}
         />
         <Stack.Screen
-          name="AddAdditionalTime"
+          name='AddAdditionalTime'
           component={CreateAdditionalTime}
           options={{ title: t('add_time') }}
         />
@@ -414,27 +415,41 @@ function RootNavigator() {
 }
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
+const SuperUserStack = createNativeStackNavigator<SuperUserStackParamList>();
 
 function AuthNavigator() {
   const { t } = useTranslation();
   return (
     <AuthStack.Navigator>
       <AuthStack.Screen
-        name="Login"
+        name='Login'
         component={LoginScreen}
         options={{ title: t('login') }}
       />
       <AuthStack.Screen
-        name="Register"
+        name='Register'
         component={RegisterScreen}
         options={{ title: t('register') }}
       />
       <AuthStack.Screen
-        name="Verify"
+        name='Verify'
         component={VerifyScreen}
         options={{ title: t('verify_email_title') }}
       />
     </AuthStack.Navigator>
+  );
+}
+
+function SuperUserNavigator() {
+  const { t } = useTranslation();
+  return (
+    <SuperUserStack.Navigator>
+      <SuperUserStack.Screen
+        name='SwitchAccount'
+        component={SwitchAccountScreen}
+        options={{ title: t('switch_account') }}
+      />
+    </SuperUserStack.Navigator>
   );
 }
 
@@ -450,18 +465,18 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
   const { hasViewPermission, hasCreatePermission } = useAuth();
   return (
     <BottomTab.Navigator
-      initialRouteName="Home"
+      initialRouteName='Home'
       screenOptions={{
         tabBarActiveTintColor: theme.colors.primary
       }}
     >
       <BottomTab.Screen
-        name="Home"
+        name='Home'
         component={HomeScreen}
         options={({ navigation }: RootTabScreenProps<'Home'>) => ({
           title: t('home'),
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="home-outline" color={color} />
+            <TabBarIcon name='home-outline' color={color} />
           ),
           headerRight: () => (
             <Pressable
@@ -469,24 +484,24 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
                 navigation.navigate('Settings');
               }}
             >
-              <IconButton icon="cog-outline" />
+              <IconButton icon='cog-outline' />
             </Pressable>
           )
         })}
       />
       <BottomTab.Screen
-        name="WorkOrders"
+        name='WorkOrders'
         component={WorkOrdersScreen}
         options={{
           title: t('work_orders'),
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="clipboard-text-outline" color={color} />
+            <TabBarIcon name='clipboard-text-outline' color={color} />
           )
         }}
       />
       {createEntities.some((entity) => hasCreatePermission(entity)) && (
         <BottomTab.Screen
-          name="AddEntities"
+          name='AddEntities'
           component={View}
           listeners={{
             tabPress: (e) => {
@@ -499,30 +514,30 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
           options={{
             title: t('create'),
             tabBarIcon: ({ color }) => (
-              <TabBarIcon name="plus-circle" color={theme.colors.primary} />
+              <TabBarIcon name='plus-circle' color={theme.colors.primary} />
             )
           }}
         />
       )}
       {hasViewPermission(PermissionEntity.REQUESTS) && (
         <BottomTab.Screen
-          name="Requests"
+          name='Requests'
           component={RequestsScreen}
           options={{
             title: t('requests'),
             tabBarIcon: ({ color }) => (
-              <TabBarIcon name="inbox-arrow-down-outline" color={color} />
+              <TabBarIcon name='inbox-arrow-down-outline' color={color} />
             )
           }}
         />
       )}
       {viewMoreEntities.some((entity) => hasViewPermission(entity)) && (
         <BottomTab.Screen
-          name="MoreEntities"
+          name='MoreEntities'
           component={MoreEntitiesScreen}
           options={{
             title: t('more'),
-            tabBarIcon: ({ color }) => <TabBarIcon name="menu" color={color} />
+            tabBarIcon: ({ color }) => <TabBarIcon name='menu' color={color} />
           }}
         />
       )}

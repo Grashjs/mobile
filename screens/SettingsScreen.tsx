@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { View } from '../components/Themed';
 import {
+  ActivityIndicator,
   Avatar,
   Button,
   Dialog,
@@ -19,10 +20,11 @@ import { RootStackScreenProps } from '../types';
 import appJson from '../app.json';
 
 export default function SettingsScreen({
-  navigation
-}: RootStackScreenProps<'Settings'>) {
+                                         navigation
+                                       }: RootStackScreenProps<'Settings'>) {
   const theme = useTheme();
-  const { user, logout } = useAuth();
+  const { user, switchAccount, logout } = useAuth();
+  const [switchingAccount, setSwitchingAccount] = useState<boolean>(false);
   const { t } = useTranslation();
   const [openLogout, setOpenLogout] = useState<boolean>(false);
   const renderConfirmLogout = () => {
@@ -31,7 +33,7 @@ export default function SettingsScreen({
         <Dialog visible={openLogout} onDismiss={() => setOpenLogout(false)}>
           <Dialog.Title>{t('confirmation')}</Dialog.Title>
           <Dialog.Content>
-            <Text variant="bodyMedium">{t('confirm_logout')}</Text>
+            <Text variant='bodyMedium'>{t('confirm_logout')}</Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => setOpenLogout(false)}>{t('cancel')}</Button>
@@ -58,6 +60,17 @@ export default function SettingsScreen({
           description={t('update_profile')}
           onPress={() => navigation.navigate('UserProfile')}
         />
+        {user.parentSuperAccount && <List.Item
+          style={{ paddingHorizontal: 20 }}
+          left={(props) => <IconButton icon={'swap-horizontal'} />}
+          title={t('switch_to_super_user')}
+          right={(props) => switchingAccount && <ActivityIndicator />}
+          onPress={() => {
+            setSwitchingAccount(true);
+            switchAccount(user.parentSuperAccount.superUserId)
+              .finally(() => setSwitchingAccount(false));
+          }}
+        />}
         <List.Item
           style={{ paddingHorizontal: 20 }}
           left={(props) => (

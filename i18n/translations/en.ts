@@ -1414,7 +1414,10 @@ const enJSON = {
   failed_push_notification: 'Failed to get push token for push notification!',
   no_internet_connection: 'No internet connection',
   success: 'Success',
-  info: 'Info'
+  info: 'Info',
+  switch_account: 'Switch account',
+  switch_to_super_user: 'Switch to super admin',
+  switch_account_description: 'Please choose an account to proceed'
 };
 
 export default enJSON;

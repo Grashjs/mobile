@@ -1564,7 +1564,10 @@ const frJSON = {
     "Impossible d'obtenir le jeton push pour la notification push!",
   no_internet_connection: 'Pas de connexion internet',
   success: 'Succès',
-  info: 'Info'
+  info: 'Info',
+  switch_account: 'Changer de compte',
+  switch_to_super_user: 'Passer en super administrateur',
+  switch_account_description: 'Veuillez choisir un compte pour continuer'
 };
 
 export default frJSON;

@@ -52,6 +52,7 @@ interface AuthContextValue extends AuthState {
   logout: () => void;
   register: (values: any) => Promise<void>;
   getInfos: () => void;
+  switchAccount: (id: number)=> Promise<void>;
   patchUserSettings: (values: Partial<UserSettings>) => Promise<void>;
   patchUser: (values: Partial<OwnUser>) => Promise<void>;
   cancelSubscription: () => Promise<void>;
@@ -459,7 +460,8 @@ const AuthContext = createContext<AuthContextValue>({
   hasEditPermission: () => false,
   hasDeletePermission: () => false,
   downgrade: () => Promise.resolve(false),
-  upgrade: () => Promise.resolve(false)
+  upgrade: () => Promise.resolve(false),
+  switchAccount: () => Promise.resolve(),
 });
 
 export const AuthProvider: FC<AuthProviderProps> = (props) => {
@@ -611,17 +613,13 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
       });
     }
   };
-  const login = async (email: string, password: string): Promise<void> => {
-    const response = await api.post<{ accessToken: string }>(
-      'auth/signin',
-      {
-        email,
-        type: 'client',
-        password
-      },
-      { headers: await authHeader(true) }
-    );
+  const switchAccount = async (id: number): Promise<void> => {
+    const response = await api.get<{ accessToken: string }>(
+      `auth/switch-account?id=${id}`);
     const { accessToken } = response;
+    return loginInternal(accessToken);
+  };
+  const loginInternal= async (accessToken: string)=>{
     setSession(accessToken);
     const user = await updateUserInfos();
     const company = await api.get<Company>(`companies/${user.companyId}`);
@@ -634,6 +632,19 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         company
       }
     });
+  }
+  const login = async (email: string, password: string): Promise<void> => {
+    const response = await api.post<{ accessToken: string }>(
+      'auth/signin',
+      {
+        email,
+        type: 'client',
+        password
+      },
+      { headers: await authHeader(true) }
+    );
+    const { accessToken } = response;
+    return loginInternal(accessToken);
   };
 
   const logout = async (): Promise<void> => {
@@ -969,7 +980,8 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         hasDeletePermission,
         hasCreatePermission,
         upgrade,
-        downgrade
+        downgrade,
+        switchAccount
       }}
     >
       {children}

@@ -162,5 +162,11 @@ export type AuthStackParamList = {
   Login: undefined;
   Verify: undefined;
 };
+export type SuperUserStackParamList = {
+  SwitchAccount: undefined;
+};
 export type AuthStackScreenProps<Screen extends keyof AuthStackParamList> =
   NativeStackScreenProps<AuthStackParamList, Screen>;
+
+export type SuperUserStackScreenProps<Screen extends keyof SuperUserStackParamList> =
+  NativeStackScreenProps<SuperUserStackParamList, Screen>;
