@@ -2,7 +2,7 @@
   "expo": {
     "name": "Atlas CMMS",
     "slug": "atlas-cmms",
-    "version": "1.0.14",
+    "version": "1.0.15",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "atlascmms",
@@ -34,7 +34,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "versionCode": 15,
+      "versionCode": 16,
       "package": "com.atlas.cmms",
       "googleServicesFile": "./google-services.json",
       "runtimeVersion": "1.0.0"
