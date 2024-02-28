@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { AppThunk } from '../store';
 import Labor from '../models/labor';
 import api from '../utils/api';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'labors';
 
@@ -19,6 +20,7 @@ const initialState: LaborState = {
 const slice = createSlice({
   name: 'labors',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getLabors(
       state: LaborState,

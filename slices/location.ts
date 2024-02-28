@@ -4,6 +4,7 @@ import type { AppThunk } from '../store';
 import Location, { LocationMiniDTO, LocationRow } from '../models/location';
 import api from '../utils/api';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
+import { revertAll } from '../utils/redux';
 
 interface LocationState {
   locations: Page<Location>;
@@ -28,6 +29,7 @@ const initialState: LocationState = {
 const slice = createSlice({
   name: 'locations',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getLocations(
       state: LocationState,

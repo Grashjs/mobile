@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { AppThunk } from '../store';
 import SetType from '../models/setType';
 import api from '../utils/api';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'multi-parts';
 
@@ -19,6 +20,7 @@ const initialState: MultiPartState = {
 const slice = createSlice({
   name: 'multiParts',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getMultiParts(
       state: MultiPartState,

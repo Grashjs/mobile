@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { AppThunk } from '../store';
 import Reading from '../models/reading';
 import api from '../utils/api';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'readings';
 interface ReadingState {
@@ -18,6 +19,7 @@ const initialState: ReadingState = {
 const slice = createSlice({
   name: 'readings',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getReadings(
       state: ReadingState,

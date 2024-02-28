@@ -12,7 +12,7 @@ web-build/
 android/app/build
 android/build
 android/.gradle
-
+android/local.properties
 # macOS
 .DS_Store
 google-services.json

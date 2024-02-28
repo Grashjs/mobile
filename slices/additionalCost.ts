@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { AppThunk } from '../store';
 import AdditionalCost from '../models/additionalCost';
 import api from '../utils/api';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'additional-costs';
 
@@ -19,6 +20,7 @@ const initialState: AdditionalCostState = {
 const slice = createSlice({
   name: 'additionalCosts',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getAdditionalCosts(
       state: AdditionalCostState,

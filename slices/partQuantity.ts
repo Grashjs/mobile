@@ -4,6 +4,7 @@ import Part from '../models/part';
 import type { AppThunk } from '../store';
 import PartQuantity from '../models/partQuantity';
 import api from '../utils/api';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'part-quantities';
 
@@ -22,6 +23,7 @@ const initialState: PartQuantityState = {
 const slice = createSlice({
   name: 'partQuantities',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getPartQuantitiesByWorkOrder(
       state: PartQuantityState,

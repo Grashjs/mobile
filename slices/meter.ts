@@ -4,6 +4,7 @@ import { getInitialPage, Page, SearchCriteria } from '../models/page';
 import type { AppThunk } from '../store';
 import Meter, { MeterMiniDTO } from '../models/meter';
 import api from '../utils/api';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'meters';
 
@@ -30,6 +31,7 @@ const initialState: MeterState = {
 const slice = createSlice({
   name: 'meters',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getMeters(
       state: MeterState,

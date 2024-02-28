@@ -4,6 +4,7 @@ import type { AppThunk } from '../store';
 import Notification from '../models/notification';
 import api from '../utils/api';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'notifications';
 
@@ -24,6 +25,7 @@ const initialState: NotificationState = {
 const slice = createSlice({
   name: 'notifications',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getNotifications(
       state: NotificationState,

@@ -4,6 +4,7 @@ import { getInitialPage, Page, SearchCriteria } from '../models/page';
 import type { AppThunk } from '../store';
 import PurchaseOrder from '../models/purchaseOrder';
 import api from '../utils/api';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'purchase-orders';
 interface PurchaseOrderState {
@@ -21,6 +22,7 @@ const initialState: PurchaseOrderState = {
 const slice = createSlice({
   name: 'purchaseOrders',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getPurchaseOrders(
       state: PurchaseOrderState,

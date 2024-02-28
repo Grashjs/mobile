@@ -5,6 +5,7 @@ import WorkOrder from '../models/workOrder';
 import api from '../utils/api';
 import { Task } from '../models/tasks';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'work-orders';
 
@@ -37,6 +38,7 @@ const initialState: WorkOrderState = {
 const slice = createSlice({
   name: 'workOrders',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getWorkOrders(
       state: WorkOrderState,

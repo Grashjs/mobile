@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { AppThunk } from '../store';
 import { SubscriptionPlan } from '../models/subscriptionPlan';
 import api from '../utils/api';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'subscription-plans';
 interface SubscriptionPlanState {
@@ -16,6 +17,7 @@ const initialState: SubscriptionPlanState = {
 const slice = createSlice({
   name: 'subscriptionPlans',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getSubscriptionPlans(
       state: SubscriptionPlanState,

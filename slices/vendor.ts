@@ -4,6 +4,7 @@ import type { AppThunk } from '../store';
 import { Vendor, VendorMiniDTO } from '../models/vendor';
 import api from '../utils/api';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'vendors';
 
@@ -28,6 +29,7 @@ const initialState: VendorState = {
 const slice = createSlice({
   name: 'vendors',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getVendors(
       state: VendorState,

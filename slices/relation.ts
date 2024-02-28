@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { AppThunk } from '../store';
 import Relation from '../models/relation';
 import api from '../utils/api';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'relations';
 
@@ -19,6 +20,7 @@ const initialState: RelationState = {
 const slice = createSlice({
   name: 'relations',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getRelations(
       state: RelationState,

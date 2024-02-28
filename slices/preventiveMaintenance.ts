@@ -7,6 +7,7 @@ import PreventiveMaintenance, {
 import api from '../utils/api';
 import Schedule from '../models/schedule';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
+import { revertAll } from '../utils/redux';
 
 interface PreventiveMaintenanceState {
   preventiveMaintenances: Page<PreventiveMaintenance>;
@@ -23,6 +24,7 @@ const basePath = 'preventive-maintenances';
 const slice = createSlice({
   name: 'preventiveMaintenance',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getPreventiveMaintenances(
       state: PreventiveMaintenanceState,

@@ -5,6 +5,7 @@ import { AssetDTO, AssetMiniDTO, AssetRow } from '../models/asset';
 import api from '../utils/api';
 import WorkOrder from '../models/workOrder';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'assets';
 
@@ -37,6 +38,7 @@ const initialState: AssetState = {
 const slice = createSlice({
   name: 'assets',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getAssets(
       state: AssetState,

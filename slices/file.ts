@@ -5,6 +5,7 @@ import File, { FileType } from '../models/file';
 import api, { authHeader } from '../utils/api';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
 import { AsyncStorage } from 'react-native';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'files';
 
@@ -23,6 +24,7 @@ const initialState: FileState = {
 const slice = createSlice({
   name: 'files',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getFiles(state: FileState, action: PayloadAction<{ files: Page<File> }>) {
       const { files } = action.payload;

@@ -4,6 +4,7 @@ import { getInitialPage, Page, SearchCriteria } from '../models/page';
 import type { AppThunk } from '../store';
 import Part, { PartMiniDTO } from '../models/part';
 import api from '../utils/api';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'parts';
 
@@ -28,6 +29,7 @@ const initialState: PartState = {
 const slice = createSlice({
   name: 'parts',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getParts(state: PartState, action: PayloadAction<{ parts: Page<Part> }>) {
       const { parts } = action.payload;

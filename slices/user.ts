@@ -4,6 +4,7 @@ import { getInitialPage, Page, SearchCriteria } from '../models/page';
 import type { AppThunk } from '../store';
 import { OwnUser as User, UserMiniDTO } from '../models/user';
 import api from '../utils/api';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'users';
 
@@ -30,6 +31,7 @@ const initialState: UserState = {
 const slice = createSlice({
   name: 'users',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getUsers(state: UserState, action: PayloadAction<{ users: Page<User> }>) {
       const { users } = action.payload;

@@ -34,6 +34,8 @@ import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import { useTranslation } from 'react-i18next';
 import analytics from '@react-native-firebase/analytics';
+import { useDispatch } from '../store';
+import { revertAll } from '../utils/redux';
 
 interface AuthState {
   isInitialized: boolean;
@@ -470,6 +472,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   const [state, dispatch] = useReducer(reducer, initialAuthState);
   const appState = useRef(AppState.currentState);
   const [openedSettings, setOpenedSettings] = useState<boolean>(false);
+  const globalDispatch = useDispatch();
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextAppState) => {
@@ -620,6 +623,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     return loginInternal(accessToken);
   };
   const loginInternal= async (accessToken: string)=>{
+    globalDispatch(revertAll());
     setSession(accessToken);
     const user = await updateUserInfos();
     const company = await api.get<Company>(`companies/${user.companyId}`);

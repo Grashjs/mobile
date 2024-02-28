@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { AppThunk } from '../store';
 import api from '../utils/api';
 import { Task } from '../models/tasks';
+import { revertAll } from '../utils/redux';
 
 const basePath = 'tasks';
 
@@ -19,6 +20,7 @@ const initialState: TaskState = {
 const slice = createSlice({
   name: 'tasks',
   initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
   reducers: {
     getTasks(
       state: TaskState,
