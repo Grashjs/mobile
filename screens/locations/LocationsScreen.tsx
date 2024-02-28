@@ -143,11 +143,11 @@ export default function LocationsScreen({
     if (route.params?.id) {
       result = locationsHierarchy.filter((location, index) => {
         return (
-          location.hierarchy.includes(route.params.id) &&
+          location.hierarchy[location.hierarchy.length - 2] === route.params.id &&
           location.id !== route.params.id
         );
       });
-    } else result = locationsHierarchy;
+    } else result = locationsHierarchy.filter(location => location.hierarchy.length === 1);
     setCurrentLocations(result);
   }, [locationsHierarchy]);
 

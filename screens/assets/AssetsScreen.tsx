@@ -32,9 +32,9 @@ function IconWithLabel({ icon, label }: { icon: IconSource; label: string }) {
 }
 
 export default function AssetsScreen({
-  navigation,
-  route
-}: RootStackScreenProps<'Assets'>) {
+                                       navigation,
+                                       route
+                                     }: RootStackScreenProps<'Assets'>) {
   const { t } = useTranslation();
   const [startedSearch, setStartedSearch] = useState<boolean>(false);
   const { assets, assetsHierarchy, loadingGet, currentPageNum, lastPage } =
@@ -96,10 +96,10 @@ export default function AssetsScreen({
   };
 
   const isCloseToBottom = ({
-    layoutMeasurement,
-    contentOffset,
-    contentSize
-  }) => {
+                             layoutMeasurement,
+                             contentOffset,
+                             contentSize
+                           }) => {
     const paddingToBottom = 20;
     return (
       layoutMeasurement.height + contentOffset.y >=
@@ -129,11 +129,11 @@ export default function AssetsScreen({
     if (route.params?.id) {
       result = assetsHierarchy.filter((asset, index) => {
         return (
-          asset.hierarchy.includes(route.params.id) &&
+          asset.hierarchy[asset.hierarchy.length - 2] === route.params.id &&
           asset.id !== route.params.id
         );
       });
-    } else result = assetsHierarchy;
+    } else result = assetsHierarchy.filter(asset => asset.hierarchy.length === 1);
     setCurrentAssets(result);
   }, [assetsHierarchy]);
 
@@ -188,8 +188,8 @@ export default function AssetsScreen({
                       <View style={{ marginRight: 10 }}>
                         <Tag
                           text={`#${asset.id}`}
-                          color="white"
-                          backgroundColor="#545454"
+                          color='white'
+                          backgroundColor='#545454'
                         />
                       </View>
                       <Tag
@@ -201,18 +201,18 @@ export default function AssetsScreen({
                         backgroundColor={
                           asset.status === 'OPERATIONAL'
                             ? //@ts-ignore
-                              theme.colors.success
+                            theme.colors.success
                             : theme.colors.error
                         }
-                        color="white"
+                        color='white'
                       />
                     </View>
                   </View>
-                  <Text variant="titleMedium">{asset.name}</Text>
+                  <Text variant='titleMedium'>{asset.name}</Text>
                   {asset.location && (
                     <IconWithLabel
                       label={asset.location.name}
-                      icon="map-marker-outline"
+                      icon='map-marker-outline'
                     />
                   )}
                 </Card.Content>
@@ -265,8 +265,8 @@ export default function AssetsScreen({
                       <View style={{ marginRight: 10 }}>
                         <Tag
                           text={`#${asset.id}`}
-                          color="white"
-                          backgroundColor="#545454"
+                          color='white'
+                          backgroundColor='#545454'
                         />
                       </View>
                       <Tag
@@ -278,18 +278,18 @@ export default function AssetsScreen({
                         backgroundColor={
                           asset.status === 'OPERATIONAL'
                             ? //@ts-ignore
-                              theme.colors.success
+                            theme.colors.success
                             : theme.colors.error
                         }
-                        color="white"
+                        color='white'
                       />
                     </View>
                   </View>
-                  <Text variant="titleMedium">{asset.name}</Text>
+                  <Text variant='titleMedium'>{asset.name}</Text>
                   {asset.location && (
                     <IconWithLabel
                       label={asset.location.name}
-                      icon="map-marker-outline"
+                      icon='map-marker-outline'
                     />
                   )}
                 </Card.Content>
