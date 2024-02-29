@@ -26,11 +26,12 @@ import {
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import { PermissionEntity } from '../../models/role';
 import useAuth from '../../hooks/useAuth';
+import Request from '../../models/request';
 
 export default function RequestDetails({
-  navigation,
-  route
-}: RootStackScreenProps<'RequestDetails'>) {
+                                         navigation,
+                                         route
+                                       }: RootStackScreenProps<'RequestDetails'>) {
   const { id } = route.params;
   const { loadingGet, requestInfos } = useSelector((state) => state.requests);
   const request = requestInfos[id]?.request;
@@ -41,7 +42,7 @@ export default function RequestDetails({
   const { getFormattedDate, getUserNameById } = useContext(
     CompanySettingsContext
   );
-  const { hasViewPermission, hasEditPermission, hasDeletePermission } =
+  const { hasViewPermission, hasEditPermission, hasDeletePermission, user } =
     useAuth();
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -61,10 +62,22 @@ export default function RequestDetails({
       .then(() => navigation.goBack())
       .finally(() => setCancelling(false));
   };
+  const getStatusMeta = (request: Request): [string, string] => {
+    if (request.workOrder) {
+      // @ts-ignore
+      return [t('approved'), theme.colors.success];
+    } else if (request.cancelled) {
+      return [t('rejected'), theme.colors.error];
+    } else return [t('pending'), theme.colors.primary];
+  };
   const fieldsToRender = [
     {
       label: t('description'),
       value: request?.description
+    },
+    {
+      label: t('status'),
+      value: request ? getStatusMeta(request)[0] : null
     },
     {
       label: t('id'),
@@ -102,7 +115,7 @@ export default function RequestDetails({
         <Dialog visible={openDelete} onDismiss={() => setOpenDelete(false)}>
           <Dialog.Title>{t('confirmation')}</Dialog.Title>
           <Dialog.Content>
-            <Text variant="bodyMedium">{t('confirm_delete_request')}</Text>
+            <Text variant='bodyMedium'>{t('confirm_delete_request')}</Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => setOpenDelete(false)}>{t('cancel')}</Button>
@@ -126,7 +139,7 @@ export default function RequestDetails({
           {hasDeletePermission(PermissionEntity.REQUESTS, request) && (
             <IconButton
               onPress={() => setOpenDelete(true)}
-              icon="delete-outline"
+              icon='delete-outline'
             />
           )}
           {!request?.workOrder &&
@@ -143,7 +156,7 @@ export default function RequestDetails({
             !request?.workOrder &&
             !request?.cancelled &&
             hasViewPermission(PermissionEntity.SETTINGS) && (
-              <IconButton onPress={onApprove} icon="check" />
+              <IconButton onPress={onApprove} icon='check' />
             )
           )}
         </View>
@@ -152,9 +165,9 @@ export default function RequestDetails({
   }, [request, approving]);
 
   function BasicField({
-    label,
-    value
-  }: {
+                        label,
+                        value
+                      }: {
     label: string;
     value: string | number;
   }) {
@@ -179,10 +192,10 @@ export default function RequestDetails({
   }
 
   function ObjectField({
-    label,
-    value,
-    link
-  }: {
+                         label,
+                         value,
+                         link
+                       }: {
     label: string;
     value: string | number;
     link: { route: keyof RootStackParamList; id: number };
@@ -191,13 +204,16 @@ export default function RequestDetails({
       return (
         <TouchableOpacity
           // @ts-ignore
-          onPress={() => navigation.navigate(link.route, { id: link.id })}
+          onPress={() => {
+            if (user.role.code === 'REQUESTER') return;
+            navigation.navigate(link.route, { id: link.id });
+          }}
           style={{ marginTop: 20, padding: 20, backgroundColor: 'white' }}
         >
-          <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>
+          <Text variant='titleMedium' style={{ fontWeight: 'bold' }}>
             {label}
           </Text>
-          <Text variant="bodyLarge">{value}</Text>
+          <Text variant='bodyLarge'>{value}</Text>
         </TouchableOpacity>
       );
     } else return null;
@@ -260,7 +276,7 @@ export default function RequestDetails({
               disabled={cancelling}
               loading={cancelling}
               onPress={onCancel}
-              mode="contained"
+              mode='contained'
               style={{ margin: 20 }}
               buttonColor={theme.colors.error}
             >

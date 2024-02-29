@@ -28,7 +28,8 @@ import {
   AuthStackParamList,
   RootStackParamList,
   RootTabParamList,
-  RootTabScreenProps, SuperUserStackParamList
+  RootTabScreenProps,
+  SuperUserStackParamList
 } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import useAuth from '../hooks/useAuth';
@@ -84,11 +85,7 @@ import SelectNfcModal from '../screens/modals/SelectNfcModal';
 import SelectBarcodeModal from '../screens/modals/SelectBarcodeModal';
 import ScanAssetScreen from '../screens/ScanAssetScreen';
 import SelectMetersModal from '../screens/modals/SelectMetersModal';
-import {
-  createEntities,
-  PermissionEntity,
-  viewMoreEntities
-} from '../models/role';
+import { createEntities, PermissionEntity, viewMoreEntities } from '../models/role';
 import RequestsScreen from '../screens/requests/RequestsScreen';
 import SwitchAccountScreen from '../screens/superUser/SwitchAccountScreen';
 
@@ -462,15 +459,15 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { hasViewPermission, hasCreatePermission } = useAuth();
+  const { hasViewPermission, hasCreatePermission, user } = useAuth();
   return (
     <BottomTab.Navigator
-      initialRouteName='Home'
+      initialRouteName={user.role.code==='REQUESTER'?'Requests':'Home'}
       screenOptions={{
         tabBarActiveTintColor: theme.colors.primary
       }}
     >
-      <BottomTab.Screen
+      {hasViewPermission(PermissionEntity.WORK_ORDERS) && <BottomTab.Screen
         name='Home'
         component={HomeScreen}
         options={({ navigation }: RootTabScreenProps<'Home'>) => ({
@@ -488,8 +485,8 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
             </Pressable>
           )
         })}
-      />
-      <BottomTab.Screen
+      />}
+      {hasViewPermission(PermissionEntity.WORK_ORDERS) &&<BottomTab.Screen
         name='WorkOrders'
         component={WorkOrdersScreen}
         options={{
@@ -498,7 +495,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
             <TabBarIcon name='clipboard-text-outline' color={color} />
           )
         }}
-      />
+      />}
       {createEntities.some((entity) => hasCreatePermission(entity)) && (
         <BottomTab.Screen
           name='AddEntities'
