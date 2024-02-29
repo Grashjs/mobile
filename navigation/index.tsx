@@ -525,15 +525,6 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
             tabBarIcon: ({ color }) => (
               <TabBarIcon name='inbox-arrow-down-outline' color={color} />
             ),
-            headerRight: () => !hasViewPermission(PermissionEntity.WORK_ORDERS) && (
-              <Pressable
-                onPress={() => {
-                  navigation.navigate('Settings');
-                }}
-              >
-                <IconButton icon='cog-outline' />
-              </Pressable>
-            )
           }}
         />
       )}

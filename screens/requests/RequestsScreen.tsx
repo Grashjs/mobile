@@ -1,4 +1,4 @@
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from '../../store';
 import * as React from 'react';
 import { Fragment, useContext, useEffect, useState } from 'react';
@@ -8,6 +8,7 @@ import { PermissionEntity } from '../../models/role';
 import { getMoreRequests, getRequests } from '../../slices/request';
 import { FilterField, SearchCriteria } from '../../models/page';
 import {
+  Badge,
   Card,
   IconButton,
   Searchbar,
@@ -22,12 +23,14 @@ import { RootTabScreenProps } from '../../types';
 import Tag from '../../components/Tag';
 import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
 import { dayDiff } from '../../utils/dates';
+import { getNotifications } from '../../slices/notification';
+import { SheetManager } from 'react-native-actions-sheet';
 
 function IconWithLabel({
-  icon,
-  label,
-  color
-}: {
+                         icon,
+                         label,
+                         color
+                       }: {
   icon: IconSource;
   label: string;
   color?: string;
@@ -43,9 +46,9 @@ function IconWithLabel({
 }
 
 export default function RequestsScreen({
-  navigation,
-  route
-}: RootTabScreenProps<'Requests'>) {
+                                         navigation,
+                                         route
+                                       }: RootTabScreenProps<'Requests'>) {
   const { t } = useTranslation();
   const [startedSearch, setStartedSearch] = useState<boolean>(false);
   const { requests, loadingGet, currentPageNum, lastPage } = useSelector(
@@ -53,11 +56,18 @@ export default function RequestsScreen({
   );
   const theme = useTheme();
   const dispatch = useDispatch();
+  const { notifications } = useSelector((state) => state.notifications);
   const [searchQuery, setSearchQuery] = useState('');
   const { getFormattedDate, getUserNameById } = useContext(
     CompanySettingsContext
   );
-  const { hasViewPermission } = useAuth();
+  const notificationsCriteria: SearchCriteria = {
+    filterFields: [],
+    pageSize: 15,
+    pageNum: 0,
+    direction: 'DESC'
+  };
+  const { hasViewPermission, user } = useAuth();
   const defaultFilterFields: FilterField[] = [];
   const getCriteriaFromFilterFields = (filterFields: FilterField[]) => {
     const initialCriteria: SearchCriteria = {
@@ -94,6 +104,54 @@ export default function RequestsScreen({
     }
   }, [criteria]);
 
+  useEffect(() => {
+    navigation.setOptions({
+      title: t('requests'),
+      headerRight: () => (
+        <View  style={{
+          display: 'flex',
+          flexDirection: 'row',
+        }}>
+          <Pressable onPress={() => navigation.navigate('Notifications')} style={{ position: 'relative' }}>
+            <IconButton
+              icon={'bell-outline'}
+            />
+            <Badge
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                backgroundColor: theme.colors.error
+              }}
+              visible={
+                notifications.content.filter((notification) => !notification.seen)
+                  .length > 0
+              }
+            >
+              {
+                notifications.content.filter((notification) => !notification.seen)
+                  .length
+              }
+            </Badge>
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('Settings');
+            }}
+          >
+            <IconButton icon='cog-outline' />
+          </Pressable>
+        </View>
+      )
+    });
+  }, []);
+
+
+  useEffect(() => {
+    if (user.role.code === 'REQUESTER')
+      dispatch(getNotifications(notificationsCriteria));
+  }, []);
+
   const onRefresh = () => {
     setCriteria(getCriteriaFromFilterFields([]));
   };
@@ -107,10 +165,10 @@ export default function RequestsScreen({
     } else return [t('pending'), theme.colors.primary];
   };
   const isCloseToBottom = ({
-    layoutMeasurement,
-    contentOffset,
-    contentSize
-  }) => {
+                             layoutMeasurement,
+                             contentOffset,
+                             contentSize
+                           }) => {
     const paddingToBottom = 20;
     return (
       layoutMeasurement.height + contentOffset.y >=
@@ -190,14 +248,14 @@ export default function RequestsScreen({
                         <View style={{ marginRight: 10 }}>
                           <Tag
                             text={`#${request.id}`}
-                            color="white"
-                            backgroundColor="#545454"
+                            color='white'
+                            backgroundColor='#545454'
                           />
                         </View>
                         <View style={{ marginRight: 10 }}>
                           <Tag
                             text={t(request.priority)}
-                            color="white"
+                            color='white'
                             backgroundColor={getPriorityColor(
                               request.priority,
                               theme
@@ -206,12 +264,12 @@ export default function RequestsScreen({
                         </View>
                         <Tag
                           text={getStatusMeta(request)[0]}
-                          color="white"
+                          color='white'
                           backgroundColor={getStatusMeta(request)[1]}
                         />
                       </View>
                     </View>
-                    <Text variant="titleMedium">{request.title}</Text>
+                    <Text variant='titleMedium'>{request.title}</Text>
                     {request.dueDate && (
                       <IconWithLabel
                         color={
@@ -221,20 +279,20 @@ export default function RequestsScreen({
                             : theme.colors.grey
                         }
                         label={getFormattedDate(request.dueDate)}
-                        icon="clock-alert-outline"
+                        icon='clock-alert-outline'
                       />
                     )}
                     {request.asset && (
                       <IconWithLabel
                         label={request.asset.name}
-                        icon="package-variant-closed"
+                        icon='package-variant-closed'
                         color={theme.colors.grey}
                       />
                     )}
                     {request.location && (
                       <IconWithLabel
                         label={request.location.name}
-                        icon="map-marker-outline"
+                        icon='map-marker-outline'
                         color={theme.colors.grey}
                       />
                     )}
