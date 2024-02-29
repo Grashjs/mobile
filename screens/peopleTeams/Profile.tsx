@@ -310,7 +310,7 @@ export default function UserProfile({
           >
             <Text>{title}</Text>
             <Switch
-              value={Boolean(userSettings[accessor])}
+              value={Boolean(userSettings?userSettings[accessor]: false)}
               onValueChange={(checked) =>
                 patchUserSettings({
                   ...userSettings,

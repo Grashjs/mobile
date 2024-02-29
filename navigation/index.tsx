@@ -462,7 +462,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
   const { hasViewPermission, hasCreatePermission, user } = useAuth();
   return (
     <BottomTab.Navigator
-      initialRouteName={user.role.code==='REQUESTER'?'Requests':'Home'}
+      initialRouteName={user.role.code === 'REQUESTER' ? 'Requests' : 'Home'}
       screenOptions={{
         tabBarActiveTintColor: theme.colors.primary
       }}
@@ -486,7 +486,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
           )
         })}
       />}
-      {hasViewPermission(PermissionEntity.WORK_ORDERS) &&<BottomTab.Screen
+      {hasViewPermission(PermissionEntity.WORK_ORDERS) && <BottomTab.Screen
         name='WorkOrders'
         component={WorkOrdersScreen}
         options={{
@@ -524,6 +524,15 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
             title: t('requests'),
             tabBarIcon: ({ color }) => (
               <TabBarIcon name='inbox-arrow-down-outline' color={color} />
+            ),
+            headerRight: () => !hasViewPermission(PermissionEntity.WORK_ORDERS) && (
+              <Pressable
+                onPress={() => {
+                  navigation.navigate('Settings');
+                }}
+              >
+                <IconButton icon='cog-outline' />
+              </Pressable>
             )
           }}
         />
