@@ -6,6 +6,7 @@ import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
 import { getMoreRequests, getRequests } from '../../slices/request';
+import { FAB } from 'react-native-paper';
 import { FilterField, SearchCriteria } from '../../models/page';
 import {
   Badge,
@@ -108,9 +109,9 @@ export default function RequestsScreen({
     navigation.setOptions({
       title: t('requests'),
       headerRight: () => (
-        <View  style={{
+        <View style={{
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: 'row'
         }}>
           <Pressable onPress={() => navigation.navigate('Notifications')} style={{ position: 'relative' }}>
             <IconButton
@@ -313,6 +314,12 @@ export default function RequestsScreen({
               </View>
             )}
           </ScrollView>
+          {user.role.code === 'REQUESTER' && <FAB
+            icon='plus'
+            style={[styles.fab, { backgroundColor: theme.colors.primary }]}
+            color={'white'}
+            onPress={() => navigation.navigate('AddRequest')}
+          />}
         </Fragment>
       ) : (
         <View
@@ -344,5 +351,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0
   }
 });

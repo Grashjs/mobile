@@ -522,9 +522,10 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
           component={RequestsScreen}
           options={{
             title: t('requests'),
+            tabBarStyle: { display: user.role.code === 'REQUESTER' ? 'none' : undefined },
             tabBarIcon: ({ color }) => (
               <TabBarIcon name='inbox-arrow-down-outline' color={color} />
-            ),
+            )
           }}
         />
       )}
