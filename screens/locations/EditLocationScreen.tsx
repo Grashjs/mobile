@@ -31,10 +31,6 @@ export default function EditLocationScreen({
   };
   const getEditFields = () => {
     const fieldsClone = [...getFilteredFields(getLocationFields(t))];
-    const parentLocationIndex = fieldsClone.findIndex(
-      (field) => field.name === 'parentLocation'
-    );
-    fieldsClone.splice(parentLocationIndex, 1);
     return fieldsClone;
   };
   const onEditSuccess = () => {

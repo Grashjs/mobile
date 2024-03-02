@@ -11,7 +11,7 @@ import {
   Divider,
   IconButton,
   Portal,
-  Text,
+  Text, TextInput,
   useTheme
 } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +27,7 @@ import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import { PermissionEntity } from '../../models/role';
 import useAuth from '../../hooks/useAuth';
 import Request from '../../models/request';
+import Form from '../../components/form';
 
 export default function RequestDetails({
                                          navigation,
@@ -39,6 +40,7 @@ export default function RequestDetails({
   const [approving, setApproving] = useState<boolean>(false);
   const [cancelling, setCancelling] = useState<boolean>(false);
   const { showSnackBar } = useContext(CustomSnackBarContext);
+  const [openRejectModal, setOpenRejectModal] = useState<boolean>(false);
   const { getFormattedDate, getUserNameById } = useContext(
     CompanySettingsContext
   );
@@ -56,12 +58,6 @@ export default function RequestDetails({
       .finally(() => setApproving(false));
   };
 
-  const onCancel = () => {
-    setCancelling(true);
-    dispatch(cancelRequest(request.id))
-      .then(() => navigation.goBack())
-      .finally(() => setCancelling(false));
-  };
   const getStatusMeta = (request: Request): [string, string] => {
     if (request.workOrder) {
       // @ts-ignore
@@ -219,6 +215,43 @@ export default function RequestDetails({
     } else return null;
   }
 
+  const RejectDialog = ({ open, onClose, onReject }: { open: boolean; onClose: () => void; onReject: () => void }) => {
+    const [feedback, setFeedback] = useState<string>('');
+    const [rejecting, setRejecting] = useState<boolean>(false);
+    return (
+      <Portal theme={theme}>
+        <Dialog visible={open} onDismiss={onClose}>
+          <Dialog.Title>{t('reject')}</Dialog.Title>
+          <Dialog.Content>
+            <View>
+              <TextInput
+                style={{ width: '100%' }}
+                mode='outlined'
+                multiline
+                label={t('feedback')}
+                onChangeText={(value) =>
+                  setFeedback(value)}
+                value={feedback}
+              />
+            </View>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button loading={rejecting} disabled={rejecting} mode={'contained'} onPress={() => {
+              setRejecting(true);
+              if (!feedback.trim()) {
+                showSnackBar(t('required_feedback'), 'error');
+                setRejecting(false);
+                return;
+              }
+              dispatch(cancelRequest(request.id, feedback))
+                .then(onReject).finally(() => setRejecting(false));
+            }}>{t('reject')}</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+    );
+  };
+
   if (request)
     return (
       <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background }}>
@@ -275,7 +308,7 @@ export default function RequestDetails({
             <Button
               disabled={cancelling}
               loading={cancelling}
-              onPress={onCancel}
+              onPress={() => setOpenRejectModal(true)}
               mode='contained'
               style={{ margin: 20 }}
               buttonColor={theme.colors.error}
@@ -283,6 +316,8 @@ export default function RequestDetails({
               {t('reject')}
             </Button>
           )}
+        <RejectDialog open={openRejectModal} onClose={() => setOpenRejectModal(false)}
+                      onReject={() => navigation.goBack()} />
       </ScrollView>
     );
   else return <LoadingDialog visible={true} />;
