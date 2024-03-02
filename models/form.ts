@@ -5,7 +5,9 @@ export type CategoryType =
   | 'cost-categories'
   | 'time-categories'
   | 'work-order-categories'
-  | 'asset-categories';
+  | 'asset-categories'
+  | 'meter-categories'
+  | 'part-categories';
 
 export interface IField {
   label: string;

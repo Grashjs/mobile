@@ -458,9 +458,11 @@ export const getMeterFields = (t): IField[] => {
     },
     {
       name: 'category',
-      type: 'text',
       label: t('category'),
-      placeholder: t('category')
+      placeholder: t('category'),
+      type: 'select',
+      type2: 'category',
+      category: 'meter-categories'
     },
     {
       name: 'image',
@@ -518,9 +520,11 @@ export const getPartFields = (t): IField[] => {
     },
     {
       name: 'category',
-      type: 'text',
       label: t('category'),
-      placeholder: t('enter_part_category')
+      placeholder: t('enter_part_category'),
+      type: 'select',
+      type2: 'category',
+      category: 'part-categories'
     },
     {
       name: 'cost',
