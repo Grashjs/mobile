@@ -1567,7 +1567,9 @@ const frJSON = {
   info: 'Info',
   switch_account: 'Changer de compte',
   switch_to_super_user: 'Passer en super administrateur',
-  switch_account_description: 'Veuillez choisir un compte pour continuer'
+  switch_account_description: 'Veuillez choisir un compte pour continuer',
+  manufacturer: 'Fabriquant',
+  power: "Puissance"
 };
 
 export default frJSON;

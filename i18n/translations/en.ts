@@ -1417,7 +1417,9 @@ const enJSON = {
   info: 'Info',
   switch_account: 'Switch account',
   switch_to_super_user: 'Switch to super admin',
-  switch_account_description: 'Please choose an account to proceed'
+  switch_account_description: 'Please choose an account to proceed',
+  manufacturer: 'Manufacturer',
+  power: "Power"
 };
 
 export default enJSON;
