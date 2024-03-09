@@ -184,9 +184,9 @@ export const getMoreAssets =
       dispatch(slice.actions.setLoadingGet({ loading: false }));
     }
   };
-export const getAssetsMini = (): AppThunk => async (dispatch) => {
+export const getAssetsMini = (locationId?: number|null): AppThunk => async (dispatch) => {
   dispatch(slice.actions.setLoadingGet({ loading: true }));
-  const assets = await api.get<AssetMiniDTO[]>(`${basePath}/mini`);
+  const assets = await api.get<AssetMiniDTO[]>(`${basePath}/mini?locationId=${locationId??""}`);
   dispatch(slice.actions.getAssetsMini({ assets }));
   dispatch(slice.actions.setLoadingGet({ loading: false }));
 };

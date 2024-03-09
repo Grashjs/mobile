@@ -19,7 +19,7 @@ export default function SelectAssetsModal({
   navigation,
   route
 }: RootStackScreenProps<'SelectAssets'>) {
-  const { onChange, selected, multiple } = route.params;
+  const { onChange, selected, multiple, locationId } = route.params;
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
   const dispatch = useDispatch();
@@ -60,8 +60,8 @@ export default function SelectAssetsModal({
   }, [selectedAssets]);
 
   useEffect(() => {
-    dispatch(getAssetsMini());
-  }, []);
+    dispatch(getAssetsMini(locationId));
+  }, [locationId]);
 
   const onSelect = (ids: number[]) => {
     setSelectedIds(Array.from(new Set([...selectedIds, ...ids])));

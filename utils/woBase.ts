@@ -52,7 +52,8 @@ export const getWOBaseFields = (
       type2: 'asset',
       label: t('asset'),
       placeholder: 'Select Asset',
-      required: true
+      required: true,
+      relatedFields: [{ field: 'location' }],
     },
     {
       name: 'primaryUser',

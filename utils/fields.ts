@@ -87,7 +87,8 @@ export const getWorkOrderFields = (t): IField[] => {
       type: 'select',
       type2: 'asset',
       label: t('asset'),
-      placeholder: t('select_asset')
+      placeholder: t('select_asset'),
+      relatedFields: [{ field: 'location' }],
     },
     {
       name: 'tasks',
@@ -327,7 +328,8 @@ export const getAssetFields = (t): Array<IField> => {
       name: 'parentAsset',
       type: 'select',
       type2: 'asset',
-      label: t('parent_asset')
+      label: t('parent_asset'),
+      relatedFields: [{ field: 'location' }],
     }
   ];
 };
@@ -413,16 +415,6 @@ export const getLocationFields = (t): IField[] => {
       placeholder: 'Select customers'
     },
     {
-      name: 'mapTitle',
-      type: 'titleGroupField',
-      label: t('map_coordinates')
-    },
-    {
-      name: 'coordinates',
-      type: 'coordinates',
-      label: t('map_coordinates')
-    },
-    {
       name: 'image',
       type: 'file',
       fileType: 'image',
@@ -485,10 +477,17 @@ export const getMeterFields = (t): IField[] => {
       label: t('image')
     },
     {
+      name: 'location',
+      type: 'select',
+      type2: 'location',
+      label: t('location')
+    },
+    {
       name: 'asset',
       type: 'select',
       type2: 'asset',
       label: t('asset'),
+      relatedFields: [{ field: 'location' }],
       required: true
     },
     {
@@ -498,12 +497,6 @@ export const getMeterFields = (t): IField[] => {
       label: t('workers'),
       multiple: true
     },
-    {
-      name: 'location',
-      type: 'select',
-      type2: 'location',
-      label: t('location')
-    }
   ];
 };
 export const formatPartValues = (values) => {

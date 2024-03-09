@@ -192,6 +192,7 @@ export default function Form(props: OwnProps) {
           }));
           handleChange(formik, field.name, field.multiple ? value : value[0]);
         };
+        additionalNavigationOptions={locationId: formik.values[field.relatedFields[0].field]?.value??null}
         break;
       case 'category':
         screenPath = 'SelectCategories';

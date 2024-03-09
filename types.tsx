@@ -105,6 +105,7 @@ export type RootStackParamList = {
     onChange: (assets: AssetMiniDTO[]) => void;
     selected: number[];
     multiple: boolean;
+    locationId: number|null;
   };
   SelectTasks: { onChange: (tasks: Task[]) => void; selected: Task[] };
   SelectCategories: {
