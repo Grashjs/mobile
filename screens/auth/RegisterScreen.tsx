@@ -250,8 +250,8 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     marginVertical: 20,
-    paddingHorizontal: 10,
-    width: '90%'
+    paddingHorizontal: 40,
+    width: '100%'
   },
   checkboxContainer: {
     display: 'flex',
