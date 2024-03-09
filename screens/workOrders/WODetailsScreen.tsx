@@ -13,7 +13,7 @@ import {
 import { View } from '../../components/Themed';
 import { RootStackParamList, RootStackScreenProps } from '../../types';
 import {
-  AnimatedFAB,
+  FAB,
   Button,
   Dialog,
   Divider,
@@ -963,14 +963,12 @@ export default function WODetailsScreen({
             </View>
           </ScrollView>
           {!generalPreferences.simplifiedWorkOrder && (
-            <AnimatedFAB
+            <FAB
               icon={runningTimer ? 'stop' : 'play'}
               label={
                 runningTimer
                   ? t('stop_work_order')
-                  : t('start_work_order') +
-                    ' - ' +
-                    durationToHours(primaryTime?.duration)
+                  :durationToHours(primaryTime?.duration)
               }
               disabled={
                 controllingTime ||
@@ -979,7 +977,6 @@ export default function WODetailsScreen({
               theme={theme}
               variant={runningTimer ? 'primary' : 'secondary'}
               color="white"
-              extended={isExtended}
               onPress={() => {
                 setControllingTime(true);
                 dispatch(controlTimer(!runningTimer, id)).finally(() =>
