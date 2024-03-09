@@ -261,4 +261,13 @@ export const getWorkOrderEvents =
       })
     );
   };
+export const changeWorkOrderStatus =
+  (id: number, body: {status: string; feedback?: string; signature?: {id: number}}): AppThunk =>
+    async (dispatch) => {
+      const workOrderResponse = await api.patch<WorkOrder>(
+        `${basePath}/${id}/change-status`,
+        body
+      );
+      dispatch(slice.actions.editWorkOrder({ workOrder: workOrderResponse }));
+    };
 export default slice;

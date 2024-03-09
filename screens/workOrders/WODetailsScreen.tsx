@@ -50,6 +50,7 @@ import Relation, { relationTypes } from '../../models/relation';
 import { getTasks } from '../../slices/task';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import {
+  changeWorkOrderStatus,
   deleteWorkOrder,
   editWorkOrder,
   getPDFReport,
@@ -355,8 +356,7 @@ export default function WODetailsScreen({
     feedback: string | undefined
   ): Promise<any> => {
     return dispatch(
-      editWorkOrder(id, {
-        ...workOrder,
+      changeWorkOrderStatus(id, {
         status: 'COMPLETE',
         feedback: feedback ?? null,
         signature: signatureId ? { id: signatureId } : null
@@ -394,8 +394,7 @@ export default function WODetailsScreen({
     }
     setLoading(true);
     dispatch(
-      editWorkOrder(id, {
-        ...workOrder,
+      changeWorkOrderStatus(id, {
         status
       })
     ).finally(() => setLoading(false));
