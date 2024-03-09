@@ -108,7 +108,6 @@ export default function WorkOrdersScreen({
     getCriteriaFromFilterFields([])
   );
   useEffect(() => {
-    if (hasViewPermission(PermissionEntity.WORK_ORDERS)) {
       dispatch(
         getWorkOrders({
           ...criteria,
@@ -117,7 +116,6 @@ export default function WorkOrdersScreen({
           direction: 'DESC'
         })
       );
-    }
   }, [criteria]);
 
   useEffect(() => {
@@ -165,7 +163,7 @@ export default function WorkOrdersScreen({
     <View
       style={{ ...styles.container, backgroundColor: theme.colors.background }}
     >
-      {hasViewPermission(PermissionEntity.WORK_ORDERS) ? (
+
         <Fragment>
           <Searchbar
             placeholder={t('search')}
@@ -340,13 +338,6 @@ export default function WorkOrdersScreen({
             )}
           </ScrollView>
         </Fragment>
-      ) : (
-        <View
-          style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}
-        >
-          <Text variant={'titleLarge'}>{t('no_access_wo')}</Text>
-        </View>
-      )}
     </View>
   );
 }

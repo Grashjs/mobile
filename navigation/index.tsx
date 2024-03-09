@@ -467,7 +467,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
         tabBarActiveTintColor: theme.colors.primary
       }}
     >
-      {hasViewPermission(PermissionEntity.WORK_ORDERS) && <BottomTab.Screen
+      {user.role.code !=="REQUESTER" && <BottomTab.Screen
         name='Home'
         component={HomeScreen}
         options={({ navigation }: RootTabScreenProps<'Home'>) => ({
@@ -486,7 +486,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
           )
         })}
       />}
-      {hasViewPermission(PermissionEntity.WORK_ORDERS) && <BottomTab.Screen
+       <BottomTab.Screen
         name='WorkOrders'
         component={WorkOrdersScreen}
         options={{
@@ -495,7 +495,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
             <TabBarIcon name='clipboard-text-outline' color={color} />
           )
         }}
-      />}
+      />
       {createEntities.some((entity) => hasCreatePermission(entity)) && (
         <BottomTab.Screen
           name='AddEntities'
@@ -522,7 +522,6 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
           component={RequestsScreen}
           options={{
             title: t('requests'),
-            tabBarStyle: { display: user.role.code === 'REQUESTER' ? 'none' : undefined },
             tabBarIcon: ({ color }) => (
               <TabBarIcon name='inbox-arrow-down-outline' color={color} />
             )

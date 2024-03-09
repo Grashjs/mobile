@@ -13,10 +13,10 @@ import {
 import { View } from '../../components/Themed';
 import { RootStackParamList, RootStackScreenProps } from '../../types';
 import {
-  FAB,
   Button,
   Dialog,
   Divider,
+  FAB,
   IconButton,
   List,
   Portal,
@@ -36,14 +36,8 @@ import { PermissionEntity } from '../../models/role';
 import useAuth from '../../hooks/useAuth';
 import { controlTimer, getLabors } from '../../slices/labor';
 import { useDispatch, useSelector } from '../../store';
-import {
-  durationToHours,
-  getHoursAndMinutesAndSeconds
-} from '../../utils/formatters';
-import {
-  editWOPartQuantities,
-  getPartQuantitiesByWorkOrder
-} from '../../slices/partQuantity';
+import { durationToHours, getHoursAndMinutesAndSeconds } from '../../utils/formatters';
+import { editWOPartQuantities, getPartQuantitiesByWorkOrder } from '../../slices/partQuantity';
 import { getAdditionalCosts } from '../../slices/additionalCost';
 import { getRelations } from '../../slices/relation';
 import Relation, { relationTypes } from '../../models/relation';
@@ -61,11 +55,7 @@ import PartQuantities from '../../components/PartQuantities';
 import { SheetManager } from 'react-native-actions-sheet';
 import LoadingDialog from '../../components/LoadingDialog';
 import WorkOrder from '../../models/workOrder';
-import {
-  DownloadDirectoryPath,
-  downloadFile,
-  DownloadFileOptions
-} from 'react-native-fs';
+import { DownloadDirectoryPath, downloadFile, DownloadFileOptions } from 'react-native-fs';
 
 export default function WODetailsScreen({
   navigation,
@@ -81,7 +71,8 @@ export default function WODetailsScreen({
   const [dropDownValue, setDropdownValue] = useState<string>(
     workOrder?.status ?? ''
   );
-  const { hasEditPermission, user, companySettings, hasFeature } = useAuth();
+  const { hasEditPermission, user, companySettings, hasFeature,
+    hasViewPermission } = useAuth();
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const { workOrderConfiguration, generalPreferences } = companySettings;
   const [loading, setLoading] = useState<boolean>(false);
@@ -161,28 +152,33 @@ export default function WODetailsScreen({
     label: string;
     value: string | number;
     link: { route: keyof RootStackParamList; id: number };
+    permissionEntity: PermissionEntity;
   }[] = [
     {
       label: t('asset'),
       value: workOrder?.asset?.name,
-      link: { route: 'AssetDetails', id: workOrder?.asset?.id }
+      link: { route: 'AssetDetails', id: workOrder?.asset?.id },
+      permissionEntity: PermissionEntity.ASSETS
     },
     {
       label: t('location'),
       value: workOrder?.location?.name,
-      link: { route: 'LocationDetails', id: workOrder?.location?.id }
+      link: { route: 'LocationDetails', id: workOrder?.location?.id },
+      permissionEntity: PermissionEntity.LOCATIONS
     },
     {
       label: t('team'),
       value: workOrder?.team?.name,
-      link: { route: 'TeamDetails', id: workOrder?.team?.id }
+      link: { route: 'TeamDetails', id: workOrder?.team?.id },
+      permissionEntity: PermissionEntity.PEOPLE_AND_TEAMS
     },
     {
       label: t('primary_worker'),
       value: workOrder?.primaryUser
         ? `${workOrder.primaryUser.firstName} ${workOrder.primaryUser.lastName}`
         : null,
-      link: { route: 'UserDetails', id: workOrder?.primaryUser?.id }
+      link: { route: 'UserDetails', id: workOrder?.primaryUser?.id },
+      permissionEntity: PermissionEntity.PEOPLE_AND_TEAMS
     }
   ];
   const getInfos = () => {
@@ -467,16 +463,19 @@ export default function WODetailsScreen({
   function ObjectField({
     label,
     value,
-    link
+    link,
+    permissionEntity
   }: {
     label: string;
     value: string | number;
     link: { route: keyof RootStackParamList; id: number };
+    permissionEntity: PermissionEntity;
   }) {
     if (value) {
       return (
         <TouchableOpacity
           // @ts-ignore
+          disabled={!hasViewPermission(permissionEntity)}
           onPress={() => navigation.navigate(link.route, { id: link.id })}
           style={{ marginTop: 20 }}
         >
@@ -596,13 +595,14 @@ export default function WODetailsScreen({
                   )
               )}
               {touchableFields.map(
-                ({ label, value, link }) =>
+                ({ label, value, link, permissionEntity }) =>
                   value && (
                     <ObjectField
                       key={label}
                       label={label}
                       value={value}
                       link={link}
+                      permissionEntity={permissionEntity}
                     />
                   )
               )}
@@ -613,6 +613,7 @@ export default function WODetailsScreen({
                   }
                   value={getUserNameById(workOrder.createdBy)}
                   link={{ route: 'UserDetails', id: workOrder.createdBy }}
+                  permissionEntity={PermissionEntity.PEOPLE_AND_TEAMS}
                 />
               )}
               {workOrder.status === 'COMPLETE' && (
@@ -625,6 +626,7 @@ export default function WODetailsScreen({
                         route: 'UserDetails',
                         id: workOrder.completedBy.id
                       }}
+                      permissionEntity={PermissionEntity.PEOPLE_AND_TEAMS}
                     />
                   )}
                   <BasicField
@@ -662,6 +664,7 @@ export default function WODetailsScreen({
                     route: 'RequestDetails',
                     id: workOrder.parentRequest.id
                   }}
+                  permissionEntity={PermissionEntity.PEOPLE_AND_TEAMS}
                 />
               )}
               {!!workOrder.assignedTo.length && (
