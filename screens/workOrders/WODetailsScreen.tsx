@@ -581,6 +581,7 @@ export default function WODetailsScreen({
             <View style={{ marginTop: 20 }}>
               <View style={styles.dropdown}>
                 <Dropdown
+                  disabled={!hasEditPermission(PermissionEntity.WORK_ORDERS, workOrder)}
                   value={workOrder.status}
                   items={statuses}
                   open={openDropDown}
