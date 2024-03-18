@@ -5,6 +5,7 @@ import Notification from '../models/notification';
 import api from '../utils/api';
 import { getInitialPage, Page, SearchCriteria } from '../models/page';
 import { revertAll } from '../utils/redux';
+import { getWorkOrders } from './workOrder';
 
 const basePath = 'notifications';
 
@@ -46,6 +47,15 @@ const slice = createSlice({
       );
       state.currentPageNum = state.currentPageNum + 1;
       state.lastPage = notifications.last;
+    },
+    newReceivedNotification(
+      state: NotificationState,
+      action: PayloadAction<{ notification: Notification }>
+    ) {
+      const { notification } = action.payload;
+      state.notifications.content.unshift(
+        notification
+      );
     },
     editNotification(
       state: NotificationState,
@@ -114,4 +124,38 @@ export const editNotification =
       slice.actions.editNotification({ notification: notificationResponse })
     );
   };
+export const newReceivedNotification=
+  (notification: Notification): AppThunk =>
+    async (dispatch) => {
+      dispatch(
+        slice.actions.newReceivedNotification({ notification })
+      );
+      if(notification.notificationType==="WORK_ORDER")
+        dispatch(getWorkOrders({
+          filterFields: [
+            {
+              field: 'priority',
+              operation: 'in',
+              values: ['NONE', 'LOW', 'MEDIUM', 'HIGH'],
+              value: '',
+              enumName: 'PRIORITY'
+            },
+            {
+              field: 'status',
+              operation: 'in',
+              values: ['OPEN', 'IN_PROGRESS', 'ON_HOLD'],
+              value: '',
+              enumName: 'STATUS'
+            },
+            {
+              field: 'archived',
+              operation: 'eq',
+              value: false
+            }
+          ],
+          pageSize: 10,
+          pageNum: 0,
+          direction: 'DESC'
+        }))
+    };
 export default slice;

@@ -17,6 +17,8 @@ import {
   getUserInfos,
   getUserSettings
 } from '../utils/userApi';
+import SockJS from 'sockjs-client';
+import { Stomp } from '@stomp/stompjs';
 import UserSettings from '../models/userSettings';
 import CompanySettings from '../models/companySettings';
 import { GeneralPreferences } from '../models/generalPreferences';
@@ -36,6 +38,9 @@ import { useTranslation } from 'react-i18next';
 import analytics from '@react-native-firebase/analytics';
 import { useDispatch } from '../store';
 import { revertAll } from '../utils/redux';
+import { apiUrl } from '../config';
+import { newReceivedNotification } from '../slices/notification';
+import Notification from '../models/notification';
 
 interface AuthState {
   isInitialized: boolean;
@@ -54,7 +59,7 @@ interface AuthContextValue extends AuthState {
   logout: () => void;
   register: (values: any) => Promise<void>;
   getInfos: () => void;
-  switchAccount: (id: number)=> Promise<void>;
+  switchAccount: (id: number) => Promise<void>;
   patchUserSettings: (values: Partial<UserSettings>) => Promise<void>;
   patchUser: (values: Partial<OwnUser>) => Promise<void>;
   cancelSubscription: () => Promise<void>;
@@ -463,7 +468,7 @@ const AuthContext = createContext<AuthContextValue>({
   hasDeletePermission: () => false,
   downgrade: () => Promise.resolve(false),
   upgrade: () => Promise.resolve(false),
-  switchAccount: () => Promise.resolve(),
+  switchAccount: () => Promise.resolve()
 });
 
 export const AuthProvider: FC<AuthProviderProps> = (props) => {
@@ -473,7 +478,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   const appState = useRef(AppState.currentState);
   const [openedSettings, setOpenedSettings] = useState<boolean>(false);
   const globalDispatch = useDispatch();
-
+  const [stompClient, setStompClient] = useState(null);
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextAppState) => {
       if (
@@ -495,6 +500,30 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
       subscription.remove();
     };
   }, [openedSettings]);
+  useEffect(() => {
+    const registerStompClient = async () => {
+      if (state?.user?.id) {
+        const socket = new SockJS(`${apiUrl}ws`);
+        const client = Stomp.over(socket);
+        client.connect({ token: await AsyncStorage.getItem('accessToken') }, function(frame) {
+          const subscription = client.subscribe(
+            `/notifications/${state.user.id}`,
+            function(message) {
+              const notification: Notification = JSON.parse(message.body);
+              globalDispatch(
+                newReceivedNotification(notification)
+              );
+            }
+          );
+          setStompClient(client);
+        });
+      }
+    };
+    registerStompClient();
+    return () => {
+      if (stompClient) stompClient.disconnect();
+    };
+  }, [state?.user?.id]);
   const switchLanguage = ({ lng }: { lng: any }) => {
     internationalization.changeLanguage(lng);
   };
@@ -622,7 +651,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     const { accessToken } = response;
     return loginInternal(accessToken);
   };
-  const loginInternal= async (accessToken: string)=>{
+  const loginInternal = async (accessToken: string) => {
     globalDispatch(revertAll());
     setSession(accessToken);
     const user = await updateUserInfos();
@@ -636,7 +665,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         company
       }
     });
-  }
+  };
   const login = async (email: string, password: string): Promise<void> => {
     const response = await api.post<{ accessToken: string }>(
       'auth/signin',

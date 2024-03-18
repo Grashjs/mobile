@@ -106,7 +106,8 @@ export default function RequestsScreen({
   }, [criteria]);
 
   useEffect(() => {
-    navigation.setOptions({
+    if(user.role.code==="REQUESTER")
+      navigation.setOptions({
       title: t('requests'),
       headerRight: () => (
         <View style={{

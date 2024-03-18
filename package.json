@@ -8,7 +8,8 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "format": "prettier --write \"./**/*.{ts,tsx,js,jsx,json}\" --config ./.prettierrc",
-    "eas-build-pre-install": "echo $GOOGLE_SERVICES_BASE64 | base64 --decode > ./google-services.json && echo $GOOGLE_SERVICES_BASE64 | base64 --decode > ./android/app/google-services.json"},
+    "eas-build-pre-install": "echo $GOOGLE_SERVICES_BASE64 | base64 --decode > ./google-services.json && echo $GOOGLE_SERVICES_BASE64 | base64 --decode > ./android/app/google-services.json"
+  },
   "jest": {
     "preset": "jest-expo"
   },
@@ -22,6 +23,7 @@
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.1.0",
     "@reduxjs/toolkit": "^1.9.3",
+    "@stomp/stompjs": "^7.0.0",
     "base-64": "^1.0.0",
     "deprecated-react-native-prop-types": "^4.0.0",
     "expo": "~47.0.12",
@@ -69,6 +71,9 @@
     "react-redux": "^8.0.5",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.2",
+    "sockjs-client": "^1.6.1",
+    "text-encoding": "^0.7.0",
+    "websocket": "^1.0.34",
     "yup": "^1.0.0"
   },
   "devDependencies": {
