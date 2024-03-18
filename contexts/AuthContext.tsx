@@ -41,6 +41,7 @@ import { revertAll } from '../utils/redux';
 import { apiUrl } from '../config';
 import { newReceivedNotification } from '../slices/notification';
 import Notification from '../models/notification';
+import { getMobileOverviewStats } from '../slices/analytics/workOrder';
 
 interface AuthState {
   isInitialized: boolean;
@@ -513,6 +514,10 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
               globalDispatch(
                 newReceivedNotification(notification)
               );
+              if(notification.notificationType==="WORK_ORDER"){
+                if (state.userSettings?.statsForAssignedWorkOrders !== undefined)
+                  globalDispatch(getMobileOverviewStats(state.userSettings.statsForAssignedWorkOrders));
+              }
             }
           );
           setStompClient(client);
@@ -523,7 +528,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     return () => {
       if (stompClient) stompClient.disconnect();
     };
-  }, [state?.user?.id]);
+  }, [state?.user?.id, state?.userSettings]);
   const switchLanguage = ({ lng }: { lng: any }) => {
     internationalization.changeLanguage(lng);
   };
