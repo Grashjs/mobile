@@ -502,33 +502,41 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     };
   }, [openedSettings]);
   useEffect(() => {
+    const disconnect = () => {
+      if (stompClient) {
+        stompClient.disconnect();
+        setStompClient(null);
+      }
+    };
     const registerStompClient = async () => {
-      if (state?.user?.id) {
-        const socket = new SockJS(`${apiUrl}ws`);
-        const client = Stomp.over(socket);
-        client.connect({ token: await AsyncStorage.getItem('accessToken') }, function(frame) {
-          const subscription = client.subscribe(
-            `/notifications/${state.user.id}`,
-            function(message) {
-              const notification: Notification = JSON.parse(message.body);
-              globalDispatch(
-                newReceivedNotification(notification)
-              );
-              if(notification.notificationType==="WORK_ORDER"){
-                if (state.userSettings?.statsForAssignedWorkOrders !== undefined)
-                  globalDispatch(getMobileOverviewStats(state.userSettings.statsForAssignedWorkOrders));
+      if (state?.user) {
+        if (!stompClient) {
+          const socket = new SockJS(`${apiUrl}ws`);
+          const client = Stomp.over(socket);
+          client.connect({ token: await AsyncStorage.getItem('accessToken') }, function(frame) {
+            const subscription = client.subscribe(
+              `/notifications/${state.user.id}`,
+              function(message) {
+                const notification: Notification = JSON.parse(message.body);
+                globalDispatch(
+                  newReceivedNotification(notification)
+                );
+                if (notification.notificationType === 'WORK_ORDER') {
+                  if (state.userSettings?.statsForAssignedWorkOrders !== undefined)
+                    globalDispatch(getMobileOverviewStats(state.userSettings.statsForAssignedWorkOrders));
+                }
               }
-            }
-          );
-          setStompClient(client);
-        });
+            );
+            setStompClient(client);
+          });
+        }
+      } else {
+        disconnect();
       }
     };
     registerStompClient();
-    return () => {
-      if (stompClient) stompClient.disconnect();
-    };
-  }, [state?.user?.id, state?.userSettings]);
+    return disconnect;
+  }, [state?.user?.id, state?.userSettings, stompClient]);
   const switchLanguage = ({ lng }: { lng: any }) => {
     internationalization.changeLanguage(lng);
   };
