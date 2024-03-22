@@ -58,10 +58,10 @@ export default function Form(props: OwnProps) {
     field,
     e:
       | (
-          | { label: string; value: number }
-          | { label: string; value: Task }
-          | Task
-        )[]
+      | { label: string; value: number }
+      | { label: string; value: Task }
+      | Task
+      )[]
       | string
       | number
       | Date
@@ -82,10 +82,10 @@ export default function Form(props: OwnProps) {
   const renderSelect = (formik, field: IField) => {
     let values:
       | (
-          | { label: string; value: number }
-          | { label: string; value: Task }
-          | Task
-        )[]
+      | { label: string; value: number }
+      | { label: string; value: Task }
+      | Task
+      )[]
       | { label: string; value: number } = formik.values[field.name];
     const excluded = field.excluded;
     let screenPath: keyof RootStackParamList;
@@ -99,7 +99,7 @@ export default function Form(props: OwnProps) {
         | AssetMiniDTO
         | Category
         | Task
-      )[]
+        )[]
     ) => void;
     let additionalNavigationOptions = {};
     switch (field.type2) {
@@ -192,7 +192,7 @@ export default function Form(props: OwnProps) {
           }));
           handleChange(formik, field.name, field.multiple ? value : value[0]);
         };
-        additionalNavigationOptions={locationId: formik.values[field.relatedFields[0].field]?.value??null}
+        additionalNavigationOptions = { locationId: field.relatedFields ? formik.values[field.relatedFields[0].field]?.value ?? null : null };
         break;
       case 'category':
         screenPath = 'SelectCategories';
@@ -227,12 +227,12 @@ export default function Form(props: OwnProps) {
       onChange,
       selected: Array.isArray(values)
         ? values.map((value) => {
-            if (isTask(value)) {
-              return value;
-            } else {
-              return value.value;
-            }
-          })
+          if (isTask(value)) {
+            return value;
+          } else {
+            return value.value;
+          }
+        })
         : [],
       multiple: field.multiple,
       ...additionalNavigationOptions
@@ -298,10 +298,10 @@ export default function Form(props: OwnProps) {
           </View>
           {field.multiple
             ? Array.isArray(values) &&
-              !!values?.length &&
-              values.map((value: { label: string; value: number }) =>
-                renderValue(value)
-              )
+            !!values?.length &&
+            values.map((value: { label: string; value: number }) =>
+              renderValue(value)
+            )
             : values && renderValue(values as { label: string; value: number })}
         </TouchableOpacity>
       );
@@ -380,8 +380,8 @@ export default function Form(props: OwnProps) {
                               (isTask(object) && isTask(item)
                                 ? item.id
                                 : isTask(item.value)
-                                ? item.value.id
-                                : 0)
+                                  ? item.value.id
+                                  : 0)
                             );
                           }
                         )
@@ -432,7 +432,7 @@ export default function Form(props: OwnProps) {
                 {field.type === 'text' ? (
                   <TextInput
                     style={{ width: '100%' }}
-                    mode="outlined"
+                    mode='outlined'
                     error={!!formik.errors[field.name] || field.error}
                     label={field.label}
                     placeholder={field.placeholder ?? field.label}
@@ -447,7 +447,7 @@ export default function Form(props: OwnProps) {
                 ) : field.type === 'number' ? (
                   <NumberInput
                     style={{ width: '100%' }}
-                    mode="outlined"
+                    mode='outlined'
                     error={!!formik.errors[field.name] || field.error}
                     label={field.label}
                     defaultValue={formik.values[field.name]}
@@ -553,7 +553,7 @@ export default function Form(props: OwnProps) {
                   renderSelect(formik, field)
                 )}
                 {Boolean(formik.errors[field.name]) && (
-                  <HelperText type="error">
+                  <HelperText type='error'>
                     {t(formik.errors[field.name]?.toString())}
                   </HelperText>
                 )}
@@ -562,7 +562,7 @@ export default function Form(props: OwnProps) {
             <Button
               style={{ marginVertical: 20, zIndex: 10 }}
               onPress={() => formik.handleSubmit()}
-              mode="contained"
+              mode='contained'
               loading={formik.isSubmitting}
               disabled={Boolean(formik.errors.submit) || formik.isSubmitting}
             >
