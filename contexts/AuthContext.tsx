@@ -42,6 +42,9 @@ import { apiUrl } from '../config';
 import { newReceivedNotification } from '../slices/notification';
 import Notification from '../models/notification';
 import { getMobileOverviewStats } from '../slices/analytics/workOrder';
+import Meter from '../models/meter';
+import { AssetDTO } from '../models/asset';
+import Location from '../models/location';
 
 interface AuthState {
   isInitialized: boolean;
@@ -908,8 +911,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         state.user.id === entity.id ||
         state.user.role.editOtherPermissions.includes(permissionEntity)
       );
-    }
-    if (permissionEntity === PermissionEntity.WORK_ORDERS) {
+    } else if (permissionEntity === PermissionEntity.WORK_ORDERS) {
       const isAssignedTo = (workOrder: WorkOrder, user: OwnUser): boolean => {
         let users = [];
         if (workOrder.primaryUser) {
@@ -919,7 +921,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
           users = users.concat(workOrder.team.users);
         }
         if (workOrder.assignedTo) {
-          users.concat(workOrder.assignedTo);
+          users = users.concat(workOrder.assignedTo);
         }
         return users.some((user1) => user1.id === user.id);
       };
@@ -927,6 +929,44 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         state.user.id === entity.createdBy ||
         state.user.role.editOtherPermissions.includes(permissionEntity) ||
         isAssignedTo(entity as unknown as WorkOrder, state.user)
+      );
+    } else if (permissionEntity === PermissionEntity.METERS) {
+      const isAssignedTo = (meter: Meter, user: OwnUser): boolean => {
+        return meter.users.some((user1) => user1.id === user.id);
+      };
+      return (
+        state.user.id === entity.createdBy ||
+        state.user.role.editOtherPermissions.includes(permissionEntity) ||
+        isAssignedTo(entity as unknown as Meter, state.user)
+      );
+    } else if (permissionEntity === PermissionEntity.ASSETS) {
+      const isAssignedTo = (asset: AssetDTO, user: OwnUser): boolean => {
+        let users = [];
+        if (asset.primaryUser) {
+          users.push(asset.primaryUser);
+        }
+        if (asset.assignedTo) {
+          users = users.concat(asset.assignedTo);
+        }
+        return users.some((user1) => user1.id === user.id);
+      };
+      return (
+        state.user.id === entity.createdBy ||
+        state.user.role.editOtherPermissions.includes(permissionEntity) ||
+        isAssignedTo(entity as unknown as AssetDTO, state.user)
+      );
+    } else if (permissionEntity === PermissionEntity.LOCATIONS) {
+      const isAssignedTo = (location: Location, user: OwnUser): boolean => {
+        let users = [];
+        if (location.workers) {
+          users = users.concat(location.workers);
+        }
+        return users.some((user1) => user1.id === user.id);
+      };
+      return (
+        state.user.id === entity.createdBy ||
+        state.user.role.editOtherPermissions.includes(permissionEntity) ||
+        isAssignedTo(entity as unknown as Location, state.user)
       );
     }
     return (
