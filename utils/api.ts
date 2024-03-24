@@ -6,7 +6,8 @@ async function api<T>(url: string, options): Promise<T> {
     (response) => {
       if (!response.ok) {
         if (response.status === 403) {
-          AsyncStorage.clear();
+          //TODO
+          // AsyncStorage.clear();
         }
         throw new Error(response.statusText);
       }
@@ -33,8 +34,8 @@ async function post<T>(
     body: isNotJson
       ? data
       : JSON.stringify(
-          withoutCompany ? data : { ...data, company: { id: companyId } }
-        )
+        withoutCompany ? data : { ...data, company: { id: companyId } }
+      )
   });
 }
 

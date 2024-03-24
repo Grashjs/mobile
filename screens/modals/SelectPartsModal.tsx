@@ -21,7 +21,7 @@ import {
   useTheme
 } from 'react-native-paper';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
-import { getMultiParts } from '../../slices/multipart';
+import { getMultiParts, getMultiPartsMini } from '../../slices/multipart';
 import SetType from '../../models/setType';
 
 const PartsRoute = ({
@@ -144,7 +144,7 @@ export default function SelectParts({
   const { t }: { t: any } = useTranslation();
   const dispatch = useDispatch();
   const { partsMini, loadingGet } = useSelector((state) => state.parts);
-  const { multiParts, loadingMultiparts } = useSelector(
+  const { miniMultiParts: multiParts, loadingMultiparts } = useSelector(
     (state) => state.multiParts
   );
   const [tabIndex, setTabIndex] = useState(0);
@@ -189,7 +189,7 @@ export default function SelectParts({
 
   useEffect(() => {
     dispatch(getPartsMini());
-    dispatch(getMultiParts());
+    dispatch(getMultiPartsMini());
   }, []);
 
   const onSelect = (ids: number[]) => {

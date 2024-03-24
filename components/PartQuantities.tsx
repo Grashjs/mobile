@@ -23,11 +23,11 @@ import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
 import { IconSource } from 'react-native-paper/src/components/Icon';
 
 export default function PartQuantities({
-  partQuantities,
-  rootId,
-  navigation,
-  isPO
-}: {
+                                         partQuantities,
+                                         rootId,
+                                         navigation,
+                                         isPO
+                                       }: {
   partQuantities: PartQuantity[];
   rootId: number;
   isPO: boolean;
@@ -81,6 +81,7 @@ export default function PartQuantities({
       {
         title: t('to_delete'),
         icon: 'delete-outline',
+        //TODO
         onPress: () => null,
         color: theme.colors.error
       }
@@ -111,12 +112,12 @@ export default function PartQuantities({
     return (
       <Portal theme={theme}>
         <Modal visible={openModal} onDismiss={hideModal} style={styles.modal}>
-          <Text variant="titleLarge" style={{ fontWeight: 'bold' }}>
+          <Text variant='titleLarge' style={{ fontWeight: 'bold' }}>
             {t('quantity')}
           </Text>
           <TextInput
             style={{ width: '100%', marginTop: 15 }}
-            mode="outlined"
+            mode='outlined'
             label={t('quantity')}
             onChangeText={(newQuantity) =>
               setQuantity(Number(newQuantity.replace(/[^0-9]/g, '')))
@@ -174,7 +175,7 @@ export default function PartQuantities({
                 marginLeft: 5
               }}
             >
-              <Text style={{ fontWeight: 'bold' }} variant="bodyLarge">
+              <Text style={{ fontWeight: 'bold' }} variant='bodyLarge'>
                 {partQuantity.part.name}
               </Text>
               <Text>{getFormattedCurrency(partQuantity.part.cost)}</Text>
@@ -184,7 +185,7 @@ export default function PartQuantities({
                 setCurrentPartQuantity(partQuantity);
                 actionSheetRef.current.show();
               }}
-              icon="dots-vertical"
+              icon='dots-vertical'
             />
           </View>
         ))
