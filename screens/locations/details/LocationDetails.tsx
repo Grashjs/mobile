@@ -47,8 +47,9 @@ export default function LocationDetails({ location }: { location: Location }) {
                   padding: 20
                 }}
               >
-                <Text>{field.label}</Text>
-                <Text style={{ fontWeight: 'bold' }}>{field.value}</Text>
+                <Text style={{ marginRight: 5 }}>{field.label}</Text>
+                <Text
+                  style={{ fontWeight: 'bold', flexShrink: 1 }}>{field.value}</Text>
               </View>
               <Divider />
             </View>

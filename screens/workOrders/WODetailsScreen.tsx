@@ -58,9 +58,9 @@ import WorkOrder from '../../models/workOrder';
 import { DownloadDirectoryPath, downloadFile, DownloadFileOptions } from 'react-native-fs';
 
 export default function WODetailsScreen({
-  navigation,
-  route
-}: RootStackScreenProps<'WODetails'>) {
+                                          navigation,
+                                          route
+                                        }: RootStackScreenProps<'WODetails'>) {
   const { id } = route.params;
   const { workOrderInfos, loadingGet } = useSelector(
     (state) => state.workOrders
@@ -71,8 +71,10 @@ export default function WODetailsScreen({
   const [dropDownValue, setDropdownValue] = useState<string>(
     workOrder?.status ?? ''
   );
-  const { hasEditPermission, user, companySettings, hasFeature,
-    hasViewPermission } = useAuth();
+  const {
+    hasEditPermission, user, companySettings, hasFeature,
+    hasViewPermission
+  } = useAuth();
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const { workOrderConfiguration, generalPreferences } = companySettings;
   const [loading, setLoading] = useState<boolean>(false);
@@ -214,7 +216,7 @@ export default function WODetailsScreen({
               });
             }}
           >
-            <IconButton icon="dots-vertical" />
+            <IconButton icon='dots-vertical' />
           </Pressable>
         )
     });
@@ -457,15 +459,15 @@ export default function WODetailsScreen({
     return result;
   };
   useEffect(() => {
-    if (dropDownValue !== workOrder?.status) onStatusChange(dropDownValue);
+    if (dropDownValue !== workOrder?.status && dropDownValue) onStatusChange(dropDownValue);
   }, [dropDownValue]);
 
   function ObjectField({
-    label,
-    value,
-    link,
-    permissionEntity
-  }: {
+                         label,
+                         value,
+                         link,
+                         permissionEntity
+                       }: {
     label: string;
     value: string | number;
     link: { route: keyof RootStackParamList; id: number };
@@ -479,19 +481,19 @@ export default function WODetailsScreen({
           onPress={() => navigation.navigate(link.route, { id: link.id })}
           style={{ marginTop: 20 }}
         >
-          <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>
+          <Text variant='titleMedium' style={{ fontWeight: 'bold' }}>
             {label}
           </Text>
-          <Text variant="bodyLarge">{value}</Text>
+          <Text variant='bodyLarge'>{value}</Text>
         </TouchableOpacity>
       );
     } else return null;
   }
 
   function BasicField({
-    label,
-    value
-  }: {
+                        label,
+                        value
+                      }: {
     label: string;
     value: string | number;
   }) {
@@ -499,10 +501,10 @@ export default function WODetailsScreen({
       return (
         <View key={label} style={{ marginTop: 20 }}>
           <Divider style={{ marginBottom: 20 }} />
-          <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>
+          <Text variant='titleMedium' style={{ fontWeight: 'bold' }}>
             {label}
           </Text>
-          <Text variant="bodyLarge">{value}</Text>
+          <Text variant='bodyLarge'>{value}</Text>
         </View>
       );
     else return null;
@@ -514,7 +516,7 @@ export default function WODetailsScreen({
         <Dialog visible={openArchive} onDismiss={() => setOpenArchive(false)}>
           <Dialog.Title>{t('confirmation')}</Dialog.Title>
           <Dialog.Content>
-            <Text variant="bodyMedium">
+            <Text variant='bodyMedium'>
               {t('wo_archive_confirm') + workOrder.title + ' ?'}
             </Text>
           </Dialog.Content>
@@ -532,7 +534,7 @@ export default function WODetailsScreen({
         <Dialog visible={openDelete} onDismiss={() => setOpenDelete(false)}>
           <Dialog.Title>{t('confirmation')}</Dialog.Title>
           <Dialog.Content>
-            <Text variant="bodyMedium">{t('confirm_delete_wo')}</Text>
+            <Text variant='bodyMedium'>{t('confirm_delete_wo')}</Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => setOpenDelete(false)}>{t('cancel')}</Button>
@@ -560,15 +562,15 @@ export default function WODetailsScreen({
               />
             }
           >
-            <Text variant="displaySmall">{workOrder.title}</Text>
+            <Text variant='displaySmall'>{workOrder.title}</Text>
             <View style={styles.row}>
               <Text
-                variant="titleMedium"
+                variant='titleMedium'
                 style={{ marginRight: 10 }}
               >{`#${id}`}</Text>
               <Tag
                 text={t('priority_label', { priority: t(workOrder.priority) })}
-                color="white"
+                color='white'
                 backgroundColor={getPriorityColor(workOrder.priority, theme)}
               />
             </View>
@@ -644,7 +646,7 @@ export default function WODetailsScreen({
                     <View style={{ marginTop: 20 }}>
                       <Divider style={{ marginBottom: 20 }} />
                       <Text
-                        variant="titleMedium"
+                        variant='titleMedium'
                         style={{ fontWeight: 'bold' }}
                       >
                         {t('signature')}
@@ -670,13 +672,13 @@ export default function WODetailsScreen({
               )}
               {!!workOrder.assignedTo.length && (
                 <View style={{ marginTop: 20 }}>
-                  <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>
+                  <Text variant='titleMedium' style={{ fontWeight: 'bold' }}>
                     {t('assigned_to')}
                   </Text>
                   {workOrder.assignedTo.map((user) => (
                     <TouchableOpacity key={user.id} style={{ marginTop: 5 }}>
                       <Text
-                        variant="bodyLarge"
+                        variant='bodyLarge'
                         style={{ marginTop: 15 }}
                       >{`${user.firstName} ${user.lastName}`}</Text>
                     </TouchableOpacity>
@@ -686,7 +688,7 @@ export default function WODetailsScreen({
                       key={customer.id}
                       style={{ marginTop: 5 }}
                     >
-                      <Text variant="bodyLarge" style={{ marginTop: 15 }}>
+                      <Text variant='bodyLarge' style={{ marginTop: 15 }}>
                         {customer.name}
                       </Text>
                     </TouchableOpacity>
@@ -755,7 +757,7 @@ export default function WODetailsScreen({
                           >
                             <Text
                               style={{ fontWeight: 'bold' }}
-                              variant="bodyLarge"
+                              variant='bodyLarge'
                             >
                               {cost.description}
                             </Text>
@@ -764,7 +766,7 @@ export default function WODetailsScreen({
                         ))}
                         <Text
                           style={{ fontWeight: 'bold' }}
-                          variant="bodyLarge"
+                          variant='bodyLarge'
                         >
                           {t('total')}
                         </Text>
@@ -815,13 +817,13 @@ export default function WODetailsScreen({
                       })
                     }
                   >
-                    <Text variant="titleLarge" style={{ fontWeight: 'bold' }}>
+                    <Text variant='titleLarge' style={{ fontWeight: 'bold' }}>
                       {' '}
                       {t('remaining_tasks', {
                         count: tasks.filter((task) => !task.value).length
                       })}
                     </Text>
-                    <Text variant="bodyMedium">
+                    <Text variant='bodyMedium'>
                       {t('complete_tasks_percent', {
                         percent: (
                           (tasks.filter((task) => task.value).length * 100) /
@@ -972,7 +974,7 @@ export default function WODetailsScreen({
               label={
                 runningTimer
                   ? t('stop_work_order')
-                  :durationToHours(primaryTime?.duration)
+                  : durationToHours(primaryTime?.duration)
               }
               disabled={
                 controllingTime ||
@@ -980,7 +982,7 @@ export default function WODetailsScreen({
               }
               theme={theme}
               variant={runningTimer ? 'primary' : 'secondary'}
-              color="white"
+              color='white'
               onPress={() => {
                 setControllingTime(true);
                 dispatch(controlTimer(!runningTimer, id)).finally(() =>
@@ -988,7 +990,6 @@ export default function WODetailsScreen({
                 );
               }}
               visible={true}
-              animateFrom={'right'}
               style={[styles.fabStyle]}
             />
           )}

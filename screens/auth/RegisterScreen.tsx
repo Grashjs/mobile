@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { phoneRegExp } from '../../utils/validators';
 import useAuth from '../../hooks/useAuth';
 import { IS_LOCALHOST } from '../../config';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import {
   Button,
   Checkbox,
@@ -17,14 +17,17 @@ import {
   useTheme
 } from 'react-native-paper';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
+import * as React from 'react';
 
 export default function RegisterScreen({
-  navigation
-}: AuthStackScreenProps<'Register'>) {
+                                         navigation
+                                       }: AuthStackScreenProps<'Register'>) {
   const { t } = useTranslation();
   const { register } = useAuth();
   const { showSnackBar } = useContext(CustomSnackBarContext);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const theme = useTheme();
+  const toggleShowPassword = () => setShowPassword((value) => !value);
   const getFieldsAndShapes = (): [
     { [key: string]: any },
     { [key: string]: any }
@@ -89,15 +92,15 @@ export default function RegisterScreen({
           }}
         >
           {({
-            errors,
-            handleBlur,
-            handleChange,
-            handleSubmit,
-            isSubmitting,
-            touched,
-            values,
-            setFieldValue
-          }) => (
+              errors,
+              handleBlur,
+              handleChange,
+              handleSubmit,
+              isSubmitting,
+              touched,
+              values,
+              setFieldValue
+            }) => (
             <View>
               <TextInput
                 error={Boolean(touched.firstName && errors.firstName)}
@@ -105,10 +108,10 @@ export default function RegisterScreen({
                 onBlur={handleBlur('firstName')}
                 onChangeText={handleChange('firstName')}
                 value={values.firstName}
-                mode="outlined"
+                mode='outlined'
               />
               <HelperText
-                type="error"
+                type='error'
                 visible={Boolean(touched.firstName && errors.firstName)}
               >
                 {errors.firstName?.toString()}
@@ -119,10 +122,10 @@ export default function RegisterScreen({
                 onBlur={handleBlur('lastName')}
                 onChangeText={handleChange('lastName')}
                 value={values.lastName}
-                mode="outlined"
+                mode='outlined'
               />
               <HelperText
-                type="error"
+                type='error'
                 visible={Boolean(touched.lastName && errors.lastName)}
               >
                 {errors.lastName?.toString()}
@@ -133,10 +136,10 @@ export default function RegisterScreen({
                 onBlur={handleBlur('email')}
                 onChangeText={handleChange('email')}
                 value={values.email}
-                mode="outlined"
+                mode='outlined'
               />
               <HelperText
-                type="error"
+                type='error'
                 visible={Boolean(touched.email && errors.email)}
               >
                 {errors.email?.toString()}
@@ -147,10 +150,10 @@ export default function RegisterScreen({
                 onBlur={handleBlur('phone')}
                 onChangeText={handleChange('phone')}
                 value={values.phone}
-                mode="outlined"
+                mode='outlined'
               />
               <HelperText
-                type="error"
+                type='error'
                 visible={Boolean(touched.phone && errors.phone)}
               >
                 {errors.phone?.toString()}
@@ -161,11 +164,12 @@ export default function RegisterScreen({
                 onBlur={handleBlur('password')}
                 onChangeText={handleChange('password')}
                 value={values.password}
-                secureTextEntry={true}
-                mode="outlined"
+                secureTextEntry={!showPassword}
+                right={<TextInput.Icon onPress={toggleShowPassword} icon='eye' />}
+                mode='outlined'
               />
               <HelperText
-                type="error"
+                type='error'
                 visible={Boolean(touched.password && errors.password)}
               >
                 {errors.password?.toString()}
@@ -176,10 +180,10 @@ export default function RegisterScreen({
                 onBlur={handleBlur('companyName')}
                 onChangeText={handleChange('companyName')}
                 value={values.companyName}
-                mode="outlined"
+                mode='outlined'
               />
               <HelperText
-                type="error"
+                type='error'
                 visible={Boolean(touched.companyName && errors.companyName)}
               >
                 {errors.companyName?.toString()}
@@ -190,10 +194,10 @@ export default function RegisterScreen({
                 onBlur={handleBlur('employeesCount')}
                 onChangeText={handleChange('employeesCount')}
                 value={values.employeesCount}
-                mode="outlined"
+                mode='outlined'
               />
               <HelperText
-                type="error"
+                type='error'
                 visible={Boolean(
                   touched.employeesCount && errors.employeesCount
                 )}
@@ -213,7 +217,7 @@ export default function RegisterScreen({
                   )}`}</Text>
                 </View>
               </View>
-              <HelperText type="error" visible={!!errors.terms}>
+              <HelperText type='error' visible={!!errors.terms}>
                 {errors.terms?.toString()}
               </HelperText>
               <Button
@@ -221,7 +225,7 @@ export default function RegisterScreen({
                 onPress={() => handleSubmit()}
                 loading={isSubmitting}
                 disabled={isSubmitting}
-                mode="contained"
+                mode='contained'
               >
                 {t('create_your_account')}
               </Button>

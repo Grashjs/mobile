@@ -15,9 +15,9 @@ import { getCategories } from '../../slices/category';
 import { Checkbox, Divider, Text, useTheme } from 'react-native-paper';
 
 export default function SelectCategoriesModal({
-  navigation,
-  route
-}: RootStackScreenProps<'SelectCategories'>) {
+                                                navigation,
+                                                route
+                                              }: RootStackScreenProps<'SelectCategories'>) {
   const { onChange, selected, multiple, type } = route.params;
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
@@ -52,7 +52,7 @@ export default function SelectCategoriesModal({
               navigation.goBack();
             }}
           >
-            <Text variant="titleMedium">{t('add')}</Text>
+            <Text variant='titleMedium'>{t('add')}</Text>
           </Pressable>
         )
       });
@@ -88,7 +88,6 @@ export default function SelectCategoriesModal({
         //   <RefreshControl refreshing={loadingGet} onRefresh={() => dispatch(getCategories())} />}
         style={{
           flex: 1,
-          paddingHorizontal: 20,
           backgroundColor: theme.colors.background
         }}
       >
@@ -99,9 +98,8 @@ export default function SelectCategoriesModal({
             }}
             key={category.id}
             style={{
-              marginTop: 5,
               borderRadius: 5,
-              padding: 10,
+              padding: 15,
               backgroundColor: 'white',
               display: 'flex',
               flexDirection: 'row',
@@ -119,9 +117,7 @@ export default function SelectCategoriesModal({
                 }}
               />
             )}
-            <View style={{ display: 'flex', flexDirection: 'column' }}>
-              <Text variant={'titleMedium'}>{category.name}</Text>
-            </View>
+            <Text variant={'titleMedium'}>{category.name}</Text>
             <Divider />
           </TouchableOpacity>
         ))}

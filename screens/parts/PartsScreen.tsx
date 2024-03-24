@@ -22,9 +22,9 @@ import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
 import noPictureImage from '../../assets/images/no-image.png';
 
 export default function PartsScreen({
-  navigation,
-  route
-}: RootStackScreenProps<'Parts'>) {
+                                      navigation,
+                                      route
+                                    }: RootStackScreenProps<'Parts'>) {
   const { t } = useTranslation();
   const [startedSearch, setStartedSearch] = useState<boolean>(false);
   const { parts, loadingGet, currentPageNum, lastPage } = useSelector(
@@ -73,10 +73,10 @@ export default function PartsScreen({
   };
 
   const isCloseToBottom = ({
-    layoutMeasurement,
-    contentOffset,
-    contentSize
-  }) => {
+                             layoutMeasurement,
+                             contentOffset,
+                             contentSize
+                           }) => {
     const paddingToBottom = 20;
     return (
       layoutMeasurement.height + contentOffset.y >=
@@ -88,7 +88,6 @@ export default function PartsScreen({
       'name',
       'barcode',
       'area',
-      'category',
       'additionalInfos',
       'description'
     ]);
@@ -145,8 +144,8 @@ export default function PartsScreen({
                       source={
                         part.image
                           ? {
-                              uri: part.image.url
-                            }
+                            uri: part.image.url
+                          }
                           : noPictureImage
                       }
                     />

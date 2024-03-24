@@ -16,9 +16,9 @@ import { getAssetsMini } from '../../slices/asset';
 import { Checkbox, Divider, Text, useTheme } from 'react-native-paper';
 
 export default function SelectAssetsModal({
-  navigation,
-  route
-}: RootStackScreenProps<'SelectAssets'>) {
+                                            navigation,
+                                            route
+                                          }: RootStackScreenProps<'SelectAssets'>) {
   const { onChange, selected, multiple, locationId } = route.params;
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
@@ -53,7 +53,7 @@ export default function SelectAssetsModal({
               navigation.goBack();
             }}
           >
-            <Text variant="titleMedium">{t('add')}</Text>
+            <Text variant='titleMedium'>{t('add')}</Text>
           </Pressable>
         )
       });
@@ -93,7 +93,6 @@ export default function SelectAssetsModal({
         }
         style={{
           flex: 1,
-          paddingHorizontal: 20,
           backgroundColor: theme.colors.background
         }}
       >
@@ -104,9 +103,8 @@ export default function SelectAssetsModal({
             }}
             key={asset.id}
             style={{
-              marginTop: 5,
               borderRadius: 5,
-              padding: 10,
+              padding: 15,
               backgroundColor: 'white',
               display: 'flex',
               flexDirection: 'row',

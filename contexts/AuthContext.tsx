@@ -610,9 +610,10 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
       return;
     }
   };
-  const savePushToken = (token: string) =>
-    api.post<{ success: boolean }>(`notifications/push-token`, { token });
-
+  const savePushToken = (token: string) => {
+    if (token)
+      api.post<{ success: boolean }>(`notifications/push-token`, { token });
+  };
   const setupUser = async (companySettings: CompanySettings) => {
     switchLanguage({
       lng: companySettings.generalPreferences.language.toLowerCase()

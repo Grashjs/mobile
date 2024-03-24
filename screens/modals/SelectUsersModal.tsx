@@ -16,9 +16,9 @@ import { getUsersMini } from '../../slices/user';
 import { Checkbox, Divider, Text, useTheme } from 'react-native-paper';
 
 export default function SelectUsersModal({
-  navigation,
-  route
-}: RootStackScreenProps<'SelectUsers'>) {
+                                           navigation,
+                                           route
+                                         }: RootStackScreenProps<'SelectUsers'>) {
   const { onChange, selected, multiple } = route.params;
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
@@ -53,7 +53,7 @@ export default function SelectUsersModal({
               navigation.goBack();
             }}
           >
-            <Text variant="titleMedium">{t('add')}</Text>
+            <Text variant='titleMedium'>{t('add')}</Text>
           </Pressable>
         )
       });
@@ -93,7 +93,6 @@ export default function SelectUsersModal({
         }
         style={{
           flex: 1,
-          paddingHorizontal: 20,
           backgroundColor: theme.colors.background
         }}
       >
@@ -104,9 +103,8 @@ export default function SelectUsersModal({
             }}
             key={user.id}
             style={{
-              marginTop: 5,
               borderRadius: 5,
-              padding: 10,
+              padding: 15,
               backgroundColor: 'white',
               display: 'flex',
               flexDirection: 'row',

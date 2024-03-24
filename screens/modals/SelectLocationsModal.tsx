@@ -16,9 +16,9 @@ import { getLocationsMini } from '../../slices/location';
 import { Checkbox, Divider, Text, useTheme } from 'react-native-paper';
 
 export default function SelectLocationsModal({
-  navigation,
-  route
-}: RootStackScreenProps<'SelectLocations'>) {
+                                               navigation,
+                                               route
+                                             }: RootStackScreenProps<'SelectLocations'>) {
   const { onChange, selected, multiple } = route.params;
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
@@ -55,7 +55,7 @@ export default function SelectLocationsModal({
               navigation.goBack();
             }}
           >
-            <Text variant="titleMedium">{t('add')}</Text>
+            <Text variant='titleMedium'>{t('add')}</Text>
           </Pressable>
         )
       });
@@ -95,7 +95,6 @@ export default function SelectLocationsModal({
         }
         style={{
           flex: 1,
-          paddingHorizontal: 20,
           backgroundColor: theme.colors.background
         }}
       >
@@ -106,9 +105,8 @@ export default function SelectLocationsModal({
             }}
             key={location.id}
             style={{
-              marginTop: 5,
               borderRadius: 5,
-              padding: 10,
+              padding: 15,
               backgroundColor: 'white',
               display: 'flex',
               flexDirection: 'row',

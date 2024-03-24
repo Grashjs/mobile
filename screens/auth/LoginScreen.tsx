@@ -5,7 +5,7 @@ import { AuthStackScreenProps } from '../../types';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import useAuth from '../../hooks/useAuth';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import {
   Button,
   HelperText,
@@ -24,6 +24,8 @@ export default function LoginScreen({
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const { login } = useAuth();
   const theme = useTheme();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const toggleShowPassword = () => setShowPassword((value) => !value);
 
   return (
     <View style={styles.container}>
@@ -75,7 +77,7 @@ export default function LoginScreen({
                 onChangeText={handleChange('email')}
                 value={values.email}
                 mode='outlined'
-                style={{marginBottom: 10}}
+                style={{ marginBottom: 10 }}
               />
               {Boolean(touched.email && errors.email) && (
                 <HelperText type='error'>{errors.email?.toString()}</HelperText>
@@ -86,7 +88,8 @@ export default function LoginScreen({
                 onBlur={handleBlur('password')}
                 onChangeText={handleChange('password')}
                 value={values.password}
-                secureTextEntry={true}
+                secureTextEntry={!showPassword}
+                right={<TextInput.Icon onPress={toggleShowPassword} icon='eye' />}
                 mode='outlined'
               />
               {Boolean(touched.password && errors.password) && (

@@ -25,23 +25,24 @@ import { getMultiParts } from '../../slices/multipart';
 import SetType from '../../models/setType';
 
 const PartsRoute = ({
-  toggle,
-  partsMini,
-  selectedIds
-}: {
+                      toggle,
+                      partsMini,
+                      navigation,
+                      selectedIds
+                    }: {
   toggle: (id: number) => void;
   partsMini: PartMiniDTO[];
   selectedIds: number[];
+  navigation: any;
 }) => {
   const { getFormattedCurrency } = useContext(CompanySettingsContext);
   const { t } = useTranslation();
   return (
-    <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
+    <ScrollView style={{ flex: 1 }}>
       {partsMini.map((part) => (
         <View
           key={part.id}
           style={{
-            marginTop: 5,
             padding: 10,
             display: 'flex',
             borderRadius: 5,
@@ -66,8 +67,9 @@ const PartsRoute = ({
           </View>
           <Button
             style={{ width: '40%' }}
-            mode="outlined"
+            mode='outlined'
             buttonColor={'white'}
+            onPress={() => navigation.navigate('PartDetails', { id: part.id })}
           >
             {t('details')}
           </Button>
@@ -78,10 +80,10 @@ const PartsRoute = ({
 };
 
 const SetsRoute = ({
-  toggle,
-  multiParts,
-  selectedIds
-}: {
+                     toggle,
+                     multiParts,
+                     selectedIds
+                   }: {
   toggle: (multiPart: SetType, checked: boolean) => void;
   multiParts: SetType[];
   selectedIds: number[];
@@ -94,12 +96,11 @@ const SetsRoute = ({
     )
     .map((multiPart) => multiPart.id);
   return (
-    <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
+    <ScrollView style={{ flex: 1 }}>
       {multiParts.map((multiPart) => (
         <View
           key={multiPart.id}
           style={{
-            marginTop: 5,
             padding: 10,
             display: 'flex',
             flexDirection: 'row',
@@ -124,7 +125,7 @@ const SetsRoute = ({
           </View>
           <Button
             style={{ width: '40%' }}
-            mode="outlined"
+            mode='outlined'
             buttonColor={'white'}
           >
             {t('details')}
@@ -135,9 +136,9 @@ const SetsRoute = ({
   );
 };
 export default function SelectParts({
-  navigation,
-  route
-}: RootStackScreenProps<'SelectParts'>) {
+                                      navigation,
+                                      route
+                                    }: RootStackScreenProps<'SelectParts'>) {
   const { onChange, selected } = route.params;
   const theme = useTheme();
   const { t }: { t: any } = useTranslation();
@@ -180,7 +181,7 @@ export default function SelectParts({
             navigation.goBack();
           }}
         >
-          <Text variant="titleMedium">{t('add')}</Text>
+          <Text variant='titleMedium'>{t('add')}</Text>
         </Pressable>
       )
     });
@@ -216,6 +217,7 @@ export default function SelectParts({
         return (
           <PartsRoute
             toggle={toggle}
+            navigation={navigation}
             partsMini={partsMini}
             selectedIds={selectedIds}
           />
@@ -245,7 +247,7 @@ export default function SelectParts({
         (loadingMultiparts && tabIndex === 1)) && (
         <ActivityIndicator
           style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 10 }}
-          size="large"
+          size='large'
         />
       )}
       <TabView
