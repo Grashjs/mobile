@@ -9,11 +9,12 @@ import { useTranslation } from 'react-i18next';
 import { View } from '../../components/Themed';
 import { getUserDetails } from '../../slices/user';
 import { getUserInitials } from '../../utils/displayers';
+import BasicField from '../../components/BasicField';
 
 export default function UserDetails({
-  navigation,
-  route
-}: RootStackScreenProps<'UserDetails'>) {
+                                      navigation,
+                                      route
+                                    }: RootStackScreenProps<'UserDetails'>) {
   const { id } = route.params;
   const { loadingGet, userInfos } = useSelector((state) => state.users);
   const user = userInfos[id]?.user;
@@ -66,32 +67,6 @@ export default function UserDetails({
     });
   }, [user]);
 
-  function BasicField({
-    label,
-    value
-  }: {
-    label: string;
-    value: string | number;
-  }) {
-    if (value)
-      return (
-        <View>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              padding: 20
-            }}
-          >
-            <Text>{label}</Text>
-            <Text style={{ fontWeight: 'bold' }}>{value}</Text>
-          </View>
-          <Divider />
-        </View>
-      );
-    else return null;
-  }
 
   if (user)
     return (

@@ -19,11 +19,12 @@ import { deleteVendor, getVendorDetails } from '../../../slices/vendor';
 import { SheetManager } from 'react-native-actions-sheet';
 import { CustomSnackBarContext } from '../../../contexts/CustomSnackBarContext';
 import { CompanySettingsContext } from '../../../contexts/CompanySettingsContext';
+import BasicField from '../../../components/BasicField';
 
 export default function VendorDetailsScreen({
-  navigation,
-  route
-}: RootStackScreenProps<'VendorDetails'>) {
+                                              navigation,
+                                              route
+                                            }: RootStackScreenProps<'VendorDetails'>) {
   const { id } = route.params;
   const { vendorInfos, loadingGet } = useSelector((state) => state.vendors);
   const vendor = vendorInfos[id]?.vendor;
@@ -52,7 +53,7 @@ export default function VendorDetailsScreen({
             });
           }}
         >
-          <IconButton icon="dots-vertical" />
+          <IconButton icon='dots-vertical' />
         </Pressable>
       )
     });
@@ -80,32 +81,6 @@ export default function VendorDetailsScreen({
     }
   ];
 
-  function BasicField({
-    label,
-    value
-  }: {
-    label: string;
-    value: string | number;
-  }) {
-    if (value)
-      return (
-        <View>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              padding: 20
-            }}
-          >
-            <Text>{label}</Text>
-            <Text style={{ fontWeight: 'bold' }}>{value}</Text>
-          </View>
-          <Divider />
-        </View>
-      );
-    else return null;
-  }
 
   const onDeleteSuccess = () => {
     showSnackBar(t('vendor_delete_success'), 'success');
@@ -126,7 +101,7 @@ export default function VendorDetailsScreen({
         <Dialog visible={openDelete} onDismiss={() => setOpenDelete(false)}>
           <Dialog.Title>{t('confirmation')}</Dialog.Title>
           <Dialog.Content>
-            <Text variant="bodyMedium">{t('confirm_delete_vendor')}</Text>
+            <Text variant='bodyMedium'>{t('confirm_delete_vendor')}</Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => setOpenDelete(false)}>{t('cancel')}</Button>

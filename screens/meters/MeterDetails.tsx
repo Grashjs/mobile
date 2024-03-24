@@ -26,11 +26,12 @@ import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import { SheetManager } from 'react-native-actions-sheet';
 import { canAddReading } from '../../utils/overall';
 import NumberInput from '../../components/NumberInput';
+import BasicField from '../../components/BasicField';
 
 export default function MeterDetails({
-  navigation,
-  route
-}: RootStackScreenProps<'MeterDetails'>) {
+                                       navigation,
+                                       route
+                                     }: RootStackScreenProps<'MeterDetails'>) {
   const { id } = route.params;
   const { loadingGet, meterInfos } = useSelector((state) => state.meters);
   const { readingsByMeter } = useSelector((state) => state.readings);
@@ -83,7 +84,7 @@ export default function MeterDetails({
         <Dialog visible={openDelete} onDismiss={() => setOpenDelete(false)}>
           <Dialog.Title>{t('confirmation')}</Dialog.Title>
           <Dialog.Content>
-            <Text variant="bodyMedium">{t('confirm_delete_meter')}</Text>
+            <Text variant='bodyMedium'>{t('confirm_delete_meter')}</Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => setOpenDelete(false)}>{t('cancel')}</Button>
@@ -116,7 +117,7 @@ export default function MeterDetails({
             });
           }}
         >
-          <IconButton icon="dots-vertical" />
+          <IconButton icon='dots-vertical' />
         </Pressable>
       )
     });
@@ -132,32 +133,6 @@ export default function MeterDetails({
       .finally(() => setIsSubmitting(false));
   };
 
-  function BasicField({
-    label,
-    value
-  }: {
-    label: string;
-    value: string | number;
-  }) {
-    if (value)
-      return (
-        <View>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              padding: 20
-            }}
-          >
-            <Text>{label}</Text>
-            <Text style={{ fontWeight: 'bold' }}>{value}</Text>
-          </View>
-          <Divider />
-        </View>
-      );
-    else return null;
-  }
 
   const renderAddReading = () => {
     return (
@@ -171,7 +146,7 @@ export default function MeterDetails({
           <Dialog.Content>
             <NumberInput
               style={{ width: '100%' }}
-              mode="outlined"
+              mode='outlined'
               label={t('reading')}
               defaultValue={'0'}
               placeholder={t('meter_reading')}
@@ -180,7 +155,8 @@ export default function MeterDetails({
               }}
               disabled={isSubmitting}
               error={false}
-              onBlur={function (e: any): void {}}
+              onBlur={function(e: any): void {
+              }}
               multiline={false}
             />
           </Dialog.Content>
