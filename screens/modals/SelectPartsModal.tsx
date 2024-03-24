@@ -16,8 +16,8 @@ import { getPartsMini } from '../../slices/part';
 import {
   ActivityIndicator,
   Button,
-  Checkbox,
-  Text,
+  Checkbox, Searchbar,
+  Text, TextInput,
   useTheme
 } from 'react-native-paper';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
@@ -37,45 +37,54 @@ const PartsRoute = ({
 }) => {
   const { getFormattedCurrency } = useContext(CompanySettingsContext);
   const { t } = useTranslation();
+  const [searchQuery, setSearchQuery] = useState<string>('');
   return (
-    <ScrollView style={{ flex: 1 }}>
-      {partsMini.map((part) => (
-        <View
-          key={part.id}
-          style={{
-            padding: 10,
-            display: 'flex',
-            borderRadius: 5,
-            flexDirection: 'row',
-            elevation: 2,
-            justifyContent: 'space-between'
-          }}
-        >
-          <Checkbox
-            status={selectedIds.includes(part.id) ? 'checked' : 'unchecked'}
-            onPress={() => {
-              toggle(part.id);
-            }}
-          />
+    <View style={{ flex: 1 }}>
+      <Searchbar
+        placeholder={t('search')}
+        onChangeText={setSearchQuery}
+        value={searchQuery}
+      />
+
+      <ScrollView style={{ flex: 1 }}>
+        {partsMini.filter(part => part.name.toLowerCase().includes(searchQuery.toLowerCase().trim())).map((part) => (
           <View
-            style={{ display: 'flex', flexDirection: 'column', width: '50%' }}
+            key={part.id}
+            style={{
+              padding: 10,
+              display: 'flex',
+              borderRadius: 5,
+              flexDirection: 'row',
+              elevation: 2,
+              justifyContent: 'space-between'
+            }}
           >
-            <Text variant={'labelMedium'}>{part.name}</Text>
-            <Text variant={'bodyMedium'}>
-              {getFormattedCurrency(part.cost)}
-            </Text>
+            <Checkbox
+              status={selectedIds.includes(part.id) ? 'checked' : 'unchecked'}
+              onPress={() => {
+                toggle(part.id);
+              }}
+            />
+            <View
+              style={{ display: 'flex', flexDirection: 'column', width: '50%' }}
+            >
+              <Text variant={'labelMedium'}>{part.name}</Text>
+              <Text variant={'bodyMedium'}>
+                {getFormattedCurrency(part.cost)}
+              </Text>
+            </View>
+            <Button
+              style={{ width: '40%' }}
+              mode='outlined'
+              buttonColor={'white'}
+              onPress={() => navigation.navigate('PartDetails', { id: part.id })}
+            >
+              {t('details')}
+            </Button>
           </View>
-          <Button
-            style={{ width: '40%' }}
-            mode='outlined'
-            buttonColor={'white'}
-            onPress={() => navigation.navigate('PartDetails', { id: part.id })}
-          >
-            {t('details')}
-          </Button>
-        </View>
-      ))}
-    </ScrollView>
+        ))}
+      </ScrollView>
+    </View>
   );
 };
 
@@ -90,49 +99,57 @@ const SetsRoute = ({
 }) => {
   const { getFormattedCurrency } = useContext(CompanySettingsContext);
   const { t } = useTranslation();
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const selectedMultiParts = multiParts
     .filter((multiPart) =>
       multiPart.parts.every((part) => selectedIds.includes(part.id))
     )
     .map((multiPart) => multiPart.id);
   return (
-    <ScrollView style={{ flex: 1 }}>
-      {multiParts.map((multiPart) => (
-        <View
-          key={multiPart.id}
-          style={{
-            padding: 10,
-            display: 'flex',
-            flexDirection: 'row',
-            elevation: 2,
-            justifyContent: 'space-between'
-          }}
-        >
-          <Checkbox
-            status={
-              selectedMultiParts.includes(multiPart.id)
-                ? 'checked'
-                : 'unchecked'
-            }
-            onPress={() => {
-              toggle(multiPart, selectedMultiParts.includes(multiPart.id));
-            }}
-          />
+    <View style={{ flex: 1 }}>
+      <Searchbar
+        placeholder={t('search')}
+        onChangeText={setSearchQuery}
+        value={searchQuery}
+      />
+      <ScrollView style={{ flex: 1 }}>
+        {multiParts.filter(multiPart => multiPart.name.toLowerCase().includes(searchQuery.toLowerCase().trim())).map((multiPart) => (
           <View
-            style={{ display: 'flex', flexDirection: 'column', width: '50%' }}
+            key={multiPart.id}
+            style={{
+              padding: 10,
+              display: 'flex',
+              flexDirection: 'row',
+              elevation: 2,
+              justifyContent: 'space-between'
+            }}
           >
-            <Text variant={'labelMedium'}>{multiPart.name}</Text>
+            <Checkbox
+              status={
+                selectedMultiParts.includes(multiPart.id)
+                  ? 'checked'
+                  : 'unchecked'
+              }
+              onPress={() => {
+                toggle(multiPart, selectedMultiParts.includes(multiPart.id));
+              }}
+            />
+            <View
+              style={{ display: 'flex', flexDirection: 'column', width: '50%' }}
+            >
+              <Text variant={'labelMedium'}>{multiPart.name}</Text>
+            </View>
+            <Button
+              style={{ width: '40%' }}
+              mode='outlined'
+              buttonColor={'white'}
+            >
+              {t('details')}
+            </Button>
           </View>
-          <Button
-            style={{ width: '40%' }}
-            mode='outlined'
-            buttonColor={'white'}
-          >
-            {t('details')}
-          </Button>
-        </View>
-      ))}
-    </ScrollView>
+        ))}
+      </ScrollView>
+    </View>
   );
 };
 export default function SelectParts({
