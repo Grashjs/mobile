@@ -2,7 +2,7 @@ import { View } from './Themed';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import { DocumentResult } from 'expo-document-picker';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import * as Permissions from 'expo-permissions';
 import {
   Alert,
@@ -12,9 +12,12 @@ import {
   Text,
   TouchableOpacity
 } from 'react-native';
-import { useTheme } from 'react-native-paper';
+import { Divider, List, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import mime from 'mime';
+import { IconSource } from 'react-native-paper/src/components/Icon';
+import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
+import * as React from 'react';
 
 interface OwnProps {
   title: string;
@@ -25,14 +28,15 @@ interface OwnProps {
 }
 
 export default function FileUpload({
-  title,
-  type,
-  multiple,
-  onChange
-}: OwnProps) {
+                                     title,
+                                     type,
+                                     multiple,
+                                     onChange
+                                   }: OwnProps) {
   const [images, setImages] = useState([]);
   const [file, setFile] = useState<DocumentResult>();
   const theme = useTheme();
+  const actionSheetRef = useRef<ActionSheetRef>(null);
   const { t } = useTranslation();
   const checkPermissions = async () => {
     try {
@@ -69,6 +73,23 @@ export default function FileUpload({
       return false;
     }
   };
+  const takePhoto = async () => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    if (status === 'granted') {
+      try {
+        const result = await ImagePicker.launchCameraAsync({
+          allowsEditing: true,
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsMultipleSelection: multiple,
+          selectionLimit: 10,
+          quality: 1
+        });
+        onImagePicked(result);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
@@ -79,21 +100,23 @@ export default function FileUpload({
         selectionLimit: 10,
         quality: 1
       });
-
-      if (!result.canceled) {
-        setImages(result.assets.map((asset) => asset.uri));
-        onChange(
-          result.assets.map((asset) => {
-            const fileName =
-              asset.uri.split('/')[asset.uri.split('/').length - 1];
-            return {
-              uri: asset.uri,
-              name: fileName,
-              type: mime.getType(fileName)
-            };
-          })
-        );
-      }
+      onImagePicked(result);
+    }
+  };
+  const onImagePicked = (result: ImagePicker.ImagePickerResult) => {
+    if (!result.canceled) {
+      setImages(result.assets.map((asset) => asset.uri));
+      onChange(
+        result.assets.map((asset) => {
+          const fileName =
+            asset.uri.split('/')[asset.uri.split('/').length - 1];
+          return {
+            uri: asset.uri,
+            name: fileName,
+            type: mime.getType(fileName)
+          };
+        })
+      );
     }
   };
   const pickFile = async () => {
@@ -113,8 +136,47 @@ export default function FileUpload({
     }
   };
   const onPress = () => {
-    if (type === 'image') pickImage();
+    if (type === 'image') actionSheetRef.current.show();
     else pickFile();
+  };
+  const renderActionSheet = () => {
+    const options: {
+      title: string;
+      icon: IconSource;
+      onPress: () => void;
+    }[] = [
+      {
+        title: t('library'),
+        icon: 'image-multiple',
+        onPress: pickImage
+      },
+      {
+        title: t('camera'),
+        icon: 'camera',
+        //TODO
+        onPress: takePhoto
+      }
+    ];
+
+    return (
+      <ActionSheet ref={actionSheetRef}>
+        <View style={{ padding: 15 }}>
+          <Divider />
+          <List.Section>
+            {options.map((entity, index) => (
+              <List.Item
+                key={index}
+                title={entity.title}
+                left={() => (
+                  <List.Icon icon={entity.icon} />
+                )}
+                onPress={entity.onPress}
+              />
+            ))}
+          </List.Section>
+        </View>
+      </ActionSheet>
+    );
   };
   return (
     <View style={{ display: 'flex', flexDirection: 'column' }}>
@@ -131,6 +193,7 @@ export default function FileUpload({
           <Text style={{ color: theme.colors.primary }}>{file.name}</Text>
         )}
       </ScrollView>
+      {renderActionSheet()}
     </View>
   );
 }
