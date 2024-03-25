@@ -1421,7 +1421,8 @@ const enJSON = {
   manufacturer: 'Manufacturer',
   power: 'Power',
   library: 'Library',
-  camera: 'Camera'
+  camera: 'Camera',
+  CANCELLED: 'Rejected'
 };
 
 export default enJSON;

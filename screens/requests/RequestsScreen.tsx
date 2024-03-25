@@ -26,6 +26,8 @@ import { useDebouncedEffect } from '../../hooks/useDebouncedEffect';
 import { dayDiff } from '../../utils/dates';
 import { getNotifications } from '../../slices/notification';
 import { SheetManager } from 'react-native-actions-sheet';
+import _ from 'lodash';
+import EnumFilter from '../workOrders/EnumFilter';
 
 function IconWithLabel({
                          icon,
@@ -69,7 +71,22 @@ export default function RequestsScreen({
     direction: 'DESC'
   };
   const { hasViewPermission, user } = useAuth();
-  const defaultFilterFields: FilterField[] = [];
+  const defaultFilterFields: FilterField[] = [
+    {
+      field: 'priority',
+      operation: 'in',
+      values: ['NONE', 'LOW', 'MEDIUM', 'HIGH'],
+      value: '',
+      enumName: 'PRIORITY'
+    },
+    {
+      field: 'status',
+      operation: 'in',
+      values: ['APPROVED', 'CANCELLED', 'PENDING'],
+      value: '',
+      enumName: 'STATUS'
+    }
+  ];
   const getCriteriaFromFilterFields = (filterFields: FilterField[]) => {
     const initialCriteria: SearchCriteria = {
       filterFields: defaultFilterFields,
@@ -106,46 +123,46 @@ export default function RequestsScreen({
   }, [criteria]);
 
   useEffect(() => {
-    if(user.role.code==="REQUESTER")
+    if (user.role.code === 'REQUESTER')
       navigation.setOptions({
-      title: t('requests'),
-      headerRight: () => (
-        <View style={{
-          display: 'flex',
-          flexDirection: 'row'
-        }}>
-          <Pressable onPress={() => navigation.navigate('Notifications')} style={{ position: 'relative' }}>
-            <IconButton
-              icon={'bell-outline'}
-            />
-            <Badge
-              style={{
-                position: 'absolute',
-                bottom: 0,
-                right: 0,
-                backgroundColor: theme.colors.error
+        title: t('requests'),
+        headerRight: () => (
+          <View style={{
+            display: 'flex',
+            flexDirection: 'row'
+          }}>
+            <Pressable onPress={() => navigation.navigate('Notifications')} style={{ position: 'relative' }}>
+              <IconButton
+                icon={'bell-outline'}
+              />
+              <Badge
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  right: 0,
+                  backgroundColor: theme.colors.error
+                }}
+                visible={
+                  notifications.content.filter((notification) => !notification.seen)
+                    .length > 0
+                }
+              >
+                {
+                  notifications.content.filter((notification) => !notification.seen)
+                    .length
+                }
+              </Badge>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                navigation.navigate('Settings');
               }}
-              visible={
-                notifications.content.filter((notification) => !notification.seen)
-                  .length > 0
-              }
             >
-              {
-                notifications.content.filter((notification) => !notification.seen)
-                  .length
-              }
-            </Badge>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              navigation.navigate('Settings');
-            }}
-          >
-            <IconButton icon='cog-outline' />
-          </Pressable>
-        </View>
-      )
-    });
+              <IconButton icon='cog-outline' />
+            </Pressable>
+          </View>
+        )
+      });
   }, []);
 
 
@@ -176,6 +193,11 @@ export default function RequestsScreen({
       layoutMeasurement.height + contentOffset.y >=
       contentSize.height - paddingToBottom
     );
+  };
+  const onFilterChange = (newFilters: FilterField[]) => {
+    const newCriteria = { ...criteria };
+    newCriteria.filterFields = newFilters;
+    setCriteria(newCriteria);
   };
   const onQueryChange = (query) => {
     onSearchQueryChange<Request>(query, criteria, setCriteria, setSearchQuery, [
@@ -219,6 +241,37 @@ export default function RequestsScreen({
             }
             scrollEventThrottle={400}
           >
+            <ScrollView
+              horizontal
+              style={{ backgroundColor: 'white', borderRadius: 5 }}
+            >
+              <EnumFilter
+                filterFields={criteria.filterFields}
+                onChange={onFilterChange}
+                completeOptions={['NONE', 'LOW', 'MEDIUM', 'HIGH']}
+                initialOptions={['NONE', 'LOW', 'MEDIUM', 'HIGH']}
+                fieldName='priority'
+                icon='signal'
+              />
+              <EnumFilter
+                filterFields={criteria.filterFields}
+                onChange={onFilterChange}
+                completeOptions={['APPROVED', 'CANCELLED', 'PENDING']}
+                initialOptions={['APPROVED', 'CANCELLED', 'PENDING']}
+                fieldName='status'
+                icon='circle-double'
+              />
+              {!_.isEqual(criteria.filterFields, defaultFilterFields) && (
+                <IconButton
+                  icon={'close'}
+                  iconColor={theme.colors.error}
+                  style={{
+                    backgroundColor: theme.colors.background
+                  }}
+                  onPress={() => onFilterChange(defaultFilterFields)}
+                />
+              )}
+            </ScrollView>
             {!!requests.content.length ? (
               requests.content.map((request) => (
                 <Card

@@ -1571,7 +1571,8 @@ const frJSON = {
   manufacturer: 'Fabriquant',
   power: 'Puissance',
   library: 'Bibliothèque photo',
-  camera: 'Caméra'
+  camera: 'Caméra',
+  CANCELLED: 'Rejeté'
 };
 
 export default frJSON;

@@ -1355,6 +1355,7 @@ const trJSON = {
   manufacturer: 'Üretici',
   power: 'Güç',
   library: 'Fotoğraf Kütüphanesi',
-  camera: 'Kamera'
+  camera: 'Kamera',
+  CANCELLED: 'Reddedilmiş'
 };
 export default trJSON;
