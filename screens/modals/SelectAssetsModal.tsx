@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from '../../store';
 import { AssetMiniDTO } from '../../models/asset';
 import { getAssetsMini } from '../../slices/asset';
-import { Checkbox, Divider, Text, useTheme } from 'react-native-paper';
+import { Checkbox, Divider, Searchbar, Text, useTheme } from 'react-native-paper';
 
 export default function SelectAssetsModal({
                                             navigation,
@@ -26,6 +26,7 @@ export default function SelectAssetsModal({
   const { assetsMini, loadingGet } = useSelector((state) => state.assets);
   const [selectedAssets, setSelectedAssets] = useState<AssetMiniDTO[]>([]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     if (assetsMini.length) {
@@ -83,7 +84,12 @@ export default function SelectAssetsModal({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <Searchbar
+        placeholder={t('search')}
+        onChangeText={setSearchQuery}
+        value={searchQuery}
+      />
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -96,7 +102,7 @@ export default function SelectAssetsModal({
           backgroundColor: theme.colors.background
         }}
       >
-        {assetsMini.map((asset) => (
+        {assetsMini.filter(mini => mini.name.toLowerCase().includes(searchQuery.toLowerCase().trim())).map((asset) => (
           <TouchableOpacity
             onPress={() => {
               toggle(asset.id);

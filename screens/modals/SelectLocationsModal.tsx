@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from '../../store';
 import { LocationMiniDTO } from '../../models/location';
 import { getLocationsMini } from '../../slices/location';
-import { Checkbox, Divider, Text, useTheme } from 'react-native-paper';
+import { Checkbox, Divider, Searchbar, Text, useTheme } from 'react-native-paper';
 
 export default function SelectLocationsModal({
                                                navigation,
@@ -28,6 +28,7 @@ export default function SelectLocationsModal({
     []
   );
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     if (locationsMini.length) {
@@ -85,7 +86,12 @@ export default function SelectLocationsModal({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <Searchbar
+        placeholder={t('search')}
+        onChangeText={setSearchQuery}
+        value={searchQuery}
+      />
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -98,7 +104,7 @@ export default function SelectLocationsModal({
           backgroundColor: theme.colors.background
         }}
       >
-        {locationsMini.map((location) => (
+        {locationsMini.filter(mini => mini.name.toLowerCase().includes(searchQuery.toLowerCase().trim())).map((location) => (
           <TouchableOpacity
             onPress={() => {
               toggle(location.id);

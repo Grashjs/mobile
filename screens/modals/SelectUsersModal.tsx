@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from '../../store';
 import { UserMiniDTO } from '../../models/user';
 import { getUsersMini } from '../../slices/user';
-import { Checkbox, Divider, Text, useTheme } from 'react-native-paper';
+import { Checkbox, Divider, Searchbar, Text, useTheme } from 'react-native-paper';
 
 export default function SelectUsersModal({
                                            navigation,
@@ -26,6 +26,7 @@ export default function SelectUsersModal({
   const { usersMini, loadingGet } = useSelector((state) => state.users);
   const [selectedUsers, setSelectedUsers] = useState<UserMiniDTO[]>([]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     if (usersMini.length) {
@@ -83,7 +84,12 @@ export default function SelectUsersModal({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <Searchbar
+        placeholder={t('search')}
+        onChangeText={setSearchQuery}
+        value={searchQuery}
+      />
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -96,7 +102,9 @@ export default function SelectUsersModal({
           backgroundColor: theme.colors.background
         }}
       >
-        {usersMini.map((user) => (
+        {usersMini.filter(user => user.firstName.toLowerCase()
+            .includes(searchQuery.toLowerCase().trim())
+          || user.lastName.toLowerCase().includes(searchQuery.toLowerCase().trim())).map((user) => (
           <TouchableOpacity
             onPress={() => {
               toggle(user.id);

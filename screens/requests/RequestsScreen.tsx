@@ -75,7 +75,7 @@ export default function RequestsScreen({
     {
       field: 'priority',
       operation: 'in',
-      values: ['NONE', 'LOW', 'MEDIUM', 'HIGH'],
+      values: [],
       value: '',
       enumName: 'PRIORITY'
     },
@@ -249,7 +249,7 @@ export default function RequestsScreen({
                 filterFields={criteria.filterFields}
                 onChange={onFilterChange}
                 completeOptions={['NONE', 'LOW', 'MEDIUM', 'HIGH']}
-                initialOptions={['NONE', 'LOW', 'MEDIUM', 'HIGH']}
+                initialOptions={[]}
                 fieldName='priority'
                 icon='signal'
               />
