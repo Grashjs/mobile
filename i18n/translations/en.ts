@@ -1422,7 +1422,8 @@ const enJSON = {
   power: 'Power',
   library: 'Library',
   camera: 'Camera',
-  CANCELLED: 'Rejected'
+  CANCELLED: 'Rejected',
+  max_file_size_error: 'The file size should not be greater than {{size}} MB'
 };
 
 export default enJSON;

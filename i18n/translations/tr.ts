@@ -1356,6 +1356,7 @@ const trJSON = {
   power: 'Güç',
   library: 'Fotoğraf Kütüphanesi',
   camera: 'Kamera',
-  CANCELLED: 'Reddedilmiş'
+  CANCELLED: 'Reddedilmiş',
+  max_file_size_error: 'Dosya boyutu {{size}} MB\'tan büyük olmamalıdır'
 };
 export default trJSON;

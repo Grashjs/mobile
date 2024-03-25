@@ -577,6 +577,7 @@ export default function Form(props: OwnProps) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    paddingHorizontal: 5
   }
 });

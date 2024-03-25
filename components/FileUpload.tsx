@@ -2,7 +2,7 @@ import { View } from './Themed';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import { DocumentResult } from 'expo-document-picker';
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import * as Permissions from 'expo-permissions';
 import {
   Alert,
@@ -18,6 +18,7 @@ import mime from 'mime';
 import { IconSource } from 'react-native-paper/src/components/Icon';
 import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
 import * as React from 'react';
+import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
 
 interface OwnProps {
   title: string;
@@ -38,6 +39,8 @@ export default function FileUpload({
   const theme = useTheme();
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const { t } = useTranslation();
+  const { showSnackBar } = useContext(CustomSnackBarContext);
+  const maxFileSize: number = 7;
   const checkPermissions = async () => {
     try {
       const result = await PermissionsAndroid.check(
@@ -105,6 +108,11 @@ export default function FileUpload({
   };
   const onImagePicked = (result: ImagePicker.ImagePickerResult) => {
     if (!result.canceled) {
+      if (result.fileSize > maxFileSize * 1000000) //7MB
+      {
+        showSnackBar(t('max_file_size_error', { size: maxFileSize }), 'error');
+        return;
+      }
       setImages(result.assets.map((asset) => asset.uri));
       onChange(
         result.assets.map((asset) => {
@@ -124,6 +132,11 @@ export default function FileUpload({
     if (hasPermissions) {
       let result = await DocumentPicker.getDocumentAsync({});
       if (result.type !== 'cancel') {
+        if (result.size > maxFileSize * 1000000) //7MB
+        {
+          showSnackBar(t('max_file_size_error', { size: maxFileSize }), 'error');
+          return;
+        }
         setFile(result);
         onChange([
           {

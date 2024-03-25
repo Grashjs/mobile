@@ -1572,7 +1572,9 @@ const frJSON = {
   power: 'Puissance',
   library: 'Bibliothèque photo',
   camera: 'Caméra',
-  CANCELLED: 'Rejeté'
+  CANCELLED: 'Rejeté',
+  max_file_size_error: 'La taille du fichier ne doit pas dépasser {{size}} Mo'
+
 };
 
 export default frJSON;
