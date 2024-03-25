@@ -17,6 +17,7 @@ import {
   getVendorUrl
 } from '../../../utils/urlPaths';
 import ListField from '../../../components/ListField';
+import BasicField from '../../../components/BasicField';
 
 export default function PartDetails({ part }: { part: Part }) {
   const { t } = useTranslation();
@@ -71,23 +72,11 @@ export default function PartDetails({ part }: { part: Part }) {
         <Image style={{ height: 200 }} source={{ uri: part.image.url }} />
       )}
       {fieldsToRender.map((field) =>
-        field.value ? (
-          <View key={field.label}>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                padding: 20
-              }}
-            >
-              <Text style={{ marginRight: 5 }}>{field.label}</Text>
-              <Text
-                style={{ fontWeight: 'bold', flexShrink: 1 }}>{field.value}</Text>
-            </View>
-            <Divider />
-          </View>
-        ) : null
+        <BasicField
+          key={field.label}
+          label={field.label}
+          value={field.value}
+        />
       )}
       <ListField
         values={part?.assignedTo}

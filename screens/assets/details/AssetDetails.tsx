@@ -17,11 +17,12 @@ import {
   getVendorUrl
 } from '../../../utils/urlPaths';
 import ListField from '../../../components/ListField';
+import BasicField from '../../../components/BasicField';
 
 export default function AssetDetails({
-  asset,
-  navigation
-}: {
+                                       asset,
+                                       navigation
+                                     }: {
   asset: Asset;
   navigation: any;
 }) {
@@ -69,22 +70,11 @@ export default function AssetDetails({
       )}
       {fieldsToRender.map(
         (field) =>
-          field.value && (
-            <View key={field.label}>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  padding: 20
-                }}
-              >
-                <Text>{field.label}</Text>
-                <Text style={{ fontWeight: 'bold' }}>{field.value}</Text>
-              </View>
-              <Divider />
-            </View>
-          )
+          <BasicField
+            key={field.label}
+            label={field.label}
+            value={field.value}
+          />
       )}
       {asset.primaryUser && (
         <View>
