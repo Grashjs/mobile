@@ -2,22 +2,16 @@ import { View } from './Themed';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import { DocumentResult } from 'expo-document-picker';
+import * as React from 'react';
+import * as FileSystem from 'expo-file-system';
 import { useContext, useRef, useState } from 'react';
 import * as Permissions from 'expo-permissions';
-import {
-  Alert,
-  Image,
-  PermissionsAndroid,
-  ScrollView,
-  Text,
-  TouchableOpacity
-} from 'react-native';
+import { Alert, Image, PermissionsAndroid, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { Divider, List, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import mime from 'mime';
 import { IconSource } from 'react-native-paper/src/components/Icon';
 import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
-import * as React from 'react';
 import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
 
 interface OwnProps {
@@ -76,6 +70,14 @@ export default function FileUpload({
       return false;
     }
   };
+
+  const getFileInfo = async (fileURI: string) => {
+    const fileInfo = await FileSystem.getInfoAsync(fileURI);
+    return fileInfo;
+  };
+  const isMoreThanTheMB = (fileSize: number, limit: number) => {
+    return fileSize / 1024 / 1024 > limit;
+  };
   const takePhoto = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     if (status === 'granted') {
@@ -106,12 +108,23 @@ export default function FileUpload({
       onImagePicked(result);
     }
   };
-  const onImagePicked = (result: ImagePicker.ImagePickerResult) => {
+  const checkSize = async (uri: string) => {
+    const fileInfo = await getFileInfo(uri);
+
+    if (!fileInfo?.size) {
+      Alert.alert('Can\'t select this file as the size is unknown.');
+      throw new Error();
+    }
+    if (isMoreThanTheMB(fileInfo.size, maxFileSize)) {
+      showSnackBar(t('max_file_size_error', { size: maxFileSize }), 'error');
+      throw new Error(t('max_file_size_error', { size: maxFileSize }));
+    }
+  };
+  const onImagePicked = async (result: ImagePicker.ImagePickerResult) => {
     if (!result.canceled) {
-      if (result.fileSize > maxFileSize * 1000000) //7MB
-      {
-        showSnackBar(t('max_file_size_error', { size: maxFileSize }), 'error');
-        return;
+      for (const asset of result.assets) {
+        const { uri } = asset;
+        checkSize(uri);
       }
       setImages(result.assets.map((asset) => asset.uri));
       onChange(
@@ -132,11 +145,7 @@ export default function FileUpload({
     if (hasPermissions) {
       let result = await DocumentPicker.getDocumentAsync({});
       if (result.type !== 'cancel') {
-        if (result.size > maxFileSize * 1000000) //7MB
-        {
-          showSnackBar(t('max_file_size_error', { size: maxFileSize }), 'error');
-          return;
-        }
+        checkSize(result.uri);
         setFile(result);
         onChange([
           {
