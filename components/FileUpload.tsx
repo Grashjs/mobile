@@ -89,7 +89,7 @@ export default function FileUpload({
           selectionLimit: 10,
           quality: 1
         });
-        onImagePicked(result);
+        await onImagePicked(result);
       } catch (e) {
         console.error(e);
       }
@@ -105,7 +105,7 @@ export default function FileUpload({
         selectionLimit: 10,
         quality: 1
       });
-      onImagePicked(result);
+      await onImagePicked(result);
     }
   };
   const checkSize = async (uri: string) => {

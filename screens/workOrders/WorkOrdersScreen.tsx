@@ -60,7 +60,7 @@ export default function WorkOrdersScreen({
   const theme = useTheme();
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
-  const fromHomeInit = useRef<number>(0);
+  const fromHomeInit = useRef<boolean>(false);
   const { getFormattedDate, getUserNameById } = useContext(
     CompanySettingsContext
   );
@@ -109,8 +109,8 @@ export default function WorkOrdersScreen({
     getCriteriaFromFilterFields([])
   );
   useEffect(() => {
-    if (route.params?.fromHome && fromHomeInit.current === 0) {
-      fromHomeInit.current += 1;
+    if (route.params?.fromHome && !fromHomeInit.current) {
+      fromHomeInit.current = true;
       return;
     }
     dispatch(
@@ -121,6 +121,7 @@ export default function WorkOrdersScreen({
         direction: 'DESC'
       })
     );
+    fromHomeInit.current = true;
   }, [criteria]);
 
   useEffect(() => {
