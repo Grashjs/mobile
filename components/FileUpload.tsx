@@ -124,7 +124,7 @@ export default function FileUpload({
     if (!result.canceled) {
       for (const asset of result.assets) {
         const { uri } = asset;
-        checkSize(uri);
+        await checkSize(uri);
       }
       setImages(result.assets.map((asset) => asset.uri));
       onChange(
@@ -145,7 +145,7 @@ export default function FileUpload({
     if (hasPermissions) {
       let result = await DocumentPicker.getDocumentAsync({});
       if (result.type !== 'cancel') {
-        checkSize(result.uri);
+        await checkSize(result.uri);
         setFile(result);
         onChange([
           {
