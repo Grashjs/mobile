@@ -285,12 +285,12 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Home'>) {
                 const filterFields = stat.filterFields;
                 if (userSettings.statsForAssignedWorkOrders) {
                   filterFields.push({
-                    field: 'primaryUser',
+                    field: 'assignedToUser',
                     operation: 'eq',
                     value: user.id
                   });
                 }
-                navigation.navigate('WorkOrders', { filterFields });
+                navigation.navigate('WorkOrders', { filterFields, fromHome: true });
               }
             }}
           >

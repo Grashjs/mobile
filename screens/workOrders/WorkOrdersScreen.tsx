@@ -1,7 +1,7 @@
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from '../../store';
 import * as React from 'react';
-import { Fragment, useContext, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useRef, useState } from 'react';
 import { CompanySettingsContext } from '../../contexts/CompanySettingsContext';
 import useAuth from '../../hooks/useAuth';
 import { PermissionEntity } from '../../models/role';
@@ -30,10 +30,10 @@ import EnumFilter from './EnumFilter';
 import { dayDiff } from '../../utils/dates';
 
 function IconWithLabel({
-  icon,
-  label,
-  color
-}: {
+                         icon,
+                         label,
+                         color
+                       }: {
   icon: IconSource;
   label: string;
   color?: string;
@@ -49,9 +49,9 @@ function IconWithLabel({
 }
 
 export default function WorkOrdersScreen({
-  navigation,
-  route
-}: RootTabScreenProps<'WorkOrders'>) {
+                                           navigation,
+                                           route
+                                         }: RootTabScreenProps<'WorkOrders'>) {
   const { t } = useTranslation();
   const [startedSearch, setStartedSearch] = useState<boolean>(false);
   const { workOrders, loadingGet, currentPageNum, lastPage } = useSelector(
@@ -60,6 +60,7 @@ export default function WorkOrdersScreen({
   const theme = useTheme();
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
+  const fromHomeInit = useRef<number>(0);
   const { getFormattedDate, getUserNameById } = useContext(
     CompanySettingsContext
   );
@@ -108,14 +109,18 @@ export default function WorkOrdersScreen({
     getCriteriaFromFilterFields([])
   );
   useEffect(() => {
-      dispatch(
-        getWorkOrders({
-          ...criteria,
-          pageSize: 10,
-          pageNum: 0,
-          direction: 'DESC'
-        })
-      );
+    if (route.params?.fromHome && fromHomeInit.current === 0) {
+      fromHomeInit.current += 1;
+      return;
+    }
+    dispatch(
+      getWorkOrders({
+        ...criteria,
+        pageSize: 10,
+        pageNum: 0,
+        direction: 'DESC'
+      })
+    );
   }, [criteria]);
 
   useEffect(() => {
@@ -133,10 +138,10 @@ export default function WorkOrdersScreen({
     setCriteria(newCriteria);
   };
   const isCloseToBottom = ({
-    layoutMeasurement,
-    contentOffset,
-    contentSize
-  }) => {
+                             layoutMeasurement,
+                             contentOffset,
+                             contentSize
+                           }) => {
     const paddingToBottom = 20;
     return (
       layoutMeasurement.height + contentOffset.y >=
@@ -164,180 +169,180 @@ export default function WorkOrdersScreen({
       style={{ ...styles.container, backgroundColor: theme.colors.background }}
     >
 
-        <Fragment>
-          <Searchbar
-            placeholder={t('search')}
-            onFocus={() => setStartedSearch(true)}
-            onChangeText={setSearchQuery}
-            value={searchQuery}
-          />
-          <ScrollView
-            style={styles.scrollView}
-            onScroll={({ nativeEvent }) => {
-              if (isCloseToBottom(nativeEvent)) {
-                if (!loadingGet && !lastPage)
-                  dispatch(getMoreWorkOrders(criteria, currentPageNum + 1));
-              }
-            }}
-            refreshControl={
-              <RefreshControl
-                refreshing={loadingGet}
-                onRefresh={onRefresh}
-                colors={[theme.colors.primary]}
-              />
+      <Fragment>
+        <Searchbar
+          placeholder={t('search')}
+          onFocus={() => setStartedSearch(true)}
+          onChangeText={setSearchQuery}
+          value={searchQuery}
+        />
+        <ScrollView
+          style={styles.scrollView}
+          onScroll={({ nativeEvent }) => {
+            if (isCloseToBottom(nativeEvent)) {
+              if (!loadingGet && !lastPage)
+                dispatch(getMoreWorkOrders(criteria, currentPageNum + 1));
             }
-            scrollEventThrottle={400}
+          }}
+          refreshControl={
+            <RefreshControl
+              refreshing={loadingGet}
+              onRefresh={onRefresh}
+              colors={[theme.colors.primary]}
+            />
+          }
+          scrollEventThrottle={400}
+        >
+          <ScrollView
+            horizontal
+            style={{ backgroundColor: 'white', borderRadius: 5 }}
           >
-            <ScrollView
-              horizontal
-              style={{ backgroundColor: 'white', borderRadius: 5 }}
-            >
+            <IconButton
+              icon={
+                _.isEqual(criteria.filterFields, defaultFilterFields)
+                  ? 'filter-outline'
+                  : 'filter-check'
+              }
+              iconColor={
+                _.isEqual(criteria.filterFields, defaultFilterFields)
+                  ? undefined
+                  : 'white'
+              }
+              style={{
+                backgroundColor: _.isEqual(
+                  criteria.filterFields,
+                  defaultFilterFields
+                )
+                  ? theme.colors.background
+                  : 'black'
+              }}
+              onPress={() =>
+                navigation.navigate('WorkOrderFilters', {
+                  filterFields: criteria.filterFields,
+                  onFilterChange
+                })
+              }
+            />
+            <EnumFilter
+              filterFields={criteria.filterFields}
+              onChange={onFilterChange}
+              completeOptions={['NONE', 'LOW', 'MEDIUM', 'HIGH']}
+              initialOptions={['NONE', 'LOW', 'MEDIUM', 'HIGH']}
+              fieldName='priority'
+              icon='signal'
+            />
+            <EnumFilter
+              filterFields={criteria.filterFields}
+              onChange={onFilterChange}
+              completeOptions={['OPEN', 'IN_PROGRESS', 'ON_HOLD', 'COMPLETE']}
+              initialOptions={['OPEN', 'IN_PROGRESS', 'ON_HOLD']}
+              fieldName='status'
+              icon='circle-double'
+            />
+            {!_.isEqual(criteria.filterFields, defaultFilterFields) && (
               <IconButton
-                icon={
-                  _.isEqual(criteria.filterFields, defaultFilterFields)
-                    ? 'filter-outline'
-                    : 'filter-check'
-                }
-                iconColor={
-                  _.isEqual(criteria.filterFields, defaultFilterFields)
-                    ? undefined
-                    : 'white'
-                }
+                icon={'close'}
+                iconColor={theme.colors.error}
                 style={{
-                  backgroundColor: _.isEqual(
-                    criteria.filterFields,
-                    defaultFilterFields
-                  )
-                    ? theme.colors.background
-                    : 'black'
+                  backgroundColor: theme.colors.background
                 }}
+                onPress={() => onFilterChange(defaultFilterFields)}
+              />
+            )}
+          </ScrollView>
+          {!!workOrders.content.length ? (
+            workOrders.content.map((workOrder) => (
+              <Card
+                style={{
+                  padding: 5,
+                  marginVertical: 5,
+                  backgroundColor: 'white'
+                }}
+                key={workOrder.id}
                 onPress={() =>
-                  navigation.navigate('WorkOrderFilters', {
-                    filterFields: criteria.filterFields,
-                    onFilterChange
-                  })
+                  navigation.push('WODetails', { id: workOrder.id })
                 }
-              />
-              <EnumFilter
-                filterFields={criteria.filterFields}
-                onChange={onFilterChange}
-                completeOptions={['NONE', 'LOW', 'MEDIUM', 'HIGH']}
-                initialOptions={['NONE', 'LOW', 'MEDIUM', 'HIGH']}
-                fieldName="priority"
-                icon="signal"
-              />
-              <EnumFilter
-                filterFields={criteria.filterFields}
-                onChange={onFilterChange}
-                completeOptions={['OPEN', 'IN_PROGRESS', 'ON_HOLD', 'COMPLETE']}
-                initialOptions={['OPEN', 'IN_PROGRESS', 'ON_HOLD']}
-                fieldName="status"
-                icon="circle-double"
-              />
-              {!_.isEqual(criteria.filterFields, defaultFilterFields) && (
-                <IconButton
-                  icon={'close'}
-                  iconColor={theme.colors.error}
-                  style={{
-                    backgroundColor: theme.colors.background
-                  }}
-                  onPress={() => onFilterChange(defaultFilterFields)}
-                />
-              )}
-            </ScrollView>
-            {!!workOrders.content.length ? (
-              workOrders.content.map((workOrder) => (
-                <Card
-                  style={{
-                    padding: 5,
-                    marginVertical: 5,
-                    backgroundColor: 'white'
-                  }}
-                  key={workOrder.id}
-                  onPress={() =>
-                    navigation.push('WODetails', { id: workOrder.id })
-                  }
-                >
-                  <Card.Content>
+              >
+                <Card.Content>
+                  <View
+                    style={{ ...styles.row, justifyContent: 'space-between' }}
+                  >
+                    <Tag
+                      text={t(workOrder.status)}
+                      color='white'
+                      backgroundColor={getStatusColor(
+                        workOrder.status,
+                        theme
+                      )}
+                    />
                     <View
-                      style={{ ...styles.row, justifyContent: 'space-between' }}
+                      style={{
+                        ...styles.row,
+                        justifyContent: 'space-between'
+                      }}
                     >
+                      <View style={{ marginRight: 10 }}>
+                        <Tag
+                          text={`#${workOrder.id}`}
+                          color='white'
+                          backgroundColor='#545454'
+                        />
+                      </View>
                       <Tag
-                        text={t(workOrder.status)}
-                        color="white"
-                        backgroundColor={getStatusColor(
-                          workOrder.status,
+                        text={t(workOrder.priority)}
+                        color='white'
+                        backgroundColor={getPriorityColor(
+                          workOrder.priority,
                           theme
                         )}
                       />
-                      <View
-                        style={{
-                          ...styles.row,
-                          justifyContent: 'space-between'
-                        }}
-                      >
-                        <View style={{ marginRight: 10 }}>
-                          <Tag
-                            text={`#${workOrder.id}`}
-                            color="white"
-                            backgroundColor="#545454"
-                          />
-                        </View>
-                        <Tag
-                          text={t(workOrder.priority)}
-                          color="white"
-                          backgroundColor={getPriorityColor(
-                            workOrder.priority,
-                            theme
-                          )}
-                        />
-                      </View>
                     </View>
-                    <Text variant="titleMedium">{workOrder.title}</Text>
-                    {workOrder.dueDate && (
-                      <IconWithLabel
-                        color={
-                          dayDiff(new Date(workOrder.dueDate), new Date()) <=
-                            2 && new Date(workOrder.dueDate) > new Date()
-                            ? theme.colors.error
-                            : theme.colors.grey
-                        }
-                        label={getFormattedDate(workOrder.dueDate)}
-                        icon="clock-alert-outline"
-                      />
-                    )}
-                    {workOrder.asset && (
-                      <IconWithLabel
-                        label={workOrder.asset.name}
-                        icon="package-variant-closed"
-                        color={theme.colors.grey}
-                      />
-                    )}
-                    {workOrder.location && (
-                      <IconWithLabel
-                        label={workOrder.location.name}
-                        icon="map-marker-outline"
-                        color={theme.colors.grey}
-                      />
-                    )}
-                  </Card.Content>
-                </Card>
-              ))
-            ) : loadingGet ? null : (
-              <View
-                style={{
-                  backgroundColor: 'white',
-                  padding: 20,
-                  borderRadius: 10
-                }}
-              >
-                <Text variant={'titleLarge'}>
-                  {t('no_element_match_criteria')}
-                </Text>
-              </View>
-            )}
-          </ScrollView>
-        </Fragment>
+                  </View>
+                  <Text variant='titleMedium'>{workOrder.title}</Text>
+                  {workOrder.dueDate && (
+                    <IconWithLabel
+                      color={
+                        dayDiff(new Date(workOrder.dueDate), new Date()) <=
+                        2 && new Date(workOrder.dueDate) > new Date()
+                          ? theme.colors.error
+                          : theme.colors.grey
+                      }
+                      label={getFormattedDate(workOrder.dueDate)}
+                      icon='clock-alert-outline'
+                    />
+                  )}
+                  {workOrder.asset && (
+                    <IconWithLabel
+                      label={workOrder.asset.name}
+                      icon='package-variant-closed'
+                      color={theme.colors.grey}
+                    />
+                  )}
+                  {workOrder.location && (
+                    <IconWithLabel
+                      label={workOrder.location.name}
+                      icon='map-marker-outline'
+                      color={theme.colors.grey}
+                    />
+                  )}
+                </Card.Content>
+              </Card>
+            ))
+          ) : loadingGet ? null : (
+            <View
+              style={{
+                backgroundColor: 'white',
+                padding: 20,
+                borderRadius: 10
+              }}
+            >
+              <Text variant={'titleLarge'}>
+                {t('no_element_match_criteria')}
+              </Text>
+            </View>
+          )}
+        </ScrollView>
+      </Fragment>
     </View>
   );
 }

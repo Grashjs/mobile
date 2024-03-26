@@ -149,7 +149,7 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
 
 export type RootTabParamList = {
   Home: undefined;
-  WorkOrders: { filterFields: FilterField[] };
+  WorkOrders: { filterFields: FilterField[]; fromHome?: boolean };
   AddEntities: undefined;
   Requests: undefined;
   MoreEntities: undefined;
