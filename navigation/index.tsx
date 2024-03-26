@@ -51,6 +51,8 @@ import SelectLocationsModal from '../screens/modals/SelectLocationsModal';
 import SelectAssetsModal from '../screens/modals/SelectAssetsModal';
 import SelectCategoriesModal from '../screens/modals/SelectCategoryModal';
 import SelectTasksModal from '../screens/modals/SelectTasksModal';
+import SelectChecklistsModal from '../screens/modals/SelectChecklistsModal';
+import SelectTasksOrChecklistModal from '../screens/modals/SelectTasksOrChecklistModal';
 import PartsScreen from '../screens/parts/PartsScreen';
 import VendorsAndCustomersScreen from '../screens/vendorsCustomers';
 import PeopleAndTeamsScreen from '../screens/peopleTeams';
@@ -397,6 +399,16 @@ function RootNavigator() {
           options={{ title: t('add_task') }}
         />
         <Stack.Screen
+          name='SelectChecklists'
+          component={SelectChecklistsModal}
+          options={{ title: t('add_task') }}
+        />
+        <Stack.Screen
+          name='SelectTasksOrChecklist'
+          component={SelectTasksOrChecklistModal}
+          options={{ title: t('add_task') }}
+        />
+        <Stack.Screen
           name='AddAdditionalCost'
           component={CreateAdditionalCost}
           options={{ title: t('add_cost') }}
@@ -467,7 +479,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
         tabBarActiveTintColor: theme.colors.primary
       }}
     >
-      {user.role.code !=="REQUESTER" && <BottomTab.Screen
+      {user.role.code !== 'REQUESTER' && <BottomTab.Screen
         name='Home'
         component={HomeScreen}
         options={({ navigation }: RootTabScreenProps<'Home'>) => ({
@@ -486,7 +498,7 @@ function BottomTabNavigator({ navigation }: RootTabScreenProps<'Home'>) {
           )
         })}
       />}
-       <BottomTab.Screen
+      <BottomTab.Screen
         name='WorkOrders'
         component={WorkOrdersScreen}
         options={{

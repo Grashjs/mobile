@@ -206,7 +206,7 @@ export default function Form(props: OwnProps) {
         additionalNavigationOptions = { type: field.category };
         break;
       case 'task':
-        screenPath = 'SelectTasks';
+        screenPath = 'SelectTasksOrChecklist';
         onChange = (values: Task[]) => {
           const value = values.map((task) => ({
             label: task.taskBase.label,

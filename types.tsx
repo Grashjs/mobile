@@ -25,7 +25,8 @@ import Meter, { MeterMiniDTO } from './models/meter';
 
 declare global {
   namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList {}
+    interface RootParamList extends RootStackParamList {
+    }
   }
 }
 
@@ -105,9 +106,11 @@ export type RootStackParamList = {
     onChange: (assets: AssetMiniDTO[]) => void;
     selected: number[];
     multiple: boolean;
-    locationId: number|null;
+    locationId: number | null;
   };
   SelectTasks: { onChange: (tasks: Task[]) => void; selected: Task[] };
+  SelectChecklists: { onChange: (tasks: Task[]) => void; selected: Task[] };
+  SelectTasksOrChecklist: { onChange: (tasks: Task[]) => void; selected: Task[] };
   SelectCategories: {
     onChange: (categories: Category[]) => void;
     selected: number[];

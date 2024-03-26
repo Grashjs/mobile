@@ -29,9 +29,9 @@ import { getTaskTypes } from '../../utils/displayers';
 import { MeterMiniDTO } from '../../models/meter';
 
 export default function SelectTasksModal({
-  navigation,
-  route
-}: RootStackScreenProps<'SelectTasks'>) {
+                                           navigation,
+                                           route
+                                         }: RootStackScreenProps<'SelectTasks'>) {
   const { onChange, selected } = route.params;
   const theme = useTheme();
   const [type, setType] = useState<TaskType>('SUBTASK');
@@ -91,10 +91,10 @@ export default function SelectTasksModal({
                 //  meter
               })
             ]);
-            navigation.goBack();
+            navigation.pop(2);
           }}
         >
-          <Text variant="titleMedium">{t('add')}</Text>
+          <Text variant='titleMedium'>{t('add')}</Text>
         </Pressable>
       )
     });
@@ -124,7 +124,7 @@ export default function SelectTasksModal({
             }}
           >
             <RadioButton
-              value="first"
+              value='first'
               status={type === taskType.value ? 'checked' : 'unchecked'}
               onPress={() => setType(taskType.value)}
             />
@@ -239,7 +239,8 @@ export default function SelectTasksModal({
             navigation.navigate('SelectAssets', {
               onChange: (assets) => setAsset(assets[0]),
               selected: [],
-              multiple: false
+              multiple: false,
+              locationId: null
             })
           }
         />
