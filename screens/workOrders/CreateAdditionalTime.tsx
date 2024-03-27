@@ -11,9 +11,9 @@ import { useDispatch } from '../../store';
 import { createLabor } from '../../slices/labor';
 
 export default function CreateAdditionalTime({
-  navigation,
-  route
-}: RootStackScreenProps<'AddAdditionalCost'>) {
+                                               navigation,
+                                               route
+                                             }: RootStackScreenProps<'AddAdditionalCost'>) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const fields: Array<IField> = [
@@ -70,7 +70,8 @@ export default function CreateAdditionalTime({
   ];
   const shape = {
     hours: Yup.number().required(t('required_hours')),
-    minutes: Yup.number().required(t('required_minutes'))
+    minutes: Yup.number().required(t('required_minutes')),
+    startedAt: Yup.date().required(t('required_field'))
   };
   return (
     <View style={{ flex: 1 }}>
@@ -80,7 +81,8 @@ export default function CreateAdditionalTime({
         validation={Yup.object().shape(shape)}
         submitText={t('add')}
         values={{ includeToTotalTime: true }}
-        onChange={({ field, e }) => {}}
+        onChange={({ field, e }) => {
+        }}
         onSubmit={async (values) => {
           const formattedValues = { ...values };
           formattedValues.assignedTo = formatSelect(formattedValues.assignedTo);
